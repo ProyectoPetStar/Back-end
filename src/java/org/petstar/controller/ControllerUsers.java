@@ -30,6 +30,8 @@ public class ControllerUsers {
                 UserSonarthResponseJson list = new UserSonarthResponseJson();
                 list.setList(dao.getUsersSonarh());
                 output.setData(list);
+                response.setSucessfull(true);
+                response.setMessage("OK");
             } else {
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");
