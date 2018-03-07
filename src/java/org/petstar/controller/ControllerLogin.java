@@ -21,13 +21,14 @@ public class ControllerLogin {
     public OutputJson Login(HttpServletRequest request) {
         String usuario_acceso = request.getParameter("usuario_acceso");
         String clave_acceso = request.getParameter("clave_acceso");
+        int id_sistemas = Integer.parseInt(request.getParameter("id_sistemas"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
 
         LoginDAO dao = new LoginDAO();
         ControllerAutenticacion auth = new ControllerAutenticacion();
         try {
-            UserDTO datos_usuario = dao.Login(usuario_acceso, clave_acceso);
+            UserDTO datos_usuario = dao.Login(usuario_acceso, clave_acceso, id_sistemas);
             if (datos_usuario.getUsuario_acceso() != null) {
                 String token = auth.createJWT(datos_usuario.getId_usuario(), datos_usuario.getUsuario_acceso(), datos_usuario.getPerfil());
                 datos_usuario.setToken(token);

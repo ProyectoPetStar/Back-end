@@ -19,14 +19,14 @@ import org.petstar.dto.UserDTO;
 
 public class LoginDAO {
 
-    public UserDTO Login(String usuario_acceso, String clave_acceso) throws Exception {
+    public UserDTO Login(String usuario_acceso, String clave_acceso, int id_sistemas) throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_PetLogueo ?, ?");
+        sql.append("EXEC sp_PetLogueo ?, ?, ?");
         Object[] params = {
-            usuario_acceso, clave_acceso
+            usuario_acceso, clave_acceso, id_sistemas
         };
         ResultSetHandler rsh = new BeanHandler(UserDTO.class);
         UserDTO datos_usuario = (UserDTO) qr.query(sql.toString(), rsh, params);
