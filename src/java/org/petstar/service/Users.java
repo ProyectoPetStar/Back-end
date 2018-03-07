@@ -34,7 +34,7 @@ public class Users extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Configuration.setHeadersJson(response);
-
+    
         PrintWriter out = response.getWriter();
         OutputJson output = new OutputJson();
         ControllerUsers controller = new ControllerUsers();
@@ -45,7 +45,7 @@ public class Users extends HttpServlet {
             switch (action) {
                 case "getUsersSonarh":
                    output =  controller.getUsersSonarh(request);
-                    break;
+                   break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

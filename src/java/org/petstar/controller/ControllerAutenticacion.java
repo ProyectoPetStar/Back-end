@@ -30,7 +30,7 @@ public class ControllerAutenticacion {
 
         String jwt = Jwts.builder()
                 .setSubject(String.valueOf(id_usuario))
-                .setExpiration(new Date(System.currentTimeMillis() + 300000))
+                .setExpiration(new Date(System.currentTimeMillis() + 600000000))
                 .claim("usuario_acceso", username)
                 .claim("perfil", rol)
                 .signWith(

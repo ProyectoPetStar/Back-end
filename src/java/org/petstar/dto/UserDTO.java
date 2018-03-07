@@ -19,9 +19,9 @@ public class UserDTO {
     private String usuario_acceso;
     private int id_perfil;
     private String token;
-    private int turno;
-    private int linea;
-    private int grupo;
+    private String turno;
+    private String linea;
+    private String grupo;
     private String perfil;
 
     public int getId_usuario() {
@@ -81,30 +81,6 @@ public class UserDTO {
         this.id_perfil = id_perfil;
     }
 
-    public int getTurno() {
-        return turno;
-    }
-
-    public void setTurno(int turno) {
-        this.turno = turno;
-    }
-
-    public int getLinea() {
-        return linea;
-    }
-
-    public void setLinea(int linea) {
-        this.linea = linea;
-    }
-
-    public int getGrupo() {
-        return grupo;
-    }
-
-    public void setGrupo(int grupo) {
-        this.grupo = grupo;
-    }
-
     public String getToken() {
         return token;
     }
@@ -119,6 +95,30 @@ public class UserDTO {
 
     public void setPerfil(String perfil) {
         this.perfil = perfil;
+    }
+
+    public String getTurno() {
+        return turno;
+    }
+
+    public void setTurno(String turno) {
+        this.turno = turno;
+    }
+
+    public String getLinea() {
+        return linea;
+    }
+
+    public void setLinea(String linea) {
+        this.linea = linea;
+    }
+
+    public String getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
     }
     
     
