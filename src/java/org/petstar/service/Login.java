@@ -46,11 +46,17 @@ public class Login extends HttpServlet {
                 case "Login":
                    output =  controller.Login(request);
                     break;
+                default:
+                    ResponseJson reponseJson = new ResponseJson();
+                    reponseJson.setSucessfull(false);
+                    reponseJson.setMessage("Servicio no encontrado");
+                    output.setResponse(reponseJson);
+                    
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
             reponseJson.setSucessfull(false);
-            reponseJson.setMessage(ex.getMessage());
+            reponseJson.setMessage(""+ex.toString());
             output.setResponse(reponseJson);
         } finally {
             out.print(gson.toJson(output));

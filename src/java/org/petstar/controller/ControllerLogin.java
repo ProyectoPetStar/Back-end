@@ -40,7 +40,7 @@ public class ControllerLogin {
             }
         } catch (Exception ex) {
             response.setSucessfull(false);
-            response.setMessage("Descripcion de error: " + ex.getMessage());
+            response.setMessage("" + ex.getMessage());
         }
         output.setResponse(response);
         return output;
