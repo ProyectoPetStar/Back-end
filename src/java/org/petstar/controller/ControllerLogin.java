@@ -29,14 +29,14 @@ public class ControllerLogin {
         ControllerAutenticacion auth = new ControllerAutenticacion();
         try {
             UserDTO datos_usuario = dao.Login(usuario_acceso, clave_acceso, id_sistemas);
-            if (datos_usuario.getUsuario_acceso() != null) {
+            if (datos_usuario != null  && datos_usuario.getUsuario_acceso() != null) {
                 String token = auth.createJWT(datos_usuario.getId_usuario(), datos_usuario.getUsuario_acceso(), datos_usuario.getPerfil());
                 datos_usuario.setToken(token);
                 response.setSucessfull(true);
                 response.setUsuario(datos_usuario);
             } else {
                 response.setSucessfull(false);
-                response.setMessage("Nombre de usuario o contraseña incorrectos");
+                response.setMessage("Usuario o contraseña incorrectos");
             }
         } catch (Exception ex) {
             response.setSucessfull(false);
