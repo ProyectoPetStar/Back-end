@@ -69,24 +69,25 @@ public class ControllerAutenticacion {
         return b;
     }
     
-    public int id_usuario_valido(HttpServletRequest request){
+    public String id_usuario_valido(HttpServletRequest request){
         String token = request.getHeader(Configuration.HEADER_STRING);
-        int id_usuario = Integer.parseInt(request.getParameter("id_usuario"));
+        String id_usuario = request.getParameter("id_usuario");
         
         if (token == null) {
-            id_usuario = -1;
+            id_usuario = "-1";
         } else {
             try {
                 AutenticacionDAO dao = new AutenticacionDAO();
-                String token_key = dao.getToken_Key(id_usuario);
+                String token_key = dao.getToken_Key(Integer.parseInt(id_usuario));
                 Claims claims = Jwts.parser().setSigningKey(token_key).parseClaimsJws(token).getBody();
                 
-                 id_usuario = claims.getId().equals(id_usuario)? id_usuario: -1;
+                 id_usuario = claims.getSubject().equals(id_usuario)? id_usuario: "-1";
+                 //claims.
                 
             } catch (SignatureException | ClaimJwtException | MalformedJwtException | UnsupportedJwtException e) {
-               id_usuario = -1;
+               id_usuario = "-1";
             } catch (Exception ex) {
-               id_usuario = -1;
+               id_usuario = "-1";
             }
         }
         return id_usuario;

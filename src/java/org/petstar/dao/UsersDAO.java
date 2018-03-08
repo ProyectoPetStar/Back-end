@@ -10,7 +10,9 @@ import org.petstar.configurations.PoolDataSource;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.petstar.dto.UserDTO;
 import org.petstar.dto.UserSonarthDTO;
 
 /**
@@ -30,4 +32,19 @@ public class UsersDAO {
         return usuarios_sonarh;
     }
     
+    public UserDTO getPerfilUserSonarh(int idUsuario) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_selectPetUsuarioById ?");
+        Object[] params = {
+            idUsuario
+        };
+        ResultSetHandler rsh = new BeanHandler(UserDTO.class);
+        UserDTO datosUsuario = (UserDTO) qr.query(sql.toString(), rsh, params);
+
+        return datosUsuario;
+    }
+
 }

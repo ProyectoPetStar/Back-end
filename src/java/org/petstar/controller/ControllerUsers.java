@@ -18,7 +18,7 @@ import org.petstar.model.UserSonarthResponseJson;
 public class ControllerUsers {
 
     public OutputJson getUsersSonarh(HttpServletRequest request) {
-
+        
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion auth = new ControllerAutenticacion();
@@ -45,6 +45,38 @@ public class ControllerUsers {
 
     }
 
-
+    public OutputJson getPerfilUserSonarh(HttpServletRequest request){
+        int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
+        
+        try {
+             
+            if (auth.isValidToken(request)) {
+                if(auth.id_usuario_valido(request) != "-1"){
+                    UsersDAO userDAO = new UsersDAO();
+                    UserResponseJson userResponseJson = new UserResponseJson();
+                    //userSonarthResponseJson.setUsuarioSonarth(userDAO.getPerfilUserSonarh(idUsuario));
+                    userResponseJson.setUsuario(userDAO.getPerfilUserSonarh(idUsuario));
+                    output.setData(userResponseJson);
+                    response.setMessage("OK");
+                    response.setSucessfull(true);
+                    
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage("Usuario Incorrecto");
+                }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage("Descripcion de error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
 
 }

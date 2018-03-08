@@ -46,6 +46,8 @@ public class Users extends HttpServlet {
                 case "getUsersSonarh":
                    output =  controller.getUsersSonarh(request);
                    break;
+                case "getPerfil":
+                    output = controller.getPerfilUserSonarh(request);
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
