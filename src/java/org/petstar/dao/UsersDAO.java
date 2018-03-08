@@ -12,6 +12,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
 import org.petstar.dto.UserSonarthDTO;
 
@@ -45,6 +46,37 @@ public class UsersDAO {
         UserDTO datosUsuario = (UserDTO) qr.query(sql.toString(), rsh, params);
 
         return datosUsuario;
+    }
+    
+    public ResultInteger validaPassword(String contraseniaAnterior, int idUsuario) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_validaPetUsuarioByPass ?, ?");
+        Object[] params = {
+            idUsuario, contraseniaAnterior 
+        };
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger resultInteger = (ResultInteger)  qr.query(sql.toString(), rsh, params);
+
+        return resultInteger;
+        
+    }
+    
+    public void changePassword(String contraseniaNueva, int idUsuario) throws Exception{
+        
+       DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_UpdatePassPetUsuarios ?, ?");
+        Object[] params = {
+            idUsuario, contraseniaNueva 
+        };
+        
+        qr.update(sql.toString(), params);
+       
     }
 
 }

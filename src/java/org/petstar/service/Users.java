@@ -48,6 +48,10 @@ public class Users extends HttpServlet {
                    break;
                 case "getPerfil":
                     output = controller.getPerfilUserSonarh(request);
+                    break;
+                case "changePassword":
+                    output = controller.changePasswordUser(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
