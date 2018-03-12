@@ -35,4 +35,17 @@ public class CatalogosDAO {
         
         return data_catalogos;
     }
+    
+    public void insertCatalogos(String tableName, String descripcion)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetCatalogos ?, ?");
+        Object[] params = {
+            tableName, descripcion
+        };
+        
+        qr.update(sql.toString(), params);
+    }
 }
