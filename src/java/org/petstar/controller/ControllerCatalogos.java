@@ -45,4 +45,32 @@ public class ControllerCatalogos {
         
         return output;
     }
+    
+    public OutputJson insertNewCatalogo(HttpServletRequest request){
+        String tableName = request.getParameter("tableName");
+        String descripcion = request.getParameter("descripcion");
+        CatalogosResponseJson response = new CatalogosResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+         
+        try {
+             
+            if (controllerAutenticacion.isValidToken(request)) {
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                catalogosDAO.insertCatalogos(tableName, descripcion);
+                response.setSucessfull(true);
+                response.setMessage("OK");
+                
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage("Descripcion de error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        
+        return output;
+    }
 }

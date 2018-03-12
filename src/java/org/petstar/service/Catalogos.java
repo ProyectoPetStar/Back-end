@@ -48,8 +48,11 @@ public class Catalogos extends HttpServlet {
             String action = request.getParameter("action");
             switch (action) {
                 case "getCatalogosData":
-                   output =  controllerCatalogos.getCatalogosData(request);
-                   break;
+                    output =  controllerCatalogos.getCatalogosData(request);
+                    break;
+                case "insertNewCatalogo":
+                    output = controllerCatalogos.insertNewCatalogo(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
