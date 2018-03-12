@@ -53,6 +53,12 @@ public class Catalogos extends HttpServlet {
                 case "insertNewCatalogo":
                     output = controllerCatalogos.insertNewCatalogo(request);
                     break;
+                case "updateCatalogo":
+                    output = controllerCatalogos.updateCatalogo(request);
+                    break;
+                case "deleteCatalogo":
+                    output = controllerCatalogos.deleteCatalogo(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

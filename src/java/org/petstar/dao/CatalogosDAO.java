@@ -9,11 +9,9 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.CatalogosDTO;
-import org.petstar.dto.UserSonarthDTO;
 
 /**
  *
@@ -44,6 +42,32 @@ public class CatalogosDAO {
         sql.append("EXEC sp_insertPetCatalogos ?, ?");
         Object[] params = {
             tableName, descripcion
+        };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void updateCatalogos(int id, String descripcion, int activo, String tableName) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_updatePetCatalogos ?, ?, ?, ?");
+        Object[] params = {
+            tableName, id, descripcion, activo 
+        };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void deleteCatalogo(int id, String tableName) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_deletePetCatalogos ?, ?");
+        Object[] params = {
+            tableName, id
         };
         
         qr.update(sql.toString(), params);
