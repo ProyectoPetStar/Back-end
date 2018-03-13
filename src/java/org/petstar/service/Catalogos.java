@@ -20,7 +20,7 @@ import org.petstar.model.ResponseJson;
 
 /**
  *
- * @author GuillermoB
+ * @author Tech-Pro
  */
 @WebServlet(name = "Catalogos", urlPatterns = {"/Catalogos"})
 public class Catalogos extends HttpServlet {
@@ -58,6 +58,9 @@ public class Catalogos extends HttpServlet {
                     break;
                 case "deleteCatalogo":
                     output = controllerCatalogos.deleteCatalogo(request);
+                    break;
+                case "getDataByID":
+                    output = controllerCatalogos.getDataByIdCatalogo(request);
                     break;
             }
         } catch (Exception ex) {

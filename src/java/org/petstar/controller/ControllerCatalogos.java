@@ -8,13 +8,14 @@ package org.petstar.controller;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.dto.ResultString;
 import org.petstar.model.CatalogosResponseJson;
 import org.petstar.model.CatalogosListResponseJason;
 import org.petstar.model.OutputJson;
 
 /**
  *
- * @author GuillermoB
+ * @author Tech-Pro
  */
 public class ControllerCatalogos {
     public OutputJson getCatalogosData(HttpServletRequest request) {
@@ -124,6 +125,36 @@ public class ControllerCatalogos {
             if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 catalogosDAO.deleteCatalogo(id, tableName);
+                response.setSucessfull(true);
+                response.setMessage("OK");
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage("Descripcion de error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        
+        return output;
+    }
+    
+    public OutputJson getDataByIdCatalogo(HttpServletRequest request){
+        String tableName = request.getParameter("tableName");
+        int id = Integer.parseInt(request.getParameter("idCatalogo"));
+        CatalogosResponseJson response = new CatalogosResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+         
+        try {
+             
+            if (controllerAutenticacion.isValidToken(request)) {
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
+                catalogosListResponseJason.setCatalogosDTO(catalogosDAO.getDescripcionById(tableName, id));
+                
+                output.setData(catalogosListResponseJason);
                 response.setSucessfull(true);
                 response.setMessage("OK");
             } else {

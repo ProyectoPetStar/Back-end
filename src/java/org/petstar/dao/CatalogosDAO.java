@@ -14,12 +14,20 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.dto.ResultString;
 
 /**
  *
- * @author GuillermoB
+ * @author TechPro
  */
 public class CatalogosDAO {
+    
+    /**
+     * Metodo generico que devuelve la lista de datos en DB 
+     * @param tablename
+     * @return
+     * @throws Exception 
+     */
     public List<CatalogosDTO> getCatalogos(String tablename) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
@@ -36,6 +44,12 @@ public class CatalogosDAO {
         return data_catalogos;
     }
     
+    /**
+     * Metodo generico para dar de alta nuevos registros
+     * @param tableName
+     * @param descripcion
+     * @throws Exception 
+     */
     public void insertCatalogos(String tableName, String descripcion)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -49,6 +63,14 @@ public class CatalogosDAO {
         qr.update(sql.toString(), params);
     }
     
+    /**
+     * Metodo generico para actualizar registros de catalogos
+     * @param id
+     * @param descripcion
+     * @param activo
+     * @param tableName
+     * @throws Exception 
+     */
     public void updateCatalogos(int id, String descripcion, int activo, String tableName) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -62,6 +84,12 @@ public class CatalogosDAO {
         qr.update(sql.toString(), params);
     }
     
+    /**
+     * Metodo generico que elimina registros de catalogos
+     * @param id
+     * @param tableName
+     * @throws Exception 
+     */
     public void deleteCatalogo(int id, String tableName) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -75,7 +103,14 @@ public class CatalogosDAO {
         qr.update(sql.toString(), params);
     }
     
-     public ResultInteger validateDescripcionInsert(String tableName, String descripcion) throws Exception{
+    /**
+     * Metodo generico que valida las desscripciones de los catalogos
+     * @param tableName
+     * @param descripcion
+     * @return
+     * @throws Exception 
+     */
+    public ResultInteger validateDescripcionInsert(String tableName, String descripcion) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
@@ -88,5 +123,28 @@ public class CatalogosDAO {
         ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
 
         return count;
+    }
+    
+    /**
+     * Metodo Generico que devuelve la descripcion del catalogo
+     * @param tableName
+     * @param id
+     * @return
+     * @throws Exception 
+     */
+    public CatalogosDTO getDescripcionById(String tableName, int id) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_selectDescripcionCatalogo ?, ?");
+        Object[] params = {
+            tableName, id
+        };
+        ResultSetHandler rsh = new BeanHandler(CatalogosDTO.class);
+        CatalogosDTO catalogosDTO = (CatalogosDTO)  qr.query(sql.toString(), rsh, params);
+
+        return catalogosDTO;
+        
     }
 }
