@@ -23,6 +23,11 @@ import org.petstar.dto.UserSonarthDTO;
 
 public class UsersDAO {
 
+    /**
+     * Metodo que devuelve lista de usuuarios Sonarh
+     * @return
+     * @throws Exception 
+     */
     public List<UserSonarthDTO> getUsersSonarh() throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -33,6 +38,12 @@ public class UsersDAO {
         return usuarios_sonarh;
     }
     
+    /**
+     * Metodo que devuelve los datos del usuario
+     * @param idUsuario
+     * @return
+     * @throws Exception 
+     */
     public UserDTO getPerfilUserSonarh(int idUsuario) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
@@ -48,6 +59,13 @@ public class UsersDAO {
         return datosUsuario;
     }
     
+    /**
+     * Metodo que realiza la validacion del password del usuario
+     * @param contraseniaAnterior
+     * @param idUsuario
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaPassword(String contraseniaAnterior, int idUsuario) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
@@ -64,6 +82,12 @@ public class UsersDAO {
         
     }
     
+    /**
+     * Metodo que actualiza el password del usuario
+     * @param contraseniaNueva
+     * @param idUsuario
+     * @throws Exception 
+     */
     public void changePassword(String contraseniaNueva, int idUsuario) throws Exception{
         
        DataSource ds = PoolDataSource.getDataSource();
@@ -79,4 +103,63 @@ public class UsersDAO {
        
     }
 
+    /**
+     * Metodo que actiualiza un usuario
+     * @param idUsuario
+     * @param idTurno
+     * @param idPerfil
+     * @param activo
+     * @throws Exception 
+     */
+    public void updatePerfilUser(int idUsuario, int idTurno, int idPerfil, int activo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_updatePetUsuarios ?, ?, ?, ?");
+        Object[] params = {
+            idUsuario, idTurno, idPerfil, activo
+        };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    /**
+     * Metodo que permite registrar usuarios nuevos
+     * @param nombre
+     * @param idSonarh
+     * @param idLinea
+     * @param idGrupo
+     * @param idTurno
+     * @param usuarioAcceso
+     * @param idPerfil
+     * @throws Exception 
+     */
+    public void insertNewUser(String nombre, int idSonarh, int idLinea, int idGrupo, int idTurno, String usuarioAcceso, int idPerfil) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_insertPetUsuario ?, ?, ?, ?, ?, ?, ?");
+        Object[] params = {
+            nombre, idSonarh, idLinea, idGrupo, idTurno, usuarioAcceso, idPerfil
+        };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    /**
+     * Metodo que devuelve la lista de los usuarios ETAD
+     * @return
+     * @throws Exception 
+     */
+    public List<UserDTO> getUsersETAD() throws Exception {
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append(" EXEC sp_selectPetUsuarios ");
+         ResultSetHandler rsh = new BeanListHandler(UserDTO.class);
+         List<UserDTO> usuariosETAD = (List<UserDTO>) qr.query(sql.toString(), rsh); 
+        return usuariosETAD;
+    }
 }
