@@ -7,6 +7,7 @@ package org.petstar.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
+import org.petstar.dto.ResultInteger;
 import org.petstar.model.CatalogosResponseJson;
 import org.petstar.model.CatalogosListResponseJason;
 import org.petstar.model.OutputJson;
@@ -57,10 +58,17 @@ public class ControllerCatalogos {
              
             if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
-                catalogosDAO.insertCatalogos(tableName, descripcion);
-                response.setSucessfull(true);
-                response.setMessage("OK");
                 
+                ResultInteger existe = catalogosDAO.validateDescripcionInsert(tableName, descripcion);
+                
+                if(existe.getResult() == 0){
+                    catalogosDAO.insertCatalogos(tableName, descripcion);
+                    response.setSucessfull(true);
+                    response.setMessage("OK");
+                }else {
+                    response.setSucessfull(false);
+                    response.setMessage("Capturar nueva descripción.");
+                }
             } else {
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");
