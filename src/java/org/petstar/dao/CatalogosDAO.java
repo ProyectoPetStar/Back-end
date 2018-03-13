@@ -13,7 +13,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.CatalogosDTO;
-import org.petstar.dto.UserSonarthDTO;
+import org.petstar.dto.ResultInteger;
 
 /**
  *
@@ -47,5 +47,46 @@ public class CatalogosDAO {
         };
         
         qr.update(sql.toString(), params);
+    }
+    
+    public void updateCatalogos(int id, String descripcion, int activo, String tableName) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_updatePetCatalogos ?, ?, ?, ?");
+        Object[] params = {
+            tableName, id, descripcion, activo 
+        };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void deleteCatalogo(int id, String tableName) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_deletePetCatalogos ?, ?");
+        Object[] params = {
+            tableName, id
+        };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+     public ResultInteger validateDescripcionInsert(String tableName, String descripcion) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_insertValidaDescripcion ?, ?");
+        Object[] params = {
+            tableName, descripcion
+        };
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
+
+        return count;
     }
 }
