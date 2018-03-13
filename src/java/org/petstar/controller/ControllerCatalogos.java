@@ -8,7 +8,6 @@ package org.petstar.controller;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dto.ResultInteger;
-import org.petstar.dto.ResultString;
 import org.petstar.model.CatalogosResponseJson;
 import org.petstar.model.CatalogosListResponseJason;
 import org.petstar.model.OutputJson;
@@ -18,6 +17,12 @@ import org.petstar.model.OutputJson;
  * @author Tech-Pro
  */
 public class ControllerCatalogos {
+    
+    /**
+     * Metodo generico que devuelve la lista de de registros en DB
+     * @param request
+     * @return 
+     */
     public OutputJson getCatalogosData(HttpServletRequest request) {
         String tableName = request.getParameter("tableName");
         CatalogosResponseJson response = new CatalogosResponseJson();
@@ -48,6 +53,11 @@ public class ControllerCatalogos {
         return output;
     }
     
+    /**
+     * Metodo Generico para insertar registros de catalogos
+     * @param request
+     * @return 
+     */
     public OutputJson insertNewCatalogo(HttpServletRequest request){
         String tableName = request.getParameter("tableName");
         String descripcion = request.getParameter("descripcion");
@@ -83,6 +93,11 @@ public class ControllerCatalogos {
         return output;
     }
     
+    /**
+     * Metodo Generico para actualizar registros de catalogos
+     * @param request
+     * @return 
+     */
     public OutputJson updateCatalogo(HttpServletRequest request){
         String tableName = request.getParameter("tableName");
         int id = Integer.parseInt(request.getParameter("idCatalogo"));
@@ -113,6 +128,11 @@ public class ControllerCatalogos {
         return output;
     }
     
+    /**
+     * Metodo generico para la eliminacion de registros de catalogos
+     * @param request
+     * @return 
+     */
     public OutputJson deleteCatalogo(HttpServletRequest request){
         String tableName = request.getParameter("tableName");
         int id = Integer.parseInt(request.getParameter("idCatalogo"));
@@ -140,6 +160,11 @@ public class ControllerCatalogos {
         return output;
     }
     
+    /**
+     * Metodo Generico para la obtencion de valores de acuerdo al id de los catalogos
+     * @param request
+     * @return 
+     */
     public OutputJson getDataByIdCatalogo(HttpServletRequest request){
         String tableName = request.getParameter("tableName");
         int id = Integer.parseInt(request.getParameter("idCatalogo"));

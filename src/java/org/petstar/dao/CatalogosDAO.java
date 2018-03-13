@@ -14,7 +14,6 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ResultInteger;
-import org.petstar.dto.ResultString;
 
 /**
  *
