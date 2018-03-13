@@ -43,6 +43,9 @@ public class Users extends HttpServlet {
         try {
             String action = request.getParameter("action");
             switch (action) {
+                case "getUsersETAD":
+                    output = controller.getUsersSonarh(request);
+                    break;
                 case "getUsersSonarh":
                    output =  controller.getUsersSonarh(request);
                    break;
@@ -51,6 +54,9 @@ public class Users extends HttpServlet {
                     break;
                 case "changePassword":
                     output = controller.changePasswordUser(request);
+                    break;
+                case "insertUsers":
+                    output = controller.insertNewUsersEDAT(request);
                     break;
             }
         } catch (Exception ex) {
