@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.UsersDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
+import org.petstar.model.UserETADResponseJson;
 import org.petstar.model.UserResponseJson;
 import org.petstar.model.UserSonarthResponseJson;
 
@@ -18,6 +19,11 @@ import org.petstar.model.UserSonarthResponseJson;
  */
 public class ControllerUsers {
 
+    /**
+     * Metodo que devuelve la lista de usuario de Sonarh
+     * @param request
+     * @return 
+     */
     public OutputJson getUsersSonarh(HttpServletRequest request) {
         
         UserResponseJson response = new UserResponseJson();
@@ -46,6 +52,11 @@ public class ControllerUsers {
 
     }
 
+    /**
+     * Metodo que devuelve la información del usuario logueado
+     * @param request
+     * @return 
+     */
     public OutputJson getPerfilUserSonarh(HttpServletRequest request){
         int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
         UserResponseJson response = new UserResponseJson();
@@ -79,6 +90,11 @@ public class ControllerUsers {
         return output;
     }
 
+    /**
+     * Metodo que permite el cambio del password del usuario
+     * @param request
+     * @return 
+     */
     public OutputJson changePasswordUser(HttpServletRequest request){
         int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
         String contraseniaAnterior = request.getParameter("contraseniaAnterior");
@@ -103,6 +119,107 @@ public class ControllerUsers {
                     response.setSucessfull(false);
                     response.setMessage("Contraseña Invalida");
                 }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage("Descripcion de error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    /**
+     * Metodo que registra un nuevo usuario para el sistema ETAD
+     * @param request
+     * @return 
+     */
+    public OutputJson insertNewUsersETAD(HttpServletRequest request){
+        String nombre = request.getParameter("nombre");
+        int idSonarh = Integer.parseInt(request.getParameter("id_sonarh"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idPerfil = Integer.parseInt(request.getParameter("id_perfil"));
+        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        String usuario = request.getParameter("usuario_acceso");
+        
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
+        
+        try {
+             
+            if (auth.isValidToken(request)) {
+                UsersDAO userDAO = new UsersDAO();
+                
+                userDAO.insertNewUser(nombre, idSonarh, idLinea, idGrupo, idTurno, usuario, idPerfil);
+                response.setMessage("OK");
+                response.setSucessfull(true);
+                
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage("Descripcion de error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    /** 
+     * Metodo que permite la modificacion de un usuario
+     * @param request
+     * @return 
+     */
+    public OutputJson updatePerfilUser(HttpServletRequest request){
+        int idUsuario = Integer.parseInt(request.getParameter("id_usuario_modificar"));
+        int idPerfil = Integer.parseInt(request.getParameter("id_perfil"));
+        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        int activo = Integer.parseInt(request.getParameter("activo"));
+        
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
+        
+        try {
+             
+            if (auth.isValidToken(request)) {
+                UsersDAO userDAO = new UsersDAO();
+                
+                userDAO.updatePerfilUser(idUsuario, idTurno, idPerfil, activo);
+                response.setMessage("OK");
+                response.setSucessfull(true);
+                
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage("Descripcion de error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getUsersETAD(HttpServletRequest request){
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
+        
+        try {
+             
+            if (auth.isValidToken(request)) {
+                UsersDAO dao = new UsersDAO();
+                UserETADResponseJson list = new UserETADResponseJson();
+                list.setListUserDTO(dao.getUsersETAD());
+                output.setData(list);
+                response.setSucessfull(true);
+                response.setMessage("OK");
             } else {
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");

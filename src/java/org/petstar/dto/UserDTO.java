@@ -23,6 +23,8 @@ public class UserDTO {
     private String linea;
     private String grupo;
     private String perfil;
+    private String clave_accesos;
+    private int activo;
 
     public int getId_usuario() {
         return id_usuario;
@@ -120,9 +122,21 @@ public class UserDTO {
     public void setGrupo(String grupo) {
         this.grupo = grupo;
     }
-    
-    
-    
-    
 
+    public String getClave_accesos() {
+        return clave_accesos;
+    }
+
+    public void setClave_accesos(String clave_accesos) {
+        this.clave_accesos = clave_accesos;
+    }
+
+    public int getActivo() {
+        return activo;
+    }
+
+    public void setActivo(int activo) {
+        this.activo = activo;
+    }
+    
 }

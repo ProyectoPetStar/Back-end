@@ -11,98 +11,68 @@ package org.petstar.dto;
  */
 public class UserSonarthDTO {
 
-    private String Nombre;
-    private String Paterno;
-    private String Materno;
-    private String RFC;
-    private int Activo;
-    private int Turno;
-    private String CharUsr2;
-    private String Expr1;
-    private int Expr2;
-    private String CharUsr3;
-
-    public String getNombre() {
-        return Nombre;
+    private int id_sonarh;
+    private int id_grupo;
+    private String grupo;
+    private int id_linea;
+    private String linea;
+    private String usuario_acceso;
+    private String nombre_completo;
+    
+    public int getId_sonarh() {
+        return id_sonarh;
     }
 
-    public void setNombre(String Nombre) {
-        this.Nombre = Nombre;
+    public void setId_sonarh(int id_sonarh) {
+        this.id_sonarh = id_sonarh;
     }
 
-    public String getPaterno() {
-        return Paterno;
+    public int getId_grupo() {
+        return id_grupo;
     }
 
-    public void setPaterno(String Paterno) {
-        this.Paterno = Paterno;
+    public void setId_grupo(int id_grupo) {
+        this.id_grupo = id_grupo;
     }
 
-    public String getMaterno() {
-        return Materno;
+    public int getId_linea() {
+        return id_linea;
     }
 
-    public void setMaterno(String Materno) {
-        this.Materno = Materno;
+    public void setId_linea(int id_linea) {
+        this.id_linea = id_linea;
     }
 
-    public String getRFC() {
-        return RFC;
+    public String getGrupo() {
+        return grupo;
     }
 
-    public void setRFC(String RFC) {
-        this.RFC = RFC;
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
     }
 
-    public int getActivo() {
-        return Activo;
+    public String getLinea() {
+        return linea;
     }
 
-    public void setActivo(int Activo) {
-        this.Activo = Activo;
+    public void setLinea(String linea) {
+        this.linea = linea;
     }
 
-    public int getTurno() {
-        return Turno;
+    public String getUsuario_acceso() {
+        return usuario_acceso;
     }
 
-    public void setTurno(int Turno) {
-        this.Turno = Turno;
+    public void setUsuario_acceso(String usuario_acceso) {
+        this.usuario_acceso = usuario_acceso;
     }
 
-    public String getCharUsr2() {
-        return CharUsr2;
+    public String getNombre_completo() {
+        return nombre_completo;
     }
 
-    public void setCharUsr2(String CharUsr2) {
-        this.CharUsr2 = CharUsr2;
-    }
-
-    public String getExpr1() {
-        return Expr1;
-    }
-
-    public void setExpr1(String Expr1) {
-        this.Expr1 = Expr1;
-    }
-
-    public int getExpr2() {
-        return Expr2;
-    }
-
-    public void setExpr2(int Expr2) {
-        this.Expr2 = Expr2;
-    }
-
-    public String getCharUsr3() {
-        return CharUsr3;
-    }
-
-    public void setCharUsr3(String CharUsr3) {
-        this.CharUsr3 = CharUsr3;
+    public void setNombre_completo(String nombre_completo) {
+        this.nombre_completo = nombre_completo;
     }
     
-    
-    
-
 }
