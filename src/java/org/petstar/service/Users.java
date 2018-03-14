@@ -61,6 +61,9 @@ public class Users extends HttpServlet {
                 case "updatePerfil":
                     output = controller.updatePerfilUser(request);
                     break;
+                case "deleteUser":
+                    output = controller.deleteUsersETAD(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

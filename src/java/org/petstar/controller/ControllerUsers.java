@@ -231,4 +231,34 @@ public class ControllerUsers {
         output.setResponse(response);
         return output;
     }
+    
+    /**
+     * Metodo para eliminar usuarios ETAD
+     * @param request
+     * @return 
+     */
+    public OutputJson deleteUsersETAD(HttpServletRequest request){
+        int idUser = Integer.parseInt(request.getParameter("id_usuario_delete"));
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(autenticacion.isValidToken(request)){
+                UsersDAO usersDAO = new UsersDAO();
+                usersDAO.deleteUsersETAD(idUser);
+                
+                response.setSucessfull(true);
+                response.setMessage("OK");
+            }else{
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage("Descripcion del Error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
 }

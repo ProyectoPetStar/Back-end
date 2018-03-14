@@ -158,8 +158,26 @@ public class UsersDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         sql.append(" EXEC sp_selectPetUsuarios ");
-         ResultSetHandler rsh = new BeanListHandler(UserDTO.class);
-         List<UserDTO> usuariosETAD = (List<UserDTO>) qr.query(sql.toString(), rsh); 
+        ResultSetHandler rsh = new BeanListHandler(UserDTO.class);
+        List<UserDTO> usuariosETAD = (List<UserDTO>) qr.query(sql.toString(), rsh); 
         return usuariosETAD;
+    }
+    
+    /**
+     * Metodo para eliminar usuarios ETAD
+     * @param idUsers
+     * @throws Exception 
+     */
+    public void deleteUsersETAD(int idUsers) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_deletePetUsuarios ?");
+        Object[] params = {
+            idUsers
+        };
+        
+        qr.update(sql.toString(), params);
     }
 }
