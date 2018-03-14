@@ -136,12 +136,18 @@ public class ControllerUsers {
         try{
             if(autenticacion.isValidToken(request)){
                 UsersDAO userDAO = new UsersDAO();
-                UserSonarthResponseJson userData = new UserSonarthResponseJson();
-                userData.setUsuarioSonarth(userDAO.getUserSonarhById(idUsuarioSonarh));
-                
-                output.setData(userData);
-                response.setSucessfull(true);
-                response.setMessage("OK");
+                ResultInteger result = userDAO.validaExistUsers(idUsuarioSonarh);
+                if(result.getResult().equals(0)){
+                    UserSonarthResponseJson userData = new UserSonarthResponseJson();
+                    userData.setUsuarioSonarth(userDAO.getUserSonarhById(idUsuarioSonarh));
+
+                    output.setData(userData);
+                    response.setSucessfull(true);
+                    response.setMessage("OK");
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage("El usuario ya fue registrado previamente.");
+                }
             }else{
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");
