@@ -89,7 +89,71 @@ public class ControllerUsers {
         output.setResponse(response);
         return output;
     }
+    
+    /**
+     * Metodo para obtener datos de los diferentes usuarios de ETAD
+     * @param request
+     * @return 
+     */
+    public OutputJson getPerfilUserEtadById(HttpServletRequest request){
+        int idUsuario = Integer.parseInt(request.getParameter("id_usuario_buscar"));
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(autenticacion.isValidToken(request)){
+                UsersDAO userDAO = new UsersDAO();
+                UserETADResponseJson userData = new UserETADResponseJson();
+                userData.setUserDTO(userDAO.getPerfilUserSonarh(idUsuario));
+                
+                output.setData(userData);
+                response.setSucessfull(true);
+                response.setMessage("OK");
+            }else{
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage("Error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
 
+    /**
+     * Metodo para obtener datos de los diferentes usuarios de Sonarh
+     * @param request
+     * @return 
+     */
+    public OutputJson getPerfilUserSonarhById(HttpServletRequest request){
+        int idUsuarioSonarh = Integer.parseInt(request.getParameter("id_usuario_sonarh"));
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(autenticacion.isValidToken(request)){
+                UsersDAO userDAO = new UsersDAO();
+                UserSonarthResponseJson userData = new UserSonarthResponseJson();
+                userData.setUsuarioSonarth(userDAO.getUserSonarhById(idUsuarioSonarh));
+                
+                output.setData(userData);
+                response.setSucessfull(true);
+                response.setMessage("OK");
+            }else{
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
+        } catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage("Error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
     /**
      * Metodo que permite el cambio del password del usuario
      * @param request
