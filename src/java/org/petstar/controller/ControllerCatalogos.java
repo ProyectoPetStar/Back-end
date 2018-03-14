@@ -111,10 +111,16 @@ public class ControllerCatalogos {
              
             if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
-                catalogosDAO.updateCatalogos(id, descripcion, activo, tableName);
-                response.setSucessfull(true);
-                response.setMessage("OK");
+                ResultInteger existe = catalogosDAO.validateDescripcionUpdate(tableName, id, descripcion);
                 
+                if(existe.getResult().equals(0)){
+                    catalogosDAO.updateCatalogos(id, descripcion, activo, tableName);
+                    response.setSucessfull(true);
+                    response.setMessage("OK");
+                }else {
+                    response.setSucessfull(false);
+                    response.setMessage("Capturar nueva descripción.");
+                }
             } else {
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");

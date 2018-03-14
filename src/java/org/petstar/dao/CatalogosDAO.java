@@ -103,7 +103,7 @@ public class CatalogosDAO {
     }
     
     /**
-     * Metodo generico que valida las desscripciones de los catalogos
+     * Metodo generico que valida las desscripciones de los catalogos en insert
      * @param tableName
      * @param descripcion
      * @return
@@ -118,6 +118,30 @@ public class CatalogosDAO {
         Object[] params = {
             tableName, descripcion
         };
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
+
+        return count;
+    }
+    
+    /**
+     * Metodo generico que valida las descripciones de los catalogos para update
+     * @param tableName
+     * @param id
+     * @param descripcion
+     * @return
+     * @throws Exception 
+     */
+    public ResultInteger validateDescripcionUpdate(String tableName, int id, String descripcion) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_updateValidaDescripcion ?, ?, ?");
+        Object[] params = {
+            tableName, id, descripcion
+        };
+        
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
 
