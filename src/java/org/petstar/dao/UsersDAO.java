@@ -60,6 +60,26 @@ public class UsersDAO {
     }
     
     /**
+     * Metodo que devuelve los datos de usuarios sonarh
+     * @param idUsuario
+     * @return
+     * @throws Exception 
+     */
+    public UserSonarthDTO getUserSonarhById(int idUsuarioSonarh) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_selectSonarhById ?");
+        Object[] params = {
+            idUsuarioSonarh
+        };
+        ResultSetHandler rsh = new BeanHandler(UserSonarthDTO.class);
+        UserSonarthDTO datosUsuario = (UserSonarthDTO) qr.query(sql.toString(), rsh, params);
+
+        return datosUsuario;
+    }
+    /**
      * Metodo que realiza la validacion del password del usuario
      * @param contraseniaAnterior
      * @param idUsuario
