@@ -200,4 +200,19 @@ public class UsersDAO {
         
         qr.update(sql.toString(), params);
     }
+    
+    public ResultInteger validaExistUsers(int idUserSonarh) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetValidaUsuario ?");
+        Object[] params = {
+            idUserSonarh
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
 }
