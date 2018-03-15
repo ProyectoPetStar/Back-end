@@ -215,4 +215,18 @@ public class UsersDAO {
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
     }
+    public ResultInteger validaExistUsersETAD(int idUser) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetValidaUsuarioEtad ?");
+        Object[] params = {
+            idUser
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
 }
