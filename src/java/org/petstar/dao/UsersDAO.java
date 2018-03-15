@@ -201,6 +201,12 @@ public class UsersDAO {
         qr.update(sql.toString(), params);
     }
     
+    /**
+     * metodo que valida que el usuario Sonarh no este registrado en ETAD
+     * @param idUserSonarh
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaExistUsers(int idUserSonarh) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -215,6 +221,13 @@ public class UsersDAO {
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
     }
+    
+    /**
+     * metodo que valida que el usuario ETAD
+     * @param idUser
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaExistUsersETAD(int idUser) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
