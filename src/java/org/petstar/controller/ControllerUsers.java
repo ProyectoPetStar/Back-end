@@ -104,12 +104,18 @@ public class ControllerUsers {
         try{
             if(autenticacion.isValidToken(request)){
                 UsersDAO userDAO = new UsersDAO();
-                UserETADResponseJson userData = new UserETADResponseJson();
-                userData.setUserDTO(userDAO.getPerfilUserSonarh(idUsuario));
-                
-                output.setData(userData);
-                response.setSucessfull(true);
-                response.setMessage("OK");
+                ResultInteger result = userDAO.validaExistUsersETAD(idUsuario);
+                if(result.getResult().equals(1)){
+                    UserETADResponseJson userData = new UserETADResponseJson();
+                    userData.setUserDTO(userDAO.getPerfilUserSonarh(idUsuario));
+
+                    output.setData(userData);
+                    response.setSucessfull(true);
+                    response.setMessage("OK");
+                }else{
+                    response.setSucessfull(true);
+                    response.setMessage("El usuario no se ha registrado.");
+                }
             }else{
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");

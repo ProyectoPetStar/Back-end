@@ -201,6 +201,12 @@ public class UsersDAO {
         qr.update(sql.toString(), params);
     }
     
+    /**
+     * metodo que valida que el usuario Sonarh no este registrado en ETAD
+     * @param idUserSonarh
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaExistUsers(int idUserSonarh) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -209,6 +215,27 @@ public class UsersDAO {
         sql.append("EXEC sp_insertPetValidaUsuario ?");
         Object[] params = {
             idUserSonarh
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    /**
+     * metodo que valida que el usuario ETAD
+     * @param idUser
+     * @return
+     * @throws Exception 
+     */
+    public ResultInteger validaExistUsersETAD(int idUser) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetValidaUsuarioEtad ?");
+        Object[] params = {
+            idUser
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
