@@ -114,7 +114,7 @@ public class ControllerMetas {
         try{
             if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
-                ResultInteger result = metasDAO.validaDataForInsertCarga(idLinea, meta, tipoMedida);
+                ResultInteger result = metasDAO.validaDataForInsertCarga(idLinea, meta);
                 if(result.getResult().equals(0)){
                     metasDAO.insertMetaCarga(idLinea, meta, tipoMedida);
                 
@@ -156,7 +156,7 @@ public class ControllerMetas {
         try{
             if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
-                ResultInteger result = metasDAO.validaDataForUpdateCarga(idMeta, idLinea, meta, tipoMedida, posicion, activo);
+                ResultInteger result = metasDAO.validaDataForUpdateCarga(idMeta, idLinea, meta);
                 if(result.getResult().equals(0)){
                     metasDAO.updateMetaCarga(idMeta, idLinea, meta, tipoMedida, posicion, activo);
                 
@@ -166,37 +166,6 @@ public class ControllerMetas {
                     response.setMessage(MSG_INVALID);
                     response.setSucessfull(false);
                 }
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
-        }catch (Exception ex){
-            response.setSucessfull(false);
-            response.setMessage(MSG_ERROR + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
-    
-    /**
-     * Metodo para eliminar una meta
-     * @param request
-     * @return 
-     */
-    public OutputJson deleteMetaCarga(HttpServletRequest request){
-        int idMeta = Integer.parseInt(request.getParameter("idMeta"));
-        
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(controllerAutenticacion.isValidToken(request)){
-                MetasDAO metasDAO = new MetasDAO();
-                metasDAO.deleteMetaCarga(idMeta);
-                
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -231,6 +200,35 @@ public class ControllerMetas {
                 data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
                 
                 output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    /**
+     * Metodo para asignar valores a meta
+     * @param request
+     * @return 
+     */
+    public OutputJson asignaValorMeta(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(controllerAutenticacion.isValidToken(request)){
+                MetasDAO metasDAO = new MetasDAO();
+                
+                metasDAO.asignaValorMeta();
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
             }else{
