@@ -13,11 +13,11 @@ public class MetasDTO {
     
     private int id_meta;
     private int id_linea;
-    private String descripcion_linea;
+    private String linea;
     private String meta;
     private String tipo_medida;
     private int posicion;
-    private int activo;
+    private int borrar;
 
     public int getId_meta() {
         return id_meta;
@@ -35,12 +35,12 @@ public class MetasDTO {
         this.id_linea = id_linea;
     }
 
-    public String getDescripcion_linea() {
-        return descripcion_linea;
+    public String getLinea() {
+        return linea;
     }
 
-    public void setDescripcion_linea(String descripcion_linea) {
-        this.descripcion_linea = descripcion_linea;
+    public void setLinea(String linea) {
+        this.linea = linea;
     }
 
     public String getMeta() {
@@ -67,12 +67,11 @@ public class MetasDTO {
         this.posicion = posicion;
     }
 
-    public int getActivo() {
-        return activo;
+    public int getBorrar() {
+        return borrar;
     }
 
-    public void setActivo(int activo) {
-        this.activo = activo;
+    public void setBorrar(int borrar) {
+        this.borrar = borrar;
     }
-    
 }
