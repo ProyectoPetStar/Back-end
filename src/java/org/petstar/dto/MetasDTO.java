@@ -17,7 +17,7 @@ public class MetasDTO {
     private String meta;
     private String tipo_medida;
     private int posicion;
-    private int borrar;
+    private int activo;
 
     public int getId_meta() {
         return id_meta;
@@ -67,11 +67,11 @@ public class MetasDTO {
         this.posicion = posicion;
     }
 
-    public int getBorrar() {
-        return borrar;
+    public int getActivo() {
+        return activo;
     }
 
-    public void setBorrar(int borrar) {
-        this.borrar = borrar;
+    public void setActivo(int activo) {
+        this.activo = activo;
     }
 }
