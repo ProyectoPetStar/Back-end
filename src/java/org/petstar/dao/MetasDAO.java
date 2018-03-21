@@ -5,6 +5,8 @@
  */
 package org.petstar.dao;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -124,17 +126,22 @@ public class MetasDAO {
     }
     
     /**
-     * Metodo para hacer la asignación de valores a meta
+     * Metodo para hacer la asignación de metas
+     * @param idGrupo
+     * @param idTurno
+     * @param idMeta
+     * @param diaMeta
+     * @param valorMeta
      * @throws Exception 
      */
-    public void asignaValorMeta() throws Exception{
+    public void registraAsignacion(int idGrupo, int idTurno, int idMeta, String diaMeta, BigDecimal valorMeta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_insertPetProMetas ?, ?, ?, ?, ?");
         Object[] params = {
-            
+            idGrupo, idTurno, idMeta, diaMeta, valorMeta
         };
         
         qr.update(sql.toString(), params);
@@ -183,7 +190,7 @@ public class MetasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_validaIdPetProMetas ?");
         Object[] params = {
             idAsignacion
         };

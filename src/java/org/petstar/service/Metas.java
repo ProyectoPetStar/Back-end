@@ -63,10 +63,13 @@ public class Metas extends HttpServlet {
                     output = controllerMetas.loadCombosCatalogs(request);
                     break;
                 case "asignaValorMeta":
-                    output = controllerMetas.asignaValorMeta(request);
+                    output = controllerMetas.registraAsignacionMeta(request);
                     break;
                 case "getAllAsignacionesByYear":
                     output = controllerMetas.getAllAsignacionesByYear(request);
+                    break;
+                case "getAsignacionById":
+                    output = controllerMetas.getAsignacionById(request);
                     break;
             }
         } catch (Exception ex) {
