@@ -5,15 +5,13 @@
  */
 package org.petstar.dto;
 
-import java.sql.Date;
-
 /**
  *
  * @author Tech-Pro
  */
 public class MetasAsignacionDTO {
     private int id_pro_meta;
-    private Date dia;
+    private String dia;
     private String linea;
     private int id_meta;
     private String meta;
@@ -32,11 +30,11 @@ public class MetasAsignacionDTO {
         this.id_pro_meta = id_pro_meta;
     }
 
-    public Date getDia() {
+    public String getDia() {
         return dia;
     }
 
-    public void setDia(Date dia) {
+    public void setDia(String dia) {
         this.dia = dia;
     }
 
