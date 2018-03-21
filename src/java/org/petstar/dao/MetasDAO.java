@@ -25,7 +25,7 @@ public class MetasDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectPetCatMetas");
+        sql.append("EXEC sp_selectPetCarMetas");
         
         ResultSetHandler rsh = new BeanListHandler(MetasDTO.class);
         List<MetasDTO> dataMetas = (List<MetasDTO>) qr.query(sql.toString(), rsh); 
@@ -38,9 +38,9 @@ public class MetasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_selectPetCarMetasById ?");
         Object[] params ={
-            
+            idMeta
         };
         ResultSetHandler rsh = new BeanHandler(MetasDTO.class);
         MetasDTO dataMetas = (MetasDTO) qr.query(sql.toString(), rsh, params); 
@@ -53,7 +53,7 @@ public class MetasDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_insertPetCatMetas ?, ?, ?");
+        sql.append("EXEC sp_insertPetCarMetas ?, ?, ?");
         Object[] params = {
             idLinea, meta, tipoMedida
         };
@@ -66,35 +66,22 @@ public class MetasDAO {
         
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("");
+        sql.append("EXEC sp_updatePetCarMetas ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            
+            idMeta, idLinea, meta, tipoMedida, posicion, activo
         };
         
         qr.update(sql.toString(), params);
     }
-    
-    public void deleteMetaCarga(int idmeta) throws Exception{
+       
+    public ResultInteger validaDataForInsertCarga(int idLinea, String meta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_insertValidaDesPetCarMetas ?, ?");
         Object[] params = {
-            
-        };
-        
-        qr.update(sql.toString(), params);
-    }
-    
-    public ResultInteger validaDataForInsertCarga(int idLinea, String meta, String tipoMedida) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = {
-            
+            idLinea, meta
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
@@ -103,14 +90,14 @@ public class MetasDAO {
         return count;
     }
     
-    public ResultInteger validaDataForUpdateCarga(int idMeta, int idLinea, String meta, String tipoMedida, int posicion, int activo) throws Exception{
+    public ResultInteger validaDataForUpdateCarga(int idMeta, int idLinea, String meta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_updateValidaDesPetCarMetas ?, ?, ?");
         Object[] params = {
-            
+            idMeta, idLinea, meta
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
@@ -124,14 +111,31 @@ public class MetasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_validaIdPetCarMetas ?");
         Object[] params = {
-            
+            idMeta
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
 
         return count;
+    }
+    
+    /**
+     * Metodo para hacer la asignación de valores a meta
+     * @throws Exception 
+     */
+    public void asignaValorMeta() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = {
+            
+        };
+        
+        qr.update(sql.toString(), params);
     }
 }

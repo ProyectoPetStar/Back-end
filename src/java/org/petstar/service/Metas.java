@@ -59,11 +59,11 @@ public class Metas extends HttpServlet {
                 case "updateNewMetaCatalog":
                     output = controllerMetas.updateMetaCarga(request);
                     break;
-                case "deleteNewMetaCatalog":
-                    output = controllerMetas.deleteMetaCarga(request);
-                    break;
-                case "asignacionMetas":
+                case "loadComboxData":
                     output = controllerMetas.loadCombosCatalogs(request);
+                    break;
+                case "asignaValorMeta":
+                    output = controllerMetas.asignaValorMeta(request);
                     break;
             }
         } catch (Exception ex) {
