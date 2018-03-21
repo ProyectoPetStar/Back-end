@@ -65,6 +65,9 @@ public class Metas extends HttpServlet {
                 case "asignaValorMeta":
                     output = controllerMetas.asignaValorMeta(request);
                     break;
+                case "getAllAsignacionesByYear":
+                    output = controllerMetas.getAllAsignacionesByYear(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

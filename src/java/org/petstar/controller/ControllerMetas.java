@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.model.MetasAsignacionResponseJson;
 import org.petstar.model.MetasDataResponseJson;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
@@ -236,6 +237,70 @@ public class ControllerMetas {
                 response.setSucessfull(false);
             }
         }catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    /**
+     * Metodo que devuelve las asignaciones del año
+     * @param request
+     * @return 
+     */
+    public OutputJson getAllAsignacionesByYear(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(autenticacion.isValidToken(request)){
+                MetasDAO metasDAO = new MetasDAO();
+                MetasAsignacionResponseJson marj = new MetasAsignacionResponseJson();
+                        
+                marj.setListMetasAsignacion(metasDAO.getAllAsignacionesByYear());
+                output.setData(marj);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getAsignacionById(HttpServletRequest request){
+        int idAsignacion = Integer.parseInt(request.getParameter("id_pro_metas"));
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(autenticacion.isValidToken(request)){
+                MetasDAO metasDAO = new MetasDAO();
+                ResultInteger result = metasDAO.validaIfExistAsignacion(idAsignacion);
+                if(result.getResult().equals(1)){
+                    MetasAsignacionResponseJson marj = new MetasAsignacionResponseJson();
+                        
+                    marj.setMetasAsignacion(metasDAO.getAsignacionById(idAsignacion));
+                    output.setData(marj);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_INVALID);
+                }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }
