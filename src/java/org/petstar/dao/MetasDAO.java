@@ -12,6 +12,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
+import org.petstar.dto.MetasAsignacionDTO;
 import org.petstar.dto.MetasDTO;
 import org.petstar.dto.ResultInteger;
 
@@ -137,5 +138,58 @@ public class MetasDAO {
         };
         
         qr.update(sql.toString(), params);
+    }
+    
+    /**
+     * MEtoodo que devuelve toda la informacion sobre las metas del año
+     * @return
+     * @throws Exception 
+     */
+    public List<MetasAsignacionDTO> getAllAsignacionesByYear() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetProMetas");
+        
+        ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
+        List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh);
+        return data;
+    }
+    
+    /**
+     * MEtodo que devuelve la asignacion de acuerdo al id
+     * @param idAsignacion
+     * @return
+     * @throws Exception 
+     */
+    public MetasAsignacionDTO getAsignacionById(int idAsignacion) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetProMetasById ?");
+        Object[] params = {
+            idAsignacion
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(MetasAsignacionDTO.class);
+        MetasAsignacionDTO data = (MetasAsignacionDTO) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    public ResultInteger validaIfExistAsignacion(int idAsignacion) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = {
+            idAsignacion
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
     }
 }
