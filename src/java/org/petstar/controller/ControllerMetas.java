@@ -6,9 +6,6 @@
 package org.petstar.controller;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.MetasDAO;
@@ -224,12 +221,11 @@ public class ControllerMetas {
      * @param request
      * @return 
      */
-    public OutputJson registraAsignacionMeta(HttpServletRequest request) throws ParseException{
+    public OutputJson registraAsignacionMeta(HttpServletRequest request){
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
         int idMeta =  Integer.parseInt(request.getParameter("id_meta"));
         String fecha = request.getParameter("dia_meta");
-        float valorMeta = Float.parseFloat(request.getParameter("valor_meta"));
         BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
         
         String[] strings = fecha.split("/");
@@ -237,31 +233,23 @@ public class ControllerMetas {
         String mont = strings[1];
         String day = strings[0];
         String diaMeta =  year + "/" + mont+ "/"+ day;
-        //Date diaMeta = SimpleDateFormat.parse(fecha);
-        //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        //String dateInString = "7-Jun-2013";
-
-        
+                
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
         
         try{
             if(controllerAutenticacion.isValidToken(request)){
-                /*try {
-
-                    Date diaMeta = (Date) formatter.parse(fecha);
-                    System.out.println(diaMeta);
-                    //System.out.println(formatter.format(date));
-                  */   MetasDAO metasDAO = new MetasDAO();
-                
-                metasDAO.registraAsignacion(idGrupo, idTurno, idMeta, diaMeta, valor);
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
-                /*} catch (ParseException e) {
-                    e.printStackTrace();
+                MetasDAO metasDAO = new MetasDAO();
+                ResultInteger result = metasDAO.validaDataForAsignacion(idMeta, idTurno, diaMeta);
+                if(result.getResult().equals(0)){
+                    metasDAO.registraAsignacion(idGrupo, idTurno, idMeta, diaMeta, valor);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage("Ya se ha registrado el turno " + idTurno);
+                    response.setSucessfull(false);
                 }
-               */
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -331,6 +319,37 @@ public class ControllerMetas {
                 response.setMessage(MSG_LOGOUT);
             }
         } catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson deleteAsignacionMeta(HttpServletRequest request){
+        int idAsignacion = Integer.parseInt(request.getParameter("id_pro_meta"));
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(autenticacion.isValidToken(request)){
+                MetasDAO metasDAO = new MetasDAO();
+                
+                ResultInteger result = metasDAO.validaIfExistAsignacion(idAsignacion);
+                if(result.getResult().equals(1)){
+                    metasDAO.deleteAsignacionMeta(idAsignacion);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage(MSG_NO_EXIST);
+                    response.setSucessfull(true);
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }

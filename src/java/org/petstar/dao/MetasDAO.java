@@ -6,7 +6,6 @@
 package org.petstar.dao;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -185,6 +184,12 @@ public class MetasDAO {
         return data;
     }
     
+    /**
+     * Valida que el ID que se envia exista en la DB
+     * @param idAsignacion
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaIfExistAsignacion(int idAsignacion) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -193,6 +198,34 @@ public class MetasDAO {
         sql.append("EXEC sp_validaIdPetProMetas ?");
         Object[] params = {
             idAsignacion
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public void deleteAsignacionMeta(int idAsignacion) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_deletePetProMetas ?");
+        Object[] params = {
+            idAsignacion
+        };
+        
+         qr.update(sql.toString(), params);
+    }
+    
+    public ResultInteger validaDataForAsignacion(int idMeta, int idTurno, String diaMeta)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertValidaPetProMetas ?, ?, ?");
+        Object[] params = {
+            idMeta, idTurno, diaMeta
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);

@@ -71,6 +71,9 @@ public class Metas extends HttpServlet {
                 case "getAsignacionById":
                     output = controllerMetas.getAsignacionById(request);
                     break;
+                case "deleteAsignacionMeta":
+                    output = controllerMetas.deleteAsignacionMeta(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
