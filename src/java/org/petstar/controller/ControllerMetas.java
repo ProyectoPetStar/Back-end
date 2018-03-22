@@ -268,6 +268,7 @@ public class ControllerMetas {
      * @return 
      */
     public OutputJson getAllAsignacionesByYear(HttpServletRequest request){
+        int year = Integer.parseInt(request.getParameter("year"));
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -277,7 +278,7 @@ public class ControllerMetas {
                 MetasDAO metasDAO = new MetasDAO();
                 MetasAsignacionResponseJson marj = new MetasAsignacionResponseJson();
                         
-                marj.setListMetasAsignacion(metasDAO.getAllAsignacionesByYear());
+                marj.setListMetasAsignacion(metasDAO.getAllAsignacionesByYear(year));
                 output.setData(marj);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
