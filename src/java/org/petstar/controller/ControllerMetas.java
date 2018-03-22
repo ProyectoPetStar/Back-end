@@ -356,4 +356,41 @@ public class ControllerMetas {
         output.setResponse(response);
         return output;
     }
+    
+    public OutputJson updateAsignacionMeta(HttpServletRequest request){
+        int idAsignacion = Integer.parseInt(request.getParameter("id_pro_meta"));
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        int idMeta =  Integer.parseInt(request.getParameter("id_meta"));
+        int borrar = Integer.parseInt(request.getParameter("borrar"));
+        String fecha = request.getParameter("dia_meta");
+        BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
+        
+        String[] strings = fecha.split("/");
+        String year = strings[2];
+        String mont = strings[1];
+        String day = strings[0];
+        String diaMeta =  year + "/" + mont+ "/"+ day;
+                
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(controllerAutenticacion.isValidToken(request)){
+                MetasDAO metasDAO = new MetasDAO();
+                    metasDAO.updateAsignacionMeta(idAsignacion, idTurno, idGrupo, idMeta, diaMeta, valor, borrar);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
 }
