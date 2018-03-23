@@ -229,9 +229,9 @@ public class ControllerMetas {
         BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
         
         String[] strings = fecha.split("/");
-        String year = strings[2];
+        String year = strings[0];
         String mont = strings[1];
-        String day = strings[0];
+        String day = strings[2];
         String diaMeta =  year + "/" + mont+ "/"+ day;
                 
         ResponseJson response = new ResponseJson();
@@ -359,7 +359,7 @@ public class ControllerMetas {
     }
     
     public OutputJson updateAsignacionMeta(HttpServletRequest request){
-        int idAsignacion = Integer.parseInt(request.getParameter("id_pro_meta"));
+        int idAsignacion = Integer.parseInt(request.getParameter("id_pro_metas"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
         int idMeta =  Integer.parseInt(request.getParameter("id_meta"));
@@ -368,9 +368,9 @@ public class ControllerMetas {
         BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
         
         String[] strings = fecha.split("/");
-        String year = strings[2];
+        String year = strings[0];
         String mont = strings[1];
-        String day = strings[0];
+        String day = strings[2];
         String diaMeta =  year + "/" + mont+ "/"+ day;
                 
         ResponseJson response = new ResponseJson();
