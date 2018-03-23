@@ -229,9 +229,9 @@ public class ControllerMetas {
         BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
         
         String[] strings = fecha.split("/");
-        String year = strings[2];
+        String year = strings[0];
         String mont = strings[1];
-        String day = strings[0];
+        String day = strings[2];
         String diaMeta =  year + "/" + mont+ "/"+ day;
                 
         ResponseJson response = new ResponseJson();
@@ -268,6 +268,7 @@ public class ControllerMetas {
      * @return 
      */
     public OutputJson getAllAsignacionesByYear(HttpServletRequest request){
+        int year = Integer.parseInt(request.getParameter("year"));
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -277,7 +278,7 @@ public class ControllerMetas {
                 MetasDAO metasDAO = new MetasDAO();
                 MetasAsignacionResponseJson marj = new MetasAsignacionResponseJson();
                         
-                marj.setListMetasAsignacion(metasDAO.getAllAsignacionesByYear());
+                marj.setListMetasAsignacion(metasDAO.getAllAsignacionesByYear(year));
                 output.setData(marj);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
@@ -358,7 +359,7 @@ public class ControllerMetas {
     }
     
     public OutputJson updateAsignacionMeta(HttpServletRequest request){
-        int idAsignacion = Integer.parseInt(request.getParameter("id_pro_meta"));
+        int idAsignacion = Integer.parseInt(request.getParameter("id_pro_metas"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
         int idMeta =  Integer.parseInt(request.getParameter("id_meta"));
@@ -367,9 +368,9 @@ public class ControllerMetas {
         BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
         
         String[] strings = fecha.split("/");
-        String year = strings[2];
+        String year = strings[0];
         String mont = strings[1];
-        String day = strings[0];
+        String day = strings[2];
         String diaMeta =  year + "/" + mont+ "/"+ day;
                 
         ResponseJson response = new ResponseJson();

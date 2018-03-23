@@ -151,12 +151,15 @@ public class MetasDAO {
      * @return
      * @throws Exception 
      */
-    public List<MetasAsignacionDTO> getAllAsignacionesByYear() throws Exception{
+    public List<MetasAsignacionDTO> getAllAsignacionesByYear(int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("EXEC sp_selectPetProMetas");
+        Object[] params = {
+            year
+        };
         
         ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
         List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh);
@@ -240,7 +243,7 @@ public class MetasDAO {
         
         sql.append("EXEC sp_updatePetProMetas ?, ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            idAsignacion, idTurno, idGrupo, idMeta, valorMeta, borrar
+            idAsignacion, idTurno, idGrupo, idMeta, diaMeta, valorMeta, borrar
         };
         
          qr.update(sql.toString(), params);
