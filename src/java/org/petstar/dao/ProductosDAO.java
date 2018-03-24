@@ -31,7 +31,7 @@ public class ProductosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_selectPetCarProductos");
         
         ResultSetHandler rsh = new BeanListHandler(ProductosDTO.class);
         List<ProductosDTO> data = (List<ProductosDTO>) qr.query(sql.toString(), rsh);
@@ -50,7 +50,7 @@ public class ProductosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_selectPetCarProductosById ?");
         Object[] params = {
             idProducto
         };
@@ -63,16 +63,19 @@ public class ProductosDAO {
     
     /**
      * Metodo para registrar un nuevo producto
+     * @param idLinea
+     * @param producto
+     * @param medida
      * @throws Exception 
      */
-    public void insertNewCarProducto() throws Exception{
+    public void insertNewCarProducto(int idLinea, String producto, String medida) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_insertPetCarProductos ?, ?, ?");
         Object[] params = {
-            
+            idLinea, producto, medida
         };
         
         qr.update(sql.toString(), params);
@@ -80,52 +83,42 @@ public class ProductosDAO {
     
     /**
      * Metodo para modificar un producto
-     * @throws Exception 
-     */
-    public void updateCarProducto() throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = {
-            
-        };
-        
-        qr.update(sql.toString(), params);
-    }
-    
-    /**
-     * Metodo para eliminar un metodo
      * @param idProducto
+     * @param idLinea
+     * @param producto
+     * @param medida
+     * @param posicion
+     * @param activo
      * @throws Exception 
      */
-    public void deleteCarProducto(int idProducto) throws Exception{
+    public void updateCarProducto(int idProducto, int idLinea, String producto, String medida, int posicion, int activo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_updatePetCarProductos ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            idProducto
+            idProducto, idLinea, producto, medida, posicion, activo
         };
         
         qr.update(sql.toString(), params);
     }
-    
+       
     /**
      * Metodo que valida los datos para registrar un producto nuevo
+     * @param idLinea
+     * @param producto
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaForInsertCarProducto() throws Exception{
+    public ResultInteger validaForInsertCarProducto(int idLinea, String producto) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_insertValidaDesPetCarProductos ?, ?");
         Object[] params = {
-            
+            idLinea, producto
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
@@ -136,17 +129,20 @@ public class ProductosDAO {
     
     /**
      * Metodo que valida los datos para modificar un producto
+     * @param idProducto
+     * @param idLinea
+     * @param Producto
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaForUpdateCarProducto() throws Exception{
+    public ResultInteger validaForUpdateCarProducto(int idProducto, int idLinea, String Producto) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_updateValidaDesPetCarProductos ?, ?, ?");
         Object[] params = {
-            
+            idProducto, idLinea, Producto
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
@@ -166,7 +162,7 @@ public class ProductosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC  sp_validaIdPetCarProductos ?");
         Object[] params = {
             idProducto
         };

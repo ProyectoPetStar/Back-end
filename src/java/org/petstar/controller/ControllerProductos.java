@@ -168,6 +168,10 @@ public class ControllerProductos {
      * @return 
      */
     public OutputJson insertNewCarProductos(HttpServletRequest request){
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+        String medida = request.getParameter("tipo_medida");
+        String producto = request.getParameter("producto");
+        
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -175,9 +179,9 @@ public class ControllerProductos {
         try{
             if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
-                ResultInteger result = productosDAO.validaForInsertCarProducto();
+                ResultInteger result = productosDAO.validaForInsertCarProducto(idLinea, producto);
                 if(result.getResult().equals(0)){
-                    productosDAO.insertNewCarProducto();
+                    productosDAO.insertNewCarProducto(idLinea, producto, medida);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }else{
@@ -202,6 +206,12 @@ public class ControllerProductos {
      * @return 
      */
     public OutputJson updateCarProductos(HttpServletRequest request){
+        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+        String producto = request.getParameter("producto");
+        String medida = request.getParameter("tipo_medida");
+        int posicion = Integer.parseInt(request.getParameter("posicion"));
+        int activo = Integer.parseInt(request.getParameter("activo"));
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -209,9 +219,9 @@ public class ControllerProductos {
         try{
             if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
-                ResultInteger result = productosDAO.validaForUpdateCarProducto();
+                ResultInteger result = productosDAO.validaForUpdateCarProducto(idProducto, idLinea, producto);
                 if(result.getResult().equals(0)){
-                    productosDAO.updateCarProducto();
+                    productosDAO.updateCarProducto(idProducto, idLinea, producto, medida, posicion, activo);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }else{
@@ -229,42 +239,7 @@ public class ControllerProductos {
         output.setResponse(response);
         return output;
     }
-    
-    /**
-     * Metodo que permite la eliminacion de un producto
-     * @param request
-     * @return 
-     */
-    public OutputJson deleteCarProductos(HttpServletRequest request){
-        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                ResultInteger result = productosDAO.validaIfExistCarProducto(idProducto);
-                if(result.getResult().equals(1)){
-                    productosDAO.deleteCarProducto(idProducto);
-                    response.setSucessfull(true);
-                    response.setMessage(MSG_SUCESS);
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage(MSG_NO_EXIST);
-                }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
-        } catch(Exception ex){
-            response.setSucessfull(false);
-            response.setMessage(MSG_ERROR + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
-    
     /**
      * Metodo que permite la validacion para que entren los usuarios a capturar
      * @param idGrupo

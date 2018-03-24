@@ -60,9 +60,6 @@ public class Productos extends HttpServlet {
                 case "updateCarProductos":
                     output = controller.updateCarProductos(request);
                     break;
-                case "deleteCarProductos":
-                    output = controller.deleteCarProductos(request);
-                    break;
             }
         } catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();
