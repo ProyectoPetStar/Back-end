@@ -1,0 +1,76 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.petstar.dto;
+
+/**
+ *
+ * @author Tech-Pro
+ */
+public class ProductosDTO {
+    private int id_producto;
+    private int id_linea;
+    private String linea;
+    private String producto;
+    private String tipo_medida;
+    private int posicion;
+    private int activo;
+
+    public int getId_producto() {
+        return id_producto;
+    }
+
+    public void setId_producto(int id_producto) {
+        this.id_producto = id_producto;
+    }
+
+    public int getId_linea() {
+        return id_linea;
+    }
+
+    public void setId_linea(int id_linea) {
+        this.id_linea = id_linea;
+    }
+
+    public String getLinea() {
+        return linea;
+    }
+
+    public void setLinea(String linea) {
+        this.linea = linea;
+    }
+
+    public String getProducto() {
+        return producto;
+    }
+
+    public void setProducto(String producto) {
+        this.producto = producto;
+    }
+
+    public String getTipo_medida() {
+        return tipo_medida;
+    }
+
+    public void setTipo_medida(String tipo_medida) {
+        this.tipo_medida = tipo_medida;
+    }
+
+    public int getPosicion() {
+        return posicion;
+    }
+
+    public void setPosicion(int posicion) {
+        this.posicion = posicion;
+    }
+
+    public int getActivo() {
+        return activo;
+    }
+
+    public void setActivo(int activo) {
+        this.activo = activo;
+    }
+}
