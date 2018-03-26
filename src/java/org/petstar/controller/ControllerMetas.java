@@ -229,9 +229,9 @@ public class ControllerMetas {
         BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
         
         String[] strings = fecha.split("/");
-        String year = strings[0];
+        String year = strings[2];
         String mont = strings[1];
-        String day = strings[2];
+        String day = strings[0];
         String diaMeta =  year + "/" + mont+ "/"+ day;
                 
         ResponseJson response = new ResponseJson();
@@ -368,9 +368,9 @@ public class ControllerMetas {
         BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(request.getParameter("valor_meta")));
         
         String[] strings = fecha.split("/");
-        String year = strings[0];
+        String year = strings[2];
         String mont = strings[1];
-        String day = strings[2];
+        String day = strings[0];
         String diaMeta =  year + "/" + mont+ "/"+ day;
                 
         ResponseJson response = new ResponseJson();
