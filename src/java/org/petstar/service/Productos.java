@@ -60,6 +60,14 @@ public class Productos extends HttpServlet {
                 case "updateCarProductos":
                     output = controller.updateCarProductos(request);
                     break;
+                case "getAllAsignacionMetasByDays":
+                    output = controller.getAllAsignacionesMetasByDays(request);
+                    break;
+                case "registraAsignacionByProducto":
+                    output = controller.registraAsignacionByProducto(request);
+                    break;
+                case "getAllAsignacionesByDay":
+                    output = controller.getAllAsignacionesByDays(request);
             }
         } catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();
