@@ -14,12 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.ProductosDAO;
-import org.petstar.dto.MetasAsignacionDTO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ProductosAsignacionesResponseJson;
 import org.petstar.model.ProductosDataResponseJson;
 import org.petstar.model.ResponseJson;
+import static org.petstar.configurations.utils.getDateCorrect;
+import static org.petstar.configurations.utils.isBetween;
 
 /**
  *
@@ -310,6 +311,9 @@ public class ControllerProductos {
         String fechaInicio = request.getParameter("fecha_inicio");
         String fechaFin = request.getParameter("fecha_fin");
         
+        fechaInicio = getDateCorrect(fechaInicio);
+        fechaFin = getDateCorrect(fechaFin);
+        
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
@@ -368,7 +372,8 @@ public class ControllerProductos {
         String fechaInicio = request.getParameter("fecha_inicio");
         String fechaFin = request.getParameter("fecha_fin");
         
-        
+        fechaInicio = getDateCorrect(fechaInicio);
+        fechaFin = getDateCorrect(fechaFin);
 
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -455,17 +460,5 @@ public class ControllerProductos {
                
         return turno;
     }
-    
-    /**
-     * Metodo para realizar comparaciones
-     * @param x
-     * @param lower
-     * @param upper
-     * @return 
-     */
-    public static boolean isBetween(int x, int lower, int upper) {
-        return lower <= x && x <= upper;
-    }
-    
     
 }
