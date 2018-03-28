@@ -30,7 +30,7 @@ public class ControllerLogin {
         try {
             UserDTO datos_usuario = dao.Login(usuario_acceso, clave_acceso, id_sistemas);
             if (datos_usuario != null  && datos_usuario.getUsuario_acceso() != null) {
-                String token = auth.createJWT(datos_usuario.getId_usuario(), datos_usuario.getUsuario_acceso(), datos_usuario.getPerfil());
+                String token = auth.createJWT(datos_usuario);
                 datos_usuario.setToken(token);
                 response.setSucessfull(true);
                 response.setUsuario(datos_usuario);

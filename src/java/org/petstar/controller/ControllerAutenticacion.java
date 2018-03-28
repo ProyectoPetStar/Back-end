@@ -14,6 +14,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.configurations.Configuration;
 import org.petstar.dao.AutenticacionDAO;
+import org.petstar.dto.UserDTO;
 
 
 /**
@@ -22,23 +23,25 @@ import org.petstar.dao.AutenticacionDAO;
  */
 public class ControllerAutenticacion {
 
-    public String createJWT(int id_usuario, String username, String rol) throws UnsupportedEncodingException, Exception {
+    public String createJWT(UserDTO usuario) throws UnsupportedEncodingException, Exception {
         Key key = MacProvider.generateKey();
         byte[] keyBytes = key.getEncoded();
         String key_base64 = TextCodec.BASE64.encode(keyBytes);
         AutenticacionDAO dao = new AutenticacionDAO();
 
         String jwt = Jwts.builder()
-                .setSubject(String.valueOf(id_usuario))
+                .setSubject(String.valueOf(usuario.getId_usuario()))
                 .setExpiration(new Date(System.currentTimeMillis() + 600000000))
-                .claim("usuario_acceso", username)
-                .claim("perfil", rol)
+                .claim("usuario_acceso", usuario.getUsuario_acceso())
+                .claim("perfil", usuario.getPerfil())
+                .claim("id_perfil", usuario.getId_perfil())
+                .claim("id_grupo",usuario.getId_grupo())
                 .signWith(
                         SignatureAlgorithm.HS256,
                         key_base64
                 )
                 .compact();
-        dao.updateToken_Key(id_usuario, key_base64);
+        dao.updateToken_Key(usuario.getId_usuario(), key_base64);
         return jwt;
     }
 
