@@ -5,11 +5,29 @@
  */
 package org.petstar.configurations;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author Tech-Pro
  */
 public class utils {
+    
+    public static String getCurrentDayByTurno(int turno){
+        String validDay;
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        
+        if(turno == 3) {
+            validDay = dateFormat.format(date.getTime()-86400000);
+        }else{
+            validDay = dateFormat.format(date);
+        }
+        
+        return validDay;
+    }
     
     public static String getDateCorrect(String fecha){
         String[] cadena = fecha.split("/");

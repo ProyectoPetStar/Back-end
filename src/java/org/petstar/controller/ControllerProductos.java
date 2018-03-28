@@ -7,7 +7,6 @@ package org.petstar.controller;
 
 import io.jsonwebtoken.lang.Strings;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +20,7 @@ import org.petstar.model.ProductosDataResponseJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.getDateCorrect;
 import static org.petstar.configurations.utils.isBetween;
+import static org.petstar.configurations.utils.getCurrentDayByTurno;
 
 /**
  *
@@ -42,6 +42,7 @@ public class ControllerProductos {
      */
     public OutputJson loadCombobox(HttpServletRequest request){
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         int perfil = Integer.parseInt(request.getParameter("perfil"));
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -50,7 +51,7 @@ public class ControllerProductos {
         try{
             if(autenticacion.isValidToken(request)){
                 if(perfil == 5){
-                    if(getCurrentGrupoValido(idGrupo)){
+                    if(getCurrentGrupoValido(idGrupo,idLinea)){
                         ProductosDAO productosDAO = new ProductosDAO();
                         CatalogosDAO catalogosDAO = new CatalogosDAO();
                         LineasDAO lineasDAO = new LineasDAO();
@@ -254,6 +255,7 @@ public class ControllerProductos {
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idProducto = Integer.parseInt(request.getParameter("id_producto"));
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        int idLinea =Integer.parseInt(request.getParameter("id_linea"));
         String dia = request.getParameter("dia_producto");
         Float valor = Float.parseFloat(request.getParameter("valor"));
                 
@@ -265,15 +267,12 @@ public class ControllerProductos {
             if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
                 if(idTurno == 0){
-                    Date date = new Date();
-                    DateFormat hourFormat = new SimpleDateFormat("HH:mm");
-                    String hora = hourFormat.format(date);
-                    idTurno = getTurno(hora);
+                    idTurno = getTurno();
                 }
                 ResultInteger result = productosDAO.validaForRegistrarAsignacion(idProducto, idTurno, dia);
                 if(result.getResult().equals(0)){
                     if(perfil == 5){
-                        if(getCurrentGrupoValido(idGrupo)){
+                        if(getCurrentGrupoValido(idGrupo, idLinea)){
                             productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
                             response.setSucessfull(true);
                             response.setMessage(MSG_SUCESS);
@@ -368,10 +367,14 @@ public class ControllerProductos {
         return output;
     }
     
-    public OutputJson getAllAsignacionesMetasByDays(HttpServletRequest request) throws ParseException{
+    public OutputJson getAllAsignacionesMetasByDays(HttpServletRequest request){
+        int perfil = Integer.parseInt(request.getParameter("perfil"));
         String fechaInicio = request.getParameter("fecha_inicio");
         String fechaFin = request.getParameter("fecha_fin");
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         
+        int turno = getTurno();
         fechaInicio = getDateCorrect(fechaInicio);
         fechaFin = getDateCorrect(fechaFin);
 
@@ -384,7 +387,51 @@ public class ControllerProductos {
                 ProductosDAO productosDAO = new ProductosDAO();
                 ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
                 
-                parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(fechaInicio, fechaFin));
+                switch(perfil){
+                    case 3:
+                        parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(fechaInicio, fechaFin));
+                        break;
+                    case 4:
+                        parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(idGrupo, turno, idLinea));
+                        break;
+                    case 5:
+                        parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(idGrupo, turno, idLinea, fechaFin)); 
+                        break;
+                }
+                
+                output.setData(parj);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        } catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        output.setResponse(response);
+        return  output;
+    }
+    
+    public OutputJson getAllProductosForAsignacion(HttpServletRequest request){
+        String dia = request.getParameter("dia");
+        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+                
+        dia = getDateCorrect(dia);
+        
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            if(autenticacion.isValidToken(request)){
+                ProductosDAO productosDAO = new ProductosDAO();
+                ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
+                
+                parj.setListProductosAsignacion(productosDAO.getAllProductosByDayAndLineaAndGrupo(idLinea, idTurno, idGrupo, dia));
                 output.setData(parj);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
@@ -406,30 +453,17 @@ public class ControllerProductos {
      * @return
      * @throws Exception 
      */
-    public boolean getCurrentGrupoValido(int idGrupo) throws Exception{
+    public boolean getCurrentGrupoValido(int idGrupo, int idLinea) throws Exception{
         boolean valid;
-        String diaMeta;
-        Date date = new Date();
         
-        DateFormat hourFormat = new SimpleDateFormat("HH:mm");
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String hora = hourFormat.format(date);
-
-        int turno = getTurno(hora);
+        int turno = getTurno();
         if(turno != 0){
-            if(turno == 3) {
-                diaMeta = dateFormat.format(date.getTime()-86400000);
-            }else{
-                diaMeta = dateFormat.format(date);
-            }
+            String diaMeta = getCurrentDayByTurno(turno);
             
             ProductosDAO productosDAO = new ProductosDAO();
-            ResultInteger result = productosDAO.validaGrupoTurno(idGrupo, turno, diaMeta);
-            if(result.getResult().equals(1)){
-                valid = true;
-            }else{
-                valid = false;
-            }
+            ResultInteger result = productosDAO.validaGrupoTurno(idGrupo, turno,idLinea, diaMeta);
+            
+            valid = (result.getResult().equals(1))?true:false;
         }else{
             valid = false;
         }
@@ -442,7 +476,12 @@ public class ControllerProductos {
      * @param hora
      * @return 
      */
-    public int getTurno(String hora){
+    public int getTurno(){
+        
+        Date date = new Date();
+        DateFormat hourFormat = new SimpleDateFormat("HH:mm");
+        String hora = hourFormat.format(date);
+        
         int turno;
         String[] horas = Strings.split(hora, ":");
         int hh = Integer.parseInt(horas[0]);

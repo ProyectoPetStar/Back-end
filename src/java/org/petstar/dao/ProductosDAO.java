@@ -183,7 +183,7 @@ public class ProductosDAO {
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaGrupoTurno(int idGrupo, int turno, String DiaMeta)throws Exception{
+    public ResultInteger validaGrupoTurno(int idGrupo, int turno, int idLinea, String DiaMeta)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -283,6 +283,13 @@ public class ProductosDAO {
         qr.update(sql.toString(), paramas);
     }
     
+    /**
+     * Metodo que devuelve las asignaciones de un rango de fecha, perfil 3(gerente)
+     * @param diaInicio
+     * @param DiaFin
+     * @return
+     * @throws Exception 
+     */
     public List<MetasAsignacionDTO> getAllAsignacionesMetasByDays(String diaInicio, String DiaFin) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -295,6 +302,68 @@ public class ProductosDAO {
         
         ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
         List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    /**
+     * Metodo que devuelve las asignaciones de un rango de fecha, perfil 4(Facilitador)
+     * @param idGrupo
+     * @param idTurno
+     * @param idLinea
+     * @return
+     * @throws Exception 
+     */
+    public List<MetasAsignacionDTO> getAllAsignacionesMetasByDays(int idGrupo, int idTurno, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = {
+            
+        };
+        
+        ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
+        List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    /**
+     * Metodo que devuelve las asignaciones de un rango de fecha, perfil 5(Integrador)
+     * @param idGrupo
+     * @param idTurno
+     * @param idLinea
+     * @param fecha
+     * @return
+     * @throws Exception 
+     */
+     public List<MetasAsignacionDTO> getAllAsignacionesMetasByDays(int idGrupo, int idTurno, int idLinea, String fecha) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = {
+            
+        };
+        
+        ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
+        List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+        
+    public List<ProductosAsignacionDTO> getAllProductosByDayAndLineaAndGrupo(int idLinea, int idTurno, int idGrupo, String dia) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = {
+            
+        };
+        
+        ResultSetHandler rsh = new BeanListHandler(ProductosAsignacionDTO.class);
+        List<ProductosAsignacionDTO> data = (List<ProductosAsignacionDTO>) qr.query(sql.toString(), rsh, params);
         return data;
     }
 }
