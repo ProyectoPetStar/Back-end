@@ -37,7 +37,7 @@ public class ControllerLineas {
             if(sesion != null){
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 LineasDataResponseJson data = new LineasDataResponseJson();
-                data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
+                data.setListEtads(catalogosDAO.getCatalogosActiveConArea("pet_cat_etad"));
                 data.setListGposLinea(catalogosDAO.getCatalogosActive("pet_cat_gpo_linea"));
 
                 out.setData(data);

@@ -326,4 +326,14 @@ public class utils {
         }
         return valor;
     }
+    
+    public static int getNumeroMenor(int[] numeros) {
+        int numeroMenor = numeros[0];
+        for (int i = 0; i < numeros.length; i++) {
+            if (numeros[i] < numeroMenor) {
+                numeroMenor = numeros[i];
+            }
+        }
+        return numeroMenor;
+    }
 }

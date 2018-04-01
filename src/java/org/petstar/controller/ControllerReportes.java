@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.petstar.configurations.ReportesOEE;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.RazonParoDAO;
@@ -409,149 +410,22 @@ public class ControllerReportes {
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
-                ReportesDAO reportesDAO = new ReportesDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 
                 List<LineasDTO> listLineas = lineasDAO.getLineasByGpoLinea(idGpoLinea);
                 PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo,listLineas.get(0).getId_linea());
                 if(periodo != null){
-                    
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    List<HashMap> listReporte = new ArrayList<>();
                     Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
                     
-                    List<List<ResultBigDecimal>> listaMolidos= new ArrayList<>();
-                    List<ResultBigDecimal> lisTotalMolidos = new ArrayList<>();
-                    List<ReporteDiario> listData = reportesDAO.getReporteDiario(fechaI, fechaT, idGpoLinea);
-                    ReportesResponseJson data = new ReportesResponseJson();
-                    List<HashMap> listReporte = new ArrayList<>();
-                    
-                    HashMap<String, Object> encabezado = new HashMap<>();
-                    encabezado.put("padre", 1);
-                    encabezado.put("dia","Dia");
-                    for(int y=0; y<listLineas.size(); y++){
-                        encabezado.put("molido"+(y+1),"Molido "+(y+1));
-                        encabezado.put("hojuela"+(y+1),"Hojuela "+(y+1));
+                    if(idGpoLinea==2){
+                        listReporte = ReportesOEE.getResporteProduccionDiariaBuhler(fechaI, fechaT, idGpoLinea, periodo);
+                    }else{
+                        listReporte = ReportesOEE.getResporteProduccionDiariaAmut(fechaI, fechaT, idGpoLinea, periodo);
                     }
-                    encabezado.put("totalMolido","Total molido");
-                    encabezado.put("acumulado","Acumulado");
-                    encabezado.put("metaMolido","Plan Molido");
-                    encabezado.put("difMolido","Diferencia Molido");
-                    encabezado.put("eficiencia","Eficiencia/dia");
-                    encabezado.put("vsMetaM","+/- vs meta M");
-                    encabezado.put("eficTeorica","Efic teorica");
-                    encabezado.put("totalHoj","Total Hojuela");
-                    encabezado.put("acumHoju","Acum. Hojuela");
-                    encabezado.put("planHoju","Plan Hojuela");
-                    encabezado.put("difeHoju","Diferencia Hoj");
-                    encabezado.put("eficiDia","Eficiencia/dia H");
-                    encabezado.put("vsMetaH","+/- vs meta H");
-                    listReporte.add(encabezado);
-                    
-                    for (int y=0; y<listLineas.size(); y++) {
-                        List<ResultBigDecimal> molido = reportesDAO.getMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
-                        ResultBigDecimal result = reportesDAO.getTotalMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
-                        listaMolidos.add(molido);
-                        lisTotalMolidos.add(result);
-                    }
-                    BigDecimal totalTotalMolido = BigDecimal.ZERO;
-                    BigDecimal totalTotalHojuela= BigDecimal.ZERO;
-                    BigDecimal totalTotalPlanHojuela = BigDecimal.ZERO;
-                    BigDecimal totalTotalPlanMolido = BigDecimal.ZERO;
-                    
-                    BigDecimal acumulado = BigDecimal.ZERO;
-                    BigDecimal acumHojuela = BigDecimal.ZERO;
-                    BigDecimal planMolido = BigDecimal.ZERO;
-                    
-                    for(int i=0; i<listData.size(); i++){
-                        planMolido = planMolido.add(listData.get(i).getPlan_molido());
-                        HashMap<String, Object> row = new HashMap<>();
-                        row.put("padre",	0);
-                        row.put("dia",		convertSqlToDay(sumarFechasDias(listData.get(i).getDia(),2)));
-                        BigDecimal totalMolido = BigDecimal.ZERO;
-                        BigDecimal totalHojuela = BigDecimal.ZERO;
-                        for(int y=0; y<listaMolidos.size(); y++){
-                            BigDecimal molido = listaMolidos.get(y).get(i).getResult();
-                            row.put("molido"+(y+1),	molido);
-                            BigDecimal hojuela = molido.multiply(periodo.getEficiencia_teorica());
-                            int compare = hojuela.compareTo(BigDecimal.ZERO);
-                            if(compare == 0){
-                                hojuela = BigDecimal.ZERO;
-                            }else{
-                                hojuela = hojuela.divide(new BigDecimal(100));
-                            }
-                            row.put("hojuela"+(y+1), hojuela);
-                            totalMolido = totalMolido.add(molido);
-                            totalHojuela = totalHojuela.add(hojuela);
-                            //suma.add(molido);
-                        }
-                        row.put("totalMolido",	totalMolido);
-                        totalTotalMolido = totalTotalMolido.add(totalMolido);
-                        acumulado = acumulado.add(totalMolido);
-                        row.put("acumulado",	acumulado);
-                        row.put("metaMolido",	planMolido);
-                        totalTotalPlanMolido = planMolido;
-                        BigDecimal diferenciaMolido = acumulado.subtract(planMolido);
-                        row.put("difMolido",	diferenciaMolido);
-                        int compare = planMolido.compareTo(BigDecimal.ZERO);
-                        BigDecimal eficiencia = BigDecimal.ZERO;
-                        if(compare != 0){eficiencia = acumulado.divide(planMolido, RoundingMode.CEILING);}
-                        eficiencia = eficiencia.multiply(new BigDecimal(100));
-                        row.put("eficiencia",	eficiencia);
-                        row.put("vsMetaM",	eficiencia.subtract(new BigDecimal(100)));
-                        row.put("eficTeorica",	periodo.getEficiencia_teorica());
-                        row.put("totalHoj",	totalHojuela);
-                        totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
-                        acumHojuela = acumHojuela.add(totalHojuela);
-                        row.put("acumHoju",	acumHojuela);
-                        BigDecimal planHojuela = planMolido.multiply(periodo.getEficiencia_teorica());
-                        compare = planHojuela.compareTo(BigDecimal.ZERO);
-                        if(compare == 0){ planHojuela= BigDecimal.ZERO;}else{planHojuela= planHojuela.divide(new BigDecimal(100));}
-                        row.put("planHoju",	planHojuela);
-                        row.put("difeHoju",     acumHojuela.subtract(planHojuela));
-                        BigDecimal eficienciaDia = BigDecimal.ZERO;
-                        compare = planHojuela.compareTo(BigDecimal.ZERO);
-                        if(compare != 0){eficienciaDia = acumHojuela.divide(planHojuela, RoundingMode.CEILING);}
-                        totalTotalPlanHojuela = planHojuela;
-                        eficienciaDia = eficienciaDia.multiply(new BigDecimal(100));
-                        row.put("eficiDia",	eficienciaDia);
-                        row.put("vsMetaH",	eficienciaDia.subtract(new BigDecimal(100)));
-                        listReporte.add(row);   
-                    }
-                    
-                    HashMap<String, Object> totales = new HashMap<>();
-                    totales.put("padre", 2);
-                    totales.put("dia","Total");
-                    
-                    for(int y=0; y<listLineas.size(); y++){
-                        BigDecimal calculo = lisTotalMolidos.get(y).getResult().multiply(periodo.getEficiencia_teorica());
-                        BigDecimal totalHojuela = calculo.divide(new BigDecimal(100), RoundingMode.CEILING);
-                        totales.put("molido"+(y+1),lisTotalMolidos.get(y).getResult());
-                        totales.put("hojuela"+(y+1),totalHojuela);
-                        //totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
-                    }
-                    totales.put("totalMolido",totalTotalMolido);
-                    totales.put("acumulado",acumulado);
-                    totales.put("metaMolido",totalTotalPlanMolido);
-                    BigDecimal totalTotalDifMolido = acumulado.subtract(totalTotalPlanMolido);
-                    totales.put("difMolido",totalTotalDifMolido);
-                    int compare = totalTotalPlanMolido.compareTo(BigDecimal.ZERO);
-                    BigDecimal TotalEficienciaDia = BigDecimal.ZERO;
-                    if(compare != 0){ TotalEficienciaDia = acumulado.divide(totalTotalPlanMolido,RoundingMode.CEILING);}
-                    totales.put("eficiencia",TotalEficienciaDia);
-                    totales.put("vsMetaM",TotalEficienciaDia.subtract(BigDecimal.ONE));
-                    totales.put("eficTeorica",periodo.getEficiencia_teorica());
-                    totales.put("totalHoj",totalTotalHojuela);
-                    totales.put("acumHoju",acumHojuela);
-                    totales.put("planHoju",totalTotalPlanHojuela);
-                    BigDecimal totalTotalDifHojuela = acumHojuela.subtract(totalTotalPlanHojuela);
-                    totales.put("difeHoju",totalTotalDifHojuela);
-                    compare = totalTotalPlanHojuela.compareTo(BigDecimal.ZERO);
-                    BigDecimal totalEficienciaHojuela = BigDecimal.ZERO;
-                    if(compare != 0){ totalEficienciaHojuela = acumHojuela.divide(totalTotalPlanHojuela, RoundingMode.CEILING); }
-                    totales.put("eficiDia",totalEficienciaHojuela);
-                    totales.put("vsMetaH",totalEficienciaHojuela.subtract(BigDecimal.ONE));
-                    listReporte.add(totales);
                     
                     data.setReporteDiario(listReporte);
                     output.setData(data);
