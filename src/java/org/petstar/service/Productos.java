@@ -63,11 +63,16 @@ public class Productos extends HttpServlet {
                 case "getAllAsignacionMetasByDays":
                     output = controller.getAllAsignacionesMetasByDays(request);
                     break;
+                /*case "getAllProductosForAsignar":
+                    output = controller.getAllProductosForAsignacion(request);
+                    break;
                 case "registraAsignacionByProducto":
                     output = controller.registraAsignacionByProducto(request);
                     break;
                 case "getAllAsignacionesByDay":
                     output = controller.getAllAsignacionesByDays(request);
+                    break;
+                    */
             }
         } catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();
