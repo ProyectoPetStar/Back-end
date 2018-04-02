@@ -44,4 +44,28 @@ public class utils {
     public static boolean isBetween(int x, int lower, int upper) {
         return lower <= x && x <= upper;
     }
+    
+    public static int getTurno(){
+        
+        Date date = new Date();
+        DateFormat hourFormat = new SimpleDateFormat("HH:mm");
+        String hora = hourFormat.format(date);
+        
+        int turno;
+        String[] horas = hora.split(":");
+        int hh = Integer.parseInt(horas[0]);
+        int mm = Integer.parseInt(horas[1]);
+        
+        if((hh==6 && isBetween(mm, 40, 59)) || (hh==7 && isBetween(mm, 0, 11))){
+            turno = 3;
+        }else if((hh==14 && isBetween(mm, 40, 59)) || (hh==15 && isBetween(mm, 0, 11))){
+            turno = 1;
+        }else if((hh==22 && isBetween(mm, 40, 59)) || (hh==23 && isBetween(mm, 0, 11))){
+            turno = 2;
+        }else{
+            turno = 0;
+        }
+               
+        return turno;
+    }
 }

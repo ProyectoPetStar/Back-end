@@ -5,10 +5,6 @@
  */
 package org.petstar.controller;
 
-import io.jsonwebtoken.lang.Strings;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
@@ -19,8 +15,8 @@ import org.petstar.model.ProductosAsignacionesResponseJson;
 import org.petstar.model.ProductosDataResponseJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.getDateCorrect;
-import static org.petstar.configurations.utils.isBetween;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
+import static org.petstar.configurations.utils.getTurno;
 
 /**
  *
@@ -51,7 +47,7 @@ public class ControllerProductos {
         try{
             if(autenticacion.isValidToken(request)){
                 if(perfil == 5){
-                    if(getCurrentGrupoValido(idGrupo,idLinea)){
+                    if(validateIfCanEdit(idGrupo,idLinea)){
                         ProductosDAO productosDAO = new ProductosDAO();
                         CatalogosDAO catalogosDAO = new CatalogosDAO();
                         LineasDAO lineasDAO = new LineasDAO();
@@ -272,7 +268,7 @@ public class ControllerProductos {
                 ResultInteger result = productosDAO.validaForRegistrarAsignacion(idProducto, idTurno, dia);
                 if(result.getResult().equals(0)){
                     if(perfil == 5){
-                        if(getCurrentGrupoValido(idGrupo, idLinea)){
+                        if(validateIfCanEdit(idGrupo, idLinea)){
                             productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
                             response.setSucessfull(true);
                             response.setMessage(MSG_SUCESS);
@@ -390,18 +386,28 @@ public class ControllerProductos {
                 switch(perfil){
                     case 3:
                         parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(fechaInicio, fechaFin));
+                        output.setData(parj);
+                        response.setSucessfull(true);
+                        response.setMessage(MSG_SUCESS);
                         break;
                     case 4:
                         parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(idGrupo, turno, idLinea));
+                        output.setData(parj);
+                        response.setSucessfull(true);
+                        response.setMessage(MSG_SUCESS);
                         break;
                     case 5:
-                        parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(idGrupo, turno, idLinea, fechaFin)); 
+                        if(validateIfCanEdit(idGrupo, idLinea)){
+                            parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(idGrupo, turno, idLinea, fechaFin)); 
+                            output.setData(parj);
+                            response.setSucessfull(true);
+                            response.setMessage(MSG_SUCESS);
+                        }else{
+                            response.setSucessfull(false);
+                            response.setMessage("Fuera de horario.");
+                        }
                         break;
                 }
-                
-                output.setData(parj);
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -448,12 +454,13 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo que permite la validacion para que entren los usuarios a capturar
+     * Metodo que permite la validacion para que entren los integradores a capturar
      * @param idGrupo
+     * @param idLinea
      * @return
      * @throws Exception 
      */
-    public boolean getCurrentGrupoValido(int idGrupo, int idLinea) throws Exception{
+    public boolean validateIfCanEdit(int idGrupo, int idLinea) throws Exception{
         boolean valid;
         
         int turno = getTurno();
@@ -469,35 +476,6 @@ public class ControllerProductos {
         }
         
         return valid;
-    }
-    
-    /**
-     * Metodo que devulve el turno segun la hora del sistema
-     * @param hora
-     * @return 
-     */
-    public int getTurno(){
-        
-        Date date = new Date();
-        DateFormat hourFormat = new SimpleDateFormat("HH:mm");
-        String hora = hourFormat.format(date);
-        
-        int turno;
-        String[] horas = Strings.split(hora, ":");
-        int hh = Integer.parseInt(horas[0]);
-        int mm = Integer.parseInt(horas[1]);
-        
-        if((hh==6 && isBetween(mm, 40, 59)) || (hh==7 && isBetween(mm, 0, 11))){
-            turno = 3;
-        }else if((hh==14 && isBetween(mm, 40, 59)) || (hh==15 && isBetween(mm, 0, 11))){
-            turno = 1;
-        }else if((hh==22 && isBetween(mm, 40, 59)) || (hh==23 && isBetween(mm, 0, 11))){
-            turno = 2;
-        }else{
-            turno = 0;
-        }
-               
-        return turno;
-    }
+    }  
     
 }

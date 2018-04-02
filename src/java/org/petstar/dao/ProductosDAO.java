@@ -179,6 +179,7 @@ public class ProductosDAO {
      * Metodo para validar que el grupo y turno seleccionado sean validos
      * @param idGrupo
      * @param turno
+     * @param idLinea
      * @param DiaMeta
      * @return
      * @throws Exception 
@@ -329,7 +330,7 @@ public class ProductosDAO {
     }
     
     /**
-     * Metodo que devuelve las asignaciones de un rango de fecha, perfil 5(Integrador)
+     * Metodo que devuelve las asignaciones del dia actual, perfil 5(Integrador)
      * @param idGrupo
      * @param idTurno
      * @param idLinea
@@ -342,9 +343,9 @@ public class ProductosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_selectMetasValorByDia ?, ?, ?, ?");
         Object[] params = {
-            
+            fecha, idLinea, idGrupo, idTurno
         };
         
         ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
