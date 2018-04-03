@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.petstar.dao;
 
 import java.math.BigDecimal;
@@ -18,10 +13,17 @@ import org.petstar.dto.MetasDTO;
 import org.petstar.dto.ResultInteger;
 
 /**
- *
+ * DAO de Metas
  * @author Tech-Pro
  */
 public class MetasDAO {
+    
+    /**
+     * Lista de Metas Catálogo
+     * Metodo que devuelve la lista del catalogo de Metas
+     * @return
+     * @throws Exception 
+     */
     public List<MetasDTO> getMetasCarga() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
@@ -35,6 +37,13 @@ public class MetasDAO {
         return dataMetas;
     }
     
+    /**
+     * Selecciona una Meta
+     * Metodo que devuelve la información una Meta en especifico 
+     * @param idMeta
+     * @return
+     * @throws Exception 
+     */
     public MetasDTO getMetasCargaById(int idMeta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -50,6 +59,14 @@ public class MetasDAO {
         return dataMetas;
     }
     
+    /**
+     * Registra Metas
+     * Metodo para registrar una nueva Meta en el catalogo
+     * @param idLinea
+     * @param meta
+     * @param tipoMedida
+     * @throws Exception 
+     */
     public void insertMetaCarga(int idLinea, String meta, String tipoMedida) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
@@ -63,6 +80,17 @@ public class MetasDAO {
         qr.update(sql.toString(), params);
     }
     
+    /**
+     * Modificación de Metas
+     * Metodo para actualizar los datos de una Meta en especifico
+     * @param idMeta
+     * @param idLinea
+     * @param meta
+     * @param tipoMedida
+     * @param posicion
+     * @param activo
+     * @throws Exception 
+     */
     public void updateMetaCarga(int idMeta, int idLinea, String meta, String tipoMedida, int posicion, int activo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         
@@ -76,6 +104,14 @@ public class MetasDAO {
         qr.update(sql.toString(), params);
     }
        
+    /**
+     * Validación para Registrar
+     * Metodo que valida que los datos para registrar de la Meta no esten repetidos
+     * @param idLinea
+     * @param meta
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaDataForInsertCarga(int idLinea, String meta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -92,6 +128,15 @@ public class MetasDAO {
         return count;
     }
     
+    /**
+     * Validación para Modificar
+     * Metodo que valida que los datos para modificar una Meta no se repitan
+     * @param idMeta
+     * @param idLinea
+     * @param meta
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaDataForUpdateCarga(int idMeta, int idLinea, String meta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -108,6 +153,13 @@ public class MetasDAO {
         return count;
     }
     
+    /**
+     * Validación que exista la Meta
+     * Metodo para validar que el id que recibe sea correcto y corresponda a una meta.
+     * @param idMeta
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaIfExistMetaCarga(int idMeta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -125,7 +177,8 @@ public class MetasDAO {
     }
     
     /**
-     * Metodo para hacer la asignación de metas
+     * Asignación de Metas
+     * Metodo para realizar la asignación de metas.
      * @param idGrupo
      * @param idTurno
      * @param idMeta
@@ -147,7 +200,9 @@ public class MetasDAO {
     }
     
     /**
-     * MEtoodo que devuelve toda la informacion sobre las metas del año
+     * Lista de Asignaciones
+     * Metodo que devuelve todas las asignaciones de metas registradas en un año en especifico
+     * @param year
      * @return
      * @throws Exception 
      */
@@ -167,7 +222,8 @@ public class MetasDAO {
     }
     
     /**
-     * MEtodo que devuelve la asignacion de acuerdo al id
+     * Asignación en Especifico
+     * Metodo que devuelve la información de una asignacion en especifico de acuerdo al id
      * @param idAsignacion
      * @return
      * @throws Exception 
@@ -188,7 +244,8 @@ public class MetasDAO {
     }
     
     /**
-     * Valida que el ID que se envia exista en la DB
+     * Validación que exista la Asignación de Meta
+     * Metodo para validar que el id que recibe sea correcto y corresponda a una Asignación de Meta.
      * @param idAsignacion
      * @return
      * @throws Exception 
@@ -208,6 +265,12 @@ public class MetasDAO {
         return result;
     }
     
+    /**
+     * Eliminación de Asignaciones
+     * Metodo que permite la eliminación de una Asignación de Meta de acuerdo al id
+     * @param idAsignacion
+     * @throws Exception 
+     */
     public void deleteAsignacionMeta(int idAsignacion) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -221,6 +284,15 @@ public class MetasDAO {
          qr.update(sql.toString(), params);
     }
     
+    /**
+     * Validación para Registrar Asignación
+     * Metodo que valida que los datos para registrar la Asignación de Meta no esten repetidos
+     * @param idMeta
+     * @param idTurno
+     * @param diaMeta
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaDataForAsignacion(int idMeta, int idTurno, String diaMeta)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -236,6 +308,18 @@ public class MetasDAO {
         return result;
     }
     
+    /**
+     * Validación para Modificar Asignación de Meta
+     * Metodo que valida que los datos para modificar una Asignación de Meta no se repitan
+     * @param idAsignacion
+     * @param idTurno
+     * @param idGrupo
+     * @param idMeta
+     * @param diaMeta
+     * @param valorMeta
+     * @param borrar
+     * @throws Exception 
+     */
     public void updateAsignacionMeta(int idAsignacion, int idTurno, int idGrupo, int idMeta, String diaMeta, BigDecimal valorMeta, int borrar) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);

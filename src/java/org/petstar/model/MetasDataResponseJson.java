@@ -10,7 +10,7 @@ import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.MetasDTO;
 
 /**
- *
+ * Modelo del JSON de Metas
  * @author Tech-Pro
  */
 public class MetasDataResponseJson {

@@ -18,11 +18,19 @@ import org.petstar.dto.UserDTO;
 
 
 /**
- *
+ * Controllador de Autenticación
  * @author Tech-Pro
  */
 public class ControllerAutenticacion {
 
+    /**
+     * Creación de token
+     * Metodo que se encarga de la construcción del token y almacenamiento del key
+     * @param usuario
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws Exception 
+     */
     public String createJWT(UserDTO usuario) throws UnsupportedEncodingException, Exception {
         Key key = MacProvider.generateKey();
         byte[] keyBytes = key.getEncoded();
@@ -46,7 +54,8 @@ public class ControllerAutenticacion {
     }
 
     /**
-     *
+     * Validar token
+     * Metodo que se encarga de la validación del token, que no haya sido alterado
      * @param request
      * @return
      */
@@ -72,6 +81,13 @@ public class ControllerAutenticacion {
         return b;
     }
     
+    /**
+     * Validación de usuario
+     * Metodo que esta implementado para la visualización del perfil, 
+     * su funcion es no permitir visualizar el perfil de algún otro usuario.
+     * @param request
+     * @return 
+     */
     public String id_usuario_valido(HttpServletRequest request){
         String token = request.getHeader(Configuration.HEADER_STRING);
         String id_usuario = request.getParameter("id_usuario");

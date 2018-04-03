@@ -18,6 +18,13 @@ import org.petstar.model.UserResponseJson;
  */
 public class ControllerLogin {
 
+    /**
+     * Logueo
+     * Metodo que se encarga de validar los datos de usuario y brindar accesos 
+     * al sistema.
+     * @param request
+     * @return 
+     */
     public OutputJson Login(HttpServletRequest request) {
         String usuario_acceso = request.getParameter("usuario_acceso");
         String clave_acceso = request.getParameter("clave_acceso");

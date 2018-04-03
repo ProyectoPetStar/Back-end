@@ -13,13 +13,14 @@ import org.petstar.model.CatalogosListResponseJason;
 import org.petstar.model.OutputJson;
 
 /**
- *
+ * Controlador de Catalogos
  * @author Tech-Pro
  */
 public class ControllerCatalogos {
     
     /**
-     * Metodo generico que devuelve la lista de de registros en DB
+     * Consulta General
+     * Metodo que devuelve un JSON con la lista de de Datos según el catalogo
      * @param request
      * @return 
      */
@@ -54,7 +55,8 @@ public class ControllerCatalogos {
     }
     
     /**
-     * Metodo Generico para insertar registros de catalogos
+     * Registro de Catalogos
+     * Metodo que se encarga en insertar nuevos registros de catalogos
      * @param request
      * @return 
      */
@@ -94,7 +96,8 @@ public class ControllerCatalogos {
     }
     
     /**
-     * Metodo Generico para actualizar registros de catalogos
+     * Modificación de Catalogos
+     * Metodo que se encarga de actualizar los registros de catalogos
      * @param request
      * @return 
      */
@@ -135,7 +138,8 @@ public class ControllerCatalogos {
     }
     
     /**
-     * Metodo generico para la eliminacion de registros de catalogos
+     * Eliminación de Catalogos
+     * Metodo generico para la eliminación de registros de catalogos
      * @param request
      * @return 
      */
@@ -167,7 +171,8 @@ public class ControllerCatalogos {
     }
     
     /**
-     * Metodo Generico para la obtencion de valores de acuerdo al id de los catalogos
+     * Consulta Especifica de Catalogos
+     * Metodo Generico para la obtención de valores de acuerdo al id del catalogos
      * @param request
      * @return 
      */

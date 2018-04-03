@@ -11,15 +11,21 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.petstar.dto.ResultString;
-import org.petstar.dto.UserDTO;
 
 /**
- *
+ * Clase DAO de Autenticación
  * @author Tech-Pro
  */
 
 public class AutenticacionDAO {
 
+    /**
+     * Consulta de token
+     * Metodo que devuelve el token de un usuario en especifico
+     * @param id_usuario
+     * @return
+     * @throws Exception 
+     */
     public String getToken_Key(int id_usuario) throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
       
@@ -35,6 +41,13 @@ public class AutenticacionDAO {
         return result.getResult();
     }
     
+    /**
+     * Actualización de Key
+     * Metodo que registra la key del token generado en la DB
+     * @param id_usuario
+     * @param token_key
+     * @throws Exception 
+     */
     public void updateToken_Key(int id_usuario, String token_key) throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
       

@@ -16,12 +16,13 @@ import org.petstar.dto.EquipoAmutDTO;
 import org.petstar.dto.ResultInteger;
 
 /**
- *
+ * Clase DAO de Equipos Amut
  * @author Tech-Pro
  */
 public class EquipoAmutDAO {
     
     /**
+     * Consulta General
      * Metodo que devuelve la lista de los Equipos Amut
      * @return
      * @throws Exception 
@@ -39,6 +40,7 @@ public class EquipoAmutDAO {
     }
     
     /**
+     * Registro de Equipo Amut
      * Metodo que permite el regitro de nuevos Equipos Amut
      * @param claveEquipo
      * @param nombreEquipo
@@ -58,7 +60,8 @@ public class EquipoAmutDAO {
     }
     
     /**
-     * Metodo que permite la modificación de equipo amut
+     * Modificación Equipo Amut
+     * Metodo que permite la modificación de datos del equipo amut
      * @param idEquipo
      * @param claveEquipo
      * @param nombreEquipo
@@ -79,7 +82,8 @@ public class EquipoAmutDAO {
     }
     
     /**
-     * Metodo que realiza la eliminación de equipo amut
+     * Eliminación de Equipo Amut
+     * Metodo que realiza la eliminación de equipo amut de acuerdo al ID
      * @param idEquipo
      * @throws Exception 
      */
@@ -97,6 +101,7 @@ public class EquipoAmutDAO {
     }
     
     /**
+     * Validación para Modificación
      * Metodo que valida los datos antes de hacer el update del equipo amut
      * @param idEquipo
      * @param claveEquipo
@@ -120,7 +125,8 @@ public class EquipoAmutDAO {
     }
     
     /**
-     * Metodo que valida los datos antes de hacer el update del equipo amut
+     * Validación para Registrar
+     * Metodo que valida los datos antes de hacer el registro del equipo amut
      * @param claveEquipo
      * @param nombreEquipo
      * @return
@@ -142,6 +148,7 @@ public class EquipoAmutDAO {
     }
     
     /**
+     * Consulta Especifica
      * Metodo que devuelve los datos del Equipo Amut de acuerdo a un id
      * @param idEquipo
      * @return

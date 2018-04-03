@@ -19,15 +19,16 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- *
+ * Servlet de Metas
  * @author Tech-Pro
  */
 @WebServlet(name = "Metas", urlPatterns = {"/Metas"})
 public class Metas extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Permite trabajar con las opciones de Metas, 
+     * se permite el CRUD de Metas, así como tambien las asignaciones de las mismas
+     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o <code>POST</code>
      *
      * @param request servlet request
      * @param response servlet response

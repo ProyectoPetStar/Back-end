@@ -5,14 +5,11 @@
  */
 package org.petstar.configurations;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 /**
- *
+ * Clase que permite definir atributos y metodos de trabajo; 
  * @author Tech-Pro
  */
 public class PoolDataSource {
@@ -28,6 +25,12 @@ public class PoolDataSource {
 
     private static BasicDataSource dataSource;
 
+    /**
+     * Conexion a DB
+     * Metodo que se encarga de realizar la conexion a la base de datos, 
+     * según los atributos de arriba.
+     * @return 
+     */
     public static synchronized DataSource getDataSource() {
         if (dataSource == null) {
             BasicDataSource bds = new BasicDataSource();

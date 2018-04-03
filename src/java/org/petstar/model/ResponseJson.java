@@ -6,7 +6,7 @@
 package org.petstar.model;
 
 /**
- *
+ * Modelado de JSON de respuestas
  * @author Tech-Pro
  */
 public class ResponseJson {

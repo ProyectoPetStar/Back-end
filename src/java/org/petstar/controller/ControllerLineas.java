@@ -14,7 +14,7 @@ import org.petstar.model.LineasResponseJson;
 import org.petstar.model.OutputJson;
 
 /**
- *
+ * Controlador de Lineas
  * @author Tech-Pro
  */
 public class ControllerLineas {
@@ -25,7 +25,8 @@ public class ControllerLineas {
     private static final String TABLE_NAME = "pet_cat_lineas";
     
     /**
-     * Metodo para la consulta de lineas 
+     * Consulta Genral
+     * Metodo que devuelve todas las lineas 
      * @param request
      * @return 
      */
@@ -57,6 +58,7 @@ public class ControllerLineas {
     }
     
     /**
+     * Registro de Lineas
      * Metodo para el registro de nuevas lineas
      * @param request
      * @return 
@@ -96,7 +98,8 @@ public class ControllerLineas {
     }
     
     /**
-     * Metodo para actualizacion de lineas
+     * Modificación de Lineas
+     * Metodo para actualizar la información de lineas
      * @param request
      * @return 
      */
@@ -136,7 +139,8 @@ public class ControllerLineas {
     }
     
     /**
-     * Metodo para la eliminacion de lineas
+     * Eliminación de Lineas
+     * Metodo para eliminar una linea en especifico
      * @param request
      * @return 
      */
@@ -169,7 +173,8 @@ public class ControllerLineas {
     }
     
     /**
-     * Metodo que devuelve los datos por id de linea
+     * Consulta Especifica
+     * Metodo que devuelve los datos de una linea de acuerdo al id.
      * @param request
      * @return 
      */

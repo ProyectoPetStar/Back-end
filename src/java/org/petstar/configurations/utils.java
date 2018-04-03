@@ -10,11 +10,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
+ * Clase que permite definir metodos recurrentes; 
  * @author Tech-Pro
  */
 public class utils {
     
+    /**
+     * Día Actual 
+     * Metodo que de acuerdo al turno devuelve el día correcto, esto aplica
+     * especialmente para el turno 3 que se debe de resta un día al dia actual
+     * @param turno
+     * @return 
+     */
     public static String getCurrentDayByTurno(int turno){
         String validDay;
         Date date = new Date();
@@ -29,6 +36,13 @@ public class utils {
         return validDay;
     }
     
+    /**
+     * Fecha Correcta
+     * Metodo que cambia el formato de la fecha recibida por uno valido 
+     * en la base de datos
+     * @param fecha
+     * @return 
+     */
     public static String getDateCorrect(String fecha){
         String[] cadena = fecha.split("/");
         
@@ -41,10 +55,25 @@ public class utils {
         return newFecha;
     }
     
+    /**
+     * Between
+     * Metodo que verifica que un determinado valor se encuntre entre
+     * los valores permitidos
+     * @param x
+     * @param lower
+     * @param upper
+     * @return 
+     */
     public static boolean isBetween(int x, int lower, int upper) {
         return lower <= x && x <= upper;
     }
     
+    /**
+     * Turno Acual
+     * Metodo que devuelve el turno actual de acuerdo a la hora actual
+     * del sistema
+     * @return 
+     */
     public static int getTurno(){
         
         Date date = new Date();

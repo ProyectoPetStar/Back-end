@@ -6,7 +6,7 @@
 package org.petstar.dto;
 
 /**
- *
+ * DTO de Lineas
  * @author Tech-Pro
  */
 public class LineasDTO {
