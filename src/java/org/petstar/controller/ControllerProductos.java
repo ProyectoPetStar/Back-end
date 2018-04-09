@@ -489,7 +489,7 @@ public class ControllerProductos {
             ProductosDAO productosDAO = new ProductosDAO();
             ResultInteger result = productosDAO.validaGrupoTurno(idGrupo, turno,idLinea, diaMeta);
             
-            valid = (result.getResult().equals(1))?true:false;
+            valid = (result.getResult().equals(1));
         }else{
             valid = false;
         }

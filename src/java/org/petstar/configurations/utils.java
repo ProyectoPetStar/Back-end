@@ -7,6 +7,7 @@ package org.petstar.configurations;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -39,20 +40,23 @@ public class utils {
     /**
      * Fecha Correcta
      * Metodo que cambia el formato de la fecha recibida por uno valido 
-     * en la base de datos
+     * para la base de datos
      * @param fecha
      * @return 
      */
     public static String getDateCorrect(String fecha){
-        String[] cadena = fecha.split("/");
-        
-        String year = cadena[2];
-        String mont = cadena[1];
-        String day  = cadena[0];
-        
-        String newFecha = mont + "/" + day + "/" + year;
-        
-        return newFecha;
+        DateFormat formatInput = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat formatOutput = new SimpleDateFormat("MM/dd/yyyy");
+	Date date = null;
+	
+	try {
+            date = formatInput.parse(fecha);
+	} catch (ParseException e) {
+            e.printStackTrace();
+	}
+		
+	String validDay = formatOutput.format(date); 
+	return validDay;
     }
     
     /**
@@ -77,13 +81,13 @@ public class utils {
     public static int getTurno(){
         
         Date date = new Date();
-        DateFormat hourFormat = new SimpleDateFormat("HH:mm");
-        String hora = hourFormat.format(date);
+        DateFormat hourFormat = new SimpleDateFormat("HH");
+        DateFormat minuFormat = new SimpleDateFormat("mm");
+        
+        int hh = Integer.parseInt(hourFormat.format(date));
+        int mm = Integer.parseInt(minuFormat.format(date));
         
         int turno;
-        String[] horas = hora.split(":");
-        int hh = Integer.parseInt(horas[0]);
-        int mm = Integer.parseInt(horas[1]);
         
         if((hh==6 && isBetween(mm, 40, 59)) || (hh==7 && isBetween(mm, 0, 11))){
             turno = 3;
