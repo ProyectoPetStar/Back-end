@@ -10,33 +10,33 @@ package org.petstar.dto;
  * @author Tech-Pro
  */
 public class EquipoAmutDTO {
-    private int id_equipo_amut;
-    private String clave_equipo;
-    private String nombre_equipo;
+    private int id;
+    private String valor;
+    private String descripcion;
     private int activo;
 
-    public int getId_equipo_amut() {
-        return id_equipo_amut;
+    public int getId() {
+        return id;
     }
 
-    public void setId_equipo_amut(int id_equipo_amut) {
-        this.id_equipo_amut = id_equipo_amut;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getClave_equipo() {
-        return clave_equipo;
+    public String getValor() {
+        return valor;
     }
 
-    public void setClave_equipo(String clave_equipo) {
-        this.clave_equipo = clave_equipo;
+    public void setValor(String valor) {
+        this.valor = valor;
     }
 
-    public String getNombre_equipo() {
-        return nombre_equipo;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setNombre_equipo(String nombre_equipo) {
-        this.nombre_equipo = nombre_equipo;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public int getActivo() {
