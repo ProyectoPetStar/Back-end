@@ -40,6 +40,7 @@ public class ControllerUploadMetas {
             }else{
                 response.setMessage("Error. El archivo tiene errores.");
                 response.setSucessfull(false);
+                deleteFiles(nameFile);
             }
         }else{
             response.setMessage("Error al carga el archivo.");
@@ -119,5 +120,12 @@ public class ControllerUploadMetas {
             e.printStackTrace();
         }
         return bandera;
+    }
+    
+    public void deleteFiles(String nameFile){
+        String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
+        
+        File fichero = new File(pathFile);
+        fichero.delete();
     }
 }
