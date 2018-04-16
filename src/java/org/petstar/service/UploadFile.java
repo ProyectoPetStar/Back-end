@@ -50,7 +50,7 @@ public class UploadFile extends HttpServlet {
                    output = controllerUploadMetas.uploadFileMetas(request);
                    break;
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             ResponseJson reponseJson = new ResponseJson();
             reponseJson.setSucessfull(false);
             reponseJson.setMessage(ex.getMessage());

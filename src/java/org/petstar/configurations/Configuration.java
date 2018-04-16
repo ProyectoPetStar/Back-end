@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Configuration {
     
     public static final String HEADER_STRING = "Authorization";
-    public static final String PATH_UPLOAD_FILE = "C:/petstart/upfiles/";
+    public static final String PATH_UPLOAD_FILE = "C:\\petstar\\upfiles\\";
     
     /**
      * Método que permite establecer las cabeceras de un servlet, en particular 
