@@ -1,17 +1,31 @@
 package org.petstar.configurations;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import static org.petstar.configurations.utils.obtenerAnio;
+import static org.petstar.configurations.utils.obtenerMes;
 
 /**
  * @author Tech-Pro
  */
 public class Validation {
     
-    public static boolean validateDay(String day, String month, String year){
+    public static boolean validateDay(String day, String month){
         if(day.matches("^[0-9]{1,2}$")){
-            
+            SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
+            String strfecha = "01/" + month;
+            Date fecha = null;
+            try {
+                fecha = formatoDelTexto.parse(strfecha);
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+            int year = obtenerAnio(fecha);
+            int mes = obtenerMes(fecha);
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Integer.valueOf(year), ((Integer.valueOf(month) -1)), 1);
+            calendar.set(year, mes -1, 1);
             int lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
             
             if(Integer.valueOf(day)>lastDay || Integer.valueOf(day)<1){

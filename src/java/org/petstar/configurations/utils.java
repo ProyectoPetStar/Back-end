@@ -101,4 +101,22 @@ public class utils {
                
         return turno;
     }
+    
+    public static int obtenerAnio(Date date){
+        if (null == date){
+            return 0;
+        }else{
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+            return Integer.parseInt(dateFormat.format(date));
+        }
+    }
+    
+    public static int obtenerMes(Date date){
+        if (null == date){
+            return 0;
+        }else{
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
+            return Integer.parseInt(dateFormat.format(date));
+        }
+    }
 }

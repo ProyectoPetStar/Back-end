@@ -12,19 +12,28 @@ import org.petstar.configurations.Configuration;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import com.csvreader.CsvReader;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import static org.petstar.configurations.Validation.*;
+import org.petstar.dto.ForecastDTO;
 
 /**
  *
  * @author Tech-Pro
  */
 public class ControllerUploadMetas {
+    private List<ForecastDTO> listRows = new ArrayList<ForecastDTO>();
     
-    public OutputJson uploadFileMetas(HttpServletRequest request) throws FileNotFoundException, IOException {
+    public OutputJson uploadFileMetas(HttpServletRequest request) 
+            throws FileNotFoundException, IOException, ParseException {
+        
         OutputJson output = new OutputJson();
         ResponseJson response = new ResponseJson();
         StringBuilder stringFile = new StringBuilder();
         stringFile.append(request.getParameter("file"));
+        String monthAndYear = request.getParameter("mes_anio");
+        int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
         
         SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
         Date date = new Date();
@@ -33,10 +42,16 @@ public class ControllerUploadMetas {
         boolean save = saveFIle(stringFile, nameFile);
         
         if(save){
-            boolean valid = validateFile(nameFile);
+            boolean valid = validateFile(nameFile, monthAndYear, idLinea);
             if(valid){
-                response.setMessage("OK");
+                response.setMessage("OK" + listRows.size());
                 response.setSucessfull(true);
+                for(ForecastDTO emp : listRows){
+             
+                    System.out.println(emp.getDia()+ " - " + emp.getTurno() + " - "
+                        + emp.getGrupo() + " - " + emp.getMeta());
+                }
+                
             }else{
                 response.setMessage("Error. El archivo tiene errores.");
                 response.setSucessfull(false);
@@ -88,18 +103,18 @@ public class ControllerUploadMetas {
         return estatus;
     }
     
-    public boolean validateFile(String nameFile) throws FileNotFoundException, IOException{
+    public boolean validateFile(String nameFile, String monthAndYear, int idLinea) 
+            throws FileNotFoundException, IOException, ParseException{
+        
         String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
         boolean bandera = true;
         try {
-                        
+            
             CsvReader csvReader = new CsvReader(pathFile);
             csvReader.readHeaders();
-            String mes = "1";
-            String year = "2018";
- 
+             
             while (csvReader.readRecord()) {
-                boolean validDay = validateDay(csvReader.get("Dia"), mes, year);
+                boolean validDay = validateDay(csvReader.get("Dia"), monthAndYear);
                 boolean validTurno = validateTurno(csvReader.get("Turno"));
                 boolean validGrupo = validateGrupo( csvReader.get("Grupo"));
                 boolean validMeta = validateMetaMolido(csvReader.get("Meta"));
@@ -108,8 +123,23 @@ public class ControllerUploadMetas {
                 
                 if(!validDay || !validTurno || !validGrupo || !validMeta || !validTmp || !validVel){
                     bandera = false;
-                    System.out.println("-----------------------------" + (csvReader.getCurrentRecord() + 2) );
-                } 
+                }else{
+                    SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
+                    String strfecha = csvReader.get("Dia") + "/" + monthAndYear;
+                    Date fecha = null;
+                    try {
+                        fecha = formatoDelTexto.parse(strfecha);
+                    } catch (ParseException ex) {
+                        ex.printStackTrace();
+                    }
+                    
+                    listRows.add(new ForecastDTO(fecha, csvReader.get("Turno"),
+                            csvReader.get("Grupo"),idLinea,
+                            Float.parseFloat(csvReader.get("Meta")),
+                            Float.parseFloat(csvReader.get("TMP")),
+                            Float.parseFloat(csvReader.get("Vel"))
+                    )); 
+                }
             }
              
             csvReader.close();
@@ -127,5 +157,17 @@ public class ControllerUploadMetas {
         
         File fichero = new File(pathFile);
         fichero.delete();
+    }
+    
+    public void saveRows(String dia, String mes, String turno, String grupo, 
+            int idLinea, String meta, String tmp, String vel) throws ParseException{
+    }
+
+    public List<ForecastDTO> getListRows() {
+        return listRows;
+    }
+
+    public void setListRows(List<ForecastDTO> listRows) {
+        this.listRows = listRows;
     }
 }
