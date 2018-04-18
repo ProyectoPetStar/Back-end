@@ -6,7 +6,7 @@
 package org.petstar.dto;
 
 /**
- *
+ * DTO de Usuarios Sonarh
  * @author Tech-Pro
  */
 public class UserSonarthDTO {

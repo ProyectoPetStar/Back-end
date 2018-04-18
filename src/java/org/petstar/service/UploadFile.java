@@ -6,80 +6,57 @@
 package org.petstar.service;
 
 import com.google.gson.Gson;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.petstar.configurations.Configuration;
-import org.petstar.controller.ControllerMetas;
+import org.petstar.controller.ControllerUploadMetas;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- * Servlet de Metas
- * @author Tech-Pro
+ *
+ * @author GuillermoB
  */
-@WebServlet(name = "Metas", urlPatterns = {"/Metas"})
-public class Metas extends HttpServlet {
+@WebServlet(name = "UploadFile", urlPatterns = {"/UploadFile"})
+public class UploadFile extends HttpServlet {
 
     /**
-     * Permite trabajar con las opciones de Metas, 
-     * se permite el CRUD de Metas, así como tambien las asignaciones de las mismas
-     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o <code>POST</code>
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.io.FileNotFoundException
+     * @throws java.text.ParseException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, FileNotFoundException, ParseException, Exception {
         Configuration.setHeadersJson(response);
     
         PrintWriter out = response.getWriter();
         OutputJson output = new OutputJson();
-        
-        ControllerMetas controllerMetas = new ControllerMetas();
+        ControllerUploadMetas controllerUploadMetas = new ControllerUploadMetas();
         
         Gson gson = new Gson();
         try {
             String action = request.getParameter("action");
             switch (action) {
-                case "getDataMetasCatalog":
-                   output = controllerMetas.getMetasDataCarga(request);
+                case "uploadMetasCSV":
+                   output = controllerUploadMetas.uploadFileMetas(request);
                    break;
-                case "getDataMetasCatalogById":
-                   output = controllerMetas.getMetasDataCargaById(request);
-                   break;
-                case "insertNewMetaCatalog":
-                    output = controllerMetas.insertNewMetaCarga(request);
-                    break;
-                case "updateNewMetaCatalog":
-                    output = controllerMetas.updateMetaCarga(request);
-                    break;
-                case "loadComboxData":
-                    output = controllerMetas.loadCombosCatalogs(request);
-                    break;
-                case "asignaValorMeta":
-                    output = controllerMetas.registraAsignacionMeta(request);
-                    break;
-                case "getAllAsignacionesByYear":
-                    output = controllerMetas.getAllAsignacionesByYear(request);
-                    break;
-                case "getAsignacionById":
-                    output = controllerMetas.getAsignacionById(request);
-                    break;
-                case "deleteAsignacionMeta":
-                    output = controllerMetas.deleteAsignacionMeta(request);
-                    break;
-                case "updateAsignacionMeta":
-                    output = controllerMetas.updateAsignacionMeta(request);
-                    break;
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             ResponseJson reponseJson = new ResponseJson();
             reponseJson.setSucessfull(false);
             reponseJson.setMessage(ex.getMessage());
@@ -98,11 +75,18 @@ public class Metas extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.io.FileNotFoundException
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+            throws ServletException, IOException, FileNotFoundException {
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -112,20 +96,20 @@ public class Metas extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.io.FileNotFoundException
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+            throws ServletException, IOException, FileNotFoundException {
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    /**
-     * 
-     * @param req
-     * @param response
-     * @throws ServletException
-     * @throws IOException 
-     */
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
         Configuration.setHeadersJson(response);
@@ -138,7 +122,7 @@ public class Metas extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Metas";
+        return "Short description";
     }// </editor-fold>
 
 }

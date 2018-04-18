@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.petstar.controller;
 
 import java.math.BigDecimal;
@@ -16,7 +11,7 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- *
+ * Controlador de Metas
  * @author Tech-Pro
  */
 public class ControllerMetas {
@@ -30,7 +25,8 @@ public class ControllerMetas {
     private static final String MSG_NO_EXIST= "La meta no existe.";
     
     /**
-     * Metodo que devuelve la lista de metas en DB
+     * Consulta de Metas
+     * Metodo que devuelve la lista de metas que se encuentran en el catálogo.
      * @param request
      * @return 
      */
@@ -62,7 +58,8 @@ public class ControllerMetas {
     }
     
     /**
-     * Metodo que devuelve datos de la meta de acuerdo al id enviado
+     * Consulta de Metas Especifica
+     * Metodo que devuelve los datos de una meta de acuerdo al id enviado
      * @param request
      * @return 
      */
@@ -100,7 +97,8 @@ public class ControllerMetas {
     }
     
     /**
-     * Metodo que registra nuevas Metas
+     * Registrar Metas
+     * Metodo que registra nuevas Metas.
      * @param request
      * @return 
      */
@@ -139,7 +137,8 @@ public class ControllerMetas {
     }
     
     /**
-     * Metodo para modificar una meta
+     * Modificación de Metas
+     * Metodo que actualiza la información de una meta
      * @param request
      * @return 
      */
@@ -181,7 +180,8 @@ public class ControllerMetas {
     }
 
     /**
-     * Metodo que devuelve los datos para los combos
+     * Carga de Combos
+     * Metodo que se encarga de poblar las listasnecesarias para los combobox
      * @param request
      * @return 
      */
@@ -217,7 +217,8 @@ public class ControllerMetas {
     }
     
     /**
-     * Metodo para asignar metas
+     * Registro de Asignaciones de Metas
+     * Metodo que se encarga del registro de una asignación de una Meta
      * @param request
      * @return 
      */
@@ -263,7 +264,8 @@ public class ControllerMetas {
     }
     
     /**
-     * Metodo que devuelve las asignaciones del año
+     * Consulta de Asignaciones
+     * Metodo que devuelve la lista de asignaciones de todo un año en especifico.
      * @param request
      * @return 
      */
@@ -294,6 +296,12 @@ public class ControllerMetas {
         return output;
     }
     
+    /**
+     * Consulta de Asignaciones por ID
+     * Metodo que devuelve la información de una asignaciones en especifico.
+     * @param request
+     * @return 
+     */
     public OutputJson getAsignacionById(HttpServletRequest request){
         int idAsignacion = Integer.parseInt(request.getParameter("id_pro_metas"));
         ResponseJson response = new ResponseJson();
@@ -327,6 +335,12 @@ public class ControllerMetas {
         return output;
     }
     
+    /**
+     * Eliminación de Asignaciones de Metas
+     * Metodo que se encarga de eliminar una asignación de acuerdo al id
+     * @param request
+     * @return 
+     */
     public OutputJson deleteAsignacionMeta(HttpServletRequest request){
         int idAsignacion = Integer.parseInt(request.getParameter("id_pro_meta"));
         ResponseJson response = new ResponseJson();
@@ -358,6 +372,12 @@ public class ControllerMetas {
         return output;
     }
     
+    /**
+     * Modificación de Asignaciones de Metas
+     * Metodo que se encarga en la actualización de una asignación
+     * @param request
+     * @return 
+     */
     public OutputJson updateAsignacionMeta(HttpServletRequest request){
         int idAsignacion = Integer.parseInt(request.getParameter("id_pro_metas"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));

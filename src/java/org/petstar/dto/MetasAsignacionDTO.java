@@ -6,7 +6,7 @@
 package org.petstar.dto;
 
 /**
- *
+ * DTO de Asignacion de Metas
  * @author Tech-Pro
  */
 public class MetasAsignacionDTO {

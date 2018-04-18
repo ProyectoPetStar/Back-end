@@ -9,7 +9,7 @@ import java.util.List;
 import org.petstar.dto.UserDTO;
 
 /**
- *
+ * Modelado de JSON para usuarios
  * @author Tech-Pro
  */
 public class UserETADResponseJson {

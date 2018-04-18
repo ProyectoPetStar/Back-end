@@ -19,15 +19,16 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- *
+ * Servlet de Equipos Amut
+ * Clase que administra el acceso a Equipos Amut
  * @author Tech-Pro
  */
 @WebServlet(name = "EquipoAmut", urlPatterns = {"/EquipoAmut"})
 public class EquipoAmut extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o
+     * <code>POST</code> respectivamente.
      *
      * @param request servlet request
      * @param response servlet response
