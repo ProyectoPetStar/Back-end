@@ -24,7 +24,8 @@ import org.petstar.dto.UserSonarthDTO;
 public class UsersDAO {
 
     /**
-     * Metodo que devuelve lista de usuuarios Sonarh
+     * Consulta Usuarios Sonarh
+     * Metodo que devuelve lista de todos los usuuarios Sonarh
      * @return
      * @throws Exception 
      */
@@ -39,7 +40,8 @@ public class UsersDAO {
     }
     
     /**
-     * Metodo que devuelve los datos del usuario
+     * Mi perfil
+     * Metodo que devuelve los datos del usuario que se encuentra logueado
      * @param idUsuario
      * @return
      * @throws Exception 
@@ -60,8 +62,9 @@ public class UsersDAO {
     }
     
     /**
-     * Metodo que devuelve los datos de usuarios sonarh
-     * @param idUsuario
+     * Perfil Sonarh
+     * Metodo que devuelve la información a detalle de un usuario sonarh
+     * @param idUsuarioSonarh
      * @return
      * @throws Exception 
      */
@@ -79,7 +82,9 @@ public class UsersDAO {
 
         return datosUsuario;
     }
+    
     /**
+     * Validación Password
      * Metodo que realiza la validacion del password del usuario
      * @param contraseniaAnterior
      * @param idUsuario
@@ -103,6 +108,7 @@ public class UsersDAO {
     }
     
     /**
+     * Actualización de Password
      * Metodo que actualiza el password del usuario
      * @param contraseniaNueva
      * @param idUsuario
@@ -124,7 +130,8 @@ public class UsersDAO {
     }
 
     /**
-     * Metodo que actiualiza un usuario
+     * Actualización de Usuario
+     * Metodo que actiualiza los datos de un usuario.
      * @param idUsuario
      * @param idTurno
      * @param idPerfil
@@ -145,7 +152,8 @@ public class UsersDAO {
     }
     
     /**
-     * Metodo que permite registrar usuarios nuevos
+     * Registro de un Usuario
+     * Metodo que permite registrar usuarios nuevos al sistema.
      * @param nombre
      * @param idSonarh
      * @param idLinea
@@ -169,7 +177,8 @@ public class UsersDAO {
     }
     
     /**
-     * Metodo que devuelve la lista de los usuarios ETAD
+     * Consulta de Usuarios
+     * Metodo que devuelve la lista de todos los usuarios validos del sistema.
      * @return
      * @throws Exception 
      */
@@ -184,7 +193,8 @@ public class UsersDAO {
     }
     
     /**
-     * Metodo para eliminar usuarios ETAD
+     * Eliminación de USuarios
+     * Metodo para eliminar usuarios del sistema
      * @param idUsers
      * @throws Exception 
      */
@@ -202,7 +212,8 @@ public class UsersDAO {
     }
     
     /**
-     * metodo que valida que el usuario Sonarh no este registrado en ETAD
+     * Validación usuario valido
+     * Metodo que valida que el usuario Sonarh no este registrado en ETAD
      * @param idUserSonarh
      * @return
      * @throws Exception 
@@ -223,7 +234,8 @@ public class UsersDAO {
     }
     
     /**
-     * metodo que valida que el usuario ETAD
+     * Validación Usuario ETAD
+     * Metodo que valida que el usuario ETAD exista
      * @param idUser
      * @return
      * @throws Exception 

@@ -11,7 +11,7 @@ import org.petstar.dto.LineasDTO;
 import org.petstar.dto.ProductosDTO;
 
 /**
- *
+ * Modelo del JSON de productos
  * @author Tech-Pro
  */
 public class ProductosDataResponseJson {

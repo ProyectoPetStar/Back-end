@@ -9,7 +9,7 @@ import java.util.List;
 import org.petstar.dto.MetasAsignacionDTO;
 
 /**
- *
+ * Modelo del JSON de las asignaciones de metas
  * @author Tech-Pro
  */
 public class MetasAsignacionResponseJson {

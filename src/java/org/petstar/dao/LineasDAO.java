@@ -16,13 +16,14 @@ import org.petstar.dto.LineasDTO;
 import org.petstar.dto.ResultInteger;
 
 /**
- *
+ * Clase de Accesos a Datos de Lineas
  * @author Tech-Pro
  */
 public class LineasDAO {
     
     /**
-     * Metodo que devuelve lista de Lines en DB
+     * Consulta de Lineas
+     * Metodo que devuelve lista de Lineas.
      * @return
      * @throws Exception 
      */
@@ -40,6 +41,7 @@ public class LineasDAO {
     }
     
     /**
+     * Registro de Lineas
      * Metodo que registra una nueva linea en DB
      * @param descripcion
      * @param idGpoLinea
@@ -59,7 +61,8 @@ public class LineasDAO {
     }
     
     /**
-     * Metodo que actualiza un linea
+     * Modificación de Linea
+     * Metodo que actualiza los datos de una linea
      * @param idLinea
      * @param descripcion
      * @param activo
@@ -80,7 +83,8 @@ public class LineasDAO {
     }
     
     /**
-     * Metodo que elimina una Linea
+     * Eliminación de Linea
+     * Metodo que elimina una Linea de acuerdo al id
      * @param idLinea
      * @throws Exception 
      */
@@ -98,6 +102,7 @@ public class LineasDAO {
     }
     
     /**
+     * Consulta de linea por ID
      * Metodo que devuelve los datos de la linea de acuerdo al id
      * @param idLinea
      * @return
@@ -120,6 +125,7 @@ public class LineasDAO {
     }
     
     /**
+     * Validación para Modificar
      * Metodo que valida la descripcion antes de hacer el update de la linea
      * @param id
      * @param descripcion

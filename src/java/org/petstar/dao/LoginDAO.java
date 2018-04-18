@@ -19,6 +19,16 @@ import org.petstar.dto.UserDTO;
 
 public class LoginDAO {
 
+    /**
+     * Logueo
+     * Metodo que se encarga de validar que los datos sean correctos y devuelve 
+     * la información del usuario.
+     * @param usuario_acceso
+     * @param clave_acceso
+     * @param id_sistemas
+     * @return
+     * @throws Exception 
+     */
     public UserDTO Login(String usuario_acceso, String clave_acceso, int id_sistemas) throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
       

@@ -6,8 +6,8 @@
 package org.petstar.dto;
 
 /**
- *
- * @author GuillermoB
+ * Clase DTO de catalogos
+ * @author Tech-Pro
  */
 public class CatalogosDTO {
     private int id;

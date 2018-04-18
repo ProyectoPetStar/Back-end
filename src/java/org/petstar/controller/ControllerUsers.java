@@ -14,13 +14,14 @@ import org.petstar.model.UserResponseJson;
 import org.petstar.model.UserSonarthResponseJson;
 
 /**
- *
+ * 
  * @author Tech-Pro
  */
 public class ControllerUsers {
 
     /**
-     * Metodo que devuelve la lista de usuario de Sonarh
+     * Lista de usuarios Sonarh
+     * Metodo que devuelve la lista de usuarios de sonarh conforme al modelo.
      * @param request
      * @return 
      */
@@ -53,6 +54,7 @@ public class ControllerUsers {
     }
 
     /**
+     * Mi Perfil
      * Metodo que devuelve la información del usuario logueado
      * @param request
      * @return 
@@ -91,6 +93,7 @@ public class ControllerUsers {
     }
     
     /**
+     * Perfil de usuarios 
      * Metodo para obtener datos de los diferentes usuarios de ETAD
      * @param request
      * @return 
@@ -129,6 +132,7 @@ public class ControllerUsers {
     }
 
     /**
+     * Perfil Sonarh
      * Metodo para obtener datos de los diferentes usuarios de Sonarh
      * @param request
      * @return 
@@ -167,7 +171,8 @@ public class ControllerUsers {
     }
     
     /**
-     * Metodo que permite el cambio del password del usuario
+     * Cambio de contraseña
+     * Metodo que permite el cambio del password del usuario, validando su contraseña anterior
      * @param request
      * @return 
      */
@@ -208,7 +213,8 @@ public class ControllerUsers {
     }
     
     /**
-     * Metodo que registra un nuevo usuario para el sistema ETAD
+     * Alta de usuarios
+     * Metodo que registra un nuevo usuario para el sistema.
      * @param request
      * @return 
      */
@@ -247,7 +253,8 @@ public class ControllerUsers {
     }
     
     /** 
-     * Metodo que permite la modificacion de un usuario
+     * Modificación de Usuario
+     * Metodo que permite la actualización de datos de un usuario.
      * @param request
      * @return 
      */
@@ -282,6 +289,12 @@ public class ControllerUsers {
         return output;
     }
     
+    /**
+     * Lista de usuarios ETAD
+     * Metodo que devuelve la lista de usuarios validos para firmarse en el sistema.
+     * @param request
+     * @return 
+     */
     public OutputJson getUsersETAD(HttpServletRequest request){
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
@@ -309,7 +322,8 @@ public class ControllerUsers {
     }
     
     /**
-     * Metodo para eliminar usuarios ETAD
+     * Eliminación de usuarios.
+     * Metodo para eliminar un usuario en especifico
      * @param request
      * @return 
      */

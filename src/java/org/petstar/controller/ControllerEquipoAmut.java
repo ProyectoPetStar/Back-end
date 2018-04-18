@@ -13,7 +13,7 @@ import org.petstar.model.EquipoAmutResponseJson;
 import org.petstar.model.OutputJson;
 
 /**
- *
+ * Controlador de Equipo Amut
  * @author Tech-Pro
  */
 public class ControllerEquipoAmut {
@@ -23,6 +23,7 @@ public class ControllerEquipoAmut {
     private static final String MSG_INVALID= "Clave o Nombre ya existe";
     
     /**
+     * Consulta General
      * Metodo que devuelve la lista de Equipos Amut
      * @param request
      * @return 
@@ -53,6 +54,12 @@ public class ControllerEquipoAmut {
         return output;
     }
     
+    /**
+     * Consulta Especifica
+     * Metodo que devuelve la información del Equipo Amut de acuerdo al ID.
+     * @param request
+     * @return 
+     */
     public OutputJson getDataEquipoAmoutById(HttpServletRequest request){
         int idEquipo = Integer.parseInt(request.getParameter("id_equipo"));
         EquipoAmutResponseJson response = new EquipoAmutResponseJson();
@@ -81,6 +88,7 @@ public class ControllerEquipoAmut {
     }
     
     /**
+     * Registro de Equipo Amut
      * Metodo que permite el regitro de nuevos Equipos Amut
      * @param request
      * @return 
@@ -118,6 +126,7 @@ public class ControllerEquipoAmut {
     }
     
     /**
+     * Modificación de Equipo Amut
      * Metodo que permite la modificación de equipo amut
      * @param request
      * @return 
@@ -158,7 +167,8 @@ public class ControllerEquipoAmut {
     }
     
     /**
-     * Metodo para eliminar equipo amut
+     * Eliminación de Equipo Amut
+     * Metodo  que se encarga de la eliminación de acuerdo al id
      * @param request
      * @return 
      */
