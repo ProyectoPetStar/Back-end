@@ -130,8 +130,8 @@ public class ControllerUploadMetas {
                     } catch (ParseException ex) {
                         ex.printStackTrace();
                     }
-                    
-                    listRows.add(new ForecastDTO(fecha, csvReader.get("Turno"),
+                    java.sql.Date sDate = convertUtilToSql(fecha);
+                    listRows.add(new ForecastDTO(sDate, csvReader.get("Turno"),
                             csvReader.get("Grupo"),idLinea,
                             Float.parseFloat(csvReader.get("Meta")),
                             Float.parseFloat(csvReader.get("TMP")),
@@ -156,6 +156,12 @@ public class ControllerUploadMetas {
         File fichero = new File(pathFile);
         fichero.delete();
     }
+    
+    public java.sql.Date convertUtilToSql(java.util.Date uDate) {
+
+		java.sql.Date sDate = new java.sql.Date(uDate.getTime());
+		return sDate;
+	}
     
     public void saveRows(String dia, String mes, String turno, String grupo, 
             int idLinea, String meta, String tmp, String vel) throws ParseException{
