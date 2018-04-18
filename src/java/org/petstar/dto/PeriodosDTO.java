@@ -12,6 +12,7 @@ public class PeriodosDTO {
     private int id_periodo;
     private int anio;
     private int mes;
+    private String descripcion_mes;
     private int estatus;
 
     public int getId_periodo() {
@@ -36,6 +37,14 @@ public class PeriodosDTO {
 
     public void setMes(int mes) {
         this.mes = mes;
+    }
+
+    public String getDescripcion_mes() {
+        return descripcion_mes;
+    }
+
+    public void setDescripcion_mes(String descripcion_mes) {
+        this.descripcion_mes = descripcion_mes;
     }
 
     public int getEstatus() {

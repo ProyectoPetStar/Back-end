@@ -5,6 +5,7 @@
  */
 package org.petstar.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -16,11 +17,12 @@ public class ForecastDTO {
     private String turno;
     private String grupo;
     private int id_linea;
-    private Float meta;
-    private Float tmp;
-    private Float velocidad;
+    private BigDecimal meta;
+    private BigDecimal tmp;
+    private BigDecimal velocidad;
 
-    public ForecastDTO(Date dia, String turno, String grupo, int id_linea, Float meta, Float tmp, Float velocidad) {
+    public ForecastDTO(Date dia, String turno, String grupo, int id_linea, 
+            BigDecimal meta, BigDecimal tmp, BigDecimal velocidad) {
         this.dia = dia;
         this.turno = turno;
         this.grupo = grupo;
@@ -62,27 +64,27 @@ public class ForecastDTO {
         this.id_linea = id_linea;
     }
 
-    public Float getMeta() {
+    public BigDecimal getMeta() {
         return meta;
     }
 
-    public void setMeta(Float meta) {
+    public void setMeta(BigDecimal meta) {
         this.meta = meta;
     }
 
-    public Float getTmp() {
+    public BigDecimal getTmp() {
         return tmp;
     }
 
-    public void setTmp(Float tmp) {
+    public void setTmp(BigDecimal tmp) {
         this.tmp = tmp;
     }
 
-    public Float getVelocidad() {
+    public BigDecimal getVelocidad() {
         return velocidad;
     }
 
-    public void setVelocidad(Float velocidad) {
+    public void setVelocidad(BigDecimal velocidad) {
         this.velocidad = velocidad;
     }
 

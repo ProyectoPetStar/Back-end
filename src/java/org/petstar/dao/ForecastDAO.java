@@ -11,7 +11,7 @@ import org.petstar.dto.ForecastDTO;
  */
 public class ForecastDAO {
     
-    public void loadForecast(List<ForecastDTO> listRows) throws Exception{
+    public void loadForecast(List<ForecastDTO> listRows, int idLinea, int idFile) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -21,7 +21,7 @@ public class ForecastDAO {
         for(ForecastDTO row : listRows){
             Object[] params = {
                 row.getDia(), row.getMeta(), row.getTmp(), row.getVelocidad(), 
-                row.getTurno(), row.getGrupo(), 1, 1
+                row.getTurno(), row.getGrupo(), idLinea, idFile
             };
 
             qr.update(sql.toString(), params);

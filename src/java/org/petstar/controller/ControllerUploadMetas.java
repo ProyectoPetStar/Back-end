@@ -12,6 +12,7 @@ import org.petstar.configurations.Configuration;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import com.csvreader.CsvReader;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.petstar.dao.ForecastDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ForecastDTO;
+import org.petstar.dto.PeriodosDTO;
 import org.petstar.model.UploadMetasDataResponseJson;
 
 /**
@@ -56,20 +58,30 @@ public class ControllerUploadMetas {
         ResponseJson response = new ResponseJson();
         StringBuilder stringFile = new StringBuilder();
         stringFile.append(request.getParameter("file"));
-        String monthAndYear = request.getParameter("mes_anio");
+        int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
         int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
         
         SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
         Date date = new Date();
         String nameFile = formato.format(date) + ".csv";
         
+        PeriodosDAO periodosDAO = new PeriodosDAO();
+        PeriodosDTO periodosDTO = new PeriodosDTO();
+        periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
+        int year = periodosDTO.getAnio();
+        int month = periodosDTO.getMes();
+        
         boolean save = saveFIle(stringFile, nameFile);
         
         if(save){
-            boolean valid = validateFile(nameFile, monthAndYear, idLinea);
+            boolean valid = validateFile(nameFile, month, year, idLinea);
             if(valid){
+                int idFile=1;
+                UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
                 ForecastDAO forecastDAO = new ForecastDAO();
-                forecastDAO.loadForecast(listRows);
+                forecastDAO.loadForecast(listRows, idLinea, idFile);
+                data.setListMetas(listRows);
+                output.setData(data);
                 response.setMessage("OK");
                 response.setSucessfull(true);
                 
@@ -124,7 +136,7 @@ public class ControllerUploadMetas {
         return estatus;
     }
     
-    public boolean validateFile(String nameFile, String monthAndYear, int idLinea) 
+    public boolean validateFile(String nameFile, int month, int year, int idLinea) 
             throws FileNotFoundException, IOException, ParseException{
         
         String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
@@ -135,7 +147,7 @@ public class ControllerUploadMetas {
             csvReader.readHeaders();
              
             while (csvReader.readRecord()) {
-                boolean validDay = validateDay(csvReader.get("Dia"), monthAndYear);
+                boolean validDay = validateDay(csvReader.get("Dia"), month, year);
                 boolean validTurno = validateTurno(csvReader.get("Turno"));
                 boolean validGrupo = validateGrupo( csvReader.get("Grupo"));
                 boolean validMeta = validateMetaMolido(csvReader.get("Meta"));
@@ -146,19 +158,21 @@ public class ControllerUploadMetas {
                     bandera = false;
                 }else{
                     SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
-                    String strfecha = csvReader.get("Dia") + "/" + monthAndYear;
+                    String strfecha = csvReader.get("Dia") + "/" + month + "/" + year;
                     Date fecha = null;
                     try {
                         fecha = formatoDelTexto.parse(strfecha);
                     } catch (ParseException ex) {
                         ex.printStackTrace();
                     }
+                    
+                    BigDecimal meta = new BigDecimal(csvReader.get("Meta"));
+                    BigDecimal tmp = new BigDecimal(csvReader.get("TMP"));
+                    BigDecimal vel = new BigDecimal(csvReader.get("Vel"));
                     java.sql.Date sDate = convertUtilToSql(fecha);
+                    
                     listRows.add(new ForecastDTO(sDate, csvReader.get("Turno"),
-                            csvReader.get("Grupo"),idLinea,
-                            Float.parseFloat(csvReader.get("Meta")),
-                            Float.parseFloat(csvReader.get("TMP")),
-                            Float.parseFloat(csvReader.get("Vel"))
+                            csvReader.get("Grupo"),idLinea, meta, tmp, vel
                     )); 
                 }
             }
@@ -180,10 +194,6 @@ public class ControllerUploadMetas {
         fichero.delete();
     }
        
-    public void saveRows(String dia, String mes, String turno, String grupo, 
-            int idLinea, String meta, String tmp, String vel) throws ParseException{
-    }
-
     public List<ForecastDTO> getListRows() {
         return listRows;
     }
