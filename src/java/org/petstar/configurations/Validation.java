@@ -12,10 +12,10 @@ import static org.petstar.configurations.utils.obtenerMes;
  */
 public class Validation {
     
-    public static boolean validateDay(String day, String month){
+    public static boolean validateDay(String day, int month, int anio){
         if(day.matches("^[0-9]{1,2}$")){
             SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
-            String strfecha = "01/" + month;
+            String strfecha = "01/" + month + "/" + anio;
             Date fecha = null;
             try {
                 fecha = formatoDelTexto.parse(strfecha);
