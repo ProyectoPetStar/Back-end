@@ -55,6 +55,9 @@ public class UploadFile extends HttpServlet {
                 case "uploadMetasCSV":
                    output = controllerUploadMetas.uploadFileMetas(request);
                    break;
+                case "loadCombobox":
+                    output = controllerUploadMetas.loadCombobox(request);
+                    break;
             }
         } catch (IOException ex) {
             ResponseJson reponseJson = new ResponseJson();
