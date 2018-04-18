@@ -16,13 +16,12 @@ public class ForecastDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("INSERT INTO pet_tmp_meta (dia,meta,tmp,velocidad,id_turno,id_grupo,id_linea,id_archivo) VALUES (?,?,?,?,?,?,?,?)");
+        sql.append("EXEC sp_insert_petTmpMetas ?,?,?,?,?,?,?,?");
         
         for(ForecastDTO row : listRows){
             Object[] params = {
                 row.getDia(), row.getMeta(), row.getTmp(), row.getVelocidad(), 
-                row.getTurno(), row.getGrupo(), 1, 1, 
-                
+                row.getTurno(), row.getGrupo(), 1, 1
             };
 
             qr.update(sql.toString(), params);

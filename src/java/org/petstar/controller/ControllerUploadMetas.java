@@ -16,8 +16,12 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import static org.petstar.configurations.Validation.*;
+import static org.petstar.configurations.utils.convertUtilToSql;
 import org.petstar.dao.ForecastDAO;
+import org.petstar.dao.LineasDAO;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ForecastDTO;
+import org.petstar.model.UploadMetasDataResponseJson;
 
 /**
  *
@@ -25,6 +29,25 @@ import org.petstar.dto.ForecastDTO;
  */
 public class ControllerUploadMetas {
     private List<ForecastDTO> listRows = new ArrayList<>();
+    
+    public OutputJson loadCombobox(HttpServletRequest request) throws Exception{
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        PeriodosDAO periodosDAO = new PeriodosDAO();
+        LineasDAO lineasDAO = new LineasDAO();
+        UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
+        
+        data.setListLineas(lineasDAO.getLineasData());
+        data.setListPeriodos(periodosDAO.getPeriodos());
+        
+        output.setData(data);
+        response.setMessage("OK");
+        response.setSucessfull(true);
+        
+        output.setResponse(response);
+        return output;
+    }
     
     public OutputJson uploadFileMetas(HttpServletRequest request) 
             throws FileNotFoundException, IOException, ParseException, Exception {
@@ -156,13 +179,7 @@ public class ControllerUploadMetas {
         File fichero = new File(pathFile);
         fichero.delete();
     }
-    
-    public java.sql.Date convertUtilToSql(java.util.Date uDate) {
-
-		java.sql.Date sDate = new java.sql.Date(uDate.getTime());
-		return sDate;
-	}
-    
+       
     public void saveRows(String dia, String mes, String turno, String grupo, 
             int idLinea, String meta, String tmp, String vel) throws ParseException{
     }
