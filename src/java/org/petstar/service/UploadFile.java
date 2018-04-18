@@ -41,7 +41,7 @@ public class UploadFile extends HttpServlet {
      * @throws java.text.ParseException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, FileNotFoundException, ParseException {
+            throws ServletException, IOException, FileNotFoundException, ParseException, Exception {
         Configuration.setHeadersJson(response);
     
         PrintWriter out = response.getWriter();
@@ -84,6 +84,8 @@ public class UploadFile extends HttpServlet {
             processRequest(request, response);
         } catch (ParseException ex) {
             Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -102,6 +104,8 @@ public class UploadFile extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ParseException ex) {
+            Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(UploadFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

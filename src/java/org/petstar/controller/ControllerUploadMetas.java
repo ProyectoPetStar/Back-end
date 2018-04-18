@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import static org.petstar.configurations.Validation.*;
+import org.petstar.dao.ForecastDAO;
 import org.petstar.dto.ForecastDTO;
 
 /**
@@ -23,10 +24,10 @@ import org.petstar.dto.ForecastDTO;
  * @author Tech-Pro
  */
 public class ControllerUploadMetas {
-    private List<ForecastDTO> listRows = new ArrayList<ForecastDTO>();
+    private List<ForecastDTO> listRows = new ArrayList<>();
     
     public OutputJson uploadFileMetas(HttpServletRequest request) 
-            throws FileNotFoundException, IOException, ParseException {
+            throws FileNotFoundException, IOException, ParseException, Exception {
         
         OutputJson output = new OutputJson();
         ResponseJson response = new ResponseJson();
@@ -44,13 +45,10 @@ public class ControllerUploadMetas {
         if(save){
             boolean valid = validateFile(nameFile, monthAndYear, idLinea);
             if(valid){
-                response.setMessage("OK" + listRows.size());
+                ForecastDAO forecastDAO = new ForecastDAO();
+                forecastDAO.loadForecast(listRows);
+                response.setMessage("OK");
                 response.setSucessfull(true);
-                for(ForecastDTO emp : listRows){
-             
-                    System.out.println(emp.getDia()+ " - " + emp.getTurno() + " - "
-                        + emp.getGrupo() + " - " + emp.getMeta());
-                }
                 
             }else{
                 response.setMessage("Error. El archivo tiene errores.");
