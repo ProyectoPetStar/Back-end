@@ -11,6 +11,7 @@ package org.petstar.dto;
  */
 public class CatalogosDTO {
     private int id;
+    private String valor;
     private String descripcion;
     private int activo;
 
@@ -20,6 +21,14 @@ public class CatalogosDTO {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
     }
 
     public String getDescripcion() {

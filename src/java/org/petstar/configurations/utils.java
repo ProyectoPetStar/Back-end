@@ -124,4 +124,11 @@ public class utils {
         java.sql.Date sDate = new java.sql.Date(uDate.getTime());
 	return sDate;
     }
+    
+    public static java.sql.Date convertStringToSql(String fecha) throws ParseException{
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        Date parsed = format.parse(fecha);
+        java.sql.Date sql = new java.sql.Date(parsed.getTime());
+        return sql;
+    }
 }
