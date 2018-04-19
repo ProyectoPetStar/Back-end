@@ -48,35 +48,26 @@ public class Metas extends HttpServlet {
         try {
             String action = request.getParameter("action");
             switch (action) {
-                case "getDataMetasCatalog":
-                   output = controllerMetas.getMetasDataCarga(request);
+                case "getAllMetas":
+                   output = controllerMetas.getAllMetas(request);
                    break;
                 case "getDataMetasCatalogById":
                    output = controllerMetas.getMetasDataCargaById(request);
                    break;
-                case "insertNewMetaCatalog":
-                    output = controllerMetas.insertNewMetaCarga(request);
+                case "insertNewMeta":
+                    output = controllerMetas.insertNewMeta(request);
                     break;
                 case "updateNewMetaCatalog":
                     output = controllerMetas.updateMetaCarga(request);
                     break;
-                case "loadComboxData":
-                    output = controllerMetas.loadCombosCatalogs(request);
-                    break;
-                case "asignaValorMeta":
-                    output = controllerMetas.registraAsignacionMeta(request);
+                case "loadCombobox":
+                    output = controllerMetas.loadCombobox(request);
                     break;
                 case "getAllAsignacionesByYear":
                     output = controllerMetas.getAllAsignacionesByYear(request);
                     break;
                 case "getAsignacionById":
                     output = controllerMetas.getAsignacionById(request);
-                    break;
-                case "deleteAsignacionMeta":
-                    output = controllerMetas.deleteAsignacionMeta(request);
-                    break;
-                case "updateAsignacionMeta":
-                    output = controllerMetas.updateAsignacionMeta(request);
                     break;
             }
         } catch (Exception ex) {

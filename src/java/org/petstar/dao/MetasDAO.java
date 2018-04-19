@@ -1,6 +1,7 @@
 package org.petstar.dao;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -24,12 +25,12 @@ public class MetasDAO {
      * @return
      * @throws Exception 
      */
-    public List<MetasDTO> getMetasCarga() throws Exception{
+    public List<MetasDTO> getAllMetas() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectPetCarMetas");
+        sql.append("EXEC sp_selectPetMetas");
         
         ResultSetHandler rsh = new BeanListHandler(MetasDTO.class);
         List<MetasDTO> dataMetas = (List<MetasDTO>) qr.query(sql.toString(), rsh); 
@@ -59,22 +60,28 @@ public class MetasDAO {
         return dataMetas;
     }
     
-    /**
-     * Registra Metas
-     * Metodo para registrar una nueva Meta en el catalogo
-     * @param idLinea
-     * @param meta
-     * @param tipoMedida
-     * @throws Exception 
-     */
-    public void insertMetaCarga(int idLinea, String meta, String tipoMedida) throws Exception{
+   /**
+    * Registra Metas
+    * Metodo para registrar una nueva Meta en el catalogo
+    * @param dia
+    * @param meta
+    * @param tmp
+    * @param velocidad
+    * @param idTurno
+    * @param idGrupo
+    * @param idLinea
+    * @throws Exception 
+    */
+    public void insertNewMeta(Date dia, BigDecimal meta, BigDecimal tmp, BigDecimal velocidad, 
+            int idTurno, int idGrupo, int idLinea) throws Exception{
+        
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_insertPetCarMetas ?, ?, ?");
+        
+        sql.append("EXEC sp_insertManual_petMetas ?, ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            idLinea, meta, tipoMedida
+            dia, meta, tmp, velocidad, idTurno, idGrupo, idLinea
         };
         
         qr.update(sql.toString(), params);

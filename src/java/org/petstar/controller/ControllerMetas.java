@@ -9,15 +9,17 @@ import org.petstar.model.MetasAsignacionResponseJson;
 import org.petstar.model.MetasDataResponseJson;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
+import static org.petstar.configurations.utils.convertStringToSql;
+import org.petstar.dao.LineasDAO;
 
 /**
  * Controlador de Metas
  * @author Tech-Pro
  */
 public class ControllerMetas {
-    private static final String TABLE_GRUPOS = "pet_cat_grupos";
+    private static final String TABLE_GRUPOS = "pet_cat_grupo";
     private static final String TABLE_LINEAS = "pet_cat_lineas";
-    private static final String TABLE_TURNOS = "pet_cat_turnos";
+    private static final String TABLE_TURNOS = "pet_cat_turno";
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
@@ -30,25 +32,25 @@ public class ControllerMetas {
      * @param request
      * @return 
      */
-    public OutputJson getMetasDataCarga(HttpServletRequest request){
+    public OutputJson getAllMetas(HttpServletRequest request){
         
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+//        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
         
         try{
-            if(controllerAutenticacion.isValidToken(request)){
+//            if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
                 MetasDataResponseJson data = new MetasDataResponseJson();
-                data.setListMetas(metasDAO.getMetasCarga());
+                data.setListMetas(metasDAO.getAllMetas());
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
+//            }else{
+//                response.setMessage(MSG_LOGOUT);
+//                response.setSucessfull(false);
+//            }
         }catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -102,32 +104,36 @@ public class ControllerMetas {
      * @param request
      * @return 
      */
-    public OutputJson insertNewMetaCarga(HttpServletRequest request){
-        int idLinea = Integer.parseInt(request.getParameter("idLinea"));
-        String meta = request.getParameter("meta");
-        String tipoMedida = request.getParameter("tipoMedida");
+    public OutputJson insertNewMeta(HttpServletRequest request){
+        String dia = request.getParameter("dia");
+        BigDecimal meta = new BigDecimal(request.getParameter("meta"));
+        BigDecimal tmp = new BigDecimal(request.getParameter("tmp"));
+        BigDecimal vel = new BigDecimal(request.getParameter("velocidad"));
+        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+//        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
         
         try{
-            if(controllerAutenticacion.isValidToken(request)){
+//            if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
-                ResultInteger result = metasDAO.validaDataForInsertCarga(idLinea, meta);
-                if(result.getResult().equals(0)){
-                    metasDAO.insertMetaCarga(idLinea, meta, tipoMedida);
+//                ResultInteger result = metasDAO.validaDataForInsertCarga(idLinea, meta);
+//                if(result.getResult().equals(0)){
+                    metasDAO.insertNewMeta(convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, idLinea);
                 
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
-                }else{
-                    response.setMessage(MSG_INVALID);
-                    response.setSucessfull(false);
-                }
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
+//                }else{
+//                    response.setMessage(MSG_INVALID);
+//                    response.setSucessfull(false);
+//                }
+//            }else{
+//                response.setMessage(MSG_LOGOUT);
+//                response.setSucessfull(false);
+//            }
         }catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -185,29 +191,28 @@ public class ControllerMetas {
      * @param request
      * @return 
      */
-    public OutputJson loadCombosCatalogs(HttpServletRequest request){
+    public OutputJson loadCombobox(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+//        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
         
         try{
-            if(controllerAutenticacion.isValidToken(request)){
-                MetasDAO metasDAO = new MetasDAO();
+//            if(controllerAutenticacion.isValidToken(request)){
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
                 MetasDataResponseJson data = new MetasDataResponseJson();
                 
-                data.setListMetas(metasDAO.getMetasCarga());
                 data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                data.setListLineas(catalogosDAO.getCatalogos(TABLE_LINEAS));
                 data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+                data.setListLineas(lineasDAO.getLineasData());
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
+//            }else{
+//                response.setMessage(MSG_LOGOUT);
+//                response.setSucessfull(false);
+//            }
         }catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -273,10 +278,10 @@ public class ControllerMetas {
         int year = Integer.parseInt(request.getParameter("year"));
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        //ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+            //if(autenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
                 MetasAsignacionResponseJson marj = new MetasAsignacionResponseJson();
                         
@@ -284,10 +289,10 @@ public class ControllerMetas {
                 output.setData(marj);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());

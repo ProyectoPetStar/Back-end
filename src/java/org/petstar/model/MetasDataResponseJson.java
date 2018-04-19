@@ -7,6 +7,7 @@ package org.petstar.model;
 
 import java.util.List;
 import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.LineasDTO;
 import org.petstar.dto.MetasDTO;
 
 /**
@@ -16,7 +17,7 @@ import org.petstar.dto.MetasDTO;
 public class MetasDataResponseJson {
     private MetasDTO metasDTO;
     private List<MetasDTO> listMetas;
-    private List<CatalogosDTO> listLineas;
+    private List<LineasDTO> listLineas;
     private List<CatalogosDTO> listTurnos;
     private List<CatalogosDTO> listGrupos;
 
@@ -36,11 +37,11 @@ public class MetasDataResponseJson {
         this.listMetas = listMetas;
     }
 
-    public List<CatalogosDTO> getListLineas() {
+    public List<LineasDTO> getListLineas() {
         return listLineas;
     }
 
-    public void setListLineas(List<CatalogosDTO> listLineas) {
+    public void setListLineas(List<LineasDTO> listLineas) {
         this.listLineas = listLineas;
     }
 
