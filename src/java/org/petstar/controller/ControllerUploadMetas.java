@@ -15,6 +15,7 @@ import com.csvreader.CsvReader;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import static org.petstar.configurations.Validation.*;
 import static org.petstar.configurations.utils.convertUtilToSql;
@@ -23,6 +24,7 @@ import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ForecastDTO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ResultInteger;
 import org.petstar.model.UploadMetasDataResponseJson;
 
 /**
@@ -66,8 +68,7 @@ public class ControllerUploadMetas {
         String nameFile = formato.format(date) + ".csv";
         
         PeriodosDAO periodosDAO = new PeriodosDAO();
-        PeriodosDTO periodosDTO = new PeriodosDTO();
-        periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
+        PeriodosDTO periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
         int year = periodosDTO.getAnio();
         int month = periodosDTO.getMes();
         
@@ -76,10 +77,13 @@ public class ControllerUploadMetas {
         if(save){
             boolean valid = validateFile(nameFile, month, year, idLinea);
             if(valid){
-                int idFile=1;
-                UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
                 ForecastDAO forecastDAO = new ForecastDAO();
-                forecastDAO.loadForecast(listRows, idLinea, idFile);
+                java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                forecastDAO.saveFile(nameFile, idPeriodo, idLinea, 1, fecha);
+                ResultInteger idFile= forecastDAO.getIdFile(nameFile);
+                UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
+                
+                forecastDAO.loadForecast(listRows, idLinea, idFile.getResult(), idPeriodo);
                 data.setListMetas(listRows);
                 output.setData(data);
                 response.setMessage("OK");
@@ -192,6 +196,23 @@ public class ControllerUploadMetas {
         
         File fichero = new File(pathFile);
         fichero.delete();
+    }
+    
+    public OutputJson procesarFile(HttpServletRequest request) throws Exception{
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
+        int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
+        
+        ForecastDAO forecastDAO = new ForecastDAO();
+        forecastDAO.procesarFile(idLinea, idPeriodo);
+        
+        response.setMessage("OK");
+        response.setSucessfull(true);
+        output.setResponse(response);
+        
+        return output;
     }
        
     public List<ForecastDTO> getListRows() {
