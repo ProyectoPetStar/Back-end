@@ -22,18 +22,24 @@ public class MetasDAO {
     /**
      * Lista de Metas Catálogo
      * Metodo que devuelve la lista del catalogo de Metas
+     * @param mes
+     * @param anio
+     * @param idLinea
      * @return
      * @throws Exception 
      */
-    public List<MetasDTO> getAllMetas() throws Exception{
+    public List<MetasDTO> getAllMetas(int mes, int anio, int idLinea) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectPetMetas");
+        
+        sql.append("EXEC sp_select_petMetasByPeriodoLinea ?, ?, ?");
+        Object[] params = {
+            mes, anio, idLinea
+        };
         
         ResultSetHandler rsh = new BeanListHandler(MetasDTO.class);
-        List<MetasDTO> dataMetas = (List<MetasDTO>) qr.query(sql.toString(), rsh); 
+        List<MetasDTO> dataMetas = (List<MetasDTO>) qr.query(sql.toString(), rsh, params); 
         
         return dataMetas;
     }
@@ -45,12 +51,12 @@ public class MetasDAO {
      * @return
      * @throws Exception 
      */
-    public MetasDTO getMetasCargaById(int idMeta) throws Exception{
+    public MetasDTO getMetaById(int idMeta) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetCarMetasById ?");
+        sql.append("EXEC sp_select_petMetasById ?");
         Object[] params ={
             idMeta
         };
@@ -91,21 +97,27 @@ public class MetasDAO {
      * Modificación de Metas
      * Metodo para actualizar los datos de una Meta en especifico
      * @param idMeta
-     * @param idLinea
+     * @param dia
      * @param meta
-     * @param tipoMedida
-     * @param posicion
-     * @param activo
+     * @param tmp
+     * @param vel
+     * @param idTurno
+     * @param idGrupo
+     * @param idLinea
+     * @param idFile
+     * @param idUsuarioMod
+     * @param fechaMod
      * @throws Exception 
      */
-    public void updateMetaCarga(int idMeta, int idLinea, String meta, String tipoMedida, int posicion, int activo) throws Exception{
+    public void updateMeta(int idMeta, Date dia, BigDecimal meta, BigDecimal tmp, BigDecimal vel, 
+            int idTurno, int idGrupo, int idLinea, int idFile, int idUsuarioMod, Date fechaMod) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-        
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_updatePetCarMetas ?, ?, ?, ?, ?, ?");
+        
+        sql.append("EXEC sp_update_petMeta ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            idMeta, idLinea, meta, tipoMedida, posicion, activo
+            idMeta, dia, meta, tmp, vel, idTurno, idGrupo, idLinea, idFile, idUsuarioMod, fechaMod
         };
         
         qr.update(sql.toString(), params);

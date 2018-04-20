@@ -20,9 +20,9 @@ public class MetasDTO {
     private Float velocidad;
     private int id_turno;
     private int id_grupo;
-    private String name_grupo;
+    private String nombre_grupo;
     private int id_linea;
-    private String name_linea;
+    private String valor;
     private int id_archivo;
     private int id_usuario_modifica;
     private Date fecha_modificacion;
@@ -83,12 +83,12 @@ public class MetasDTO {
         this.id_grupo = id_grupo;
     }
 
-    public String getName_grupo() {
-        return name_grupo;
+    public String getNombre_grupo() {
+        return nombre_grupo;
     }
 
-    public void setName_grupo(String name_grupo) {
-        this.name_grupo = name_grupo;
+    public void setNombre_grupo(String nombre_grupo) {
+        this.nombre_grupo = nombre_grupo;
     }
 
     public int getId_linea() {
@@ -99,14 +99,14 @@ public class MetasDTO {
         this.id_linea = id_linea;
     }
 
-    public String getName_linea() {
-        return name_linea;
+    public String getValor() {
+        return valor;
     }
 
-    public void setName_linea(String name_linea) {
-        this.name_linea = name_linea;
+    public void setValor(String valor) {
+        this.valor = valor;
     }
-
+    
     public int getId_archivo() {
         return id_archivo;
     }
