@@ -51,23 +51,17 @@ public class Metas extends HttpServlet {
                 case "getAllMetas":
                    output = controllerMetas.getAllMetas(request);
                    break;
-                case "getDataMetasCatalogById":
-                   output = controllerMetas.getMetasDataCargaById(request);
+                case "getMetaById":
+                   output = controllerMetas.getMetaById(request);
                    break;
                 case "insertNewMeta":
                     output = controllerMetas.insertNewMeta(request);
                     break;
-                case "updateNewMetaCatalog":
+                case "updateMeta":
                     output = controllerMetas.updateMetaCarga(request);
                     break;
                 case "loadCombobox":
                     output = controllerMetas.loadCombobox(request);
-                    break;
-                case "getAllAsignacionesByYear":
-                    output = controllerMetas.getAllAsignacionesByYear(request);
-                    break;
-                case "getAsignacionById":
-                    output = controllerMetas.getAsignacionById(request);
                     break;
             }
         } catch (Exception ex) {

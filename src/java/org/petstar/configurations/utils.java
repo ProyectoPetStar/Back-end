@@ -8,7 +8,9 @@ package org.petstar.configurations;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Clase que permite definir metodos recurrentes; 
@@ -130,5 +132,17 @@ public class utils {
         Date parsed = format.parse(fecha);
         java.sql.Date sql = new java.sql.Date(parsed.getTime());
         return sql;
+    }
+    
+    public static java.sql.Date getCurrentDate(){
+        java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        return fecha;
+    }
+    
+    public static java.sql.Date sumarFechasDias(java.sql.Date fch, int dias) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(fch.getTime());
+        cal.add(Calendar.DATE, dias);
+        return new java.sql.Date(cal.getTimeInMillis());
     }
 }
