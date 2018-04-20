@@ -9,7 +9,7 @@ import java.util.List;
 import org.petstar.dto.LineasDTO;
 
 /**
- *
+ * Modelado de JSON para las lineas
  * @author Tech-Pro
  */
 public class LineasDataResponseJson {

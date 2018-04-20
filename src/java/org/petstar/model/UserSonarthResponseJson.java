@@ -7,7 +7,7 @@ package org.petstar.model;
 import org.petstar.dto.UserSonarthDTO;
 import java.util.List;
 /**
- *
+ * Modelado de JSON para usuarios Sonarh
  * @author Tech-Pro
  */
 public class UserSonarthResponseJson {

@@ -6,7 +6,7 @@
 package org.petstar.dto;
 
 /**
- *
+ * Clase DTO de Equipo Amut
  * @author Tech-Pro
  */
 public class EquipoAmutDTO {

@@ -9,7 +9,7 @@ import java.util.List;
 import org.petstar.dto.EquipoAmutDTO;
 
 /**
- *
+ * Clase de Modelo del response
  * @author Tech-Pro
  */
 public class EquipoAmutResponseJson extends ResponseJson{

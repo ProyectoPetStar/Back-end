@@ -32,7 +32,8 @@ public class ControllerProductos {
     private static final String TABLE_GRUPOS= "pet_cat_grupos";
     
     /**
-     * Metodo para cargar las listas de los combos
+     * Llenado de listas
+     * Metodo para cargar los valores de los combos a utilizar
      * @param request
      * @return 
      */
@@ -93,7 +94,8 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo que devuelve la lista de productos
+     * Lista de productos
+     * Metodo que devuelve la lista de productos existentes segun el modelo
      * @param request
      * @return 
      */
@@ -126,7 +128,8 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo que devuelve un producto en especifico
+     * Producto en Especifico
+     * Metodo que devuelve los datos de un producto en especifico
      * @param request
      * @return 
      */
@@ -164,7 +167,8 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo para insertar un Nuevo producto
+     * Registrar Nuevo Producto
+     * Metodo para dar de alta un Nuevo producto en el sistema
      * @param request
      * @return 
      */
@@ -202,7 +206,8 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo que permite modificar un producto
+     * Modificación de Productos
+     * Metodo que permite actualizar la información de un producto en especifico
      * @param request
      * @return 
      */
@@ -242,127 +247,134 @@ public class ControllerProductos {
     }
     
     /** 
-     * Metodo para asignacion de valores a productos
+     * Asignación de valor a Producto
+     * Metodo para asignacion de valores correspondientes por dia a los diferentes productos de la linea
      * @param request
      * @return 
      */
-    public OutputJson registraAsignacionByProducto(HttpServletRequest request){
-        int perfil = Integer.parseInt(request.getParameter("perfil"));
-        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
-        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
-        int idLinea =Integer.parseInt(request.getParameter("id_linea"));
-        String dia = request.getParameter("dia_producto");
-        Float valor = Float.parseFloat(request.getParameter("valor"));
-                
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                if(idTurno == 0){
-                    idTurno = getTurno();
-                }
-                ResultInteger result = productosDAO.validaForRegistrarAsignacion(idProducto, idTurno, dia);
-                if(result.getResult().equals(0)){
-                    if(perfil == 5){
-                        if(validateIfCanEdit(idGrupo, idLinea)){
-                            productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
-                            response.setSucessfull(true);
-                            response.setMessage(MSG_SUCESS);
-                        }else{
-                            response.setMessage("Fuera de Horario.");
-                            response.setSucessfull(false);
-                        }
-                    }else{
-                        productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
-                        response.setSucessfull(true);
-                        response.setMessage(MSG_SUCESS);
-                    }
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Ya existe un valor para ese producto");
-                }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
-        } catch(Exception ex){
-            response.setSucessfull(false);
-            response.setMessage(MSG_ERROR + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
+//    public OutputJson registraAsignacionByProducto(HttpServletRequest request){
+//        int perfil = Integer.parseInt(request.getParameter("perfil"));
+//        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+//        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
+//        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+//        int idLinea =Integer.parseInt(request.getParameter("id_linea"));
+//        String dia = request.getParameter("dia_producto");
+//        Float valor = Float.parseFloat(request.getParameter("valor"));
+//                
+//        ResponseJson response = new ResponseJson();
+//        OutputJson output = new OutputJson();
+//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+//        
+//        try{
+//            if(autenticacion.isValidToken(request)){
+//                ProductosDAO productosDAO = new ProductosDAO();
+//                if(idTurno == 0){
+//                    idTurno = getTurno();
+//                }
+//                ResultInteger result = productosDAO.validaForRegistrarAsignacion(idProducto, idTurno, dia);
+//                if(result.getResult().equals(0)){
+//                    if(perfil == 5){
+//                        if(validateIfCanEdit(idGrupo, idLinea)){
+//                            productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
+//                            response.setSucessfull(true);
+//                            response.setMessage(MSG_SUCESS);
+//                        }else{
+//                            response.setMessage("Fuera de Horario.");
+//                            response.setSucessfull(false);
+//                        }
+//                    }else{
+//                        productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
+//                        response.setSucessfull(true);
+//                        response.setMessage(MSG_SUCESS);
+//                    }
+//                }else{
+//                    response.setSucessfull(false);
+//                    response.setMessage("Ya existe un valor para ese producto");
+//                }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
+//        } catch(Exception ex){
+//            response.setSucessfull(false);
+//            response.setMessage(MSG_ERROR + ex.getMessage());
+//        }
+//        output.setResponse(response);
+//        return output;
+//    }
     
     /**
      * Metodo que devuelve todas las asignaciones del día
      * @param request
      * @return 
      */
-    public OutputJson getAllAsignacionesByDays(HttpServletRequest request){
-        String fechaInicio = request.getParameter("fecha_inicio");
-        String fechaFin = request.getParameter("fecha_fin");
-        
-        fechaInicio = getDateCorrect(fechaInicio);
-        fechaFin = getDateCorrect(fechaFin);
-        
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                
-                parj.setListProductosAsignacion(productosDAO.getAllAsignacionesByDays(fechaInicio, fechaFin));
-                output.setData(parj);
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
-        } catch(Exception ex){
-            response.setMessage(MSG_ERROR + ex.getMessage());
-            response.setSucessfull(false);
-        }
-        output.setResponse(response);
-        return  output;
-    }
+//    public OutputJson getAllAsignacionesByDays(HttpServletRequest request){
+//        String fechaInicio = request.getParameter("fecha_inicio");
+//        String fechaFin = request.getParameter("fecha_fin");
+//        
+//        fechaInicio = getDateCorrect(fechaInicio);
+//        fechaFin = getDateCorrect(fechaFin);
+//        
+//        ResponseJson response = new ResponseJson();
+//        OutputJson output = new OutputJson();
+//        ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
+//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+//        
+//        try{
+//            if(autenticacion.isValidToken(request)){
+//                ProductosDAO productosDAO = new ProductosDAO();
+//                
+//                parj.setListProductosAsignacion(productosDAO.getAllAsignacionesByDays(fechaInicio, fechaFin));
+//                output.setData(parj);
+//                response.setSucessfull(true);
+//                response.setMessage(MSG_SUCESS);
+//            }else{
+//                response.setMessage(MSG_LOGOUT);
+//                response.setSucessfull(false);
+//            }
+//        } catch(Exception ex){
+//            response.setMessage(MSG_ERROR + ex.getMessage());
+//            response.setSucessfull(false);
+//        }
+//        output.setResponse(response);
+//        return  output;
+//    }
     
     /**
      * Metodo que modifica una asignacion
      * @param request
      * @return 
      */
-    public OutputJson updateAsignacion(HttpServletRequest request){
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                
-                productosDAO.updateAsignacion();
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
-        }catch(Exception ex){
-            response.setSucessfull(false);
-            response.setMessage(MSG_ERROR + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
+//    public OutputJson updateAsignacion(HttpServletRequest request){
+//        ResponseJson response = new ResponseJson();
+//        OutputJson output = new OutputJson();
+//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+//        
+//        try{
+//            if(autenticacion.isValidToken(request)){
+//                ProductosDAO productosDAO = new ProductosDAO();
+//                
+//                productosDAO.updateAsignacion();
+//                response.setSucessfull(true);
+//                response.setMessage(MSG_SUCESS);
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
+//        }catch(Exception ex){
+//            response.setSucessfull(false);
+//            response.setMessage(MSG_ERROR + ex.getMessage());
+//        }
+//        output.setResponse(response);
+//        return output;
+//    }
     
+    /**
+     * Visualización de Metas
+     * Metodo que devuelve el listado de metas dependiendo el perfil, al perfil 3 le muestra todo, al perfil 4 las no liberadas, perfil 5 los del día
+     * @param request
+     * @return 
+     */
     public OutputJson getAllAsignacionesMetasByDays(HttpServletRequest request){
         int perfil = Integer.parseInt(request.getParameter("perfil"));
         String fechaInicio = request.getParameter("fecha_inicio");
@@ -420,6 +432,12 @@ public class ControllerProductos {
         return  output;
     }
     
+    /**
+     * Productos para asignar
+     * Metodo que devulve la lista de productos que tiene cada linea para que capturen los valores correspondientes
+     * @param request
+     * @return 
+     */
     public OutputJson getAllProductosForAsignacion(HttpServletRequest request){
         String dia = request.getParameter("dia");
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
@@ -454,7 +472,8 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo que permite la validacion para que entren los integradores a capturar
+     * Validación para poder capturar
+     * Metodo que permite realiza la validacion para que entren los integradores a capturar los valores a los productos
      * @param idGrupo
      * @param idLinea
      * @return
@@ -470,7 +489,7 @@ public class ControllerProductos {
             ProductosDAO productosDAO = new ProductosDAO();
             ResultInteger result = productosDAO.validaGrupoTurno(idGrupo, turno,idLinea, diaMeta);
             
-            valid = (result.getResult().equals(1))?true:false;
+            valid = (result.getResult().equals(1));
         }else{
             valid = false;
         }

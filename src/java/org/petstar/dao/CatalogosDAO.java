@@ -16,13 +16,14 @@ import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ResultInteger;
 
 /**
- *
+ * Clase DAO de Catalogos
  * @author TechPro
  */
 public class CatalogosDAO {
     
     /**
-     * Metodo generico que devuelve la lista de datos en DB 
+     * Consulta General
+     * Metodo generico que devuelve la lista de los catalogos
      * @param tablename
      * @return
      * @throws Exception 
@@ -32,19 +33,20 @@ public class CatalogosDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectPetCatalogos ?");
+        sql.append("SELECT * FROM " + tablename + " WHERE activo =1");
         Object[] params = {
             tablename
         };
         
         ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
-        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh, params); 
+        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh); 
         
         return data_catalogos;
     }
     
     /**
-     * Metodo generico para dar de alta nuevos registros
+     * Registro de Catalogos
+     * Metodo generico para dar de alta nuevos registros de catalogos
      * @param tableName
      * @param descripcion
      * @throws Exception 
@@ -63,6 +65,7 @@ public class CatalogosDAO {
     }
     
     /**
+     * Modificación de Catalogos
      * Metodo generico para actualizar registros de catalogos
      * @param id
      * @param descripcion
@@ -84,7 +87,8 @@ public class CatalogosDAO {
     }
     
     /**
-     * Metodo generico que elimina registros de catalogos
+     * Eliminación de Catalogos
+     * Metodo generico que elimina registros de catalogos de acuerdo al ID
      * @param id
      * @param tableName
      * @throws Exception 
@@ -103,7 +107,9 @@ public class CatalogosDAO {
     }
     
     /**
-     * Metodo generico que valida las desscripciones de los catalogos en insert
+     * Validación para Insert
+     * Metodo generico que valida las desscripciones de los catalogos para
+     * evitar datos duplicados
      * @param tableName
      * @param descripcion
      * @return
@@ -125,7 +131,9 @@ public class CatalogosDAO {
     }
     
     /**
-     * Metodo generico que valida las descripciones de los catalogos para update
+     * Validación para Update
+     * Metodo generico que valida las descripciones de los catalogos para 
+     * evitar duplicar datos
      * @param tableName
      * @param id
      * @param descripcion
@@ -149,6 +157,7 @@ public class CatalogosDAO {
     }
     
     /**
+     * Consulta Especifica
      * Metodo Generico que devuelve la descripcion del catalogo
      * @param tableName
      * @param id

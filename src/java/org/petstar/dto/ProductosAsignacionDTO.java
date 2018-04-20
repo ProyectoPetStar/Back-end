@@ -6,7 +6,7 @@
 package org.petstar.dto;
 
 /**
- *
+ * DTO de Asignacion de productos
  * @author Tech-Pro
  */
 public class ProductosAsignacionDTO {

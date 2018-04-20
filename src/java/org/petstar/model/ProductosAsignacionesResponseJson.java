@@ -10,7 +10,7 @@ import org.petstar.dto.MetasAsignacionDTO;
 import org.petstar.dto.ProductosAsignacionDTO;
 
 /**
- *
+ * Modelo del JSON de la Asignación de Productos
  * @author Tech-Pro
  */
 public class ProductosAsignacionesResponseJson {

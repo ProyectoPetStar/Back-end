@@ -19,15 +19,16 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- *
+ * Servlet de Productos
  * @author Tech-Pro 
 */
 @WebServlet(name = "Productos", urlPatterns = {"/Productos"})
 public class Productos extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Permite trabajar con las opciones de Productos, 
+     * se permite el CRUD de productos, así como tambien las asignaciones de los mismos
+     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o <code>POST</code>
      *
      * @param request servlet request
      * @param response servlet response

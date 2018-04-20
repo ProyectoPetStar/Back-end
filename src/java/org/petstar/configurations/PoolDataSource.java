@@ -5,14 +5,11 @@
  */
 package org.petstar.configurations;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 /**
- *
+ * Clase que permite definir atributos y metodos de trabajo; 
  * @author Tech-Pro
  */
 public class PoolDataSource {
@@ -20,14 +17,20 @@ public class PoolDataSource {
     private static final String USERNAME = "mxetad";
     private static final String PASSWORD = "Tech-Pr0+18";
     private static final String BD = "etad";
-    private static final String HOSTNAME = "52.205.249.130";
-    //private static final String HOSTNAME = "192.168.10.100";
+    //private static final String HOSTNAME = "52.205.249.130";
+    private static final String HOSTNAME = "192.168.60.2";
     private static final String PORT = "1433";
     private static final String CLASS_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static final String URL = "jdbc:sqlserver://" + HOSTNAME + ":" + PORT + ";DatabaseName=" + BD + ";user=" + USERNAME + ";Password=" + PASSWORD + "";
 
     private static BasicDataSource dataSource;
 
+    /**
+     * Conexion a DB
+     * Metodo que se encarga de realizar la conexion a la base de datos, 
+     * según los atributos de arriba.
+     * @return 
+     */
     public static synchronized DataSource getDataSource() {
         if (dataSource == null) {
             BasicDataSource bds = new BasicDataSource();

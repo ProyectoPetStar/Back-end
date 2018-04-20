@@ -9,8 +9,8 @@ import org.petstar.dto.CatalogosDTO;
 import java.util.List;
 
 /**
- *
- * @author GuillermoB
+ * Modelo de JSON para Catalogos
+ * @author Tech-Pro
  */
 public class CatalogosResponseJson extends ResponseJson{
     private CatalogosDTO catalogosDTO;
