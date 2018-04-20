@@ -2,8 +2,6 @@ package org.petstar.controller;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.MetasDAO;
@@ -15,7 +13,9 @@ import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
+import org.petstar.dto.MetasDTO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ResultInteger;
 
 /**
  * Controlador de Metas
@@ -35,6 +35,7 @@ public class ControllerMetas {
      * Metodo que devuelve la lista de metas que se encuentran en el catálogo.
      * @param request
      * @return 
+     * @throws java.lang.Exception 
      */
     public OutputJson getAllMetas(HttpServletRequest request) throws Exception{
         int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
@@ -52,6 +53,13 @@ public class ControllerMetas {
                 MetasDAO metasDAO = new MetasDAO();
                 MetasDataResponseJson data = new MetasDataResponseJson();
                 data.setListMetas(metasDAO.getAllMetas(periodosDTO.getMes(), periodosDTO.getAnio(), idLinea));
+                
+                for(MetasDTO meta:data.getListMetas()){
+                    meta.setDia(sumarFechasDias(meta.getDia(), 2));
+                    if(null != meta.getFecha_modificacion()){
+                        meta.setFecha_modificacion(sumarFechasDias(meta.getFecha_modificacion(), 2));
+                    } 
+                }
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
@@ -83,21 +91,22 @@ public class ControllerMetas {
         try{
 //            if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
-//                ResultInteger result = metasDAO.validaIfExistMetaCarga(idMeta);
-//                if(result.getResult().equals(1)){
+                ResultInteger result = metasDAO.validaIfExistMeta(idMeta);
+                if(result.getResult().equals(1)){
                     MetasDataResponseJson data = new MetasDataResponseJson();
                     data.setMetasDTO(metasDAO.getMetaById(idMeta));
                     data.getMetasDTO().setDia(sumarFechasDias(data.getMetasDTO().getDia(), 2));
-                    data.getMetasDTO().setFecha_modificacion(sumarFechasDias(data.getMetasDTO().getFecha_modificacion(), 2));
-                    DateFormat fechaHora = new SimpleDateFormat("dd/MM/yyyy");
-                    System.out.println(fechaHora.format(data.getMetasDTO().getDia()));
+                    if(null != data.getMetasDTO().getFecha_modificacion()){
+                        data.getMetasDTO().setFecha_modificacion(sumarFechasDias(data.getMetasDTO().getFecha_modificacion(), 2));
+                    } 
+                    
                     output.setData(data);
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
-//                }else{
-//                    response.setMessage(MSG_NO_EXIST);
-//                    response.setSucessfull(false);
-//                }
+                }else{
+                    response.setMessage(MSG_NO_EXIST);
+                    response.setSucessfull(false);
+                }
 //            }else{
 //                response.setMessage(MSG_LOGOUT);
 //                response.setSucessfull(false);
@@ -132,16 +141,16 @@ public class ControllerMetas {
         try{
 //            if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
-//                ResultInteger result = metasDAO.validaDataForInsertCarga(idLinea, meta);
-//                if(result.getResult().equals(0)){
+                ResultInteger result = metasDAO.validaDataForInsertMeta(convertStringToSql(dia), idTurno, idGrupo, idLinea);
+                if(result.getResult().equals(0)){
                     metasDAO.insertNewMeta(convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, idLinea);
                 
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
-//                }else{
-//                    response.setMessage(MSG_INVALID);
-//                    response.setSucessfull(false);
-//                }
+                }else{
+                    response.setMessage(MSG_INVALID);
+                    response.setSucessfull(false);
+                }
 //            }else{
 //                response.setMessage(MSG_LOGOUT);
 //                response.setSucessfull(false);
@@ -178,17 +187,17 @@ public class ControllerMetas {
         try{
 //            if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
-//                ResultInteger result = metasDAO.validaDataForUpdateCarga(idMeta, idLinea, meta);
-//                if(result.getResult().equals(0)){
+                ResultInteger result = metasDAO.validaDataForUpdateMeta(idMeta, convertStringToSql(dia), idTurno, idGrupo, idLinea);
+                if(result.getResult().equals(0)){
                     Date fechaMod = getCurrentDate();
                     metasDAO.updateMeta(idMeta, convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, idLinea, idFiles, 1, fechaMod);
 
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
-//                }else{
-//                    response.setMessage(MSG_INVALID);
-//                    response.setSucessfull(false);
-//                }
+                }else{
+                    response.setMessage(MSG_INVALID);
+                    response.setSucessfull(false);
+                }
 //            }else{
 //                response.setMessage(MSG_LOGOUT);
 //                response.setSucessfull(false);

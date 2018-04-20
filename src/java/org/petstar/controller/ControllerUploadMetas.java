@@ -63,39 +63,45 @@ public class ControllerUploadMetas {
         int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
         int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
         
-        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
-        Date date = new Date();
-        String nameFile = formato.format(date) + ".csv";
+        ForecastDAO forecastDAO = new ForecastDAO();
+        ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
         
-        PeriodosDAO periodosDAO = new PeriodosDAO();
-        PeriodosDTO periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
-        int year = periodosDTO.getAnio();
-        int month = periodosDTO.getMes();
-        
-        boolean save = saveFIle(stringFile, nameFile);
-        
-        if(save){
-            boolean valid = validateFile(nameFile, month, year, idLinea);
-            if(valid){
-                ForecastDAO forecastDAO = new ForecastDAO();
-                java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                forecastDAO.saveFile(nameFile, idPeriodo, idLinea, 1, fecha);
-                ResultInteger idFile= forecastDAO.getIdFile(nameFile);
-                UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
-                
-                forecastDAO.loadForecast(listRows, idLinea, idFile.getResult(), idPeriodo);
-                data.setListMetas(listRows);
-                output.setData(data);
-                response.setMessage("OK");
-                response.setSucessfull(true);
-                
+        if(foundFiles.getResult() < 1){
+            SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
+            Date date = new Date();
+            String nameFile = formato.format(date) + ".csv";
+
+            PeriodosDAO periodosDAO = new PeriodosDAO();
+            PeriodosDTO periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
+            int year = periodosDTO.getAnio();
+            int month = periodosDTO.getMes();
+            boolean save = saveFIle(stringFile, nameFile);
+            if(save){
+                boolean valid = validateFile(nameFile, month, year, idLinea);
+                if(valid){
+
+                    java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                    forecastDAO.saveFile(nameFile, idPeriodo, idLinea, 1, fecha);
+                    ResultInteger idFile= forecastDAO.getIdFile(nameFile);
+                    UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
+
+                    forecastDAO.loadForecast(listRows, idLinea, idFile.getResult(), idPeriodo);
+                    data.setListMetas(listRows);
+                    output.setData(data);
+                    response.setMessage("OK");
+                    response.setSucessfull(true);
+
+                }else{
+                    response.setMessage("Error. El archivo tiene errores.");
+                    response.setSucessfull(false);
+                    deleteFiles(nameFile);
+                }
             }else{
-                response.setMessage("Error. El archivo tiene errores.");
+                response.setMessage("Error al carga el archivo.");
                 response.setSucessfull(false);
-                deleteFiles(nameFile);
             }
         }else{
-            response.setMessage("Error al carga el archivo.");
+            response.setMessage("Error. Ya hay archivos cargados para este periodo.");
             response.setSucessfull(false);
         }
         
