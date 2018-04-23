@@ -145,4 +145,11 @@ public class utils {
         cal.add(Calendar.DATE, dias);
         return new java.sql.Date(cal.getTimeInMillis());
     }
+    
+    public static String convertSqlToString(java.sql.Date fecha){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        String sFecha = format.format(fecha);
+        
+        return sFecha;
+    }
 }

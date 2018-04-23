@@ -87,4 +87,19 @@ public class ForecastDAO {
         
         qr.update(sql.toString(), params);
     }
+    
+    public ResultInteger validateLoadedFiles(int idPeriodo, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_valida_petMetaPeriodo ?, ?");
+        Object[] params = {
+            idPeriodo, idLinea
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
 }

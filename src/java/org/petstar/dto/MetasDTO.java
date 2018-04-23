@@ -26,6 +26,7 @@ public class MetasDTO {
     private int id_archivo;
     private int id_usuario_modifica;
     private Date fecha_modificacion;
+    private String dia_string;
 
     public int getId_meta() {
         return id_meta;
@@ -130,5 +131,12 @@ public class MetasDTO {
     public void setFecha_modificacion(Date fecha_modificacion) {
         this.fecha_modificacion = fecha_modificacion;
     }
-  
+
+    public String getDia_string() {
+        return dia_string;
+    }
+
+    public void setDia_string(String dia_string) {
+        this.dia_string = dia_string;
+    }
 }
