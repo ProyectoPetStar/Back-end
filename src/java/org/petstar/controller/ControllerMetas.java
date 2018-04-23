@@ -98,6 +98,7 @@ public class ControllerMetas {
                     MetasDataResponseJson data = new MetasDataResponseJson();
                     data.setMetasDTO(metasDAO.getMetaById(idMeta));
                     data.getMetasDTO().setDia(sumarFechasDias(data.getMetasDTO().getDia(), 2));
+                    data.getMetasDTO().setDia_string(convertSqlToString(data.getMetasDTO().getDia()));
                     if(null != data.getMetasDTO().getFecha_modificacion()){
                         data.getMetasDTO().setFecha_modificacion(sumarFechasDias(data.getMetasDTO().getFecha_modificacion(), 2));
                     } 
