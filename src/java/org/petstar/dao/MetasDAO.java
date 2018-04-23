@@ -106,22 +106,36 @@ public class MetasDAO {
      * @param idFile
      * @param idUsuarioMod
      * @param fechaMod
+     * @param activo
      * @throws Exception 
      */
     public void updateMeta(int idMeta, Date dia, BigDecimal meta, BigDecimal tmp, BigDecimal vel, 
-            int idTurno, int idGrupo, int idLinea, int idFile, int idUsuarioMod, Date fechaMod) throws Exception{
+            int idTurno, int idGrupo, int idLinea, int idFile, int idUsuarioMod, Date fechaMod, int estatus) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_update_petMeta ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_update_petMeta ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            idMeta, dia, meta, tmp, vel, idTurno, idGrupo, idLinea, idFile, idUsuarioMod, fechaMod
+            idMeta, dia, meta, tmp, vel, idTurno, idGrupo, idLinea, idFile, estatus, idUsuarioMod, fechaMod
         };
         
         qr.update(sql.toString(), params);
     }
-       
+    
+    public void deleteMeta(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_tmpDelete_petMeta ?");
+        Object[] params = {
+            idMeta
+        };
+        
+        qr.update(sql.toString(), params);
+    }
+    
     /**
      * Validación para Registrar
      * Metodo que valida que los datos para registrar de la Meta no esten repetidos
