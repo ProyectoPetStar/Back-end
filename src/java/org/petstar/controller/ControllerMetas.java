@@ -172,7 +172,7 @@ public class ControllerMetas {
      * @param request
      * @return 
      */
-    public OutputJson updateMetaCarga(HttpServletRequest request){
+    public OutputJson updateMeta(HttpServletRequest request){
         String dia = request.getParameter("dia");
         BigDecimal meta = new BigDecimal(request.getParameter("meta"));
         BigDecimal tmp = new BigDecimal(request.getParameter("tmp"));
@@ -182,6 +182,7 @@ public class ControllerMetas {
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         int idFiles = Integer.parseInt(request.getParameter("id_file"));
+        int estatus = Integer.parseInt(request.getParameter("estatus"));
                 
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -193,7 +194,7 @@ public class ControllerMetas {
                 ResultInteger result = metasDAO.validaDataForUpdateMeta(idMeta, convertStringToSql(dia), idTurno, idGrupo, idLinea);
                 if(result.getResult().equals(0)){
                     Date fechaMod = getCurrentDate();
-                    metasDAO.updateMeta(idMeta, convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, idLinea, idFiles, 1, fechaMod);
+                    metasDAO.updateMeta(idMeta, convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, idLinea, idFiles, 1, fechaMod, estatus);
 
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
@@ -213,6 +214,30 @@ public class ControllerMetas {
         return output;
     }
 
+    public OutputJson deleteMeta(HttpServletRequest request){
+        int idMeta = Integer.parseInt(request.getParameter("id_meta"));
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+//        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        
+        try{
+//            if(controllerAutenticacion.isValidToken(request)){
+                MetasDAO metasDAO = new MetasDAO();
+                metasDAO.deleteMeta(idMeta);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+//            }else{
+//                response.setMessage(MSG_LOGOUT);
+//                response.setSucessfull(false);
+//            }
+        }catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
     /**
      * Carga de Combos
      * Metodo que se encarga de poblar las listasnecesarias para los combobox

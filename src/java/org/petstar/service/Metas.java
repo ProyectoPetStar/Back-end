@@ -58,7 +58,10 @@ public class Metas extends HttpServlet {
                     output = controllerMetas.insertNewMeta(request);
                     break;
                 case "updateMeta":
-                    output = controllerMetas.updateMetaCarga(request);
+                    output = controllerMetas.updateMeta(request);
+                    break;
+                case "deleteMeta":
+                    output = controllerMetas.deleteMeta(request);
                     break;
                 case "loadCombobox":
                     output = controllerMetas.loadCombobox(request);
