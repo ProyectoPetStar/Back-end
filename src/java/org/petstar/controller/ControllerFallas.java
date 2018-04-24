@@ -14,7 +14,9 @@ import static org.petstar.configurations.utils.getHoursMinutes;
 import static org.petstar.configurations.utils.getTurno;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import org.petstar.dao.CatalogosDAO;
+import org.petstar.dao.EquiposDAO;
 import org.petstar.dao.MetasDAO;
+import org.petstar.dao.RazonParoDAO;
 import org.petstar.dto.FallasDTO;
 import org.petstar.dto.ResultInteger;
 
@@ -24,8 +26,6 @@ import org.petstar.dto.ResultInteger;
  */
 public class ControllerFallas {
     private static final String TABLE_FUENTES = "pet_cat_fuentes_paro";
-    private static final String TABLE_EQUIPOS = "pet_cat_equipos";
-    private static final String TABLE_RAZONES = "pet_cat_razon_paro";
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
@@ -37,6 +37,8 @@ public class ControllerFallas {
         try{
             CatalogosDAO catalogosDAO = new CatalogosDAO();
             MetasDAO metasDAO = new MetasDAO();
+            EquiposDAO equiposDAO = new EquiposDAO();
+            RazonParoDAO paroDAO = new RazonParoDAO();
             FallasDataResponseJson data = new FallasDataResponseJson();
             int turno = getTurno();
             java.sql.Date dia = getCurrentDayByTurno(turno);
@@ -46,8 +48,8 @@ public class ControllerFallas {
             
             if(null != idMeta.getResult() && !idMeta.equals(0)){
                 data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
-                data.setListEquipos(catalogosDAO.getCatalogos(TABLE_EQUIPOS));
-                data.setListRazonesParo(catalogosDAO.getCatalogos(TABLE_RAZONES));
+                data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+                data.setListRazonesParo(paroDAO.getAllRazones());
                 data.setMetasDTO(metasDAO.getMetaById(idMeta.getResult()));
                 output.setData(data);
 
