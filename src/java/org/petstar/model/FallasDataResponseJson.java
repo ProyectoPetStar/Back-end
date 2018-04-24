@@ -7,8 +7,10 @@ package org.petstar.model;
 
 import java.util.List;
 import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.EquiposDTO;
 import org.petstar.dto.FallasDTO;
 import org.petstar.dto.MetasDTO;
+import org.petstar.dto.RazonParoDTO;
 
 /**
  *
@@ -19,8 +21,8 @@ public class FallasDataResponseJson {
     private MetasDTO metasDTO;
     private List<FallasDTO> listFallas;
     private List<CatalogosDTO> listFuentesParo;
-    private List<CatalogosDTO> listEquipos;
-    private List<CatalogosDTO> listRazonesParo;
+    private List<EquiposDTO> listEquipos;
+    private List<RazonParoDTO> listRazonesParo;
 
    public FallasDTO getFallasDTO() {
         return fallasDTO;
@@ -54,19 +56,19 @@ public class FallasDataResponseJson {
         this.listFuentesParo = listFuentesParo;
     }
 
-    public List<CatalogosDTO> getListEquipos() {
+    public List<EquiposDTO> getListEquipos() {
         return listEquipos;
     }
 
-    public void setListEquipos(List<CatalogosDTO> listEquipos) {
+    public void setListEquipos(List<EquiposDTO> listEquipos) {
         this.listEquipos = listEquipos;
     }
 
-    public List<CatalogosDTO> getListRazonesParo() {
+    public List<RazonParoDTO> getListRazonesParo() {
         return listRazonesParo;
     }
 
-    public void setListRazonesParo(List<CatalogosDTO> listRazonesParo) {
+    public void setListRazonesParo(List<RazonParoDTO> listRazonesParo) {
         this.listRazonesParo = listRazonesParo;
     }
 }
