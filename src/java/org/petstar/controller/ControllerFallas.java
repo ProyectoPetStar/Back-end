@@ -13,11 +13,13 @@ import static org.petstar.configurations.utils.convertStringToDate;
 import static org.petstar.configurations.utils.getHoursMinutes;
 import static org.petstar.configurations.utils.getTurno;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
+import static org.petstar.configurations.utils.convertSqlToDay;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.EquiposDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dao.RazonParoDAO;
 import org.petstar.dto.FallasDTO;
+import org.petstar.dto.MetasDTO;
 import org.petstar.dto.ResultInteger;
 
 /**
@@ -46,11 +48,14 @@ public class ControllerFallas {
             int idLinea = 2;
             ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
             
-            if(null != idMeta.getResult() && !idMeta.equals(0)){
+            if(null != idMeta){
+                MetasDTO metasDTO = new MetasDTO();
                 data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
                 data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
                 data.setListRazonesParo(paroDAO.getAllRazones());
-                data.setMetasDTO(metasDAO.getMetaById(idMeta.getResult()));
+                metasDTO = metasDAO.getMetaById(idMeta.getResult());
+                metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                data.setMetasDTO(metasDTO);
                 output.setData(data);
 
                 response.setSucessfull(true);
