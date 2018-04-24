@@ -419,9 +419,10 @@ public class ControllerReportes {
                     
                     BigDecimal acumulado = BigDecimal.ZERO;
                     BigDecimal acumHojuela = BigDecimal.ZERO;
+                    BigDecimal planMolido = BigDecimal.ZERO;
                     
                     for(int i=0; i<listData.size(); i++){
-                        BigDecimal planMolido = listData.get(i).getPlan_molido();
+                        planMolido = planMolido.add(listData.get(i).getPlan_molido());
                         HashMap<String, Object> row = new HashMap<>();
                         row.put("padre",	0);
                         row.put("dia",		convertSqlToDay(sumarFechasDias(listData.get(i).getDia(),2)));
@@ -431,6 +432,12 @@ public class ControllerReportes {
                             BigDecimal molido = listaMolidos.get(y).get(i).getResult();
                             row.put("molido"+(y+1),	molido);
                             BigDecimal hojuela = molido.multiply(periodo.getEficiencia_teorica());
+                            int compare = hojuela.compareTo(BigDecimal.ZERO);
+                            if(compare == 0){
+                                hojuela = BigDecimal.ZERO;
+                            }else{
+                                hojuela = hojuela.divide(new BigDecimal(100));
+                            }
                             row.put("hojuela"+(y+1), hojuela);
                             totalMolido = totalMolido.add(molido);
                             totalHojuela = totalHojuela.add(hojuela);
@@ -444,21 +451,29 @@ public class ControllerReportes {
                         totalTotalPlanMolido = planMolido;
                         BigDecimal diferenciaMolido = acumulado.subtract(planMolido);
                         row.put("difMolido",	diferenciaMolido);
-                        BigDecimal eficiencia = acumulado.divide(planMolido, RoundingMode.CEILING);
+                        int compare = planMolido.compareTo(BigDecimal.ZERO);
+                        BigDecimal eficiencia = BigDecimal.ZERO;
+                        if(compare != 0){eficiencia = acumulado.divide(planMolido, RoundingMode.CEILING);}
+                        eficiencia = eficiencia.multiply(new BigDecimal(100));
                         row.put("eficiencia",	eficiencia);
-                        row.put("vsMetaM",	eficiencia.subtract(BigDecimal.ONE));
+                        row.put("vsMetaM",	eficiencia.subtract(new BigDecimal(100)));
                         row.put("eficTeorica",	periodo.getEficiencia_teorica());
                         row.put("totalHoj",	totalHojuela);
                         totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
                         acumHojuela = acumHojuela.add(totalHojuela);
                         row.put("acumHoju",	acumHojuela);
                         BigDecimal planHojuela = planMolido.multiply(periodo.getEficiencia_teorica());
-                        totalTotalPlanHojuela = planHojuela;
+                        compare = planHojuela.compareTo(BigDecimal.ZERO);
+                        if(compare == 0){ planHojuela= BigDecimal.ZERO;}else{planHojuela= planHojuela.divide(new BigDecimal(100));}
                         row.put("planHoju",	planHojuela);
                         row.put("difeHoju",     acumHojuela.subtract(planHojuela));
-                        BigDecimal eficienciaDia = acumHojuela.divide(planHojuela, RoundingMode.CEILING);
+                        BigDecimal eficienciaDia = BigDecimal.ZERO;
+                        compare = planHojuela.compareTo(BigDecimal.ZERO);
+                        if(compare != 0){eficienciaDia = acumHojuela.divide(planHojuela, RoundingMode.CEILING);}
+                        totalTotalPlanHojuela = planHojuela;
+                        eficienciaDia = eficienciaDia.multiply(new BigDecimal(100));
                         row.put("eficiDia",	eficienciaDia);
-                        row.put("vsMetaH",	eficiencia.subtract(BigDecimal.ONE));
+                        row.put("vsMetaH",	eficienciaDia.subtract(new BigDecimal(100)));
                         listReporte.add(row);   
                     }
                     
@@ -471,14 +486,16 @@ public class ControllerReportes {
                         BigDecimal totalHojuela = calculo.divide(new BigDecimal(100), RoundingMode.CEILING);
                         totales.put("molido"+(y+1),lisTotalMolidos.get(y).getResult());
                         totales.put("hojuela"+(y+1),totalHojuela);
-                        totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
+                        //totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
                     }
                     totales.put("totalMolido",totalTotalMolido);
                     totales.put("acumulado",acumulado);
                     totales.put("metaMolido",totalTotalPlanMolido);
                     BigDecimal totalTotalDifMolido = acumulado.subtract(totalTotalPlanMolido);
                     totales.put("difMolido",totalTotalDifMolido);
-                    BigDecimal TotalEficienciaDia = acumulado.divide(totalTotalPlanMolido,RoundingMode.CEILING);
+                    int compare = totalTotalPlanMolido.compareTo(BigDecimal.ZERO);
+                    BigDecimal TotalEficienciaDia = BigDecimal.ZERO;
+                    if(compare != 0){ TotalEficienciaDia = acumulado.divide(totalTotalPlanMolido,RoundingMode.CEILING);}
                     totales.put("eficiencia",TotalEficienciaDia);
                     totales.put("vsMetaM",TotalEficienciaDia.subtract(BigDecimal.ONE));
                     totales.put("eficTeorica",periodo.getEficiencia_teorica());
@@ -487,7 +504,9 @@ public class ControllerReportes {
                     totales.put("planHoju",totalTotalPlanHojuela);
                     BigDecimal totalTotalDifHojuela = acumHojuela.subtract(totalTotalPlanHojuela);
                     totales.put("difeHoju",totalTotalDifHojuela);
-                    BigDecimal totalEficienciaHojuela = acumHojuela.divide(totalTotalPlanHojuela, RoundingMode.CEILING);
+                    compare = totalTotalPlanHojuela.compareTo(BigDecimal.ZERO);
+                    BigDecimal totalEficienciaHojuela = BigDecimal.ZERO;
+                    if(compare != 0){ totalEficienciaHojuela = acumHojuela.divide(totalTotalPlanHojuela, RoundingMode.CEILING); }
                     totales.put("eficiDia",totalEficienciaHojuela);
                     totales.put("vsMetaH",totalEficienciaHojuela.subtract(BigDecimal.ONE));
                     listReporte.add(totales);
