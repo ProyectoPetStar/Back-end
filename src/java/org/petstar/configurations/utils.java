@@ -146,8 +146,8 @@ public class utils {
         return new java.sql.Date(cal.getTimeInMillis());
     }
     
-    public static String convertSqlToString(java.sql.Date fecha){
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+    public static String convertSqlToDay(java.sql.Date fecha){
+        SimpleDateFormat format = new SimpleDateFormat("dd");
         String sFecha = format.format(fecha);
         
         return sFecha;

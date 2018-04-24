@@ -11,7 +11,7 @@ import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.sumarFechasDias;
-import static org.petstar.configurations.utils.convertSqlToString;
+import static org.petstar.configurations.utils.convertSqlToDay;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.MetasDTO;
@@ -57,7 +57,7 @@ public class ControllerMetas {
                 
                 for(MetasDTO meta:data.getListMetas()){
                     meta.setDia(sumarFechasDias(meta.getDia(), 2));
-                    meta.setDia_string(convertSqlToString(meta.getDia()));
+                    meta.setDia_string(convertSqlToDay(meta.getDia()));
                     if(null != meta.getFecha_modificacion()){
                         meta.setFecha_modificacion(sumarFechasDias(meta.getFecha_modificacion(), 2));
                     } 
@@ -98,7 +98,7 @@ public class ControllerMetas {
                     MetasDataResponseJson data = new MetasDataResponseJson();
                     data.setMetasDTO(metasDAO.getMetaById(idMeta));
                     data.getMetasDTO().setDia(sumarFechasDias(data.getMetasDTO().getDia(), 2));
-                    data.getMetasDTO().setDia_string(convertSqlToString(data.getMetasDTO().getDia()));
+                    data.getMetasDTO().setDia_string(convertSqlToDay(data.getMetasDTO().getDia()));
                     if(null != data.getMetasDTO().getFecha_modificacion()){
                         data.getMetasDTO().setFecha_modificacion(sumarFechasDias(data.getMetasDTO().getFecha_modificacion(), 2));
                     } 

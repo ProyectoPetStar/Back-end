@@ -102,8 +102,6 @@ public class MetasDAO {
      * @param vel
      * @param idTurno
      * @param idGrupo
-     * @param idLinea
-     * @param idFile
      * @param idUsuarioMod
      * @param fechaMod
      * @param estatus
