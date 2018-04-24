@@ -32,7 +32,11 @@ public class LineasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetCatLineas");
+        sql.append("SELECT li.id_linea, li.valor, li.descripcion, li.activo, ")
+                .append("li.id_gpo_linea, gp.descripcion AS descripcion_gpo_linea ")
+                .append("FROM dbo.pet_cat_linea AS li ")
+                .append("INNER JOIN dbo.pet_cat_gpo_linea AS gp ")
+                .append("ON li.id_gpo_linea = gp.id WHERE li.activo=1");
         
         ResultSetHandler rsh = new BeanListHandler(LineasDTO.class);
         List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh);

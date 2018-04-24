@@ -33,13 +33,13 @@ public class CatalogosDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectPetCatalogos ?");
+        sql.append("SELECT * FROM " + tablename + " WHERE activo =1");
         Object[] params = {
             tablename
         };
         
         ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
-        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh, params); 
+        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh); 
         
         return data_catalogos;
     }
