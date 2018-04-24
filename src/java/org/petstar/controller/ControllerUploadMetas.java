@@ -92,7 +92,7 @@ public class ControllerUploadMetas {
                     response.setSucessfull(true);
 
                 }else{
-                    response.setMessage("Error. El archivo tiene errores.");
+                    response.setMessage("El archivo contiene errores.");
                     response.setSucessfull(false);
                     deleteFiles(nameFile);
                 }
@@ -101,7 +101,7 @@ public class ControllerUploadMetas {
                 response.setSucessfull(false);
             }
         }else{
-            response.setMessage("Error. Ya hay archivos cargados para este periodo.");
+            response.setMessage("Ya hay archivos cargados para este periodo.");
             response.setSucessfull(false);
         }
         
