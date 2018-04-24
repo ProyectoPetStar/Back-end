@@ -47,6 +47,4 @@ public class CatalogosDTO {
         this.activo = activo;
     }
 
-    
-    
 }

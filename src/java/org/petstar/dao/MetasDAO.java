@@ -106,18 +106,18 @@ public class MetasDAO {
      * @param idFile
      * @param idUsuarioMod
      * @param fechaMod
-     * @param activo
+     * @param estatus
      * @throws Exception 
      */
     public void updateMeta(int idMeta, Date dia, BigDecimal meta, BigDecimal tmp, BigDecimal vel, 
-            int idTurno, int idGrupo, int idLinea, int idFile, int idUsuarioMod, Date fechaMod, int estatus) throws Exception{
+            int idTurno, int idGrupo, int idUsuarioMod, Date fechaMod, int estatus) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_update_petMeta ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_update_petMeta ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            idMeta, dia, meta, tmp, vel, idTurno, idGrupo, idLinea, idFile, estatus, idUsuarioMod, fechaMod
+            idMeta, dia, meta, tmp, vel, idTurno, idGrupo, estatus, idUsuarioMod, fechaMod
         };
         
         qr.update(sql.toString(), params);
@@ -169,18 +169,17 @@ public class MetasDAO {
     * @param dia
     * @param idTurno
     * @param idGrupo
-    * @param idLinea
     * @return
     * @throws Exception 
     */
-    public ResultInteger validaDataForUpdateMeta(int idMeta, Date dia, int idTurno, int idGrupo, int idLinea) throws Exception{
+    public ResultInteger validaDataForUpdateMeta(int idMeta, Date dia, int idTurno, int idGrupo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_validaUpdate_petMetas ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_validaUpdate_petMetas ?, ?, ?, ?");
         Object[] params = {
-            idMeta, dia, idTurno, idGrupo, idLinea
+            idMeta, dia, idTurno, idGrupo
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);

@@ -180,8 +180,6 @@ public class ControllerMetas {
         int idMeta = Integer.parseInt(request.getParameter("id_meta"));
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
-        int idFiles = Integer.parseInt(request.getParameter("id_file"));
         int estatus = Integer.parseInt(request.getParameter("estatus"));
                 
         ResponseJson response = new ResponseJson();
@@ -191,10 +189,10 @@ public class ControllerMetas {
         try{
 //            if(controllerAutenticacion.isValidToken(request)){
                 MetasDAO metasDAO = new MetasDAO();
-                ResultInteger result = metasDAO.validaDataForUpdateMeta(idMeta, convertStringToSql(dia), idTurno, idGrupo, idLinea);
+                ResultInteger result = metasDAO.validaDataForUpdateMeta(idMeta, convertStringToSql(dia), idTurno, idGrupo);
                 if(result.getResult().equals(0)){
                     Date fechaMod = getCurrentDate();
-                    metasDAO.updateMeta(idMeta, convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, idLinea, idFiles, 1, fechaMod, estatus);
+                    metasDAO.updateMeta(idMeta, convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, 1, fechaMod, estatus);
 
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
