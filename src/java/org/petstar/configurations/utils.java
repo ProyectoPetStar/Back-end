@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
  */
 public class utils {
     
+    static long milisegundos_dia = 86400000;
     /**
      * Día Actual 
      * Metodo que de acuerdo al turno devuelve el día correcto, esto aplica
@@ -25,18 +26,16 @@ public class utils {
      * @param turno
      * @return 
      */
-    public static String getCurrentDayByTurno(int turno){
-        String validDay;
+    public static java.sql.Date getCurrentDayByTurno(int turno){
         Date date = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(date.getTime());
+                
         if(turno == 3) {
-            validDay = dateFormat.format(date.getTime()-86400000);
-        }else{
-            validDay = dateFormat.format(date);
+            cal.add(Calendar.DATE, -1);
         }
         
-        return validDay;
+        return new java.sql.Date(cal.getTimeInMillis());
     }
     
     /**
@@ -91,11 +90,11 @@ public class utils {
         
         int turno;
         
-        if((hh==6 && isBetween(mm, 40, 59)) || (hh==7 && isBetween(mm, 0, 11))){
+        if((hh==23 && isBetween(mm, 0, 59)) || (hh==6 && isBetween(mm, 0, 59))){
             turno = 3;
-        }else if((hh==14 && isBetween(mm, 40, 59)) || (hh==15 && isBetween(mm, 0, 11))){
+        }else if((hh==7 && isBetween(mm, 0, 59)) || (hh==14 && isBetween(mm, 0, 59))){
             turno = 1;
-        }else if((hh==22 && isBetween(mm, 40, 59)) || (hh==23 && isBetween(mm, 0, 11))){
+        }else if((hh>=15 && isBetween(mm, 0, 59)) && (hh<=22 && isBetween(mm, 0, 59))){
             turno = 2;
         }else{
             turno = 0;
@@ -151,5 +150,42 @@ public class utils {
         String sFecha = format.format(fecha);
         
         return sFecha;
+    }
+    
+    public static java.util.Date convertStringToDate(String fecha, SimpleDateFormat formato) throws ParseException{
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm"); 
+        java.util.Date hora = format.parse(fecha);
+        //java.util.Date hora = format.parse(fecha);
+        Calendar calendario = GregorianCalendar.getInstance();
+	calendario.setTime(hora);
+	java.util.Date diaCompleto = calendario.getTime();
+        
+        return diaCompleto;
+    }
+    
+    public static String getHoursMinutes(java.util.Date fechaInicio, java.util.Date fechaTermino){
+        Calendar calFechaInicial=Calendar.getInstance();
+        Calendar calFechaFinal=Calendar.getInstance();
+        
+        calFechaInicial.setTime(fechaInicio);
+        calFechaFinal.setTime(fechaTermino);
+        
+        long horas = diferenciaHoras(calFechaInicial, calFechaFinal);
+        long minutos = diferenciaMinutos(calFechaInicial, calFechaFinal);
+        String tiempo = horas + ":" + minutos;
+        return tiempo;
+    }
+       
+    public static long diferenciaHoras(Calendar fechaInicial, Calendar fechaFinal) {
+	long diferenciaHoras = 0;
+	diferenciaHoras = (fechaFinal.get(Calendar.HOUR_OF_DAY) - fechaInicial.get(Calendar.HOUR_OF_DAY));
+
+        return diferenciaHoras;
+    }
+    
+    public static long diferenciaMinutos(Calendar fechaInicial, Calendar fechaFinal) {
+	long diferenciaHoras = 0;
+	diferenciaHoras = (fechaFinal.get(Calendar.MINUTE) - fechaInicial.get(Calendar.MINUTE));
+	return diferenciaHoras;
     }
 }

@@ -5,6 +5,7 @@
  */
 package org.petstar.dao;
 
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -20,25 +21,15 @@ import org.petstar.dto.FallasDTO;
  */
 public class FallasDAO {
     
-    public List<FallasDTO> getAllDataFallas() throws Exception{
+    public List<FallasDTO> getAllFallasByDays(Date fechaIn, Date fechaTe) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("");
-        
-        ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
-        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh);
-        
-        return data;
-    }
-    
-    public List<FallasDTO> getDataFallasByDay() throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
+        Object[] params = {
+            fechaIn, fechaTe
+        };
         
         ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
         List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh);
@@ -59,14 +50,16 @@ public class FallasDAO {
         return data;
     }
     
-    public void insertNewFalla() throws Exception{
+    public void insertNewFalla(FallasDTO fallas) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_insert_petFallas ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] paramas = {
-            
+            fallas.getDescripcion(), fallas.getHora_inicio(), fallas.getHora_final(),
+            fallas.getTiempo_paro(), fallas.getId_meta(), fallas.getId_razon(), 
+            fallas.getId_equipo(), fallas.getId_usuario_registro()
         };
         
         qr.update(sql.toString(), paramas);

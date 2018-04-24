@@ -208,4 +208,20 @@ public class MetasDAO {
 
         return count;
     }
+    
+    public ResultInteger getIdMeta(Date dia, int idTurno, int idGrupo, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectId_petMeta ?, ?, ?, ?");
+        Object[] params = {
+            dia, idTurno, idGrupo, idLinea
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
+
+        return count;
+    }
 }

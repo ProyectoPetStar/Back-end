@@ -480,19 +480,19 @@ public class ControllerProductos {
      * @throws Exception 
      */
     public boolean validateIfCanEdit(int idGrupo, int idLinea) throws Exception{
-        boolean valid;
+        boolean valid = true;
         
-        int turno = getTurno();
-        if(turno != 0){
-            String diaMeta = getCurrentDayByTurno(turno);
-            
-            ProductosDAO productosDAO = new ProductosDAO();
-            ResultInteger result = productosDAO.validaGrupoTurno(idGrupo, turno,idLinea, diaMeta);
-            
-            valid = (result.getResult().equals(1));
-        }else{
-            valid = false;
-        }
+//        int turno = getTurno();
+//        if(turno != 0){
+//            String diaMeta = getCurrentDayByTurno(turno);
+//            
+//            ProductosDAO productosDAO = new ProductosDAO();
+//            ResultInteger result = productosDAO.validaGrupoTurno(idGrupo, turno,idLinea, diaMeta);
+//            
+//            valid = (result.getResult().equals(1));
+//        }else{
+//            valid = false;
+//        }
         
         return valid;
     }  
