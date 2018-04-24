@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 import static org.petstar.configurations.Validation.*;
 import static org.petstar.configurations.utils.convertUtilToSql;
+import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.ForecastDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
@@ -33,6 +34,8 @@ import org.petstar.model.UploadMetasDataResponseJson;
  */
 public class ControllerUploadMetas {
     private List<ForecastDTO> listRows = new ArrayList<>();
+    private static final String TABLE_GRUPOS = "pet_cat_grupo";
+    private static final String TABLE_TURNOS = "pet_cat_turno";
     
     public OutputJson loadCombobox(HttpServletRequest request) throws Exception{
         ResponseJson response = new ResponseJson();
@@ -40,10 +43,13 @@ public class ControllerUploadMetas {
         
         PeriodosDAO periodosDAO = new PeriodosDAO();
         LineasDAO lineasDAO = new LineasDAO();
+        CatalogosDAO catalogosDAO = new CatalogosDAO();
         UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
         
         data.setListLineas(lineasDAO.getLineasData());
         data.setListPeriodos(periodosDAO.getPeriodos());
+        data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+        data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
         
         output.setData(data);
         response.setMessage("OK");
