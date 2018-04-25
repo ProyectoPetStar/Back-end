@@ -146,6 +146,12 @@ public class utils {
         return new java.sql.Date(cal.getTimeInMillis());
     }
     
+    /**
+     * 
+     * @param fch
+     * @param dias
+     * @return 
+     */
     public static java.util.Date sumarFechasDias(java.util.Date fch, int dias) {
         Calendar cal = new GregorianCalendar();
         cal.setTimeInMillis(fch.getTime());

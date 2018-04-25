@@ -235,4 +235,29 @@ public class ControllerFallas {
         output.setResponse(response);
         return output;
     }
+    
+    public OutputJson getFallaById(HttpServletRequest request) throws ParseException{       
+        int idFalla = Integer.parseInt(request.getParameter("id_falla"));
+        FallasDataResponseJson data = new FallasDataResponseJson();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            FallasDAO fallasDAO = new FallasDAO();
+            data.setFallasDTO(fallasDAO.getFallaById(idFalla));
+            data.getFallasDTO().setDia(sumarFechasDias(data.getFallasDTO().getDia(), 2));
+            data.getFallasDTO().setDiaString(convertSqlToDay(data.getFallasDTO().getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+            
+            output.setData(data);
+            response.setSucessfull(true);
+            response.setMessage(MSG_SUCESS);
+           
+        } catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
 }
