@@ -24,7 +24,11 @@ public class FallasDTO {
     private int id_linea;
     private int id_grupo;
     private int id_turno;
-    private String dia;
+    private Date dia;
+    private String diaString;
+    private String valor_fuente;
+    private String valor_razon;
+    private String valor_equipo;
 
     public int getId_falla() {
         return id_falla;
@@ -154,12 +158,43 @@ public class FallasDTO {
         this.id_turno = id_turno;
     }
 
-    public String getDia() {
+    public Date getDia() {
         return dia;
     }
 
-    public void setDia(String dia) {
+    public void setDia(Date dia) {
         this.dia = dia;
     }
-    
+
+    public String getDiaString() {
+        return diaString;
+    }
+
+    public void setDiaString(String diaString) {
+        this.diaString = diaString;
+    }
+
+    public String getValor_fuente() {
+        return valor_fuente;
+    }
+
+    public void setValor_fuente(String valor_fuente) {
+        this.valor_fuente = valor_fuente;
+    }
+
+    public String getValor_razon() {
+        return valor_razon;
+    }
+
+    public void setValor_razon(String valor_razon) {
+        this.valor_razon = valor_razon;
+    }
+
+    public String getValor_equipo() {
+        return valor_equipo;
+    }
+
+    public void setValor_equipo(String valor_equipo) {
+        this.valor_equipo = valor_equipo;
+    }
 }

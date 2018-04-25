@@ -20,7 +20,6 @@ import java.util.GregorianCalendar;
  */
 public class utils {
     
-    static long milisegundos_dia = 86400000;
     /**
      * Día Actual 
      * Metodo que de acuerdo al turno devuelve el día correcto, esto aplica

@@ -49,7 +49,7 @@ public class Fallas extends HttpServlet {
                 case "loadCombobox":
                     output = controllerFallas.loadCombobox(request);
                     break;
-                case "getAllFallas":
+                case "getAllFallasByDays":
                     output = controllerFallas.getAllFallasByDays(request);
                     break;
                 case "insertFalla":

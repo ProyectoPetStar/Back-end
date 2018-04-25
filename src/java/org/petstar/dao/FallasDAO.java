@@ -21,18 +21,19 @@ import org.petstar.dto.FallasDTO;
  */
 public class FallasDAO {
     
-    public List<FallasDTO> getAllFallasByDays(Date fechaIn, Date fechaTe) throws Exception{
+    public List<FallasDTO> getAllFallasByDays(int idLinea, int idGrupo, 
+            int idTurno, Date fechaIn, Date fechaTe) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_selectAlFallas_petFallas ?, ?, ?, ?, ?");
         Object[] params = {
-            fechaIn, fechaTe
+            fechaIn, fechaTe, idTurno, idGrupo, idLinea
         };
         
         ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
-        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh);
+        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh, params);
         
         return data;
     }

@@ -86,6 +86,10 @@ public class ControllerFallas {
     public OutputJson getAllFallasByDays(HttpServletRequest request){
         String fechaIn = request.getParameter("fecha_inicio");
         String fechaTe = request.getParameter("fecha_termino");
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
 //        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -95,9 +99,16 @@ public class ControllerFallas {
                 FallasDAO fallasDAO = new FallasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
                 
-                data.setListFallas(fallasDAO.getAllFallasByDays(
-                        convertStringToSql(fechaIn),
-                        convertStringToSql(fechaTe)));
+                data.setListFallas(fallasDAO.getAllFallasByDays(idLinea, idGrupo, 
+                        idTurno, convertStringToSql(fechaIn), convertStringToSql(fechaTe)));
+                
+                for(FallasDTO falla:data.getListFallas()){
+                    falla.setDia(sumarFechasDias(falla.getDia(), 2));
+                    falla.setDiaString(convertSqlToDay(
+                            falla.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                }
+                
+                output.setData(data);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
 //            }else{
@@ -145,7 +156,7 @@ public class ControllerFallas {
                 response.setMessage(MSG_SUCESS);
             }else{
                 response.setSucessfull(false);
-                response.setMessage("Horas incorrectas");
+                response.setMessage("Las horas son invalidas");
             }
         } catch(Exception ex){
             response.setSucessfull(false);
@@ -191,7 +202,7 @@ public class ControllerFallas {
                 response.setMessage(MSG_SUCESS);
             }else{
                 response.setSucessfull(false);
-                response.setMessage("Horas incorrectas");
+                response.setMessage("Las horas son invalidas");
             }
         } catch(Exception ex){
             response.setSucessfull(false);
