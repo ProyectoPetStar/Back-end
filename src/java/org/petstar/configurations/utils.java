@@ -5,6 +5,8 @@
  */
 package org.petstar.configurations;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -169,29 +171,23 @@ public class utils {
         return diaCompleto;
     }
     
-    public static String getHoursMinutes(java.util.Date fechaInicio, java.util.Date fechaTermino){
+    public static BigDecimal getTiempoParo(java.util.Date fechaInicio, java.util.Date fechaTermino){
         Calendar calFechaInicial=Calendar.getInstance();
         Calendar calFechaFinal=Calendar.getInstance();
         
         calFechaInicial.setTime(fechaInicio);
         calFechaFinal.setTime(fechaTermino);
         
-        long horas = diferenciaHoras(calFechaInicial, calFechaFinal);
-        long minutos = diferenciaMinutos(calFechaInicial, calFechaFinal);
-        String tiempo = horas + ":" + minutos;
+        BigDecimal minutos = new BigDecimal(cantidadTotalMinutos(calFechaInicial, calFechaFinal));
+        BigDecimal divisor = new BigDecimal(60);
+        BigDecimal tiempo = minutos.divide(divisor, 2, RoundingMode.CEILING);
+                
         return tiempo;
     }
-       
-    public static long diferenciaHoras(Calendar fechaInicial, Calendar fechaFinal) {
-	long diferenciaHoras = 0;
-	diferenciaHoras = (fechaFinal.get(Calendar.HOUR_OF_DAY) - fechaInicial.get(Calendar.HOUR_OF_DAY));
-
-        return diferenciaHoras;
-    }
-    
-    public static long diferenciaMinutos(Calendar fechaInicial, Calendar fechaFinal) {
-	long diferenciaHoras = 0;
-	diferenciaHoras = (fechaFinal.get(Calendar.MINUTE) - fechaInicial.get(Calendar.MINUTE));
-	return diferenciaHoras;
+          
+    public static long cantidadTotalMinutos(Calendar fechaInicial, Calendar fechaFinal) {
+        long totalMinutos = 0;
+	totalMinutos = ((fechaFinal.getTimeInMillis() - fechaInicial.getTimeInMillis()) / 1000 / 60);
+	return totalMinutos;
     }
 }

@@ -1,5 +1,6 @@
 package org.petstar.dto;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 /**
@@ -11,7 +12,7 @@ public class FallasDTO {
     private String descripcion;
     private String hora_inicio;
     private String hora_final;
-    private String tiempo_paro;
+    private BigDecimal tiempo_paro;
     private int id_meta;
     private int id_razon;
     private int id_equipo;
@@ -57,11 +58,11 @@ public class FallasDTO {
         this.hora_final = hora_final;
     }
 
-    public String getTiempo_paro() {
+    public BigDecimal getTiempo_paro() {
         return tiempo_paro;
     }
 
-    public void setTiempo_paro(String tiempo_paro) {
+    public void setTiempo_paro(BigDecimal tiempo_paro) {
         this.tiempo_paro = tiempo_paro;
     }
 
