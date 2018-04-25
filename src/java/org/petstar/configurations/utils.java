@@ -90,9 +90,9 @@ public class utils {
         
         int turno;
         
-        if((hh==23 && isBetween(mm, 0, 59)) || (hh==6 && isBetween(mm, 0, 59))){
+        if((hh>=23 && isBetween(mm, 0, 59)) && (hh<=6 && isBetween(mm, 0, 59))){
             turno = 3;
-        }else if((hh==7 && isBetween(mm, 0, 59)) || (hh==14 && isBetween(mm, 0, 59))){
+        }else if((hh>=7 && isBetween(mm, 0, 59)) && (hh<=14 && isBetween(mm, 0, 59))){
             turno = 1;
         }else if((hh>=15 && isBetween(mm, 0, 59)) && (hh<=22 && isBetween(mm, 0, 59))){
             turno = 2;

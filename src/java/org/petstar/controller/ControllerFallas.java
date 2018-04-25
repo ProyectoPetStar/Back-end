@@ -14,6 +14,7 @@ import static org.petstar.configurations.utils.getHoursMinutes;
 import static org.petstar.configurations.utils.getTurno;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
+import static org.petstar.configurations.utils.sumarFechasDias;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.EquiposDAO;
 import org.petstar.dao.MetasDAO;
@@ -54,6 +55,7 @@ public class ControllerFallas {
                 data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
                 data.setListRazonesParo(paroDAO.getAllRazones());
                 metasDTO = metasDAO.getMetaById(idMeta.getResult());
+                metasDTO.setDia(sumarFechasDias(metasDTO.getDia(), 2));
                 metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                 data.setMetasDTO(metasDTO);
                 output.setData(data);
