@@ -152,6 +152,12 @@ public class utils {
         return sFecha;
     }
     
+    public static String convertSqlToDay(java.sql.Date fecha, SimpleDateFormat formato){
+        String sFecha = formato.format(fecha);
+        
+        return sFecha;
+    }
+    
     public static java.util.Date convertStringToDate(String fecha, SimpleDateFormat formato) throws ParseException{
         SimpleDateFormat format = new SimpleDateFormat("HH:mm"); 
         java.util.Date hora = format.parse(fecha);
