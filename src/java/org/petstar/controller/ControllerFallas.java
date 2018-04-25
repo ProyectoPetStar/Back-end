@@ -212,4 +212,27 @@ public class ControllerFallas {
         output.setResponse(response);
         return output;
     }
+    
+    public OutputJson deleteFalla(HttpServletRequest request) throws ParseException{       
+        int idFalla = Integer.parseInt(request.getParameter("id_falla"));
+        
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            
+            FallasDAO fallasDAO = new FallasDAO();
+            fallasDAO.deleteFalla(idFalla);
+
+            response.setSucessfull(true);
+            response.setMessage(MSG_SUCESS);
+           
+        } catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
 }
