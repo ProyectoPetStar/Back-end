@@ -49,23 +49,22 @@ public class ControllerFallas {
             int idLinea = 2;
             ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
             
+            data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
+            data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+            data.setListRazonesParo(paroDAO.getAllRazones());
+                
             if(null != idMeta){
                 MetasDTO metasDTO = new MetasDTO();
-                data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
-                data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
-                data.setListRazonesParo(paroDAO.getAllRazones());
                 metasDTO = metasDAO.getMetaById(idMeta.getResult());
                 metasDTO.setDia(sumarFechasDias(metasDTO.getDia(), 2));
                 metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                 data.setMetasDTO(metasDTO);
-                output.setData(data);
-
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("No existe meta");
-            }
+                
+            } 
+            
+            output.setData(data);
+            response.setSucessfull(true);
+            response.setMessage(MSG_SUCESS);
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
