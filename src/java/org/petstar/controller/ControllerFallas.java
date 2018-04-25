@@ -238,15 +238,30 @@ public class ControllerFallas {
     
     public OutputJson getFallaById(HttpServletRequest request) throws ParseException{       
         int idFalla = Integer.parseInt(request.getParameter("id_falla"));
+        int idLinea = 2;
         FallasDataResponseJson data = new FallasDataResponseJson();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
+            CatalogosDAO catalogosDAO = new CatalogosDAO();
+            MetasDAO metasDAO = new MetasDAO();
+            EquiposDAO equiposDAO = new EquiposDAO();
+            RazonParoDAO paroDAO = new RazonParoDAO();
+            LineasDAO lineasDAO = new LineasDAO();
             FallasDAO fallasDAO = new FallasDAO();
+            
             data.setFallasDTO(fallasDAO.getFallaById(idFalla));
             data.getFallasDTO().setDia(sumarFechasDias(data.getFallasDTO().getDia(), 2));
-            data.getFallasDTO().setDiaString(convertSqlToDay(data.getFallasDTO().getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+            data.getFallasDTO().setDiaString(convertSqlToDay(
+                    data.getFallasDTO().getDia(), 
+                    new SimpleDateFormat("dd/MM/yyyy")));
+            data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
+            data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+            data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+            data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+            data.setListRazonesParo(paroDAO.getAllRazones());
+            data.setListLineas(lineasDAO.getLineasData());
             
             output.setData(data);
             response.setSucessfull(true);
