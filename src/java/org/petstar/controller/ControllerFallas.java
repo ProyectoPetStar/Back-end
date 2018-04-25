@@ -1,5 +1,6 @@
 package org.petstar.controller;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,13 +11,14 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.convertStringToDate;
-import static org.petstar.configurations.utils.getHoursMinutes;
+import static org.petstar.configurations.utils.getTiempoParo;
 import static org.petstar.configurations.utils.getTurno;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.EquiposDAO;
+import org.petstar.dao.LineasDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dao.RazonParoDAO;
 import org.petstar.dto.FallasDTO;
@@ -29,6 +31,8 @@ import org.petstar.dto.ResultInteger;
  */
 public class ControllerFallas {
     private static final String TABLE_FUENTES = "pet_cat_fuentes_paro";
+    private static final String TABLE_TURNOS = "pet_cat_turno";
+    private static final String TABLE_GRUPOS = "pet_cat_grupo";
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
@@ -42,6 +46,7 @@ public class ControllerFallas {
             MetasDAO metasDAO = new MetasDAO();
             EquiposDAO equiposDAO = new EquiposDAO();
             RazonParoDAO paroDAO = new RazonParoDAO();
+            LineasDAO lineasDAO = new LineasDAO();
             FallasDataResponseJson data = new FallasDataResponseJson();
             int turno = getTurno();
             java.sql.Date dia = getCurrentDayByTurno(turno);
@@ -50,8 +55,11 @@ public class ControllerFallas {
             ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
             
             data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
+            data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+            data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
             data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
             data.setListRazonesParo(paroDAO.getAllRazones());
+            data.setListLineas(lineasDAO.getLineasData());
                 
             if(null != idMeta){
                 MetasDTO metasDTO = new MetasDTO();
@@ -122,9 +130,10 @@ public class ControllerFallas {
         
         try{
             if(horaInicio.before(horaFinal)){
-                fallasDTO.setTiempo_paro(getHoursMinutes(horaInicio, horaFinal));
+                BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
+                                
+                fallasDTO.setTiempo_paro(tiempoParo);
                 FallasDAO fallasDAO = new FallasDAO();
-            
                 fallasDAO.insertNewFalla(fallasDTO);
 
                 response.setSucessfull(true);
