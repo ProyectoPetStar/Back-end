@@ -23,15 +23,12 @@ public class EquiposDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT ce.id_equipos, ce.valor ")
-                .append("FROM dbo.pet_cat_equipos AS ce ")
-                .append("INNER JOIN dbo.pet_equipo_linea AS el ON ce.id_equipos=el.id_equipo ")
-                .append("WHERE ce.activo = 1 AND el.id_linea= ").append(idLinea);
+        sql.append("EXEC sp_select_catEquipos ?");
         Object[] params = {
              idLinea
         };
         ResultSetHandler rsh = new BeanListHandler(EquiposDTO.class);
-        List<EquiposDTO> data = (List<EquiposDTO>) qr.query(sql.toString(), rsh);
+        List<EquiposDTO> data = (List<EquiposDTO>) qr.query(sql.toString(), rsh, params);
         
         return data;
     }
