@@ -29,6 +29,10 @@ public class FallasDTO {
     private String valor_fuente;
     private String valor_razon;
     private String valor_equipo;
+    private String valor_grupo;
+    private String valor_turno;
+    private String valor_linea;
+    private String descripcion_equipo;
 
     public int getId_falla() {
         return id_falla;
@@ -196,5 +200,37 @@ public class FallasDTO {
 
     public void setValor_equipo(String valor_equipo) {
         this.valor_equipo = valor_equipo;
+    }
+
+    public String getValor_grupo() {
+        return valor_grupo;
+    }
+
+    public void setValor_grupo(String valor_grupo) {
+        this.valor_grupo = valor_grupo;
+    }
+
+    public String getValor_turno() {
+        return valor_turno;
+    }
+
+    public void setValor_turno(String valor_turno) {
+        this.valor_turno = valor_turno;
+    }
+
+    public String getValor_linea() {
+        return valor_linea;
+    }
+
+    public void setValor_linea(String valor_linea) {
+        this.valor_linea = valor_linea;
+    }
+
+    public String getDescripcion_equipo() {
+        return descripcion_equipo;
+    }
+
+    public void setDescripcion_equipo(String descripcion_equipo) {
+        this.descripcion_equipo = descripcion_equipo;
     }
 }

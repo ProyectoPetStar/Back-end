@@ -38,15 +38,18 @@ public class FallasDAO {
         return data;
     }
     
-    public FallasDTO getFallaById() throws Exception{
+    public FallasDTO getFallaById(int idFalla) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
-        
+        sql.append("EXEC sp_selectById_petFalla ?");
+        Object[] params = {
+            idFalla
+        };
+                
         ResultSetHandler rsh = new BeanHandler(FallasDTO.class);
-        FallasDTO data = (FallasDTO) qr.query(sql.toString(), rsh);
+        FallasDTO data = (FallasDTO) qr.query(sql.toString(), rsh, params);
         
         return data;
     }
