@@ -66,14 +66,14 @@ public class FallasDAO {
         qr.update(sql.toString(), paramas);
     }
     
-    public void deleteFalla() throws Exception{
+    public void deleteFalla(int idFalla) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_tmpDelete_petFalla ?");
         Object[] paramas = {
-            
+            idFalla
         };
         
         qr.update(sql.toString(), paramas);

@@ -57,7 +57,10 @@ public class Fallas extends HttpServlet {
                     break;
                 case "updateFalla":
                     output = controllerFallas.updateFalla(request);
-                    
+                    break;
+                case "deleteFalla":
+                    output = controllerFallas.deleteFalla(request);
+                    break;
             }
         } catch(ParseException ex) {
             ResponseJson reponseJson = new ResponseJson();
