@@ -40,9 +40,12 @@ public class Reportes extends HttpServlet {
         try{
             String action = request.getParameter("action");
             switch(action){
-                 case"loadCombobox":
-                     output = controllerReportes.loadCombobox(request);
-                     break;
+                case"loadCombobox":
+                    output = controllerReportes.loadCombobox(request);
+                    break;
+                case"getOEEFallasByLinea":
+                    output = controllerReportes.getOEEFallasByLinea(request);
+                    break;
             }
         } catch(Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
