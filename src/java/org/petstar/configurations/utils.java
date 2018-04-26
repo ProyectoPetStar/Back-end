@@ -6,6 +6,7 @@
 package org.petstar.configurations;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -207,17 +208,19 @@ public class utils {
         Calendar calFechaInicial=Calendar.getInstance();
         Calendar calFechaFinal=Calendar.getInstance();
         
-        calFechaInicial.setTime(fechaInicio);
-        calFechaFinal.setTime(fechaTermino);
+        calFechaInicial.setTime(sumarFechasDias(fechaInicio, -1));
+        calFechaFinal.setTime(sumarFechasDias(fechaTermino,1));
         
-        long totalMinutos = calFechaFinal.getTimeInMillis() - calFechaInicial.getTimeInMillis();
-        long totalHoras = (totalMinutos / (1000 * 60 * 60 * 24)) + 24;
+        long totalMilisegundos = calFechaFinal.getTimeInMillis() - calFechaInicial.getTimeInMillis();
+        long totalDias = (totalMilisegundos / (3600*24*1000));
+        long totalHoras = totalDias * 24;
                         
         return new BigDecimal(totalHoras);
     }
     
     public static BigDecimal getPorcentajeParo(BigDecimal tiempoParo, BigDecimal tiempoDisponible){
-        BigDecimal porcentaje = tiempoParo.divide(tiempoDisponible, 2, RoundingMode.CEILING);
+        BigDecimal calculo = tiempoParo.divide(tiempoDisponible, 4, RoundingMode.CEILING);
+        BigDecimal porcentaje = calculo.multiply(new BigDecimal(100), new MathContext(4));
         return  porcentaje;
     }
 }
