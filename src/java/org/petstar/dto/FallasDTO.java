@@ -19,7 +19,7 @@ public class FallasDTO {
     private int estatus;
     private int id_usuario_registro;
     private Date fecha_modificacion_registro;
-    private int id_usuario_modifica_usuario;
+    private int id_usuario_modifica_registro;
     private int id_fuente;
     private int id_linea;
     private int id_grupo;
@@ -114,12 +114,12 @@ public class FallasDTO {
         this.fecha_modificacion_registro = fecha_modificacion_registro;
     }
 
-    public int getId_usuario_modifica_usuario() {
-        return id_usuario_modifica_usuario;
+    public int getId_usuario_modifica_registro() {
+        return id_usuario_modifica_registro;
     }
 
-    public void setId_usuario_modifica_usuario(int id_usuario_modifica_usuario) {
-        this.id_usuario_modifica_usuario = id_usuario_modifica_usuario;
+    public void setId_usuario_modifica_registro(int id_usuario_modifica_registro) {
+        this.id_usuario_modifica_registro = id_usuario_modifica_registro;
     }
 
     public int getId_fuente() {

@@ -92,7 +92,7 @@ public class utils {
         
         int turno;
         
-        if((hh>=23 && isBetween(mm, 0, 59)) && (hh<=6 && isBetween(mm, 0, 59))){
+        if((hh>=23 && isBetween(mm, 0, 59)) || (hh<=6 && isBetween(mm, 0, 59))){
             turno = 3;
         }else if((hh>=7 && isBetween(mm, 0, 59)) && (hh<=14 && isBetween(mm, 0, 59))){
             turno = 1;
@@ -145,6 +145,13 @@ public class utils {
         cal.setTimeInMillis(fch.getTime());
         cal.add(Calendar.DATE, dias);
         return new java.sql.Date(cal.getTimeInMillis());
+    }
+    
+    public static java.util.Date sumarFechasDias(java.util.Date fch, int dias) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(fch.getTime());
+        cal.add(Calendar.DATE, dias);
+        return new java.util.Date(cal.getTimeInMillis());
     }
     
     public static String convertSqlToDay(java.sql.Date fecha){

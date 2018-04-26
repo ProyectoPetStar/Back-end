@@ -78,14 +78,17 @@ public class FallasDAO {
         qr.update(sql.toString(), paramas);
     }
     
-    public void updateFalla() throws Exception{
+    public void updateFalla(FallasDTO fallasDTO) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEc sp_update_petFallas ?, ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] paramas = {
-            
+            fallasDTO.getId_falla(), fallasDTO.getDescripcion(), fallasDTO.getHora_inicio(),
+            fallasDTO.getHora_final(), fallasDTO.getTiempo_paro(), fallasDTO.getId_razon(),
+            fallasDTO.getId_equipo(), fallasDTO.getFecha_modificacion_registro(),
+            fallasDTO.getId_usuario_modifica_registro()
         };
         
         qr.update(sql.toString(), paramas);

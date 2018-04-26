@@ -8,6 +8,7 @@ package org.petstar.service;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -54,9 +55,11 @@ public class Fallas extends HttpServlet {
                 case "insertFalla":
                     output = controllerFallas.insertFalla(request);
                     break;
+                case "updateFalla":
+                    output = controllerFallas.updateFalla(request);
                     
             }
-        } catch(Exception ex) {
+        } catch(ParseException ex) {
             ResponseJson reponseJson = new ResponseJson();
             reponseJson.setSucessfull(false);
             reponseJson.setMessage(ex.getMessage());

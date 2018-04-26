@@ -16,6 +16,7 @@ import static org.petstar.configurations.utils.getTurno;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
+import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.EquiposDAO;
 import org.petstar.dao.LineasDAO;
@@ -124,6 +125,10 @@ public class ControllerFallas {
         SimpleDateFormat formato = new SimpleDateFormat("HH:mm");
         Date horaInicio = convertStringToDate(fallasDTO.getHora_inicio(), formato);
         Date horaFinal = convertStringToDate(fallasDTO.getHora_final(), formato);
+        int turno = getTurno();
+        if(turno==3){
+            horaFinal = sumarFechasDias(horaFinal, 1);
+        }
         
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -135,6 +140,52 @@ public class ControllerFallas {
                 fallasDTO.setTiempo_paro(tiempoParo);
                 FallasDAO fallasDAO = new FallasDAO();
                 fallasDAO.insertNewFalla(fallasDTO);
+
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage("Horas incorrectas");
+            }
+        } catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson updateFalla(HttpServletRequest request) throws ParseException{
+        FallasDTO fallasDTO = new FallasDTO();
+        fallasDTO.setDescripcion(request.getParameter("descripcion"));
+        fallasDTO.setHora_inicio(request.getParameter("hora_inicio"));
+        fallasDTO.setHora_final(request.getParameter("hora_final"));
+        fallasDTO.setId_falla(Integer.parseInt(request.getParameter("id_falla")));
+        fallasDTO.setId_razon(Integer.parseInt(request.getParameter("id_razon")));
+        fallasDTO.setId_equipo(Integer.parseInt(request.getParameter("id_equipo")));
+        fallasDTO.setId_meta(Integer.parseInt(request.getParameter("id_meta")));
+        
+        SimpleDateFormat formato = new SimpleDateFormat("HH:mm");
+        Date horaInicio = convertStringToDate(fallasDTO.getHora_inicio(), formato);
+        Date horaFinal = convertStringToDate(fallasDTO.getHora_final(), formato);
+        int turno = getTurno();
+        if(turno==3){
+            horaFinal = sumarFechasDias(horaFinal, 1);
+        }
+        
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            if(horaInicio.before(horaFinal)){
+                fallasDTO.setFecha_modificacion_registro(getCurrentDate());
+                fallasDTO.setId_usuario_modifica_registro(2);
+                BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
+                                
+                fallasDTO.setTiempo_paro(tiempoParo);
+                FallasDAO fallasDAO = new FallasDAO();
+                fallasDAO.updateFalla(fallasDTO);
 
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
