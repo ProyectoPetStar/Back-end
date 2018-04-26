@@ -202,4 +202,22 @@ public class utils {
 	totalMinutos = ((fechaFinal.getTimeInMillis() - fechaInicial.getTimeInMillis()) / 1000 / 60);
 	return totalMinutos;
     }
+    
+    public static BigDecimal getTotalHoras(Date fechaInicio, Date fechaTermino){
+        Calendar calFechaInicial=Calendar.getInstance();
+        Calendar calFechaFinal=Calendar.getInstance();
+        
+        calFechaInicial.setTime(fechaInicio);
+        calFechaFinal.setTime(fechaTermino);
+        
+        long totalMinutos = calFechaFinal.getTimeInMillis() - calFechaInicial.getTimeInMillis();
+        long totalHoras = (totalMinutos / (1000 * 60 * 60 * 24)) + 24;
+                        
+        return new BigDecimal(totalHoras);
+    }
+    
+    public static BigDecimal getPorcentajeParo(BigDecimal tiempoParo, BigDecimal tiempoDisponible){
+        BigDecimal porcentaje = tiempoParo.divide(tiempoDisponible, 2, RoundingMode.CEILING);
+        return  porcentaje;
+    }
 }
