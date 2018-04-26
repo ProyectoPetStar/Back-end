@@ -1,6 +1,7 @@
 package org.petstar.controller;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ public class ControllerReportes {
             List<HashMap> listOEEFallas = new ArrayList<>();
             BigDecimal tiempoDisponible = getTotalHoras(
                     convertStringToSql(fechaIn), convertStringToSql(fechaTe));
+            BigDecimal total = new BigDecimal(BigInteger.ZERO);
             
             for(CatalogosDTO fuente:listFuentes){
                 HashMap<String, Object> map = new HashMap<>();
@@ -67,9 +69,16 @@ public class ControllerReportes {
                     raz.put("porcentaje", getPorcentajeParo(
                             razon.getSuma_tiempo_paro(), tiempoDisponible));
                     listOEEFallas.add(raz);
+                    total = total.add(razon.getSuma_tiempo_paro());
                 }
             }
             
+            HashMap<String, Object> mapa = new HashMap<>();
+            mapa.put("padre", 2);
+            mapa.put("fuente", "Total");
+            mapa.put("hrs", total);
+            mapa.put("porcentaje", getPorcentajeParo(total, tiempoDisponible));
+            listOEEFallas.add(mapa);
             data.setListaOEEFallas(listOEEFallas);
             
             output.setData(data);
