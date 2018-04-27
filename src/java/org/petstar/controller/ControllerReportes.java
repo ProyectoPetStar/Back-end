@@ -46,20 +46,19 @@ public class ControllerReportes {
             List<HashMap> listOEEFallas = new ArrayList<>();
             BigDecimal tiempoDisponible = getTotalHoras(
                     convertStringToSql(fechaIn), convertStringToSql(fechaTe));
-            BigDecimal total = new BigDecimal(BigInteger.ZERO);
+            BigDecimal totalGeneral = new BigDecimal(BigInteger.ZERO);
             
             for(CatalogosDTO fuente:listFuentes){
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("padre", 1);
                 map.put("fuente", fuente.getValor());
-                map.put("hrs", 0);
-                map.put("porcentaje", 0);
                 listOEEFallas.add(map);
                 
                 List<RazonParoDTO> listRazones = new ArrayList<>();
                 listRazones = razonParoDAO.getFallasByOEE(
                         convertStringToSql(fechaIn), 
                         convertStringToSql(fechaTe), idLInea, fuente.getId());
+                BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
                 
                 for(RazonParoDTO razon:listRazones){
                     HashMap<String, Object> raz = new HashMap<>();
@@ -69,15 +68,19 @@ public class ControllerReportes {
                     raz.put("porcentaje", getPorcentajeParo(
                             razon.getSuma_tiempo_paro(), tiempoDisponible));
                     listOEEFallas.add(raz);
-                    total = total.add(razon.getSuma_tiempo_paro());
+                    
+                    totalParcial = totalParcial.add(razon.getSuma_tiempo_paro());
+                    totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro());
+                    map.put("hrs", totalParcial);
+                    map.put("porcentaje", getPorcentajeParo(totalParcial, tiempoDisponible));
                 }
             }
             
             HashMap<String, Object> mapa = new HashMap<>();
             mapa.put("padre", 2);
             mapa.put("fuente", "Total");
-            mapa.put("hrs", total);
-            mapa.put("porcentaje", getPorcentajeParo(total, tiempoDisponible));
+            mapa.put("hrs", totalGeneral);
+            mapa.put("porcentaje", getPorcentajeParo(totalGeneral, tiempoDisponible));
             listOEEFallas.add(mapa);
             data.setListaOEEFallas(listOEEFallas);
             
