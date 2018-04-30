@@ -53,9 +53,6 @@ public class Users extends HttpServlet {
                 case "getPerfilSonarh":
                    output =  controller.getPerfilUserSonarhById(request);
                    break;
-                case "getPerfilEtad":
-                    output = controller.getPerfilUserEtadById(request);
-                    break;
                 case "getPerfil":
                     output = controller.getPerfilUserSonarh(request);
                     break;

@@ -5,6 +5,8 @@
  */
 package org.petstar.model;
 import java.util.List;
+import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.LineasDTO;
 import org.petstar.dto.UserSonarhDTO;
 /**
  * Modelado de JSON para usuarios Sonarh
@@ -13,6 +15,9 @@ import org.petstar.dto.UserSonarhDTO;
 public class UserSonarhResponseJson {
     private UserSonarhDTO usuarioSonarh;
     private List<UserSonarhDTO> listUserSonarh;
+    private List<LineasDTO> listLineas;
+    private List<CatalogosDTO> listGrupos;
+    private List<CatalogosDTO> listPerfiles;
 
     public UserSonarhDTO getUsuarioSonarh() {
         return usuarioSonarh;
@@ -28,5 +33,29 @@ public class UserSonarhResponseJson {
 
     public void setListUserSonarh(List<UserSonarhDTO> listUserSonarh) {
         this.listUserSonarh = listUserSonarh;
+    }
+
+    public List<LineasDTO> getListLineas() {
+        return listLineas;
+    }
+
+    public void setListLineas(List<LineasDTO> listLineas) {
+        this.listLineas = listLineas;
+    }
+
+    public List<CatalogosDTO> getListGrupos() {
+        return listGrupos;
+    }
+
+    public void setListGrupos(List<CatalogosDTO> listGrupos) {
+        this.listGrupos = listGrupos;
+    }
+
+    public List<CatalogosDTO> getListPerfiles() {
+        return listPerfiles;
+    }
+
+    public void setListPerfiles(List<CatalogosDTO> listPerfiles) {
+        this.listPerfiles = listPerfiles;
     }
 }

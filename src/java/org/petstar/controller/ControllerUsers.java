@@ -6,6 +6,8 @@
 package org.petstar.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import org.petstar.dao.CatalogosDAO;
+import org.petstar.dao.LineasDAO;
 import org.petstar.dao.UsersDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
@@ -19,7 +21,9 @@ import org.petstar.model.UserSonarhResponseJson;
  * @author Tech-Pro
  */
 public class ControllerUsers {
-
+    private static final String TABLE_GRUPOS = "pet_cat_grupo";
+    private static final String TABLE_PERFIL = "pet_cat_perfil";
+    
     /**
      * Lista de usuarios Sonarh
      * Metodo que devuelve la lista de usuarios de sonarh conforme al modelo.
@@ -72,7 +76,7 @@ public class ControllerUsers {
                 if(auth.id_usuario_valido(request) != "-1"){
                     UsersDAO userDAO = new UsersDAO();
                     UserResponseJson userResponseJson = new UserResponseJson();
-                    userResponseJson.setUsuario(userDAO.getPerfilUserSonarh(idUsuario));
+//                    userResponseJson.setUsuario(userDAO.getPerfilUserSonarh(idUsuario));
                     output.setData(userResponseJson);
                     response.setMessage("OK");
                     response.setSucessfull(true);
@@ -92,45 +96,6 @@ public class ControllerUsers {
         output.setResponse(response);
         return output;
     }
-    
-    /**
-     * Perfil de usuarios 
-     * Metodo para obtener datos de los diferentes usuarios de ETAD
-     * @param request
-     * @return 
-     */
-    public OutputJson getPerfilUserEtadById(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario_buscar"));
-        UserResponseJson response = new UserResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                UsersDAO userDAO = new UsersDAO();
-                ResultInteger result = userDAO.validaExistUsersETAD(idUsuario);
-                if(result.getResult().equals(1)){
-                    UserETADResponseJson userData = new UserETADResponseJson();
-                    userData.setUserDTO(userDAO.getPerfilUserSonarh(idUsuario));
-
-                    output.setData(userData);
-                    response.setSucessfull(true);
-                    response.setMessage("OK");
-                }else{
-                    response.setSucessfull(true);
-                    response.setMessage("El usuario no se ha registrado.");
-                }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
-        } catch (Exception ex){
-            response.setSucessfull(false);
-            response.setMessage("Error: " + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
 
     /**
      * Perfil Sonarh
@@ -139,30 +104,35 @@ public class ControllerUsers {
      * @return 
      */
     public OutputJson getPerfilUserSonarhById(HttpServletRequest request){
-        int idUsuarioSonarh = Integer.parseInt(request.getParameter("id_usuario_sonarh"));
+        int numeroEmpleado = Integer.parseInt(request.getParameter("numero_empleado"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 UsersDAO userDAO = new UsersDAO();
-                ResultInteger result = userDAO.validaExistUsers(idUsuarioSonarh);
-                if(result.getResult().equals(0)){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                ResultInteger result = userDAO.validaExistUsers(numeroEmpleado);
+                if(result.getResult().equals(1)){
                     UserSonarhResponseJson userData = new UserSonarhResponseJson();
-//                    userData.setUsuarioSonarth(userDAO.getUserSonarhById(idUsuarioSonarh));
+                    userData.setUsuarioSonarh(userDAO.getUserSonarhById(numeroEmpleado));
+                    userData.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+                    userData.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
+                    userData.setListLineas(lineasDAO.getLineasData());
 
                     output.setData(userData);
                     response.setSucessfull(true);
                     response.setMessage("OK");
                 }else{
                     response.setSucessfull(false);
-                    response.setMessage("El usuario ya fue registrado previamente.");
+                    response.setMessage("Usuario incorrecto");
                 }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage("Error: " + ex.getMessage());

@@ -10,6 +10,7 @@ public class UserSonarhDTO {
     private String Nombre;
     private String Paterno;
     private String Materno;
+    private int id_grupo;
     private String Grupo;
     private String Area;
 
@@ -51,6 +52,14 @@ public class UserSonarhDTO {
 
     public void setMaterno(String Materno) {
         this.Materno = Materno;
+    }
+
+    public int getId_grupo() {
+        return id_grupo;
+    }
+
+    public void setId_grupo(int id_grupo) {
+        this.id_grupo = id_grupo;
     }
 
     public String getGrupo() {
