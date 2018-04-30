@@ -44,9 +44,6 @@ public class Users extends HttpServlet {
         try {
             String action = request.getParameter("action");
             switch (action) {
-                case "getUsersETAD":
-                    output = controller.getUsersETAD(request);
-                    break;
                 case "getUsersSonarh":
                    output =  controller.getUsersSonarh(request);
                    break;
@@ -55,6 +52,9 @@ public class Users extends HttpServlet {
                    break;
                 case "insertUserETAD":
                     output = controller.insertUsersETAD(request);
+                    break;
+                case "getUsersETAD":
+                    output = controller.getUsersETAD(request);
                     break;
                 case "getPerfil":
                     output = controller.getPerfilUserSonarh(request);

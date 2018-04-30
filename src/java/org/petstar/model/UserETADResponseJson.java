@@ -13,23 +13,22 @@ import org.petstar.dto.UserDTO;
  * @author Tech-Pro
  */
 public class UserETADResponseJson {
-    private UserDTO userDTO;
-    private List<UserDTO> listUserDTO;
+    private UserDTO userETAD;
+    private List<UserDTO> listUserETAD;
 
-    public UserDTO getUserDTO() {
-        return userDTO;
+    public UserDTO getUserETAD() {
+        return userETAD;
     }
 
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
+    public void setUserETAD(UserDTO userETAD) {
+        this.userETAD = userETAD;
     }
 
-    public List<UserDTO> getListUserDTO() {
-        return listUserDTO;
+    public List<UserDTO> getListUserETAD() {
+        return listUserETAD;
     }
 
-    public void setListUserDTO(List<UserDTO> listUserDTO) {
-        this.listUserDTO = listUserDTO;
+    public void setListUserETAD(List<UserDTO> listUserETAD) {
+        this.listUserETAD = listUserETAD;
     }
-    
 }
