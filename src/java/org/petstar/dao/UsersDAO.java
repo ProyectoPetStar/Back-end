@@ -167,7 +167,7 @@ public class UsersDAO {
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append(" EXEC sp_selectPetUsuarios ");
+        sql.append("EXEC sp_selectUsuariosEtad");
         ResultSetHandler rsh = new BeanListHandler(UserDTO.class);
         List<UserDTO> usuariosETAD = (List<UserDTO>) qr.query(sql.toString(), rsh); 
         return usuariosETAD;

@@ -11,30 +11,29 @@ package org.petstar.dto;
  */
 public class UserDTO {
     
-    private int id_usuario;
+    private int id_acceso;
+    private int usuario_sonarh;
     private String nombre;
-    private int id_turno;
-    private int id_linea;
-    private int id_grupo;
-    private String usuario_acceso;
-    private int id_perfil;
-    private String token;
-    private String turno;
-    private String linea;
-    private String grupo;
-    private String perfil;
-    private String clave_accesos;
+    private String valor_grupo;
+    private String valor_linea;
     private int activo;
 
-    public int getId_usuario() {
-        return id_usuario;
+    public int getId_acceso() {
+        return id_acceso;
     }
 
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setId_acceso(int id_acceso) {
+        this.id_acceso = id_acceso;
     }
-    
-   
+
+    public int getUsuario_sonarh() {
+        return usuario_sonarh;
+    }
+
+    public void setUsuario_sonarh(int usuario_sonarh) {
+        this.usuario_sonarh = usuario_sonarh;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -43,92 +42,20 @@ public class UserDTO {
         this.nombre = nombre;
     }
 
-    public int getId_turno() {
-        return id_turno;
+    public String getValor_grupo() {
+        return valor_grupo;
     }
 
-    public void setId_turno(int id_turno) {
-        this.id_turno = id_turno;
+    public void setValor_grupo(String valor_grupo) {
+        this.valor_grupo = valor_grupo;
     }
 
-    public int getId_linea() {
-        return id_linea;
+    public String getValor_linea() {
+        return valor_linea;
     }
 
-    public void setId_linea(int id_linea) {
-        this.id_linea = id_linea;
-    }
-
-    public int getId_grupo() {
-        return id_grupo;
-    }
-
-    public void setId_grupo(int id_grupo) {
-        this.id_grupo = id_grupo;
-    }
-
-    public String getUsuario_acceso() {
-        return usuario_acceso;
-    }
-
-    public void setUsuario_acceso(String usuario_acceso) {
-        this.usuario_acceso = usuario_acceso;
-    }
-
-    public int getId_perfil() {
-        return id_perfil;
-    }
-
-    public void setId_perfil(int id_perfil) {
-        this.id_perfil = id_perfil;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getPerfil() {
-        return perfil;
-    }
-
-    public void setPerfil(String perfil) {
-        this.perfil = perfil;
-    }
-
-    public String getTurno() {
-        return turno;
-    }
-
-    public void setTurno(String turno) {
-        this.turno = turno;
-    }
-
-    public String getLinea() {
-        return linea;
-    }
-
-    public void setLinea(String linea) {
-        this.linea = linea;
-    }
-
-    public String getGrupo() {
-        return grupo;
-    }
-
-    public void setGrupo(String grupo) {
-        this.grupo = grupo;
-    }
-
-    public String getClave_accesos() {
-        return clave_accesos;
-    }
-
-    public void setClave_accesos(String clave_accesos) {
-        this.clave_accesos = clave_accesos;
+    public void setValor_linea(String valor_linea) {
+        this.valor_linea = valor_linea;
     }
 
     public int getActivo() {
@@ -138,5 +65,4 @@ public class UserDTO {
     public void setActivo(int activo) {
         this.activo = activo;
     }
-    
 }
