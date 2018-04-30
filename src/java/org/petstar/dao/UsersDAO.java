@@ -66,45 +66,21 @@ public class UsersDAO {
     }
     
     /**
-     * Validación Password
-     * Metodo que realiza la validacion del password del usuario
-     * @param contraseniaAnterior
-     * @param idUsuario
-     * @return
-     * @throws Exception 
-     */
-    public ResultInteger validaPassword(String contraseniaAnterior, int idUsuario) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-      
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_validaPetUsuarioByPass ?, ?");
-        Object[] params = {
-            idUsuario, contraseniaAnterior 
-        };
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger resultInteger = (ResultInteger)  qr.query(sql.toString(), rsh, params);
-
-        return resultInteger;
-        
-    }
-    
-    /**
      * Actualización de Password
      * Metodo que actualiza el password del usuario
      * @param contraseniaNueva
-     * @param idUsuario
+     * @param idAcceso
      * @throws Exception 
      */
-    public void changePassword(String contraseniaNueva, int idUsuario) throws Exception{
+    public void changePassword(String contraseniaNueva, int idAcceso) throws Exception{
         
        DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_UpdatePassPetUsuarios ?, ?");
+        sql.append("EXEC sp_updateContrasenia ?, ?");
         Object[] params = {
-            idUsuario, contraseniaNueva 
+            idAcceso, contraseniaNueva 
         };
         
         qr.update(sql.toString(), params);
@@ -193,15 +169,16 @@ public class UsersDAO {
      * Eliminación de USuarios
      * Metodo para eliminar usuarios del sistema
      * @param idAcceso
+     * @param activo
      * @throws Exception 
      */
-    public void deleteUsersETAD(int idAcceso) throws Exception{
+    public void deleteUsersETAD(int idAcceso, int activo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("UPDATE pet_acceso SET activo = 0 WHERE id_acceso = ?");
-        Object[] params = { idAcceso };
+        sql.append("UPDATE pet_acceso SET activo = ? WHERE id_acceso = ?");
+        Object[] params = { activo, idAcceso };
         
         qr.update(sql.toString(), params);
     }

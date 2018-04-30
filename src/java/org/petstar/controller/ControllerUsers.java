@@ -158,33 +158,28 @@ public class ControllerUsers {
      * @return 
      */
     public OutputJson changePasswordUser(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
-        String contraseniaAnterior = request.getParameter("contraseniaAnterior");
-        String contraseniaNueva = request.getParameter("contraseniaNueva");
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
+        String newPassword = request.getParameter("new_password");
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion auth = new ControllerAutenticacion();
+//        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
              
-            if (auth.isValidToken(request)) {
+//            if (auth.isValidToken(request)) {
                 UsersDAO userDAO = new UsersDAO();
-                ResultInteger resultado = userDAO.validaPassword(contraseniaAnterior, idUsuario);
-                if( resultado.getResult().equals(1)){
-                    userDAO.changePassword(contraseniaNueva, idUsuario);
+                
+                userDAO.changePassword(newPassword, idAcceso);
                     
-                    response.setMessage("OK");
-                    response.setSucessfull(true);
+                response.setMessage("OK");
+                response.setSucessfull(true);
                     
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Contraseña Invalida");
-                }
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+                
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -333,6 +328,7 @@ public class ControllerUsers {
      */
     public OutputJson deleteUsersETAD(HttpServletRequest request){
         int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
+        int activo = Integer.parseInt(request.getParameter("activo"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
 //        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -340,7 +336,7 @@ public class ControllerUsers {
         try{
 //            if(autenticacion.isValidToken(request)){
                 UsersDAO usersDAO = new UsersDAO();
-                usersDAO.deleteUsersETAD(idAcceso);
+                usersDAO.deleteUsersETAD(idAcceso, activo);
                 
                 response.setSucessfull(true);
                 response.setMessage("OK");
