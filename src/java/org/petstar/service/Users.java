@@ -59,14 +59,14 @@ public class Users extends HttpServlet {
                 case "getUserETADByID":
                     output = controller.getUserETADById(request);
                     break;
+                case "deleteUserETAD":
+                    output = controller.deleteUsersETAD(request);
+                    break;
                 case "changePassword":
                     output = controller.changePasswordUser(request);
                     break;
                 case "updatePerfil":
                     output = controller.updatePerfilUser(request);
-                    break;
-                case "deleteUser":
-                    output = controller.deleteUsersETAD(request);
                     break;
             }
         } catch (Exception ex) {
