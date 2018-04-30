@@ -253,29 +253,38 @@ public class ControllerUsers {
      * @param request
      * @return 
      */
-    public OutputJson updatePerfilUser(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario_modificar"));
-        int idPerfil = Integer.parseInt(request.getParameter("id_perfil"));
-        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
-        int activo = Integer.parseInt(request.getParameter("activo"));
+    public OutputJson updateUserETAD(HttpServletRequest request){
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+        String perfiles = request.getParameter("perfiles");
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion auth = new ControllerAutenticacion();
+//        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
              
-            if (auth.isValidToken(request)) {
+//            if (auth.isValidToken(request)) {
                 UsersDAO userDAO = new UsersDAO();
                 
-                userDAO.updatePerfilUser(idUsuario, idTurno, idPerfil, activo);
+                Date fecha = getCurrentDate();
+                userDAO.updateUserETAD(idAcceso, idLinea, idGrupo, 1, fecha);
+                String[] listPerfiles = perfiles.split(",");
+                for(String perfil:listPerfiles){
+                    userDAO.registraPerfilByUser(idAcceso, Integer.parseInt(perfil));
+
+                    response.setMessage("OK");
+                    response.setSucessfull(true);
+                }
+                
                 response.setMessage("OK");
                 response.setSucessfull(true);
                 
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -323,22 +332,22 @@ public class ControllerUsers {
      * @return 
      */
     public OutputJson deleteUsersETAD(HttpServletRequest request){
-        int idUser = Integer.parseInt(request.getParameter("id_acceso"));
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 UsersDAO usersDAO = new UsersDAO();
-                usersDAO.deleteUsersETAD(idUser);
+                usersDAO.deleteUsersETAD(idAcceso);
                 
                 response.setSucessfull(true);
                 response.setMessage("OK");
-            }else{
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage("Descripcion del Error: " + ex.getMessage());
