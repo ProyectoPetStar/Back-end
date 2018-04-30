@@ -15,8 +15,11 @@ public class UserDTO {
     private int usuario_sonarh;
     private String nombre;
     private String valor_grupo;
+    private int id_grupo;
     private String valor_linea;
+    private int id_linea;
     private int activo;
+    private String perfiles;
 
     public int getId_acceso() {
         return id_acceso;
@@ -50,6 +53,14 @@ public class UserDTO {
         this.valor_grupo = valor_grupo;
     }
 
+    public int getId_grupo() {
+        return id_grupo;
+    }
+
+    public void setId_grupo(int id_grupo) {
+        this.id_grupo = id_grupo;
+    }
+
     public String getValor_linea() {
         return valor_linea;
     }
@@ -58,11 +69,27 @@ public class UserDTO {
         this.valor_linea = valor_linea;
     }
 
+    public int getId_linea() {
+        return id_linea;
+    }
+
+    public void setId_linea(int id_linea) {
+        this.id_linea = id_linea;
+    }
+
     public int getActivo() {
         return activo;
     }
 
     public void setActivo(int activo) {
         this.activo = activo;
+    }
+
+    public String getPerfiles() {
+        return perfiles;
+    }
+
+    public void setPerfiles(String perfiles) {
+        this.perfiles = perfiles;
     }
 }

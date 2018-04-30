@@ -6,6 +6,7 @@
 package org.petstar.dao;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 import org.petstar.configurations.PoolDataSource;
 import javax.sql.DataSource;
@@ -173,6 +174,19 @@ public class UsersDAO {
         return usuariosETAD;
     }
     
+    public UserDTO getUserEtadByID(int idAcceso) throws SQLException{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectEtadById ?");
+        Object[] params = { idAcceso };
+        
+        ResultSetHandler rsh = new BeanHandler(UserDTO.class);
+        UserDTO usuarioETAD = (UserDTO) qr.query(sql.toString(), rsh, params);
+        return usuarioETAD;
+    }
+    
     /**
      * Eliminación de USuarios
      * Metodo para eliminar usuarios del sistema
@@ -217,19 +231,17 @@ public class UsersDAO {
     /**
      * Validación Usuario ETAD
      * Metodo que valida que el usuario ETAD exista
-     * @param idUser
+     * @param idAcceso
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaExistUsersETAD(int idUser) throws Exception{
+    public ResultInteger validaExistUsersETAD(int idAcceso) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetValidaUsuarioEtad ?");
-        Object[] params = {
-            idUser
-        };
+        sql.append("SELECT COUNT(1) AS result FROM pet_acceso WHERE id_acceso = ?");
+        Object[] params = { idAcceso };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
