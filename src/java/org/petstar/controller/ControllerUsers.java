@@ -5,6 +5,7 @@
  */
 package org.petstar.controller;
 
+import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
@@ -15,6 +16,7 @@ import org.petstar.model.ResponseJson;
 import org.petstar.model.UserETADResponseJson;
 import org.petstar.model.UserResponseJson;
 import org.petstar.model.UserSonarhResponseJson;
+import static org.petstar.configurations.utils.getCurrentDate;
 
 /**
  * 
@@ -189,32 +191,46 @@ public class ControllerUsers {
      * @param request
      * @return 
      */
-    public OutputJson insertNewUsersETAD(HttpServletRequest request){
-        String nombre = request.getParameter("nombre");
-        int idSonarh = Integer.parseInt(request.getParameter("id_sonarh"));
+    public OutputJson insertUsersETAD(HttpServletRequest request){
+        int numeroEmpleado = Integer.parseInt(request.getParameter("numero_empleado"));
         int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idPerfil = Integer.parseInt(request.getParameter("id_perfil"));
-        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
-        String usuario = request.getParameter("usuario_acceso");
+        String perfiles = request.getParameter("perfiles");
+        String[] listPerfiles = perfiles.split(",");
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion auth = new ControllerAutenticacion();
+//        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
              
-            if (auth.isValidToken(request)) {
+//            if (auth.isValidToken(request)) {
                 UsersDAO userDAO = new UsersDAO();
-                
-                userDAO.insertNewUser(nombre, idSonarh, idLinea, idGrupo, idTurno, usuario, idPerfil);
-                response.setMessage("OK");
-                response.setSucessfull(true);
-                
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+                ResultInteger existeUSuario = userDAO.validaExistUsers(numeroEmpleado);
+                if(existeUSuario.getResult().equals(1)){
+                    Date fecha = getCurrentDate();
+                    userDAO.insertNewUser(numeroEmpleado, idLinea, idGrupo, fecha, 1, 1);
+
+                    ResultInteger result = userDAO.getIdUserByNumeroEmpleado(numeroEmpleado);
+                    if(null != result){
+                        for(String perfil:listPerfiles){
+                            userDAO.registraPerfilByUser(result.getResult(), Integer.parseInt(perfil));
+
+                            response.setMessage("OK");
+                            response.setSucessfull(true);
+                        }
+                    }else{
+                        response.setMessage("Error");
+                        response.setSucessfull(false);
+                    }
+                }else{
+                    response.setMessage("No existe el usuario de Sonarh");
+                    response.setSucessfull(false);
+                }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());

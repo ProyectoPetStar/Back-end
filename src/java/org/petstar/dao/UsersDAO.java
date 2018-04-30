@@ -5,6 +5,7 @@
  */
 package org.petstar.dao;
 
+import java.sql.Date;
 import java.util.List;
 import org.petstar.configurations.PoolDataSource;
 import javax.sql.DataSource;
@@ -134,23 +135,23 @@ public class UsersDAO {
     /**
      * Registro de un Usuario
      * Metodo que permite registrar usuarios nuevos al sistema.
-     * @param nombre
-     * @param idSonarh
+     * @param numeroEmpleado
      * @param idLinea
      * @param idGrupo
-     * @param idTurno
-     * @param usuarioAcceso
-     * @param idPerfil
+     * @param fecha
+     * @param idSistema
+     * @param idUserRegistra
      * @throws Exception 
      */
-    public void insertNewUser(String nombre, int idSonarh, int idLinea, int idGrupo, int idTurno, String usuarioAcceso, int idPerfil) throws Exception{
+    public void insertNewUser(int numeroEmpleado, int idLinea, int idGrupo, Date fecha,
+            int idSistema, int idUserRegistra) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_insertPetUsuario ?, ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_insertUsuarios ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            nombre, idSonarh, idLinea, idGrupo, idTurno, usuarioAcceso, idPerfil
+            numeroEmpleado, idSistema, idGrupo, idLinea, fecha, idUserRegistra
         };
         
         qr.update(sql.toString(), params);
@@ -233,5 +234,31 @@ public class UsersDAO {
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
+    }
+    
+    public ResultInteger getIdUserByNumeroEmpleado(int numeroEmpleado) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT id_acceso AS result FROM pet_acceso WHERE usuario_sonarh = ")
+                .append(numeroEmpleado);
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh);
+        return result;
+    }
+    
+    public void registraPerfilByUser(int idAcceso, int idPerfil) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_insert_petPerfilAcceso ?, ?");
+        Object[] params = {
+            idAcceso, idPerfil
+        };
+        
+        qr.update(sql.toString(), params);
     }
 }
