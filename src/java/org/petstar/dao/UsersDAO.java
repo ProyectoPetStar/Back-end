@@ -114,20 +114,22 @@ public class UsersDAO {
     /**
      * Actualización de Usuario
      * Metodo que actiualiza los datos de un usuario.
-     * @param idUsuario
-     * @param idTurno
-     * @param idPerfil
-     * @param activo
+     * @param idAcceso
+     * @param idLinea
+     * @param idGrupo
+     * @param idUsuarioMod
+     * @param fecha
      * @throws Exception 
      */
-    public void updatePerfilUser(int idUsuario, int idTurno, int idPerfil, int activo) throws Exception{
+    public void updateUserETAD(int idAcceso, int idLinea, int idGrupo, 
+            int idUsuarioMod, Date fecha) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_updatePetUsuarios ?, ?, ?, ?");
+        
+        sql.append("EXEC sp_updateEtad ?, ?, ?, ?, ?");
         Object[] params = {
-            idUsuario, idTurno, idPerfil, activo
+            idAcceso, idLinea, idGrupo, idUsuarioMod, fecha
         };
         
         qr.update(sql.toString(), params);
@@ -190,18 +192,16 @@ public class UsersDAO {
     /**
      * Eliminación de USuarios
      * Metodo para eliminar usuarios del sistema
-     * @param idUsers
+     * @param idAcceso
      * @throws Exception 
      */
-    public void deleteUsersETAD(int idUsers) throws Exception{
+    public void deleteUsersETAD(int idAcceso) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_deletePetUsuarios ?");
-        Object[] params = {
-            idUsers
-        };
+        sql.append("UPDATE pet_acceso SET activo = 0 WHERE id_acceso = ?");
+        Object[] params = { idAcceso };
         
         qr.update(sql.toString(), params);
     }
