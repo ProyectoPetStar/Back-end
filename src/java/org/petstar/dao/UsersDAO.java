@@ -40,50 +40,28 @@ public class UsersDAO {
         List<UserSonarhDTO> usuarios_sonarh = (List<UserSonarhDTO>) qr.query(sql.toString(), rsh); 
         return usuarios_sonarh;
     }
-    
+       
     /**
-     * Mi perfil
-     * Metodo que devuelve los datos del usuario que se encuentra logueado
-     * @param idUsuario
+     * Perfil Sonarh
+     * Metodo que devuelve la información a detalle de un usuario sonarh
+     * @param numeroEmpleado
      * @return
      * @throws Exception 
      */
-    public UserDTO getPerfilUserSonarh(int idUsuario) throws Exception{
+    public UserSonarhDTO getUserSonarhById(int numeroEmpleado) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectPetUsuarioById ?");
+        sql.append("EXEC sp_selectSonarhById ?");
         Object[] params = {
-            idUsuario
+            numeroEmpleado
         };
-        ResultSetHandler rsh = new BeanHandler(UserDTO.class);
-        UserDTO datosUsuario = (UserDTO) qr.query(sql.toString(), rsh, params);
-
+        
+        ResultSetHandler rsh = new BeanHandler(UserSonarhDTO.class);
+        UserSonarhDTO datosUsuario = (UserSonarhDTO) qr.query(sql.toString(), rsh, params);
         return datosUsuario;
     }
-    
-    /**
-     * Perfil Sonarh
-     * Metodo que devuelve la información a detalle de un usuario sonarh
-     * @param idUsuarioSonarh
-     * @return
-     * @throws Exception 
-     */
-//    public UserSonarthDTO getUserSonarhById(int idUsuarioSonarh) throws Exception{
-//        DataSource ds = PoolDataSource.getDataSource();
-//      
-//        QueryRunner qr = new QueryRunner(ds);
-//        StringBuilder sql = new StringBuilder();
-//        sql.append("EXEC sp_selectSonarhById ?");
-//        Object[] params = {
-//            idUsuarioSonarh
-//        };
-//        ResultSetHandler rsh = new BeanHandler(UserSonarthDTO.class);
-//        UserSonarthDTO datosUsuario = (UserSonarthDTO) qr.query(sql.toString(), rsh, params);
-//
-//        return datosUsuario;
-//    }
     
     /**
      * Validación Password
@@ -216,18 +194,18 @@ public class UsersDAO {
     /**
      * Validación usuario valido
      * Metodo que valida que el usuario Sonarh no este registrado en ETAD
-     * @param idUserSonarh
+     * @param numeroEmpleado
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaExistUsers(int idUserSonarh) throws Exception{
+    public ResultInteger validaExistUsers(int numeroEmpleado) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetValidaUsuario ?");
+        sql.append("SELECT COUNT(1) AS result FROM ETADSonarh WHERE NumEmpleado = ?");
         Object[] params = {
-            idUserSonarh
+            numeroEmpleado
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
