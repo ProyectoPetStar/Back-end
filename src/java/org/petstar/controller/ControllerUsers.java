@@ -9,9 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.UsersDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
+import org.petstar.model.ResponseJson;
 import org.petstar.model.UserETADResponseJson;
 import org.petstar.model.UserResponseJson;
-import org.petstar.model.UserSonarthResponseJson;
+import org.petstar.model.UserSonarhResponseJson;
 
 /**
  * 
@@ -27,23 +28,23 @@ public class ControllerUsers {
      */
     public OutputJson getUsersSonarh(HttpServletRequest request) {
         
-        UserResponseJson response = new UserResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion auth = new ControllerAutenticacion();
+//        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
              
-            if (auth.isValidToken(request)) {
+//            if (auth.isValidToken(request)) {
                 UsersDAO dao = new UsersDAO();
-                UserSonarthResponseJson list = new UserSonarthResponseJson();
-                list.setList(dao.getUsersSonarh());
-                output.setData(list);
+                UserSonarhResponseJson json = new UserSonarhResponseJson();
+                json.setListUserSonarh(dao.getUsersSonarh());
+                output.setData(json);
                 response.setSucessfull(true);
                 response.setMessage("OK");
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -148,8 +149,8 @@ public class ControllerUsers {
                 UsersDAO userDAO = new UsersDAO();
                 ResultInteger result = userDAO.validaExistUsers(idUsuarioSonarh);
                 if(result.getResult().equals(0)){
-                    UserSonarthResponseJson userData = new UserSonarthResponseJson();
-                    userData.setUsuarioSonarth(userDAO.getUserSonarhById(idUsuarioSonarh));
+                    UserSonarhResponseJson userData = new UserSonarhResponseJson();
+//                    userData.setUsuarioSonarth(userDAO.getUserSonarhById(idUsuarioSonarh));
 
                     output.setData(userData);
                     response.setSucessfull(true);

@@ -30,6 +30,7 @@ public class Users extends HttpServlet {
      * @param response respuesta servlet
      * @throws ServletException si se produce un error específico del servlet
      * throws IOException si se produce un error de E / S
+     * @throws java.io.IOException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -104,6 +105,7 @@ public class Users extends HttpServlet {
      * @param response respuesta servlet
      * @throws ServletException si se produce un error específico del servlet
      * throws IOException si se produce un error de E / S
+     * @throws java.io.IOException
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
