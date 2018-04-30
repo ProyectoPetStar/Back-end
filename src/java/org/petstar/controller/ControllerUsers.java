@@ -66,31 +66,34 @@ public class ControllerUsers {
      * @param request
      * @return 
      */
-    public OutputJson getPerfilUserSonarh(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
+    public OutputJson getUserETADById(HttpServletRequest request){
+//        int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion auth = new ControllerAutenticacion();
+//        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
              
-            if (auth.isValidToken(request)) {
-                if(auth.id_usuario_valido(request) != "-1"){
+//            if (auth.isValidToken(request)) {
+//                if(auth.id_usuario_valido(request) != "-1"){
+                    
+                    
                     UsersDAO userDAO = new UsersDAO();
-                    UserResponseJson userResponseJson = new UserResponseJson();
-//                    userResponseJson.setUsuario(userDAO.getPerfilUserSonarh(idUsuario));
-                    output.setData(userResponseJson);
+                    UserETADResponseJson data = new UserETADResponseJson();
+                    data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
+                    output.setData(data);
                     response.setMessage("OK");
                     response.setSucessfull(true);
                     
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Usuario Incorrecto");
-                }
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//                }else{
+//                    response.setSucessfull(false);
+//                    response.setMessage("Usuario Incorrecto");
+//                }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
