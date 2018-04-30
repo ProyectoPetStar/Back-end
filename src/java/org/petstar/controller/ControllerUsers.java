@@ -80,8 +80,13 @@ public class ControllerUsers {
                     
                     
                     UsersDAO userDAO = new UsersDAO();
+                    CatalogosDAO catalogosDAO = new CatalogosDAO();
+                    LineasDAO lineasDAO = new LineasDAO();
                     UserETADResponseJson data = new UserETADResponseJson();
                     data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
+                    data.setListLineas(lineasDAO.getLineasData());
+                    data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+                    data.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
                     output.setData(data);
                     response.setMessage("OK");
                     response.setSucessfull(true);
@@ -318,7 +323,7 @@ public class ControllerUsers {
      * @return 
      */
     public OutputJson deleteUsersETAD(HttpServletRequest request){
-        int idUser = Integer.parseInt(request.getParameter("id_usuario_delete"));
+        int idUser = Integer.parseInt(request.getParameter("id_acceso"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();

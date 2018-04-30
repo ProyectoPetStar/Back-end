@@ -6,6 +6,8 @@
 package org.petstar.model;
 
 import java.util.List;
+import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.LineasDTO;
 import org.petstar.dto.UserDTO;
 
 /**
@@ -15,6 +17,9 @@ import org.petstar.dto.UserDTO;
 public class UserETADResponseJson {
     private UserDTO userETAD;
     private List<UserDTO> listUserETAD;
+    private List<LineasDTO> listLineas;
+    private List<CatalogosDTO> listGrupos;
+    private List<CatalogosDTO> ListPerfiles;
 
     public UserDTO getUserETAD() {
         return userETAD;
@@ -30,5 +35,29 @@ public class UserETADResponseJson {
 
     public void setListUserETAD(List<UserDTO> listUserETAD) {
         this.listUserETAD = listUserETAD;
+    }
+
+    public List<LineasDTO> getListLineas() {
+        return listLineas;
+    }
+
+    public void setListLineas(List<LineasDTO> listLineas) {
+        this.listLineas = listLineas;
+    }
+
+    public List<CatalogosDTO> getListGrupos() {
+        return listGrupos;
+    }
+
+    public void setListGrupos(List<CatalogosDTO> listGrupos) {
+        this.listGrupos = listGrupos;
+    }
+
+    public List<CatalogosDTO> getListPerfiles() {
+        return ListPerfiles;
+    }
+
+    public void setListPerfiles(List<CatalogosDTO> ListPerfiles) {
+        this.ListPerfiles = ListPerfiles;
     }
 }
