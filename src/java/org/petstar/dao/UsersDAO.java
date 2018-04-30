@@ -14,7 +14,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
-import org.petstar.dto.UserSonarthDTO;
+import org.petstar.dto.UserSonarhDTO;
 
 /**
  *
@@ -29,13 +29,15 @@ public class UsersDAO {
      * @return
      * @throws Exception 
      */
-    public List<UserSonarthDTO> getUsersSonarh() throws Exception {
+    public List<UserSonarhDTO> getUsersSonarh() throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
+        
         sql.append(" EXEC sp_SelectSonarh ");
-         ResultSetHandler rsh = new BeanListHandler(UserSonarthDTO.class);
-         List<UserSonarthDTO> usuarios_sonarh = (List<UserSonarthDTO>) qr.query(sql.toString(), rsh); 
+        
+        ResultSetHandler rsh = new BeanListHandler(UserSonarhDTO.class);
+        List<UserSonarhDTO> usuarios_sonarh = (List<UserSonarhDTO>) qr.query(sql.toString(), rsh); 
         return usuarios_sonarh;
     }
     
@@ -68,20 +70,20 @@ public class UsersDAO {
      * @return
      * @throws Exception 
      */
-    public UserSonarthDTO getUserSonarhById(int idUsuarioSonarh) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-      
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectSonarhById ?");
-        Object[] params = {
-            idUsuarioSonarh
-        };
-        ResultSetHandler rsh = new BeanHandler(UserSonarthDTO.class);
-        UserSonarthDTO datosUsuario = (UserSonarthDTO) qr.query(sql.toString(), rsh, params);
-
-        return datosUsuario;
-    }
+//    public UserSonarthDTO getUserSonarhById(int idUsuarioSonarh) throws Exception{
+//        DataSource ds = PoolDataSource.getDataSource();
+//      
+//        QueryRunner qr = new QueryRunner(ds);
+//        StringBuilder sql = new StringBuilder();
+//        sql.append("EXEC sp_selectSonarhById ?");
+//        Object[] params = {
+//            idUsuarioSonarh
+//        };
+//        ResultSetHandler rsh = new BeanHandler(UserSonarthDTO.class);
+//        UserSonarthDTO datosUsuario = (UserSonarthDTO) qr.query(sql.toString(), rsh, params);
+//
+//        return datosUsuario;
+//    }
     
     /**
      * Validación Password

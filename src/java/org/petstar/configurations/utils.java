@@ -219,8 +219,8 @@ public class utils {
     }
     
     public static BigDecimal getPorcentajeParo(BigDecimal tiempoParo, BigDecimal tiempoDisponible){
-        BigDecimal calculo = tiempoParo.divide(tiempoDisponible, 4, RoundingMode.CEILING);
-        BigDecimal porcentaje = calculo.multiply(new BigDecimal(100), new MathContext(4));
+        BigDecimal calculo = tiempoParo.divide(tiempoDisponible, 5, RoundingMode.CEILING);
+        BigDecimal porcentaje = calculo.multiply(new BigDecimal(100), new MathContext(10));
         return  porcentaje;
     }
 }
