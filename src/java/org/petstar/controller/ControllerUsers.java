@@ -6,6 +6,7 @@
 package org.petstar.controller;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
@@ -341,6 +342,39 @@ public class ControllerUsers {
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage("Descripcion del Error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getMiPerfil(HttpServletRequest request) throws Exception{
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                UsersDAO usersDAO = new UsersDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                UserETADResponseJson data = new UserETADResponseJson();
+                
+                data.setUserETAD(usersDAO.getUserEtadByID(sesion.getId_acceso()));
+                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+                data.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
+                data.setListLineas(lineasDAO.getLineasData());
+                output.setData(data);
+                
+                response.setMessage("OK");
+                response.setSucessfull(true);
+            }else{
+                response.setMessage("Inicie sesión nuevamente");
+                response.setSucessfull(false);
+            }
+        }catch(SQLException ex){
+            response.setMessage("Descripción Error: " + ex.getMessage());
+            response.setSucessfull(false);
         }
         output.setResponse(response);
         return output;
