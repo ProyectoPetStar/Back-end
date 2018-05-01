@@ -17,6 +17,7 @@ import org.petstar.model.UserETADResponseJson;
 import org.petstar.model.UserResponseJson;
 import org.petstar.model.UserSonarhResponseJson;
 import static org.petstar.configurations.utils.getCurrentDate;
+import org.petstar.dto.UserDTO;
 
 /**
  * 
@@ -36,21 +37,21 @@ public class ControllerUsers {
         
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion auth = new ControllerAutenticacion();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-//            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO dao = new UsersDAO();
                 UserSonarhResponseJson json = new UserSonarhResponseJson();
                 json.setListUserSonarh(dao.getUsersSonarh());
                 output.setData(json);
                 response.setSucessfull(true);
                 response.setMessage("OK");
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
