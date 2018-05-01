@@ -62,44 +62,37 @@ public class ControllerUsers {
     }
 
     /**
-     * Mi Perfil
+     * Consulta de usuario por id
      * Metodo que devuelve la información del usuario logueado
      * @param request
      * @return 
      */
     public OutputJson getUserETADById(HttpServletRequest request){
-//        int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
         int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion auth = new ControllerAutenticacion();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-//            if (auth.isValidToken(request)) {
-//                if(auth.id_usuario_valido(request) != "-1"){
-                    
-                    
-                    UsersDAO userDAO = new UsersDAO();
-                    CatalogosDAO catalogosDAO = new CatalogosDAO();
-                    LineasDAO lineasDAO = new LineasDAO();
-                    UserETADResponseJson data = new UserETADResponseJson();
-                    data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
-                    data.setListLineas(lineasDAO.getLineasData());
-                    data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                    data.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
-                    output.setData(data);
-                    response.setMessage("OK");
-                    response.setSucessfull(true);
-                    
-//                }else{
-//                    response.setSucessfull(false);
-//                    response.setMessage("Usuario Incorrecto");
-//                }
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
+                UsersDAO userDAO = new UsersDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                UserETADResponseJson data = new UserETADResponseJson();
+                
+                data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
+                data.setListLineas(lineasDAO.getLineasData());
+                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+                data.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
+                
+                output.setData(data);
+                response.setMessage("OK");
+                response.setSucessfull(true);
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -118,10 +111,11 @@ public class ControllerUsers {
         int numeroEmpleado = Integer.parseInt(request.getParameter("numero_empleado"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-//            if(autenticacion.isValidToken(request)){
+            UserDTO usuario = autenticacion.isValidToken(request);
+            if(usuario != null){
                 UsersDAO userDAO = new UsersDAO();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
@@ -140,10 +134,10 @@ public class ControllerUsers {
                     response.setSucessfull(false);
                     response.setMessage("Usuario incorrecto");
                 }
-//            }else{
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage("Error: " + ex.getMessage());
@@ -164,23 +158,21 @@ public class ControllerUsers {
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion auth = new ControllerAutenticacion();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-//            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO userDAO = new UsersDAO();
                 
                 userDAO.changePassword(newPassword, idAcceso);
                     
                 response.setMessage("OK");
                 response.setSucessfull(true);
-                    
-                
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -204,16 +196,16 @@ public class ControllerUsers {
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion auth = new ControllerAutenticacion();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-//            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO userDAO = new UsersDAO();
                 ResultInteger existeUSuario = userDAO.validaExistUsers(numeroEmpleado);
                 if(existeUSuario.getResult().equals(1)){
                     Date fecha = getCurrentDate();
-                    userDAO.insertNewUser(numeroEmpleado, idLinea, idGrupo, fecha, 1, 1);
+                    userDAO.insertNewUser(numeroEmpleado, idLinea, idGrupo, fecha, 1, usuario.getId_acceso());
 
                     ResultInteger result = userDAO.getIdUserByNumeroEmpleado(numeroEmpleado);
                     if(null != result){
@@ -231,10 +223,10 @@ public class ControllerUsers {
                     response.setMessage("No existe el usuario de Sonarh");
                     response.setSucessfull(false);
                 }
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -257,15 +249,15 @@ public class ControllerUsers {
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion auth = new ControllerAutenticacion();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-//            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO userDAO = new UsersDAO();
                 
                 Date fecha = getCurrentDate();
-                userDAO.updateUserETAD(idAcceso, idLinea, idGrupo, 1, fecha);
+                userDAO.updateUserETAD(idAcceso, idLinea, idGrupo, usuario.getId_acceso(), fecha);
                 String[] listPerfiles = perfiles.split(",");
                 for(String perfil:listPerfiles){
                     userDAO.registraPerfilByUser(idAcceso, Integer.parseInt(perfil));
@@ -277,10 +269,10 @@ public class ControllerUsers {
                 response.setMessage("OK");
                 response.setSucessfull(true);
                 
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -298,21 +290,21 @@ public class ControllerUsers {
     public OutputJson getUsersETAD(HttpServletRequest request){
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion auth = new ControllerAutenticacion();
+        ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-//            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO dao = new UsersDAO();
                 UserETADResponseJson list = new UserETADResponseJson();
                 list.setListUserETAD(dao.getUsersETAD());
                 output.setData(list);
                 response.setSucessfull(true);
                 response.setMessage("OK");
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -332,19 +324,20 @@ public class ControllerUsers {
         int activo = Integer.parseInt(request.getParameter("activo"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-//            if(autenticacion.isValidToken(request)){
+            UserDTO usuario = autenticacion.isValidToken(request);
+            if(usuario != null){
                 UsersDAO usersDAO = new UsersDAO();
                 usersDAO.deleteUsersETAD(idAcceso, activo);
                 
                 response.setSucessfull(true);
                 response.setMessage("OK");
-//            }else{
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage("Inicie sesión nuevamente");
+            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage("Descripcion del Error: " + ex.getMessage());
