@@ -20,6 +20,10 @@ public class UserDTO {
     private int id_linea;
     private int activo;
     private String perfiles;
+    private String roles_cua;
+    private String roles_kpi;
+    private String roles_ishikawa;
+    private String token;
 
     public int getId_acceso() {
         return id_acceso;
@@ -91,5 +95,37 @@ public class UserDTO {
 
     public void setPerfiles(String perfiles) {
         this.perfiles = perfiles;
+    }
+
+    public String getRoles_cua() {
+        return roles_cua;
+    }
+
+    public void setRoles_cua(String roles_cua) {
+        this.roles_cua = roles_cua;
+    }
+
+    public String getRoles_kpi() {
+        return roles_kpi;
+    }
+
+    public void setRoles_kpi(String roles_kpi) {
+        this.roles_kpi = roles_kpi;
+    }
+
+    public String getRoles_ishikawa() {
+        return roles_ishikawa;
+    }
+
+    public void setRoles_ishikawa(String roles_ishikawa) {
+        this.roles_ishikawa = roles_ishikawa;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
