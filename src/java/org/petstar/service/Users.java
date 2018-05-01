@@ -68,6 +68,9 @@ public class Users extends HttpServlet {
                 case "changePassword":
                     output = controller.changePasswordUser(request);
                     break;
+                case "miPerfil":
+                    output = controller.getMiPerfil(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
