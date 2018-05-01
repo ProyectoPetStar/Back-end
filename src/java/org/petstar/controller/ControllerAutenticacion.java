@@ -48,6 +48,7 @@ public class ControllerAutenticacion {
                 .claim("roles_cua", usuario.getRoles_cua())
                 .claim("roles_kpi", usuario.getRoles_kpi())
                 .claim("roles_ishikawa", usuario.getRoles_ishikawa())
+                .claim("roles_generales", usuario.getRoles_generales())
                 .signWith(
                         SignatureAlgorithm.HS256,
                         key_base64
@@ -81,6 +82,7 @@ public class ControllerAutenticacion {
                 usuario.setRoles_cua(claims.get("roles_cua", String.class));
                 usuario.setRoles_kpi(claims.get("roles_kpi", String.class));
                 usuario.setRoles_ishikawa(claims.get("roles_ishikawa", String.class));
+                usuario.setRoles_generales(claims.get("roles_generales", String.class));
             } catch (SignatureException | ClaimJwtException | MalformedJwtException | UnsupportedJwtException e) {
                 usuario = null;
             } catch (Exception ex) {
