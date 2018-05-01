@@ -32,7 +32,7 @@ public class ControllerCatalogos {
          
         try {
              
-            if (controllerAutenticacion.isValidToken(request)) {
+//            if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
                 catalogosListResponseJason.setListCatalogosDTO(catalogosDAO.getCatalogos(tableName));
@@ -41,10 +41,10 @@ public class ControllerCatalogos {
                 response.setSucessfull(true);
                 response.setMessage("OK");
                 
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -69,7 +69,7 @@ public class ControllerCatalogos {
          
         try {
              
-            if (controllerAutenticacion.isValidToken(request)) {
+//            if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 
                 ResultInteger existe = catalogosDAO.validateDescripcionInsert(tableName, descripcion);
@@ -82,10 +82,10 @@ public class ControllerCatalogos {
                     response.setSucessfull(false);
                     response.setMessage("Capturar nueva descripción.");
                 }
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -112,7 +112,7 @@ public class ControllerCatalogos {
          
         try {
              
-            if (controllerAutenticacion.isValidToken(request)) {
+//            if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 ResultInteger existe = catalogosDAO.validateDescripcionUpdate(tableName, id, descripcion);
                 
@@ -124,10 +124,10 @@ public class ControllerCatalogos {
                     response.setSucessfull(false);
                     response.setMessage("Capturar nueva descripción.");
                 }
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -152,15 +152,15 @@ public class ControllerCatalogos {
          
         try {
              
-            if (controllerAutenticacion.isValidToken(request)) {
+//            if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 catalogosDAO.deleteCatalogo(id, tableName);
                 response.setSucessfull(true);
                 response.setMessage("OK");
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
@@ -185,7 +185,7 @@ public class ControllerCatalogos {
          
         try {
              
-            if (controllerAutenticacion.isValidToken(request)) {
+//            if (controllerAutenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
                 catalogosListResponseJason.setCatalogosDTO(catalogosDAO.getDescripcionById(tableName, id));
@@ -193,10 +193,10 @@ public class ControllerCatalogos {
                 output.setData(catalogosListResponseJason);
                 response.setSucessfull(true);
                 response.setMessage("OK");
-            } else {
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage("Inicie sesión nuevamente");
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());

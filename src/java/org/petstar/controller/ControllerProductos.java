@@ -46,7 +46,7 @@ public class ControllerProductos {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 if(perfil == 5){
                     if(validateIfCanEdit(idGrupo,idLinea)){
                         ProductosDAO productosDAO = new ProductosDAO();
@@ -81,10 +81,10 @@ public class ControllerProductos {
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         }catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -105,7 +105,7 @@ public class ControllerProductos {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
                 ProductosDataResponseJson data = new ProductosDataResponseJson();
                 
@@ -114,10 +114,10 @@ public class ControllerProductos {
                 
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -140,7 +140,7 @@ public class ControllerProductos {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
                 ResultInteger result = productosDAO.validaIfExistCarProducto(idProducto);
                 if(result.getResult().equals(1)){
@@ -154,10 +154,10 @@ public class ControllerProductos {
                     response.setSucessfull(false);
                     response.setMessage(MSG_NO_EXIST);
                 }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -182,7 +182,7 @@ public class ControllerProductos {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
                 ResultInteger result = productosDAO.validaForInsertCarProducto(idLinea, producto);
                 if(result.getResult().equals(0)){
@@ -193,10 +193,10 @@ public class ControllerProductos {
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -223,7 +223,7 @@ public class ControllerProductos {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
                 ResultInteger result = productosDAO.validaForUpdateCarProducto(idProducto, idLinea, producto);
                 if(result.getResult().equals(0)){
@@ -234,10 +234,10 @@ public class ControllerProductos {
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -391,7 +391,7 @@ public class ControllerProductos {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
                 ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
                 
@@ -420,10 +420,10 @@ public class ControllerProductos {
                         }
                         break;
                 }
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
+//            }else{
+//                response.setMessage(MSG_LOGOUT);
+//                response.setSucessfull(false);
+//            }
         } catch(Exception ex){
             response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);
@@ -451,7 +451,7 @@ public class ControllerProductos {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 ProductosDAO productosDAO = new ProductosDAO();
                 ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
                 
@@ -459,10 +459,10 @@ public class ControllerProductos {
                 output.setData(parj);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
+//            }else{
+//                response.setMessage(MSG_LOGOUT);
+//                response.setSucessfull(false);
+//            }
         } catch(Exception ex){
             response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);

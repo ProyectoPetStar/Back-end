@@ -23,6 +23,7 @@ public class UserDTO {
     private String roles_cua;
     private String roles_kpi;
     private String roles_ishikawa;
+    private String roles_generales;
     private String token;
 
     public int getId_acceso() {
@@ -119,6 +120,14 @@ public class UserDTO {
 
     public void setRoles_ishikawa(String roles_ishikawa) {
         this.roles_ishikawa = roles_ishikawa;
+    }
+
+    public String getRoles_generales() {
+        return roles_generales;
+    }
+
+    public void setRoles_generales(String roles_generales) {
+        this.roles_generales = roles_generales;
     }
 
     public String getToken() {
