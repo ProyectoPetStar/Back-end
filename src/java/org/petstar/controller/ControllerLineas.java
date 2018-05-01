@@ -36,7 +36,7 @@ public class ControllerLineas {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 LineasDAO lineasDAO = new LineasDAO();
                 LineasDataResponseJson data = new LineasDataResponseJson();
                 data.setListLineasDTO(lineasDAO.getLineasData());
@@ -45,10 +45,10 @@ public class ControllerLineas {
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
                 
-            } else {
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch(Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -72,7 +72,7 @@ public class ControllerLineas {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-            if (autenticacion.isValidToken(request)) {
+//            if (autenticacion.isValidToken(request)) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 ResultInteger existe = catalogosDAO.validateDescripcionInsert(TABLE_NAME, descripcion);
                 if(existe.getResult() == 0){
@@ -84,10 +84,10 @@ public class ControllerLineas {
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-            } else {
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -114,7 +114,7 @@ public class ControllerLineas {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-            if (autenticacion.isValidToken(request)) {
+//            if (autenticacion.isValidToken(request)) {
                 LineasDAO lineasDAO = new LineasDAO();
                 ResultInteger result = lineasDAO.validaDescripcionUpdate(idLinea, descripcion);
                 if(result.getResult().equals(0)){
@@ -125,10 +125,10 @@ public class ControllerLineas {
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-            } else {
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -153,16 +153,16 @@ public class ControllerLineas {
          
         try {
              
-            if (autenticacion.isValidToken(request)) {
+//            if (autenticacion.isValidToken(request)) {
                 LineasDAO lineasDAO = new LineasDAO();
                 lineasDAO.deleteLinea(idLinea);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
                 
-            } else {
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -186,7 +186,7 @@ public class ControllerLineas {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-            if (autenticacion.isValidToken(request)) {
+//            if (autenticacion.isValidToken(request)) {
                 LineasDAO lineasDAO = new LineasDAO();
                 LineasDataResponseJson data = new LineasDataResponseJson();
                 data.setLineasDTO(lineasDAO.getLineasDataById(idLinea));
@@ -195,10 +195,10 @@ public class ControllerLineas {
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
                 
-            } else {
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            } else {
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());

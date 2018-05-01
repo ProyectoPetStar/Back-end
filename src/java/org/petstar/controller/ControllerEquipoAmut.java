@@ -34,7 +34,7 @@ public class ControllerEquipoAmut {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 EquipoAmutDAO equipoAmutDAO = new EquipoAmutDAO();
                 EquipoAmutDataResponseJson dataEquipo = new EquipoAmutDataResponseJson();
                 dataEquipo.setListEquipoAmut(equipoAmutDAO.getEquipoAmutData());
@@ -42,10 +42,10 @@ public class ControllerEquipoAmut {
                 output.setData(dataEquipo);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         }catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -67,7 +67,7 @@ public class ControllerEquipoAmut {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 EquipoAmutDAO equipoAmutDAO = new EquipoAmutDAO();
                 EquipoAmutDataResponseJson dataEquipo = new EquipoAmutDataResponseJson();
                 dataEquipo.setEquipoAmut(equipoAmutDAO.getEquipoAmutById(idEquipo));
@@ -75,10 +75,10 @@ public class ControllerEquipoAmut {
                 output.setData(dataEquipo);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -101,7 +101,7 @@ public class ControllerEquipoAmut {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 EquipoAmutDAO equipoAmutDAO = new EquipoAmutDAO();
                 ResultInteger result = equipoAmutDAO.validaDataForInsert(claveEquipo, equipoName);
                 if(result.getResult().equals(0)){
@@ -113,10 +113,10 @@ public class ControllerEquipoAmut {
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch(Exception ex){
             response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);
@@ -141,7 +141,7 @@ public class ControllerEquipoAmut {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 EquipoAmutDAO equipoAmutDAO = new EquipoAmutDAO();
                 ResultInteger result = equipoAmutDAO.validaDataForUpdate(idEquipoAmut, claveEquipo, equipoName);
                 
@@ -154,10 +154,10 @@ public class ControllerEquipoAmut {
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -179,16 +179,16 @@ public class ControllerEquipoAmut {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+//            if(autenticacion.isValidToken(request)){
                 EquipoAmutDAO equipoAmutDAO = new EquipoAmutDAO();
                 equipoAmutDAO.deledeEquipoAmut(idEquipo);
                 
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
+//            }else{
+//                response.setSucessfull(false);
+//                response.setMessage(MSG_LOGOUT);
+//            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
