@@ -25,6 +25,7 @@ import org.petstar.dao.RazonParoDAO;
 import org.petstar.dto.FallasDTO;
 import org.petstar.dto.MetasDTO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.dto.UserDTO;
 
 /**
  *
@@ -43,37 +44,46 @@ public class ControllerFallas {
         OutputJson output = new OutputJson();
         
         try{
-            CatalogosDAO catalogosDAO = new CatalogosDAO();
-            MetasDAO metasDAO = new MetasDAO();
-            EquiposDAO equiposDAO = new EquiposDAO();
-            RazonParoDAO paroDAO = new RazonParoDAO();
-            LineasDAO lineasDAO = new LineasDAO();
-            FallasDataResponseJson data = new FallasDataResponseJson();
-            int turno = getTurno();
-            java.sql.Date dia = getCurrentDayByTurno(turno);
-            int idGrupo = 3;
-            int idLinea = 2;
-            ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
+            ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+            UserDTO sesion = autenticacion.isValidToken(request);
             
-            data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
-            data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-            data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
-            data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
-            data.setListRazonesParo(paroDAO.getAllRazones());
-            data.setListLineas(lineasDAO.getLineasData());
-                
-            if(null != idMeta){
-                MetasDTO metasDTO = new MetasDTO();
-                metasDTO = metasDAO.getMetaById(idMeta.getResult());
-                metasDTO.setDia(sumarFechasDias(metasDTO.getDia(), 2));
-                metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
-                data.setMetasDTO(metasDTO);
-                
-            } 
-            
-            output.setData(data);
-            response.setSucessfull(true);
-            response.setMessage(MSG_SUCESS);
+            if(sesion != null){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                MetasDAO metasDAO = new MetasDAO();
+                EquiposDAO equiposDAO = new EquiposDAO();
+                RazonParoDAO paroDAO = new RazonParoDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                FallasDataResponseJson data = new FallasDataResponseJson();
+                int turno = getTurno();
+                java.sql.Date dia = getCurrentDayByTurno(turno);
+                int idGrupo = 3;
+                int idLinea = 2;
+                ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
+
+                data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
+                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+                data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+                data.setListRazonesParo(paroDAO.getAllRazones());
+                data.setListLineas(lineasDAO.getLineasData());
+
+                if(null != idMeta){
+                    MetasDTO metasDTO = metasDAO.getMetaById(idMeta.getResult());
+                    metasDTO.setDia(sumarFechasDias(metasDTO.getDia(), 2));
+                    metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                    data.setMetasDTO(metasDTO);
+                    
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage("No existe Meta");
+                } 
+                output.setData(data);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -92,10 +102,11 @@ public class ControllerFallas {
         
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-//        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-//            if(autenticacion.isValidToken(request)){
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
                 FallasDAO fallasDAO = new FallasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
                 
@@ -111,10 +122,10 @@ public class ControllerFallas {
                 output.setData(data);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-//            }else{
-//                response.setSucessfull(false);
-//                response.setMessage(MSG_LOGOUT);
-//            }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch( Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -131,7 +142,6 @@ public class ControllerFallas {
         fallasDTO.setId_razon(Integer.parseInt(request.getParameter("id_razon")));
         fallasDTO.setId_equipo(Integer.parseInt(request.getParameter("id_equipo")));
         fallasDTO.setId_meta(Integer.parseInt(request.getParameter("id_meta")));
-        fallasDTO.setId_usuario_registro(1);
         
         SimpleDateFormat formato = new SimpleDateFormat("HH:mm");
         Date horaInicio = convertStringToDate(fallasDTO.getHora_inicio(), formato);
@@ -141,22 +151,30 @@ public class ControllerFallas {
             horaFinal = sumarFechasDias(horaFinal, 1);
         }
         
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
-            if(horaInicio.before(horaFinal)){
-                BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
-                                
-                fallasDTO.setTiempo_paro(tiempoParo);
-                FallasDAO fallasDAO = new FallasDAO();
-                fallasDAO.insertNewFalla(fallasDTO);
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                if(horaInicio.before(horaFinal)){
+                    BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
 
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
+                    fallasDTO.setId_usuario_registro(sesion.getId_acceso());
+                    fallasDTO.setTiempo_paro(tiempoParo);
+                    FallasDAO fallasDAO = new FallasDAO();
+                    fallasDAO.insertNewFalla(fallasDTO);
+
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage("Las horas son invalidas");
+                }
             }else{
                 response.setSucessfull(false);
-                response.setMessage("Las horas son invalidas");
+                response.setMessage(MSG_LOGOUT);
             }
         } catch(Exception ex){
             response.setSucessfull(false);
@@ -185,24 +203,31 @@ public class ControllerFallas {
             horaFinal = sumarFechasDias(horaFinal, 1);
         }
         
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
-            if(horaInicio.before(horaFinal)){
-                fallasDTO.setFecha_modificacion_registro(getCurrentDate());
-                fallasDTO.setId_usuario_modifica_registro(2);
-                BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
-                                
-                fallasDTO.setTiempo_paro(tiempoParo);
-                FallasDAO fallasDAO = new FallasDAO();
-                fallasDAO.updateFalla(fallasDTO);
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                if(horaInicio.before(horaFinal)){
+                    fallasDTO.setFecha_modificacion_registro(getCurrentDate());
+                    fallasDTO.setId_usuario_modifica_registro(sesion.getId_acceso());
+                    BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
 
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
+                    fallasDTO.setTiempo_paro(tiempoParo);
+                    FallasDAO fallasDAO = new FallasDAO();
+                    fallasDAO.updateFalla(fallasDTO);
+
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage("Las horas son invalidas");
+                }
             }else{
                 response.setSucessfull(false);
-                response.setMessage("Las horas son invalidas");
+                response.setMessage(MSG_LOGOUT);
             }
         } catch(Exception ex){
             response.setSucessfull(false);
@@ -216,17 +241,22 @@ public class ControllerFallas {
     public OutputJson deleteFalla(HttpServletRequest request) throws ParseException{       
         int idFalla = Integer.parseInt(request.getParameter("id_falla"));
         
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
-            
-            FallasDAO fallasDAO = new FallasDAO();
-            fallasDAO.deleteFalla(idFalla);
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                FallasDAO fallasDAO = new FallasDAO();
+                fallasDAO.deleteFalla(idFalla);
 
-            response.setSucessfull(true);
-            response.setMessage(MSG_SUCESS);
-           
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -238,35 +268,41 @@ public class ControllerFallas {
     
     public OutputJson getFallaById(HttpServletRequest request) throws ParseException{       
         int idFalla = Integer.parseInt(request.getParameter("id_falla"));
-        int idLinea = 2;
+        
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         FallasDataResponseJson data = new FallasDataResponseJson();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
-            CatalogosDAO catalogosDAO = new CatalogosDAO();
-            MetasDAO metasDAO = new MetasDAO();
-            EquiposDAO equiposDAO = new EquiposDAO();
-            RazonParoDAO paroDAO = new RazonParoDAO();
-            LineasDAO lineasDAO = new LineasDAO();
-            FallasDAO fallasDAO = new FallasDAO();
-            
-            data.setFallasDTO(fallasDAO.getFallaById(idFalla));
-            data.getFallasDTO().setDia(sumarFechasDias(data.getFallasDTO().getDia(), 2));
-            data.getFallasDTO().setDiaString(convertSqlToDay(
-                    data.getFallasDTO().getDia(), 
-                    new SimpleDateFormat("dd/MM/yyyy")));
-            data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
-            data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-            data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
-            data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
-            data.setListRazonesParo(paroDAO.getAllRazones());
-            data.setListLineas(lineasDAO.getLineasData());
-            
-            output.setData(data);
-            response.setSucessfull(true);
-            response.setMessage(MSG_SUCESS);
-           
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                int idLinea = sesion.getId_linea();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                EquiposDAO equiposDAO = new EquiposDAO();
+                RazonParoDAO paroDAO = new RazonParoDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                FallasDAO fallasDAO = new FallasDAO();
+
+                data.setFallasDTO(fallasDAO.getFallaById(idFalla));
+                data.getFallasDTO().setDia(sumarFechasDias(data.getFallasDTO().getDia(), 2));
+                data.getFallasDTO().setDiaString(convertSqlToDay(
+                        data.getFallasDTO().getDia(), 
+                        new SimpleDateFormat("dd/MM/yyyy")));
+                data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
+                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+                data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+                data.setListRazonesParo(paroDAO.getAllRazones());
+                data.setListLineas(lineasDAO.getLineasData());
+
+                output.setData(data);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());

@@ -26,6 +26,7 @@ import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ForecastDTO;
 import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.dto.UserDTO;
 import org.petstar.model.UploadMetasDataResponseJson;
 
 /**
@@ -36,25 +37,39 @@ public class ControllerUploadMetas {
     private List<ForecastDTO> listRows = new ArrayList<>();
     private static final String TABLE_GRUPOS = "pet_cat_grupo";
     private static final String TABLE_TURNOS = "pet_cat_turno";
+    private static final String MSG_SUCESS = "OK";
+    private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
+    private static final String MSG_ERROR  = "Descripción de error: ";
     
     public OutputJson loadCombobox(HttpServletRequest request) throws Exception{
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
-        PeriodosDAO periodosDAO = new PeriodosDAO();
-        LineasDAO lineasDAO = new LineasDAO();
-        CatalogosDAO catalogosDAO = new CatalogosDAO();
-        UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
-        
-        data.setListLineas(lineasDAO.getLineasData());
-        data.setListPeriodos(periodosDAO.getPeriodos());
-        data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-        data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
-        
-        output.setData(data);
-        response.setMessage("OK");
-        response.setSucessfull(true);
-        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
+
+                data.setListLineas(lineasDAO.getLineasData());
+                data.setListPeriodos(periodosDAO.getPeriodos());
+                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
         output.setResponse(response);
         return output;
     }
@@ -64,55 +79,66 @@ public class ControllerUploadMetas {
         
         OutputJson output = new OutputJson();
         ResponseJson response = new ResponseJson();
-        StringBuilder stringFile = new StringBuilder();
-        stringFile.append(request.getParameter("file"));
-        int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
-        int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
-        ForecastDAO forecastDAO = new ForecastDAO();
-        ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
-        
-        if(foundFiles.getResult() < 1){
-            SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
-            Date date = new Date();
-            String nameFile = formato.format(date) + ".csv";
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                StringBuilder stringFile = new StringBuilder();
+                stringFile.append(request.getParameter("file"));
+                int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
+                int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
 
-            PeriodosDAO periodosDAO = new PeriodosDAO();
-            PeriodosDTO periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
-            int year = periodosDTO.getAnio();
-            int month = periodosDTO.getMes();
-            boolean save = saveFIle(stringFile, nameFile);
-            if(save){
-                boolean valid = validateFile(nameFile, month, year, idLinea);
-                if(valid){
+                ForecastDAO forecastDAO = new ForecastDAO();
+                ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
 
-                    java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                    forecastDAO.saveFile(nameFile, idPeriodo, idLinea, 1, fecha);
-                    ResultInteger idFile= forecastDAO.getIdFile(nameFile);
-                    UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
+                if(foundFiles.getResult() < 1){
+                    SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
+                    Date date = new Date();
+                    String nameFile = formato.format(date) + ".csv";
 
-                    forecastDAO.loadForecast(listRows, idLinea, idFile.getResult(), idPeriodo);
-                    data.setListMetas(listRows);
-                    output.setData(data);
-                    response.setMessage("OK");
-                    response.setSucessfull(true);
+                    PeriodosDAO periodosDAO = new PeriodosDAO();
+                    PeriodosDTO periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
+                    int year = periodosDTO.getAnio();
+                    int month = periodosDTO.getMes();
+                    boolean save = saveFIle(stringFile, nameFile);
+                    if(save){
+                        boolean valid = validateFile(nameFile, month, year, idLinea);
+                        if(valid){
 
+                            java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                            forecastDAO.saveFile(nameFile, idPeriodo, idLinea, sesion.getId_acceso(), fecha);
+                            ResultInteger idFile= forecastDAO.getIdFile(nameFile);
+                            UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
+
+                            forecastDAO.loadForecast(listRows, idLinea, idFile.getResult(), idPeriodo);
+                            data.setListMetas(listRows);
+                            output.setData(data);
+                            response.setMessage(MSG_SUCESS);
+                            response.setSucessfull(true);
+
+                        }else{
+                            response.setMessage("El archivo contiene errores.");
+                            response.setSucessfull(false);
+                            deleteFiles(nameFile);
+                        }
+                    }else{
+                        response.setMessage("Error al carga el archivo.");
+                        response.setSucessfull(false);
+                    }
                 }else{
-                    response.setMessage("El archivo contiene errores.");
+                    response.setMessage("Ya hay archivos cargados para este periodo.");
                     response.setSucessfull(false);
-                    deleteFiles(nameFile);
                 }
             }else{
-                response.setMessage("Error al carga el archivo.");
+                response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
             }
-        }else{
-            response.setMessage("Ya hay archivos cargados para este periodo.");
+        }catch (Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);
         }
-        
         output.setResponse(response);
-               
         return output;
     }
     
@@ -213,17 +239,28 @@ public class ControllerUploadMetas {
     public OutputJson procesarFile(HttpServletRequest request) throws Exception{
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
-        int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
-        int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
-        
-        ForecastDAO forecastDAO = new ForecastDAO();
-        forecastDAO.procesarFile(idLinea, idPeriodo);
-        
-        response.setMessage("OK");
-        response.setSucessfull(true);
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                int idPeriodo = Integer.parseInt(request.getParameter("id_periodo"));
+                int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
+
+                ForecastDAO forecastDAO = new ForecastDAO();
+                forecastDAO.procesarFile(idLinea, idPeriodo);
+
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR +  ex.getMessage());
+            response.setSucessfull(false);
+        }
         output.setResponse(response);
-        
         return output;
     }
        
