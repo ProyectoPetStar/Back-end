@@ -57,7 +57,7 @@ public class Validation {
     public static boolean validateMetaMolido(String meta){
         if(meta.equals("")){
             return false;
-        }else if(meta.matches("^[0-9]*[.]{0,1}[0-9]{0,2}$")){
+        }else if(meta.matches("^[0-9]*[.]{0,1}[0-9]{0,3}$")){
                 return true;
         }else{
             return false;
@@ -77,7 +77,7 @@ public class Validation {
     public static boolean validateVelocidad(String velocidad){
         if(velocidad.equals("")){
             return false;
-        }else if(velocidad.matches("^[0-9]*[.]{0,1}[0-9]{0,2}$")){
+        }else if(velocidad.matches("^[0-9]*[.]{0,1}[0-9]{0,3}$")){
             return true;
         }else{
             return false;
