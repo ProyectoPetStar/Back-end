@@ -56,8 +56,8 @@ public class ControllerFallas {
                 FallasDataResponseJson data = new FallasDataResponseJson();
                 int turno = getTurno();
                 java.sql.Date dia = getCurrentDayByTurno(turno);
-                int idGrupo = 3;
-                int idLinea = 2;
+                int idGrupo = sesion.getId_grupo();
+                int idLinea = sesion.getId_linea();
                 ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
 
                 data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
