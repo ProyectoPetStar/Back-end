@@ -22,6 +22,7 @@ public class ControllerCatalogos {
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_INVALID= "Valor o Descripción ya existe";
+    private static final String MSG_NOEXIT = "El registro no existe";
     
     /**
      * Consulta General
@@ -196,12 +197,19 @@ public class ControllerCatalogos {
             UserDTO sesion = autenticacion.isValidToken(request);
             if (sesion != null) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
-                CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
-                catalogosListResponseJason.setCatalogosDTO(catalogosDAO.getDescripcionById(tableName, id));
                 
-                output.setData(catalogosListResponseJason);
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
+                ResultInteger result = catalogosDAO.validaExistID(tableName, "id", id);
+                if(result.getResult().equals(1)){
+                    CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
+                    catalogosListResponseJason.setCatalogosDTO(catalogosDAO.getDescripcionById(tableName, id));
+
+                    output.setData(catalogosListResponseJason);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setMessage(MSG_NOEXIT);
+                    response.setSucessfull(false);
+                }
             } else {
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
