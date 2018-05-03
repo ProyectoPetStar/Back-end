@@ -57,8 +57,8 @@ public class Catalogos extends HttpServlet {
                 case "updateCatalogo":
                     output = controllerCatalogos.updateCatalogo(request);
                     break;
-                case "deleteCatalogo":
-                    output = controllerCatalogos.deleteCatalogo(request);
+                case "blockCatalogo":
+                    output = controllerCatalogos.blockCatalogo(request);
                     break;
                 case "getDataByID":
                     output = controllerCatalogos.getDataByIdCatalogo(request);
