@@ -175,4 +175,18 @@ public class CatalogosDAO {
         CatalogosDTO catalogosDTO = (CatalogosDTO)  qr.query(sql.toString(), rsh, params);
         return catalogosDTO;
     }
+    
+    public ResultInteger validaExistID(String tableName, String columName, int id) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM ").append(tableName)
+                .append(" WHERE ").append(columName).append(" = ?");
+        Object[] params = { id };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result =  (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
 }

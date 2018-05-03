@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.petstar.service;
 
 import com.google.gson.Gson;
@@ -14,21 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.petstar.configurations.Configuration;
-import org.petstar.controller.ControllerEquipoAmut;
+import org.petstar.controller.ControllerEquipos;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- * Servlet de Equipos Amut
- * Clase que administra el acceso a Equipos Amut
+ *
  * @author Tech-Pro
  */
-@WebServlet(name = "EquipoAmut", urlPatterns = {"/EquipoAmut"})
-public class EquipoAmut extends HttpServlet {
+@WebServlet(name = "Equipos", urlPatterns = {"/Equipos"})
+public class Equipos extends HttpServlet {
 
     /**
-     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o
-     * <code>POST</code> respectivamente.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -38,39 +32,39 @@ public class EquipoAmut extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Configuration.setHeadersJson(response);
-    
-        PrintWriter out = response.getWriter();
-        OutputJson output = new OutputJson();
-        ControllerEquipoAmut controller = new ControllerEquipoAmut();
         
+        PrintWriter printWriter = response.getWriter();
+        OutputJson output = new OutputJson();
+        ControllerEquipos controllerEquipos = new ControllerEquipos();
         Gson gson = new Gson();
-        try {
+        
+        try{
             String action = request.getParameter("action");
-            switch (action) {
-                case "getEquipos":
-                    output =  controller.getEquiposAmutList(request);
+            switch(action){
+                case "getAllEquipos":
+                    output = controllerEquipos.getAllEquipos(request);
                     break;
-                case "insertNewEquipos":
-                    output = controller.insertNewEquipoAmut(request);
+                case "getEquipoById":
+                    output = controllerEquipos.getEquipoById(request);
                     break;
-                case "updateEquipos":
-                    output = controller.updateEquipoAmut(request);
+                case "insertEquipo":
+                    output = controllerEquipos.insertEquipo(request);
                     break;
-                case "deleteEquipos":
-                    output = controller.deleteEquipoAmut(request);
+                case "updateEquipo":
+                    output = controllerEquipos.updateEquipo(request);
                     break;
-                case "getDataByID":
-                    output = controller.getDataEquipoAmoutById(request);
+                case "blockEquipo":
+                    output = controllerEquipos.blockEquipo(request);
                     break;
             }
-        } catch (Exception ex) {
-            ResponseJson reponseJson = new ResponseJson();
-            reponseJson.setSucessfull(false);
-            reponseJson.setMessage(ex.getMessage());
-            output.setResponse(reponseJson);
-        } finally {
-            out.print(gson.toJson(output));
-            out.close();
+        }catch(Exception ex){
+            ResponseJson responseJson = new ResponseJson();
+            responseJson.setMessage(ex.getMessage());
+            responseJson.setSucessfull(false);
+            output.setResponse(responseJson);
+        }finally{
+            printWriter.print(gson.toJson(output));
+            printWriter.close();
         }
     }
 
@@ -104,6 +98,7 @@ public class EquipoAmut extends HttpServlet {
     }
 
     /**
+     * 
      * @param req
      * @param response
      * @throws ServletException
@@ -121,7 +116,7 @@ public class EquipoAmut extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "EquipoAmut";
+        return "Short description";
     }// </editor-fold>
 
 }
