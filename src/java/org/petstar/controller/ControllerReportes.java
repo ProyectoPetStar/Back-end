@@ -17,6 +17,7 @@ import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.getTotalHoras;
 import static org.petstar.configurations.utils.getPorcentajeParo;
+import org.petstar.dto.UserDTO;
 
 /**
  * @author Tech-Pro
@@ -26,67 +27,72 @@ public class ControllerReportes {
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
-    private static final String MSG_INVALID= "Ya existe una meta con esos valores.";
-    private static final String MSG_NO_EXIST= "La meta no existe.";
     
     public OutputJson getOEEFallasByLinea(HttpServletRequest request) throws Exception{
         String fechaIn = request.getParameter("fecha_inicio");
         String fechaTe = request.getParameter("fecha_termino");
         int idLInea = Integer.parseInt(request.getParameter("id_linea"));
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
-            CatalogosDAO catalogosDAO = new CatalogosDAO();
-            RazonParoDAO razonParoDAO = new RazonParoDAO();
-            ReportesResponseJson data = new ReportesResponseJson();
-            
-            List<CatalogosDTO> listFuentes = new ArrayList<>();
-            listFuentes = catalogosDAO.getCatalogos(TABLE_FUENTES);
-            List<HashMap> listOEEFallas = new ArrayList<>();
-            BigDecimal tiempoDisponible = getTotalHoras(
-                    convertStringToSql(fechaIn), convertStringToSql(fechaTe));
-            BigDecimal totalGeneral = new BigDecimal(BigInteger.ZERO);
-            
-            for(CatalogosDTO fuente:listFuentes){
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("padre", 1);
-                map.put("fuente", fuente.getValor());
-                listOEEFallas.add(map);
-                
-                List<RazonParoDTO> listRazones = new ArrayList<>();
-                listRazones = razonParoDAO.getFallasByOEE(
-                        convertStringToSql(fechaIn), 
-                        convertStringToSql(fechaTe), idLInea, fuente.getId());
-                BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
-                
-                for(RazonParoDTO razon:listRazones){
-                    HashMap<String, Object> raz = new HashMap<>();
-                    raz.put("padre", 0);
-                    raz.put("fuente", razon.getValor());
-                    raz.put("hrs", razon.getSuma_tiempo_paro());
-                    raz.put("porcentaje", getPorcentajeParo(
-                            razon.getSuma_tiempo_paro(), tiempoDisponible));
-                    listOEEFallas.add(raz);
-                    
-                    totalParcial = totalParcial.add(razon.getSuma_tiempo_paro());
-                    totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro());
-                    map.put("hrs", totalParcial);
-                    map.put("porcentaje", getPorcentajeParo(totalParcial, tiempoDisponible));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                RazonParoDAO razonParoDAO = new RazonParoDAO();
+                ReportesResponseJson data = new ReportesResponseJson();
+
+                List<CatalogosDTO> listFuentes = new ArrayList<>();
+                listFuentes = catalogosDAO.getCatalogos(TABLE_FUENTES);
+                List<HashMap> listOEEFallas = new ArrayList<>();
+                BigDecimal tiempoDisponible = getTotalHoras(
+                        convertStringToSql(fechaIn), convertStringToSql(fechaTe));
+                BigDecimal totalGeneral = new BigDecimal(BigInteger.ZERO);
+
+                for(CatalogosDTO fuente:listFuentes){
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("padre", 1);
+                    map.put("fuente", fuente.getValor());
+                    listOEEFallas.add(map);
+
+                    List<RazonParoDTO> listRazones = new ArrayList<>();
+                    listRazones = razonParoDAO.getFallasByOEE(
+                            convertStringToSql(fechaIn), 
+                            convertStringToSql(fechaTe), idLInea, fuente.getId());
+                    BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
+
+                    for(RazonParoDTO razon:listRazones){
+                        HashMap<String, Object> raz = new HashMap<>();
+                        raz.put("padre", 0);
+                        raz.put("fuente", razon.getValor());
+                        raz.put("hrs", razon.getSuma_tiempo_paro());
+                        raz.put("porcentaje", getPorcentajeParo(
+                                razon.getSuma_tiempo_paro(), tiempoDisponible));
+                        listOEEFallas.add(raz);
+
+                        totalParcial = totalParcial.add(razon.getSuma_tiempo_paro());
+                        totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro());
+                        map.put("hrs", totalParcial);
+                        map.put("porcentaje", getPorcentajeParo(totalParcial, tiempoDisponible));
+                    }
                 }
+            
+                HashMap<String, Object> mapa = new HashMap<>();
+                mapa.put("padre", 2);
+                mapa.put("fuente", "Total");
+                mapa.put("hrs", totalGeneral);
+                mapa.put("porcentaje", getPorcentajeParo(totalGeneral, tiempoDisponible));
+                listOEEFallas.add(mapa);
+                data.setListaOEEFallas(listOEEFallas);
+
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
             }
-            
-            HashMap<String, Object> mapa = new HashMap<>();
-            mapa.put("padre", 2);
-            mapa.put("fuente", "Total");
-            mapa.put("hrs", totalGeneral);
-            mapa.put("porcentaje", getPorcentajeParo(totalGeneral, tiempoDisponible));
-            listOEEFallas.add(mapa);
-            data.setListaOEEFallas(listOEEFallas);
-            
-            output.setData(data);
-            response.setMessage(MSG_SUCESS);
-            response.setSucessfull(true);
         }catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -98,16 +104,23 @@ public class ControllerReportes {
     public OutputJson loadCombobox(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            LineasDAO lineasDAO = new LineasDAO();
-            ReportesResponseJson data = new ReportesResponseJson();
-            
-            data.setListLineas(lineasDAO.getLineasData());
-            output.setData(data);
-            
-            response.setSucessfull(true);
-            response.setMessage(MSG_SUCESS);
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                LineasDAO lineasDAO = new LineasDAO();
+                ReportesResponseJson data = new ReportesResponseJson();
+
+                data.setListLineas(lineasDAO.getLineasData());
+                output.setData(data);
+
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         }catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
