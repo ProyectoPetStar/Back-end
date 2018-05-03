@@ -8,10 +8,13 @@ package org.petstar.controller;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
+import org.petstar.dto.LineasDTO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.dto.UserDTO;
 import org.petstar.model.LineasDataResponseJson;
 import org.petstar.model.LineasResponseJson;
 import org.petstar.model.OutputJson;
+import org.petstar.model.ResponseJson;
 
 /**
  * Controlador de Lineas
@@ -21,8 +24,9 @@ public class ControllerLineas {
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
-    private static final String MSG_INVALID= "Descripción ya existe";
-    private static final String TABLE_NAME = "pet_cat_lineas";
+    private static final String MSG_INVALID= "Valor o Descripción ya existe";
+    private static final String MSG_NOEXIST= "El registro no existe";
+    private static final String TABLE_NAME = "pet_cat_linea";
     
     /**
      * Consulta Genral
@@ -31,12 +35,13 @@ public class ControllerLineas {
      * @return 
      */
     public OutputJson getLineasData(HttpServletRequest request){
-        LineasResponseJson response = new LineasResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson out = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-//            if(autenticacion.isValidToken(request)){
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
                 LineasDAO lineasDAO = new LineasDAO();
                 LineasDataResponseJson data = new LineasDataResponseJson();
                 data.setListLineasDTO(lineasDAO.getLineasData());
@@ -44,11 +49,10 @@ public class ControllerLineas {
                 out.setData(data);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-                
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage(MSG_LOGOUT);
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch(Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -64,36 +68,38 @@ public class ControllerLineas {
      * @return 
      */
     public OutputJson insertNewLinea(HttpServletRequest request){
-        int idGpoLinea = Integer.parseInt(request.getParameter("gpoLinea"));
-        String descripcion = request.getParameter("descripcionLinea");
-        
-        LineasResponseJson response = new LineasResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-//            if (autenticacion.isValidToken(request)) {
-                CatalogosDAO catalogosDAO = new CatalogosDAO();
-                ResultInteger existe = catalogosDAO.validateDescripcionInsert(TABLE_NAME, descripcion);
-                if(existe.getResult() == 0){
-                    LineasDAO lineasDAO = new LineasDAO();
-                    lineasDAO.insertNewLinea(descripcion, idGpoLinea);
+            LineasDTO newLinea = new LineasDTO();
+            newLinea.setValor(request.getParameter("valor"));
+            newLinea.setDescripcion(request.getParameter("descripcion"));
+            newLinea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_gpo_linea")));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            
+            if (sesion != null) {
+                LineasDAO lineasDAO = new LineasDAO();
+                ResultInteger existe = lineasDAO.validaForInsert(newLinea);
+                if(existe.getResult().equals(0)){
+                    lineasDAO.insertNewLinea(newLinea);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }else{
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage(MSG_LOGOUT);
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }
-        output.setResponse(response);
         
+        output.setResponse(response);
         return output;
     }
     
@@ -104,31 +110,33 @@ public class ControllerLineas {
      * @return 
      */
     public OutputJson updateLinea(HttpServletRequest request){
-        int idLinea = Integer.parseInt(request.getParameter("idLinea"));
-        int activo = Integer.parseInt(request.getParameter("activoLinea"));
-        int idGpoLinea = Integer.parseInt(request.getParameter("gpoLinea"));
-        String descripcion = request.getParameter("descripcionLinea");
-        
         LineasResponseJson response = new LineasResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-//            if (autenticacion.isValidToken(request)) {
+            LineasDTO linea = new LineasDTO();
+            linea.setId_linea(Integer.parseInt(request.getParameter("id_linea")));
+            linea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_gpo_linea")));
+            linea.setDescripcion(request.getParameter("descripcion"));
+            linea.setValor(request.getParameter("valor"));
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
                 LineasDAO lineasDAO = new LineasDAO();
-                ResultInteger result = lineasDAO.validaDescripcionUpdate(idLinea, descripcion);
+                ResultInteger result = lineasDAO.validaForUpdate(linea);
                 if(result.getResult().equals(0)){
-                    lineasDAO.updateLinea(idLinea, descripcion, activo, idGpoLinea);
+                    lineasDAO.updateLinea(linea);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }else{
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage(MSG_LOGOUT);
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
@@ -139,36 +147,36 @@ public class ControllerLineas {
     }
     
     /**
-     * Eliminación de Lineas
-     * Metodo para eliminar una linea en especifico
+     * Cambio de Estatus
+     * Metodo para Habilitar o deshabilitar una linea en especifico
      * @param request
      * @return 
      */
-    public OutputJson deleteLinea(HttpServletRequest request){
-        int idLinea = Integer.parseInt(request.getParameter("idLinea"));
-        
+    public OutputJson blockLinea(HttpServletRequest request){
         LineasResponseJson response = new LineasResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
+            int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+            int activo = Integer.parseInt(request.getParameter("activo"));
+            UserDTO sesion = autenticacion.isValidToken(request);
              
-//            if (autenticacion.isValidToken(request)) {
+            if (sesion != null) {
                 LineasDAO lineasDAO = new LineasDAO();
-                lineasDAO.deleteLinea(idLinea);
+                lineasDAO.blockLinea(idLinea, activo);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
-                
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage(MSG_LOGOUT);
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }
-        output.setResponse(response);
         
+        output.setResponse(response);
         return output;
     }
     
@@ -179,26 +187,33 @@ public class ControllerLineas {
      * @return 
      */
     public OutputJson getDataCatalogosById(HttpServletRequest request){
-        int idLinea = Integer.parseInt(request.getParameter("idLinea"));
-        
-        LineasResponseJson response = new LineasResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-//            if (autenticacion.isValidToken(request)) {
-                LineasDAO lineasDAO = new LineasDAO();
-                LineasDataResponseJson data = new LineasDataResponseJson();
-                data.setLineasDTO(lineasDAO.getLineasDataById(idLinea));
-
-                output.setData(data);
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
+            int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
                 
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage(MSG_LOGOUT);
-//            }
+                ResultInteger result = catalogosDAO.validaExistID(TABLE_NAME, "id_linea", idLinea);
+                if(result.getResult().equals(1)){
+                    LineasDAO lineasDAO = new LineasDAO();
+                    LineasDataResponseJson data = new LineasDataResponseJson();
+                    data.setLineasDTO(lineasDAO.getLineasDataById(idLinea));
+
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setMessage(MSG_NOEXIST);
+                    response.setSucessfull(false);
+                }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());

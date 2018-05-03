@@ -32,33 +32,27 @@ public class LineasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT li.id_linea, li.valor, li.descripcion, li.activo, ")
-                .append("li.id_gpo_linea, gp.descripcion AS descripcion_gpo_linea ")
-                .append("FROM dbo.pet_cat_linea AS li ")
-                .append("INNER JOIN dbo.pet_cat_gpo_linea AS gp ")
-                .append("ON li.id_gpo_linea = gp.id WHERE li.activo=1");
+        sql.append("EXEC sp_selectPetCatLineas");
         
         ResultSetHandler rsh = new BeanListHandler(LineasDTO.class);
         List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh);
-                
         return lineasData;
     }
     
     /**
      * Registro de Lineas
      * Metodo que registra una nueva linea en DB
-     * @param descripcion
-     * @param idGpoLinea
+     * @param linea
      * @throws Exception 
      */
-    public void insertNewLinea(String descripcion, int idGpoLinea) throws Exception{
+    public void insertNewLinea(LineasDTO linea) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetCatLineas ?, ?");
+        sql.append("EXEC sp_insertPetCatLineas ?, ?, ?");
         Object[] params = {
-            descripcion, idGpoLinea
+            linea.getValor(), linea.getDescripcion(), linea.getId_gpo_linea()
         };
         
         qr.update(sql.toString(), params);
@@ -67,40 +61,36 @@ public class LineasDAO {
     /**
      * Modificación de Linea
      * Metodo que actualiza los datos de una linea
-     * @param idLinea
-     * @param descripcion
-     * @param activo
-     * @param idGpoLinea
+     * @param linea
      * @throws Exception 
      */
-    public void updateLinea(int idLinea, String descripcion, int activo, int idGpoLinea) throws Exception{
+    public void updateLinea(LineasDTO linea) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("EXEC sp_updatePetCatLinea ?, ?, ?, ?");
         Object[] params = {
-            idLinea, descripcion, activo, idGpoLinea
+            linea.getId_linea(), linea.getValor(), linea.getDescripcion(), linea.getId_gpo_linea()
         };
         
         qr.update(sql.toString(), params);
     }
     
     /**
-     * Eliminación de Linea
-     * Metodo que elimina una Linea de acuerdo al id
+     * Bloqueo de Linea
+     * Metodo que habilita o deshabilita una Linea de acuerdo al id
      * @param idLinea
+     * @param activo
      * @throws Exception 
      */
-    public void deleteLinea(int idLinea) throws Exception{
+    public void blockLinea(int idLinea, int activo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_deletePetCatLinea ?");
-        Object[] params = {
-            idLinea
-        };
+        sql.append("UPDATE pet_cat_linea SET activo = ? WHERE id_linea = ?");
+        Object[] params = { activo, idLinea };
         
         qr.update(sql.toString(), params);
     }
@@ -118,37 +108,54 @@ public class LineasDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("EXEC sp_selectPetCatLineasById ?");
-        Object[] params = {
-            idLinea
-        };
+        Object[] params = { idLinea };
         
         ResultSetHandler rsh = new BeanHandler(LineasDTO.class);
         LineasDTO lineaData = (LineasDTO) qr.query(sql.toString(), rsh, params);
-                
         return lineaData;
     }
     
     /**
      * Validación para Modificar
-     * Metodo que valida la descripcion antes de hacer el update de la linea
-     * @param id
-     * @param descripcion
+     * Metodo que valida los datos antes de hacer el update de la linea
+     * @param linea
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaDescripcionUpdate(int id, String descripcion) throws Exception{
+    public ResultInteger validaForUpdate(LineasDTO linea) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_updateValidaDescripcionLinea ?, ?");
+        
+        sql.append("EXEC sp_updateValidaPetCatLineas ?, ?, ?, ?");
         Object[] params = {
-            id, descripcion
+            linea.getId_linea(), linea.getValor(), linea.getDescripcion(), linea.getId_gpo_linea()
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
-
+        return count;
+    }
+    
+    /**
+     * Validación para Registrar
+     * Metodo que valida los datos antes de hacer el insert de la linea
+     * @param linea
+     * @return
+     * @throws Exception 
+     */
+    public ResultInteger validaForInsert(LineasDTO linea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertValidaPetCatLineas ?, ?, ?");
+        Object[] params = {
+            linea.getValor(), linea.getDescripcion(), linea.getId_gpo_linea()
+        };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
         return count;
     }
 }
