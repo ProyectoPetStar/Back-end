@@ -12,7 +12,6 @@ import org.petstar.dto.LineasDTO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.LineasDataResponseJson;
-import org.petstar.model.LineasResponseJson;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
@@ -110,7 +109,7 @@ public class ControllerLineas {
      * @return 
      */
     public OutputJson updateLinea(HttpServletRequest request){
-        LineasResponseJson response = new LineasResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
@@ -153,7 +152,7 @@ public class ControllerLineas {
      * @return 
      */
     public OutputJson blockLinea(HttpServletRequest request){
-        LineasResponseJson response = new LineasResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
