@@ -29,16 +29,15 @@ public class ProductosDAO {
      * @return
      * @throws Exception 
      */
-    public List<ProductosDTO> getDataCarProductos() throws Exception{
+    public List<ProductosDTO> getAllProductos() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetCarProductos");
+        sql.append("EXEC sp_selectPetCatProducto");
         
         ResultSetHandler rsh = new BeanListHandler(ProductosDTO.class);
         List<ProductosDTO> data = (List<ProductosDTO>) qr.query(sql.toString(), rsh);
-        
         return data;
     }
     
@@ -49,15 +48,13 @@ public class ProductosDAO {
      * @return
      * @throws Exception 
      */
-    public ProductosDTO getDataCarProductosById(int idProducto) throws Exception{
+    public ProductosDTO getProductoById(int idProducto) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetCarProductosById ?");
-        Object[] params = {
-            idProducto
-        };
+        sql.append("EXEC sp_selectPetCatProductoById ?");
+        Object[] params = { idProducto };
         
         ResultSetHandler rsh = new BeanHandler(ProductosDTO.class);
         ProductosDTO data = (ProductosDTO) qr.query(sql.toString(), rsh, params);
@@ -68,19 +65,18 @@ public class ProductosDAO {
     /**
      * Registra Producto
      * Metodo para registrar un nuevo producto en el catalogo
-     * @param idLinea
      * @param producto
-     * @param medida
      * @throws Exception 
      */
-    public void insertNewCarProducto(int idLinea, String producto, String medida) throws Exception{
+    public void insertProducto(ProductosDTO producto) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetCarProductos ?, ?, ?");
+        sql.append("EXEC sp_insertPetCatProducto ?, ?, ?, ?");
         Object[] params = {
-            idLinea, producto, medida
+            producto.getValor(), producto.getDescripcion(),
+            producto.getId_linea(), producto.getId_tipo_producto()
         };
         
         qr.update(sql.toString(), params);
@@ -113,24 +109,23 @@ public class ProductosDAO {
     /**
      * Validación para Registrar
      * Metodo que valida que los datos para registrar un producto no esten repetidos
-     * @param idLinea
      * @param producto
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaForInsertCarProducto(int idLinea, String producto) throws Exception{
+    public ResultInteger validaForInsert(ProductosDTO producto) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertValidaDesPetCarProductos ?, ?");
+        sql.append("EXEC sp_insertValidaPetCatProducto ?, ?, ?, ?");
         Object[] params = {
-            idLinea, producto
+            producto.getValor(), producto.getDescripcion(),
+            producto.getId_linea(), producto.getId_tipo_producto()
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        
         return result;
     }
     
@@ -157,236 +152,5 @@ public class ProductosDAO {
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         
         return result;
-    }
-    
-    /**
-     * Validación que exista el producto
-     * Metodo para validar que el id que recibe sea correcto y corresponda a un producto.
-     * @param idProducto
-     * @return
-     * @throws Exception 
-     */
-    public ResultInteger validaIfExistCarProducto(int idProducto) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC  sp_validaIdPetCarProductos ?");
-        Object[] params = {
-            idProducto
-        };
-        
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        
-        return result;
-    }
-    
-    /**
-     * Validación Grupo, Turno, Linea y Dia validos
-     * Metodo para validar que el grupo, turno, linea y dia seleccionado sean validos y tengan una meta asignada para ese dia
-     * @param idGrupo
-     * @param turno
-     * @param idLinea
-     * @param DiaMeta
-     * @return
-     * @throws Exception 
-     */
-    public ResultInteger validaGrupoTurno(int idGrupo, int turno, int idLinea, String DiaMeta)throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC sp_validaTurnoMetas ?, ?, ?");
-        Object[] params = {
-            turno, idGrupo, DiaMeta
-        };
-        
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        
-        return result;
-    }
-    
-    /**
-     * Asignación de valores a producto
-     * Metodo para regitrar la asignacion de valores a un producto de un día 
-     * @param idTurno
-     * @param idGrupo
-     * @param idProducto
-     * @param dia
-     * @param valor
-     * @throws Exception 
-     */
-//    public void asignaValorByProducto(int idTurno, int idGrupo, int idProducto, String dia, Float valor) throws Exception{
-//        DataSource ds = PoolDataSource.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        StringBuilder sql = new StringBuilder();
-//        
-//        sql.append("EXEC sp_insertPetProProductos ?, ?, ?, ?, ?");
-//        Object[] paramas = {
-//            idTurno, idGrupo, idProducto, dia, valor
-//        };
-//        
-//        qr.update(sql.toString(), paramas);
-//    }
-    
-    /**
-     * Metodo para validar que ya se haya asignado un valor a un producto en especifico
-     * @param idProducto
-     * @param idTurno
-     * @param dia
-     * @return
-     * @throws Exception 
-     */
-//    public ResultInteger validaForRegistrarAsignacion(int idProducto, int idTurno, String dia) throws Exception{
-//        DataSource ds = PoolDataSource.getDataSource();
-//        QueryRunner qr= new QueryRunner(ds);
-//        StringBuilder sql = new StringBuilder();
-//        
-//        sql.append("EXEC sp_insertValidaPetProProductos ?, ?, ?");
-//        Object[] params={
-//            idProducto, idTurno, dia
-//        };
-//        
-//        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-//        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-//        return result;
-//    }
-    
-    /**
-     * Metodo que devulve todas las asignaciones del dia
-     * @param diaInicio
-     * @param DiaFin
-     * @return
-     * @throws Exception 
-     */
-//    public List<ProductosAsignacionDTO> getAllAsignacionesByDays(String diaInicio, String DiaFin) throws Exception{
-//        DataSource ds = PoolDataSource.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        StringBuilder sql = new StringBuilder();
-//        
-//        sql.append("EXEC sp_selectPetProProductos ?, ?");
-//        Object[] params = {
-//            diaInicio, DiaFin
-//        };
-//        
-//        ResultSetHandler rsh = new BeanListHandler(ProductosAsignacionDTO.class);
-//        List<ProductosAsignacionDTO> data = (List<ProductosAsignacionDTO>) qr.query(sql.toString(), rsh, params);
-//        return data;
-//    }
-    
-    /**
-     * Metodo que actualiza los valores de una asignación
-     * @throws Exception 
-     */
-//    public void updateAsignacion() throws Exception{
-//        DataSource ds = PoolDataSource.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        StringBuilder sql = new StringBuilder();
-//        
-//        sql.append("");
-//        Object[] paramas ={
-//            
-//        };
-//        
-//        qr.update(sql.toString(), paramas);
-//    }
-    
-    /**
-     * Metas en un rango de fecha
-     * Metodo que devuelve las metas de un rango de fecha, perfil 3(gerente)
-     * @param diaInicio
-     * @param DiaFin
-     * @return
-     * @throws Exception 
-     */
-    public List<MetasAsignacionDTO> getAllAsignacionesMetasByDays(String diaInicio, String DiaFin) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC sp_selectMetasValores ?, ?");
-        Object[] params = {
-            diaInicio, DiaFin
-        };
-        
-        ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
-        List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh, params);
-        return data;
-    }
-    
-    /**
-     * Metas no liberadas
-     * Metodo que devuelve las metas de los días que no han sido liberados, perfil 4(Facilitador)
-     * @param idGrupo
-     * @param idTurno
-     * @param idLinea
-     * @return
-     * @throws Exception 
-     */
-    public List<MetasAsignacionDTO> getAllAsignacionesMetasByDays(int idGrupo, int idTurno, int idLinea) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = {
-            
-        };
-        
-        ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
-        List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh, params);
-        return data;
-    }
-    
-    /**
-     * Metas del día
-     * Metodo que devuelve la meta del dia actual, perfil 5(Integrador)
-     * @param idGrupo
-     * @param idTurno
-     * @param idLinea
-     * @param fecha
-     * @return
-     * @throws Exception 
-     */
-     public List<MetasAsignacionDTO> getAllAsignacionesMetasByDays(int idGrupo, int idTurno, int idLinea, String fecha) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC sp_selectMetasValorByDia ?, ?, ?, ?");
-        Object[] params = {
-            fecha, idLinea, idGrupo, idTurno
-        };
-        
-        ResultSetHandler rsh = new BeanListHandler(MetasAsignacionDTO.class);
-        List<MetasAsignacionDTO> data = (List<MetasAsignacionDTO>) qr.query(sql.toString(), rsh, params);
-        return data;
-    }
-    
-    /**
-     * Lista de Productos para asignar valor
-     * Metodo que devulve la lista de productos que tiene la linea con sus valores si es el caso que tenga valores
-     * @param idLinea
-     * @param idTurno
-     * @param idGrupo
-     * @param dia
-     * @return
-     * @throws Exception 
-     */
-    public List<ProductosAsignacionDTO> getAllProductosByDayAndLineaAndGrupo(int idLinea, int idTurno, int idGrupo, String dia) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = {
-            
-        };
-        
-        ResultSetHandler rsh = new BeanListHandler(ProductosAsignacionDTO.class);
-        List<ProductosAsignacionDTO> data = (List<ProductosAsignacionDTO>) qr.query(sql.toString(), rsh, params);
-        return data;
     }
 }
