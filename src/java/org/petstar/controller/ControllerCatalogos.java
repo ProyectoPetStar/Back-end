@@ -8,15 +8,20 @@ package org.petstar.controller;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dto.ResultInteger;
-import org.petstar.model.CatalogosResponseJson;
+import org.petstar.dto.UserDTO;
 import org.petstar.model.CatalogosListResponseJason;
 import org.petstar.model.OutputJson;
+import org.petstar.model.ResponseJson;
 
 /**
  * Controlador de Catalogos
  * @author Tech-Pro
  */
 public class ControllerCatalogos {
+    private static final String MSG_SUCESS = "OK";
+    private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
+    private static final String MSG_ERROR  = "Descripción de error: ";
+    private static final String MSG_INVALID= "Valor o Descripción ya existe";
     
     /**
      * Consulta General
@@ -26,28 +31,28 @@ public class ControllerCatalogos {
      */
     public OutputJson getCatalogosData(HttpServletRequest request) {
         String tableName = request.getParameter("tableName");
-        CatalogosResponseJson response = new CatalogosResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-             
-//            if (controllerAutenticacion.isValidToken(request)) {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
                 catalogosListResponseJason.setListCatalogosDTO(catalogosDAO.getCatalogos(tableName));
                 
                 output.setData(catalogosListResponseJason);
                 response.setSucessfull(true);
-                response.setMessage("OK");
+                response.setMessage(MSG_SUCESS);
                 
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
-            response.setMessage("Descripcion de error: " + ex.getMessage());
+            response.setMessage(MSG_ERROR + ex.getMessage());
         }
         output.setResponse(response);
         
@@ -62,33 +67,34 @@ public class ControllerCatalogos {
      */
     public OutputJson insertNewCatalogo(HttpServletRequest request){
         String tableName = request.getParameter("tableName");
+        String valor = request.getParameter("valor");
         String descripcion = request.getParameter("descripcion");
-        CatalogosResponseJson response = new CatalogosResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-             
-//            if (controllerAutenticacion.isValidToken(request)) {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 
-                ResultInteger existe = catalogosDAO.validateDescripcionInsert(tableName, descripcion);
+                ResultInteger existe = catalogosDAO.validateDescripcionInsert(tableName, valor, descripcion);
                 
                 if(existe.getResult() == 0){
-                    catalogosDAO.insertCatalogos(tableName, descripcion);
+                    catalogosDAO.insertCatalogos(tableName, valor, descripcion);
                     response.setSucessfull(true);
-                    response.setMessage("OK");
+                    response.setMessage(MSG_SUCESS);
                 }else {
                     response.setSucessfull(false);
-                    response.setMessage("Capturar nueva descripción.");
+                    response.setMessage(MSG_INVALID);
                 }
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
-            response.setMessage("Descripcion de error: " + ex.getMessage());
+            response.setMessage(MSG_ERROR + ex.getMessage());
         }
         output.setResponse(response);
         
@@ -106,31 +112,33 @@ public class ControllerCatalogos {
         int id = Integer.parseInt(request.getParameter("idCatalogo"));
         int activo = Integer.parseInt(request.getParameter("activoCatalogo"));
         String descripcion = request.getParameter("descripcion");
-        CatalogosResponseJson response = new CatalogosResponseJson();
+        String valor = request.getParameter("valor");
+        
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-             
-//            if (controllerAutenticacion.isValidToken(request)) {
+             UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
-                ResultInteger existe = catalogosDAO.validateDescripcionUpdate(tableName, id, descripcion);
+                ResultInteger existe = catalogosDAO.validateDescripcionUpdate(tableName, id, valor, descripcion);
                 
                 if(existe.getResult().equals(0)){
-                    catalogosDAO.updateCatalogos(id, descripcion, activo, tableName);
+                    catalogosDAO.updateCatalogos(id, valor, descripcion, activo, tableName);
                     response.setSucessfull(true);
-                    response.setMessage("OK");
+                    response.setMessage(MSG_SUCESS);
                 }else {
                     response.setSucessfull(false);
-                    response.setMessage("Capturar nueva descripción.");
+                    response.setMessage(MSG_INVALID);
                 }
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
-            response.setMessage("Descripcion de error: " + ex.getMessage());
+            response.setMessage(MSG_ERROR + ex.getMessage());
         }
         output.setResponse(response);
         
@@ -138,32 +146,33 @@ public class ControllerCatalogos {
     }
     
     /**
-     * Eliminación de Catalogos
-     * Metodo generico para la eliminación de registros de catalogos
+     * Bloqueo de Catalogos
+     * Metodo generico para habilitar y deshabilitar registros de catalogos
      * @param request
      * @return 
      */
-    public OutputJson deleteCatalogo(HttpServletRequest request){
+    public OutputJson blockCatalogo(HttpServletRequest request){
         String tableName = request.getParameter("tableName");
         int id = Integer.parseInt(request.getParameter("idCatalogo"));
-        CatalogosResponseJson response = new CatalogosResponseJson();
+        int activo = Integer.parseInt(request.getParameter("activoCatalogo"));
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-             
-//            if (controllerAutenticacion.isValidToken(request)) {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
-                catalogosDAO.deleteCatalogo(id, tableName);
+                catalogosDAO.blockCatalogo(id, tableName,activo);
                 response.setSucessfull(true);
-                response.setMessage("OK");
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+                response.setMessage(MSG_SUCESS);
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
-            response.setMessage("Descripcion de error: " + ex.getMessage());
+            response.setMessage(MSG_ERROR + ex.getMessage());
         }
         output.setResponse(response);
         
@@ -179,27 +188,27 @@ public class ControllerCatalogos {
     public OutputJson getDataByIdCatalogo(HttpServletRequest request){
         String tableName = request.getParameter("tableName");
         int id = Integer.parseInt(request.getParameter("idCatalogo"));
-        CatalogosResponseJson response = new CatalogosResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
-        ControllerAutenticacion controllerAutenticacion = new ControllerAutenticacion();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
          
         try {
-             
-//            if (controllerAutenticacion.isValidToken(request)) {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
                 catalogosListResponseJason.setCatalogosDTO(catalogosDAO.getDescripcionById(tableName, id));
                 
                 output.setData(catalogosListResponseJason);
                 response.setSucessfull(true);
-                response.setMessage("OK");
-//            } else {
-//                response.setSucessfull(false);
-//                response.setMessage("Inicie sesión nuevamente");
-//            }
+                response.setMessage(MSG_SUCESS);
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex) {
             response.setSucessfull(false);
-            response.setMessage("Descripcion de error: " + ex.getMessage());
+            response.setMessage(MSG_ERROR + ex.getMessage());
         }
         output.setResponse(response);
         

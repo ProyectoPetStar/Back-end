@@ -30,17 +30,14 @@ public class CatalogosDAO {
      */
     public List<CatalogosDTO> getCatalogos(String tablename) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM " + tablename + " WHERE activo =1");
-        Object[] params = {
-            tablename
-        };
+        
+        sql.append("EXEC sp_selectPetCatalogos ?");
+        Object[] params = { tablename };
         
         ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
-        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh); 
-        
+        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh, params);
         return data_catalogos;
     }
     
@@ -48,18 +45,17 @@ public class CatalogosDAO {
      * Registro de Catalogos
      * Metodo generico para dar de alta nuevos registros de catalogos
      * @param tableName
+     * @param valor
      * @param descripcion
      * @throws Exception 
      */
-    public void insertCatalogos(String tableName, String descripcion)throws Exception{
+    public void insertCatalogos(String tableName, String valor, String descripcion)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetCatalogos ?, ?");
-        Object[] params = {
-            tableName, descripcion
-        };
+        sql.append("EXEC sp_insertPetCatalogos ?, ?, ?");
+        Object[] params = { tableName, valor, descripcion };
         
         qr.update(sql.toString(), params);
     }
@@ -68,39 +64,42 @@ public class CatalogosDAO {
      * Modificación de Catalogos
      * Metodo generico para actualizar registros de catalogos
      * @param id
+     * @param valor
      * @param descripcion
      * @param activo
      * @param tableName
      * @throws Exception 
      */
-    public void updateCatalogos(int id, String descripcion, int activo, String tableName) throws Exception{
+    public void updateCatalogos(int id, String valor, String descripcion, 
+            int activo, String tableName) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_updatePetCatalogos ?, ?, ?, ?");
+        sql.append("EXEC sp_updatePetCatalogos ?, ?, ?, ?, ?");
         Object[] params = {
-            tableName, id, descripcion, activo 
+            tableName, id, valor, descripcion, activo
         };
         
         qr.update(sql.toString(), params);
     }
     
     /**
-     * Eliminación de Catalogos
-     * Metodo generico que elimina registros de catalogos de acuerdo al ID
+     * Bloqueo de Catalogos
+     * Metodo generico que habilita y deshabilita registros de catalogos de acuerdo al ID
      * @param id
      * @param tableName
+     * @param activo
      * @throws Exception 
      */
-    public void deleteCatalogo(int id, String tableName) throws Exception{
+    public void blockCatalogo(int id, String tableName, int activo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_deletePetCatalogos ?, ?");
+        sql.append("EXEC sp_updateActivoPetCatalogo ?, ?, ?");
         Object[] params = {
-            tableName, id
+            tableName, id, activo
         };
         
         qr.update(sql.toString(), params);
@@ -111,22 +110,21 @@ public class CatalogosDAO {
      * Metodo generico que valida las desscripciones de los catalogos para
      * evitar datos duplicados
      * @param tableName
+     * @param valor
      * @param descripcion
      * @return
      * @throws Exception 
      */
-    public ResultInteger validateDescripcionInsert(String tableName, String descripcion) throws Exception{
+    public ResultInteger validateDescripcionInsert(String tableName, String valor, String descripcion) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_insertValidaDescripcion ?, ?");
-        Object[] params = {
-            tableName, descripcion
-        };
+        
+        sql.append("EXEC sp_insertValidaDescripcion ?, ?, ?");
+        Object[] params = {tableName, valor, descripcion };
+        
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
-
         return count;
     }
     
@@ -136,23 +134,24 @@ public class CatalogosDAO {
      * evitar duplicar datos
      * @param tableName
      * @param id
+     * @param valor
      * @param descripcion
      * @return
      * @throws Exception 
      */
-    public ResultInteger validateDescripcionUpdate(String tableName, int id, String descripcion) throws Exception{
+    public ResultInteger validateDescripcionUpdate(String tableName, int id, 
+            String valor, String descripcion) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_updateValidaDescripcion ?, ?, ?");
+        
+        sql.append("EXEC sp_updateValidaDescripcion ?, ?, ?, ?");
         Object[] params = {
-            tableName, id, descripcion
+            tableName, id, valor, descripcion
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
-
         return count;
     }
     
@@ -169,14 +168,11 @@ public class CatalogosDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectDescripcionCatalogo ?, ?");
-        Object[] params = {
-            tableName, id
-        };
+        sql.append("EXEC sp_selectPetCatalogosById ?, ?");
+        Object[] params = { tableName, id };
+        
         ResultSetHandler rsh = new BeanHandler(CatalogosDTO.class);
         CatalogosDTO catalogosDTO = (CatalogosDTO)  qr.query(sql.toString(), rsh, params);
-
         return catalogosDTO;
-        
     }
 }
