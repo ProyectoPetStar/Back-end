@@ -49,7 +49,7 @@ public class Productos extends HttpServlet {
                 case "getAllProductos":
                     output = controller.getAllProductos(request);
                     break;
-                case "getCarProductoById":
+                case "getProductoById":
                     output = controller.getProductoById(request);
                     break;
                 case "insertProductos":
@@ -60,6 +60,10 @@ public class Productos extends HttpServlet {
                     break;
                 case "blockProducto":
                     output = controller.blockProducto(request);
+                    break;
+                case "loadList":
+                    output = controller.loadLIsts(request);
+                    break;
             }
         } catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();
