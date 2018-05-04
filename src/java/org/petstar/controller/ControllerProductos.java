@@ -2,16 +2,11 @@ package org.petstar.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
-import org.petstar.dao.LineasDAO;
 import org.petstar.dao.ProductosDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
-import org.petstar.model.ProductosAsignacionesResponseJson;
 import org.petstar.model.ProductosDataResponseJson;
 import org.petstar.model.ResponseJson;
-import static org.petstar.configurations.utils.getDateCorrect;
-import static org.petstar.configurations.utils.getCurrentDayByTurno;
-import static org.petstar.configurations.utils.getTurno;
 import org.petstar.dto.ProductosDTO;
 import org.petstar.dto.UserDTO;
 
