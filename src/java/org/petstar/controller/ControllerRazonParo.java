@@ -2,9 +2,7 @@ package org.petstar.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
-import org.petstar.dao.EquiposDAO;
 import org.petstar.dao.RazonParoDAO;
-import org.petstar.dto.EquiposDTO;
 import org.petstar.dto.RazonParoDTO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
