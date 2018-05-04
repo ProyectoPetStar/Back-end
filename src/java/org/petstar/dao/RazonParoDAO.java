@@ -16,6 +16,13 @@ import org.petstar.dto.ResultInteger;
  * @author Tech-Pro
  */
 public class RazonParoDAO {
+    
+    /**
+     * Consulta General
+     * Metodo que devulve una lista con todas la razones que existen en la tabla
+     * @return
+     * @throws Exception 
+     */
     public List<RazonParoDTO> getAllRazones() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -29,6 +36,32 @@ public class RazonParoDAO {
         return data;
     }
     
+    /**
+     * Consulta registros activos
+     * Metodo que devuelve una lista con los registros activo
+     * @return
+     * @throws Exception 
+     */
+    public List<RazonParoDTO> getAllRazonesActive() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetCatRazonParoActivos");
+       
+        ResultSetHandler rsh = new BeanListHandler(RazonParoDTO.class);
+        List<RazonParoDTO> data = (List<RazonParoDTO>) qr.query(sql.toString(), rsh);
+        
+        return data;
+    }
+    
+    /**
+     * Consulta especifica
+     * Metodo que devulve una razon de acuerdo al id
+     * @param idRazon
+     * @return
+     * @throws Exception 
+     */
     public RazonParoDTO getRazonById(int idRazon) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -42,7 +75,13 @@ public class RazonParoDAO {
         
         return data;
     }
-     
+    
+    /**
+     * Registro de una Razon de Paro
+     * Metodo que guarda en la DB los datos
+     * @param razon
+     * @throws Exception 
+     */
     public void insertRazones(RazonParoDTO razon) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -56,6 +95,12 @@ public class RazonParoDAO {
         qr.update(sql.toString(), params);
     }
     
+    /**
+     * Modificación de una Razon de Paro
+     * Metodo que actualiza los datos de un registro en especifico
+     * @param razon
+     * @throws Exception 
+     */
     public void updateRazones(RazonParoDTO razon) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -70,6 +115,12 @@ public class RazonParoDAO {
         qr.update(sql.toString(), params);
     }
     
+    /** Bloqueo de Registros
+     * Metodo que habilita o deshabilita un registro
+     * @param idRazon
+     * @param activo
+     * @throws Exception 
+     */
     public void blockRazones(int idRazon, int activo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -81,6 +132,13 @@ public class RazonParoDAO {
         qr.update(sql.toString(), params);
     }
     
+    /**
+     * Validacion para registrar
+     * Metodo que valida los datos, para evitar datos duplicados
+     * @param razon
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaForInsert(RazonParoDTO razon) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -96,6 +154,13 @@ public class RazonParoDAO {
         return result;
     }
     
+    /**
+     * Validacion para modificar
+     * Metodo que valida los datos, para evitar datos duplicados
+     * @param razon
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaForUpdate(RazonParoDTO razon) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -112,6 +177,16 @@ public class RazonParoDAO {
         return result;
     }
     
+    /**
+     * Razones de Paro para OEE
+     * Metodo que devulve la lista de razones de paro para el reporte de Fallas OEE
+     * @param fechaIn
+     * @param fechaTe
+     * @param idLinea
+     * @param idFuente
+     * @return
+     * @throws Exception 
+     */
     public List<RazonParoDTO> getFallasByOEE(Date fechaIn, Date fechaTe, int idLinea, int idFuente) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);

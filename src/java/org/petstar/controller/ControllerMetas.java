@@ -263,9 +263,9 @@ public class ControllerMetas {
                 LineasDAO lineasDAO = new LineasDAO();
                 MetasDataResponseJson data = new MetasDataResponseJson();
                 
-                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
-                data.setListLineas(lineasDAO.getLineasData());
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
+                data.setListLineas(lineasDAO.getLineasActive());
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);

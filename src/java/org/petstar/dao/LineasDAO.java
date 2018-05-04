@@ -40,6 +40,24 @@ public class LineasDAO {
     }
     
     /**
+     * Consulta de Lineas Activas
+     * Metodo que devuelve lista de Lineas que se encuentran activas.
+     * @return
+     * @throws Exception 
+     */
+    public List<LineasDTO> getLineasActive() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetCatLineaActivos");
+        
+        ResultSetHandler rsh = new BeanListHandler(LineasDTO.class);
+        List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh);
+        return lineasData;
+    }
+    
+    /**
      * Registro de Lineas
      * Metodo que registra una nueva linea en DB
      * @param linea

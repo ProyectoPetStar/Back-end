@@ -42,6 +42,26 @@ public class CatalogosDAO {
     }
     
     /**
+     * Consulta de Catalogos Activos
+     * Metodo que devuelve la lista de datos que se encuntran activos
+     * @param tablename
+     * @return
+     * @throws Exception 
+     */
+    public List<CatalogosDTO> getCatalogosActive(String tablename) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetCatalogosActivos ?");
+        Object[] params = { tablename };
+        
+        ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
+        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh, params);
+        return data_catalogos;
+    }
+    
+    /**
      * Registro de Catalogos
      * Metodo generico para dar de alta nuevos registros de catalogos
      * @param tableName
@@ -176,6 +196,15 @@ public class CatalogosDAO {
         return catalogosDTO;
     }
     
+    /**
+     * Validación de Id
+     * Metodo que verifica que el Id enviado exista en la tabla correspondiente
+     * @param tableName
+     * @param columName
+     * @param id
+     * @return
+     * @throws Exception 
+     */
     public ResultInteger validaExistID(String tableName, String columName, int id) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
