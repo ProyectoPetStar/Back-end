@@ -2,6 +2,7 @@ package org.petstar.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.dao.CatalogosDAO;
+import org.petstar.dao.LineasDAO;
 import org.petstar.dao.ProductosDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
@@ -21,6 +22,7 @@ public class ControllerProductos {
     private static final String MSG_INVALID= "Ya existe un producto con los mismos valores.";
     private static final String MSG_NO_EXIST= "El producto no existe.";
     private static final String TABLE_PRODUC= "pet_cat_producto";
+    private static final String TABLE_TIPPRO= "pet_cat_tipo_producto";
     
     /**
      * Lista de productos
@@ -77,10 +79,13 @@ public class ControllerProductos {
                 
                 ResultInteger result = catalogosDAO.validaExistID(TABLE_PRODUC, "id_producto", idProducto);
                 if(result.getResult().equals(1)){
+                    LineasDAO lineasDAO = new LineasDAO();
                     ProductosDAO productosDAO = new ProductosDAO();
                     ProductosDataResponseJson data = new ProductosDataResponseJson();
                 
                     data.setProducto(productosDAO.getProductoById(idProducto));
+                    data.setListTipoProducto(catalogosDAO.getCatalogos(TABLE_TIPPRO));
+                    data.setListLineas(lineasDAO.getLineasData());
                     output.setData(data);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
@@ -206,6 +211,35 @@ public class ControllerProductos {
                 response.setMessage(MSG_LOGOUT);
             }
         } catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson loadLIsts(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                ProductosDataResponseJson data = new ProductosDataResponseJson();
+                
+                data.setListTipoProducto(catalogosDAO.getCatalogos(TABLE_TIPPRO));
+                data.setListLineas(lineasDAO.getLineasData());
+                output.setData(data);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch(Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }
