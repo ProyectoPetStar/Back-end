@@ -154,33 +154,62 @@ public class ControllerProductos {
      * @param request
      * @return 
      */
-    public OutputJson updateCarProductos(HttpServletRequest request){
-        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
-        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
-        String producto = request.getParameter("producto");
-        String medida = request.getParameter("tipo_medida");
-        int posicion = Integer.parseInt(request.getParameter("posicion"));
-        int activo = Integer.parseInt(request.getParameter("activo"));
+    public OutputJson updateProductos(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-//            if(autenticacion.isValidToken(request)){
+            ProductosDTO producto = new ProductosDTO();
+            producto.setId_producto(Integer.valueOf(request.getParameter("id_producto")));
+            producto.setId_linea(Integer.valueOf(request.getParameter("id_linea")));
+            producto.setId_tipo_producto(Integer.valueOf(request.getParameter("id_tipo_producto")));
+            producto.setValor(request.getParameter("valor"));
+            producto.setDescripcion(request.getParameter("descripcion"));
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
                 ProductosDAO productosDAO = new ProductosDAO();
-                ResultInteger result = productosDAO.validaForUpdateCarProducto(idProducto, idLinea, producto);
+                ResultInteger result = productosDAO.validaForUpdate(producto);
                 if(result.getResult().equals(0)){
-                    productosDAO.updateCarProducto(idProducto, idLinea, producto, medida, posicion, activo);
+                    productosDAO.updateProducto(producto);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }else{
                     response.setSucessfull(false);
                     response.setMessage(MSG_INVALID);
                 }
-//            }else{
-//                response.setSucessfull(false);
-//                response.setMessage(MSG_LOGOUT);
-//            }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson blockProducto(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idProducto = Integer.valueOf(request.getParameter("id_producto"));
+            int activo = Integer.valueOf(request.getParameter("activo"));
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ProductosDAO productosDAO = new ProductosDAO();
+                productosDAO.blockProducto(idProducto, activo);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());

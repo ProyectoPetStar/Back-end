@@ -93,14 +93,15 @@ public class ProductosDAO {
      * @param activo
      * @throws Exception 
      */
-    public void updateCarProducto(int idProducto, int idLinea, String producto, String medida, int posicion, int activo) throws Exception{
+    public void updateProducto(ProductosDTO producto) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_updatePetCarProductos ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_updatePetCatProducto ?, ?, ?, ?, ?");
         Object[] params = {
-            idProducto, idLinea, producto, medida, posicion, activo
+            producto.getId_producto(), producto.getValor(), producto.getDescripcion(),
+            producto.getId_linea(), producto.getId_tipo_producto()
         };
         
         qr.update(sql.toString(), params);
@@ -132,25 +133,34 @@ public class ProductosDAO {
     /**
      * Validación para Modificar
      * Metodo que valida que los datos para modificar un producto no se repitan
-     * @param idProducto
-     * @param idLinea
-     * @param Producto
+     * @param producto
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaForUpdateCarProducto(int idProducto, int idLinea, String Producto) throws Exception{
+    public ResultInteger validaForUpdate(ProductosDTO producto) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_updateValidaDesPetCarProductos ?, ?, ?");
+        sql.append("EXEC sp_updateValidaPetCatProducto ?, ?, ?, ?, ?");
         Object[] params = {
-            idProducto, idLinea, Producto
+            producto.getId_producto(), producto.getValor(), producto.getDescripcion(),
+            producto.getId_linea(), producto.getId_tipo_producto()
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        
         return result;
+    }
+    
+    public void blockProducto(int idProducto, int activo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_cat_producto SET activo = ? WHERE id_producto = ?");
+        Object[] params = { activo, idProducto };
+        
+        qr.update(sql.toString(), params);
     }
 }
