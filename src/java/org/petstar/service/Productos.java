@@ -55,9 +55,11 @@ public class Productos extends HttpServlet {
                 case "insertProductos":
                     output = controller.insertProductos(request);
                     break;
-                case "updateCarProductos":
-                    output = controller.updateCarProductos(request);
+                case "updateProductos":
+                    output = controller.updateProductos(request);
                     break;
+                case "blockProducto":
+                    output = controller.blockProducto(request);
             }
         } catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();
