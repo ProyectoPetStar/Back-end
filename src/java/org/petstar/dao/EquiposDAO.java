@@ -79,6 +79,24 @@ public class EquiposDAO {
     }
     
     /**
+     * Consulta Equipos Activos
+     * Metodo que devulve la lista de todos los equipos que se encuentren en la DB que estena activos
+     * @return
+     * @throws Exception 
+     */
+    public List<EquiposDTO> getAllEquiposActive() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetCatEquiposActivos");
+        
+        ResultSetHandler rsh = new BeanListHandler(EquiposDTO.class);
+        List<EquiposDTO> lista = (List<EquiposDTO>) qr.query(sql.toString(), rsh);
+        return lista;
+    }
+    
+    /**
      * Consulta Especifica
      * Metodo que devuelve los datos de un Equipo de acuerdo a su ID
      * @param id

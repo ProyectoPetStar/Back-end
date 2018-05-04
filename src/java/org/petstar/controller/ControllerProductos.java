@@ -84,8 +84,8 @@ public class ControllerProductos {
                     ProductosDataResponseJson data = new ProductosDataResponseJson();
                 
                     data.setProducto(productosDAO.getProductoById(idProducto));
-                    data.setListTipoProducto(catalogosDAO.getCatalogos(TABLE_TIPPRO));
-                    data.setListLineas(lineasDAO.getLineasData());
+                    data.setListTipoProducto(catalogosDAO.getCatalogosActive(TABLE_TIPPRO));
+                    data.setListLineas(lineasDAO.getLineasActive());
                     output.setData(data);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
@@ -191,6 +191,12 @@ public class ControllerProductos {
         return output;
     }
     
+    /**
+     * Bloqueo de Productos
+     * Metodo que se encarga de Habilitar o Deshabilitar un registro
+     * @param request
+     * @return 
+     */
     public OutputJson blockProducto(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -218,6 +224,12 @@ public class ControllerProductos {
         return output;
     }
     
+    /** 
+     * Llenado de Listas
+     * Metodo que carga las listas para los combobox
+     * @param request
+     * @return 
+     */
     public OutputJson loadLIsts(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -230,8 +242,8 @@ public class ControllerProductos {
                 LineasDAO lineasDAO = new LineasDAO();
                 ProductosDataResponseJson data = new ProductosDataResponseJson();
                 
-                data.setListTipoProducto(catalogosDAO.getCatalogos(TABLE_TIPPRO));
-                data.setListLineas(lineasDAO.getLineasData());
+                data.setListTipoProducto(catalogosDAO.getCatalogosActive(TABLE_TIPPRO));
+                data.setListLineas(lineasDAO.getLineasActive());
                 output.setData(data);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);

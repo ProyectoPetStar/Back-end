@@ -54,10 +54,10 @@ public class ControllerUploadMetas {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
 
-                data.setListLineas(lineasDAO.getLineasData());
+                data.setListLineas(lineasDAO.getLineasActive());
                 data.setListPeriodos(periodosDAO.getPeriodos());
-                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);

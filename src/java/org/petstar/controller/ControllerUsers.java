@@ -83,9 +83,9 @@ public class ControllerUsers {
                 UserETADResponseJson data = new UserETADResponseJson();
                 
                 data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
-                data.setListLineas(lineasDAO.getLineasData());
-                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                data.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
+                data.setListLineas(lineasDAO.getLineasActive());
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
                 
                 output.setData(data);
                 response.setMessage("OK");
@@ -124,9 +124,9 @@ public class ControllerUsers {
                 if(result.getResult().equals(1)){
                     UserSonarhResponseJson userData = new UserSonarhResponseJson();
                     userData.setUsuarioSonarh(userDAO.getUserSonarhById(numeroEmpleado));
-                    userData.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                    userData.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
-                    userData.setListLineas(lineasDAO.getLineasData());
+                    userData.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                    userData.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
+                    userData.setListLineas(lineasDAO.getLineasActive());
 
                     output.setData(userData);
                     response.setSucessfull(true);
@@ -361,9 +361,9 @@ public class ControllerUsers {
                 UserETADResponseJson data = new UserETADResponseJson();
                 
                 data.setUserETAD(usersDAO.getUserEtadByID(sesion.getId_acceso()));
-                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                data.setListPerfiles(catalogosDAO.getCatalogos(TABLE_PERFIL));
-                data.setListLineas(lineasDAO.getLineasData());
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
+                data.setListLineas(lineasDAO.getLineasActive());
                 output.setData(data);
                 
                 response.setMessage("OK");

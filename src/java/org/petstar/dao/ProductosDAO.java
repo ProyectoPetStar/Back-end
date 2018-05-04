@@ -12,8 +12,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
-import org.petstar.dto.MetasAsignacionDTO;
-import org.petstar.dto.ProductosAsignacionDTO;
 import org.petstar.dto.ProductosDTO;
 import org.petstar.dto.ResultInteger;
 
@@ -35,6 +33,24 @@ public class ProductosDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("EXEC sp_selectPetCatProducto");
+        
+        ResultSetHandler rsh = new BeanListHandler(ProductosDTO.class);
+        List<ProductosDTO> data = (List<ProductosDTO>) qr.query(sql.toString(), rsh);
+        return data;
+    }
+    
+    /**
+     * Lista de Productos Activos
+     * Metodo que devuelve la lista del catalogo de productos activos
+     * @return
+     * @throws Exception 
+     */
+    public List<ProductosDTO> getAllProductosActive() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetCatProductoActivos");
         
         ResultSetHandler rsh = new BeanListHandler(ProductosDTO.class);
         List<ProductosDTO> data = (List<ProductosDTO>) qr.query(sql.toString(), rsh);

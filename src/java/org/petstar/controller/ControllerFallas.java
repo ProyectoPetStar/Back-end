@@ -49,6 +49,46 @@ public class ControllerFallas {
             
             if(sesion != null){
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
+                EquiposDAO equiposDAO = new EquiposDAO();
+                RazonParoDAO paroDAO = new RazonParoDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                FallasDataResponseJson data = new FallasDataResponseJson();
+                
+                int idLinea = sesion.getId_linea();
+                
+                data.setListFuentesParo(catalogosDAO.getCatalogosActive(TABLE_FUENTES));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
+                data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+                data.setListRazonesParo(paroDAO.getAllRazonesActive());
+                data.setListLineas(lineasDAO.getLineasActive());
+
+                output.setData(data);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson loadComboboxAndMeta(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+            UserDTO sesion = autenticacion.isValidToken(request);
+            
+            if(sesion != null){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 EquiposDAO equiposDAO = new EquiposDAO();
                 RazonParoDAO paroDAO = new RazonParoDAO();
@@ -60,12 +100,12 @@ public class ControllerFallas {
                 int idLinea = sesion.getId_linea();
                 ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
 
-                data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
-                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+                data.setListFuentesParo(catalogosDAO.getCatalogosActive(TABLE_FUENTES));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
                 data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
-                data.setListRazonesParo(paroDAO.getAllRazones());
-                data.setListLineas(lineasDAO.getLineasData());
+                data.setListRazonesParo(paroDAO.getAllRazonesActive());
+                data.setListLineas(lineasDAO.getLineasActive());
 
                 if(null != idMeta){
                     MetasDTO metasDTO = metasDAO.getMetaById(idMeta.getResult());
@@ -289,12 +329,12 @@ public class ControllerFallas {
                 data.getFallasDTO().setDiaString(convertSqlToDay(
                         data.getFallasDTO().getDia(), 
                         new SimpleDateFormat("dd/MM/yyyy")));
-                data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENTES));
-                data.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                data.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
+                data.setListFuentesParo(catalogosDAO.getCatalogosActive(TABLE_FUENTES));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
                 data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
-                data.setListRazonesParo(paroDAO.getAllRazones());
-                data.setListLineas(lineasDAO.getLineasData());
+                data.setListRazonesParo(paroDAO.getAllRazonesActive());
+                data.setListLineas(lineasDAO.getLineasActive());
 
                 output.setData(data);
                 response.setSucessfull(true);

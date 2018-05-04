@@ -44,7 +44,7 @@ public class ControllerReportes {
                 ReportesResponseJson data = new ReportesResponseJson();
 
                 List<CatalogosDTO> listFuentes = new ArrayList<>();
-                listFuentes = catalogosDAO.getCatalogos(TABLE_FUENTES);
+                listFuentes = catalogosDAO.getCatalogosActive(TABLE_FUENTES);
                 List<HashMap> listOEEFallas = new ArrayList<>();
                 BigDecimal tiempoDisponible = getTotalHoras(
                         convertStringToSql(fechaIn), convertStringToSql(fechaTe));
@@ -112,7 +112,7 @@ public class ControllerReportes {
                 LineasDAO lineasDAO = new LineasDAO();
                 ReportesResponseJson data = new ReportesResponseJson();
 
-                data.setListLineas(lineasDAO.getLineasData());
+                data.setListLineas(lineasDAO.getLineasActive());
                 output.setData(data);
 
                 response.setSucessfull(true);

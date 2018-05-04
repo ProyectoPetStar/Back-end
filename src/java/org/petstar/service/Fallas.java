@@ -49,6 +49,9 @@ public class Fallas extends HttpServlet {
                 case "loadCombobox":
                     output = controllerFallas.loadCombobox(request);
                     break;
+                case "loadComboboxAndMeta":
+                    output = controllerFallas.loadComboboxAndMeta(request);
+                    break;
                 case "getAllFallasByDays":
                     output = controllerFallas.getAllFallasByDays(request);
                     break;

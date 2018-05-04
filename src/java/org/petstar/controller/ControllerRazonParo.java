@@ -23,6 +23,12 @@ public class ControllerRazonParo {
     private static final String TABLE_RAZON= "pet_cat_razon_paro";
     private static final String TABLE_FUENT= "pet_cat_fuentes_paro";
     
+    /**
+     * Consulta Gemeral
+     * Metodo que devulve la lista con todas las razones de paro
+     * @param request
+     * @return 
+     */
     public OutputJson getAllRazon(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -51,6 +57,12 @@ public class ControllerRazonParo {
         return output;
     }
     
+    /**
+     * Consulta Especifica
+     * Metodo que devulve una razon de paro segun el ID
+     * @param request
+     * @return 
+     */
     public OutputJson getRazonById(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -66,7 +78,7 @@ public class ControllerRazonParo {
                     RazonParoDAO razonParoDAO = new RazonParoDAO();
                     RazonParoResponseJson data = new RazonParoResponseJson();
 
-                    data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENT));
+                    data.setListFuentesParo(catalogosDAO.getCatalogosActive(TABLE_FUENT));
                     data.setRazonParo(razonParoDAO.getRazonById(idRazon));
                     output.setData(data);
                     response.setMessage(MSG_SUCESS);
@@ -88,6 +100,12 @@ public class ControllerRazonParo {
         return output;
     }
     
+    /**
+     * Registro de Razones de paro
+     * Metodo que se encarga de la validacion y registro de una razon de paro
+     * @param request
+     * @return 
+     */
     public OutputJson insertRazon(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -126,6 +144,12 @@ public class ControllerRazonParo {
         return output;
     }
     
+    /**
+     * Modificacion de Razones de paro
+     * Metodo que se encarga de la validacion y actualizacion de los datos
+     * @param request
+     * @return 
+     */
     public OutputJson updateRazon(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -165,6 +189,12 @@ public class ControllerRazonParo {
         return output;
     }
     
+    /**
+     * Bloqueo de Razones
+     * Metodo para Habilitar o Deshabilitar un registro
+     * @param request
+     * @return 
+     */
     public OutputJson blockRazon(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -194,6 +224,12 @@ public class ControllerRazonParo {
         return output;
     }
     
+    /**
+     * Llenado de listas
+     * Metodo que carga las listas de los catalogos que se usaran
+     * @param request
+     * @return 
+     */
     public OutputJson loadList(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -205,7 +241,7 @@ public class ControllerRazonParo {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 RazonParoResponseJson data = new RazonParoResponseJson();
 
-                data.setListFuentesParo(catalogosDAO.getCatalogos(TABLE_FUENT));    
+                data.setListFuentesParo(catalogosDAO.getCatalogosActive(TABLE_FUENT));    
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
