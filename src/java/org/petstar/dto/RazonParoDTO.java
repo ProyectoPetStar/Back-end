@@ -12,6 +12,7 @@ public class RazonParoDTO {
     private String descripcion;
     private int activo;
     private int id_fuente_paro;
+    private String valor_fuente_paro;
     private BigDecimal suma_tiempo_paro;
 
     public int getId_razon_paro() {
@@ -54,6 +55,14 @@ public class RazonParoDTO {
         this.id_fuente_paro = id_fuente_paro;
     }
 
+    public String getValor_fuente_paro() {
+        return valor_fuente_paro;
+    }
+
+    public void setValor_fuente_paro(String valor_fuente_paro) {
+        this.valor_fuente_paro = valor_fuente_paro;
+    }
+
     public BigDecimal getSuma_tiempo_paro() {
         return suma_tiempo_paro;
     }
@@ -61,5 +70,4 @@ public class RazonParoDTO {
     public void setSuma_tiempo_paro(BigDecimal suma_tiempo_paro) {
         this.suma_tiempo_paro = suma_tiempo_paro;
     }
-    
 }
