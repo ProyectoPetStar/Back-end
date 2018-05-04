@@ -101,7 +101,7 @@ public class RazonParoDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_updateValidaPetCatRazonParo ?, ?, ?");
+        sql.append("EXEC sp_updateValidaPetCatRazonParo ?, ?, ?, ?");
         Object[] params = { 
             razon.getId_razon_paro(), razon.getValor(), 
             razon.getDescripcion(), razon.getId_fuente_paro() 
