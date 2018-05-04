@@ -21,7 +21,7 @@ public class ProduccionDTO {
     private String valor_linea;
     private int id_producto;
     private String valor_producto;
-    private int liberado;
+    private int estatus;
 
     public int getId_produccion() {
         return id_produccion;
@@ -127,11 +127,11 @@ public class ProduccionDTO {
         this.valor_producto = valor_producto;
     }
 
-    public int getLiberado() {
-        return liberado;
+    public int getEstatus() {
+        return estatus;
     }
 
-    public void setLiberado(int liberado) {
-        this.liberado = liberado;
+    public void setEstatus(int estatus) {
+        this.estatus = estatus;
     }
 }
