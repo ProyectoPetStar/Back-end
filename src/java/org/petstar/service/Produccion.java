@@ -44,6 +44,9 @@ public class Produccion extends HttpServlet {
                 case "getProduccionByPeriodo":
                     output = controllerProduccion.getProduccionByPeriodo(request);
                     break;
+                case "insertProduccion":
+                    output = controllerProduccion.insertProduccion(request);
+                    break;
             }
         }catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();
