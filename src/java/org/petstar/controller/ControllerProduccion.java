@@ -7,10 +7,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
-import org.json.JSONException;
-import static org.petstar.configurations.utils.convertSqlToDay;
 import org.petstar.dao.ProduccionDAO;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.OutputJson;
@@ -18,8 +16,14 @@ import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.obtenerAnio;
 import static org.petstar.configurations.utils.obtenerMes;
 import static org.petstar.configurations.utils.sumarFechasDias;
+import org.petstar.dao.CatalogosDAO;
+import org.petstar.dao.LineasDAO;
+import org.petstar.dao.ProductosDAO;
 import org.petstar.dto.ProduccionDTO;
 import org.petstar.model.ProduccionResponseJson;
+import static org.petstar.configurations.utils.getTurno;
+import static org.petstar.configurations.utils.getCurrentDayByTurno;
+import static org.petstar.configurations.utils.convertSqlToDay;
 
 /**
  *
@@ -32,6 +36,46 @@ public class ControllerProduccion {
     private static final String MSG_INVALID= "Valor o Descripción ya existe";
     private static final String TABLE_NAME = "pet_cat_equipos";
     private static final String MSG_NOEXIT = "El registro no existe";
+    private static final String TABLE_GROUP= "pet_cat_grupo";
+    private static final String TABLE_TURNO= "pet_cat_turno";
+    
+    public OutputJson loadCombobox(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ProduccionResponseJson data = new ProduccionResponseJson();
+                ProductosDAO productosDAO = new ProductosDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                
+                int tuerno = getTurno();
+                Date fecha = getCurrentDayByTurno(tuerno);
+                
+                data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
+                data.setListLineas(lineasDAO.getLineasActive());
+                data.setDia(convertSqlToDay(fecha, new SimpleDateFormat("dd/MM/yyyy")));
+                
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
     
     public OutputJson getProduccionByPeriodo(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -44,7 +88,7 @@ public class ControllerProduccion {
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
                 String[] perfiles = sesion.getPerfiles().split(",");
-                java.util.Date day = new Date();
+                java.util.Date day = new java.util.Date();
                 
                 if (perfiles[0].equals("1") || perfiles[0].equals("2") || 
                         perfiles[0].equals("3") || perfiles[0].equals("6")) {

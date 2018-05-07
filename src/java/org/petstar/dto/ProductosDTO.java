@@ -18,6 +18,7 @@ public class ProductosDTO {
     private int id_tipo_producto;
     private String valor_linea;
     private String valor_tipo_producto;
+    private String descripcion_tipo_producto;
 
     public int getId_producto() {
         return id_producto;
@@ -81,5 +82,13 @@ public class ProductosDTO {
 
     public void setValor_tipo_producto(String valor_tipo_producto) {
         this.valor_tipo_producto = valor_tipo_producto;
+    }
+
+    public String getDescripcion_tipo_producto() {
+        return descripcion_tipo_producto;
+    }
+
+    public void setDescripcion_tipo_producto(String descripcion_tipo_producto) {
+        this.descripcion_tipo_producto = descripcion_tipo_producto;
     }
 }

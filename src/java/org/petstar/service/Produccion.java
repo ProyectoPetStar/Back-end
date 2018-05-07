@@ -41,6 +41,9 @@ public class Produccion extends HttpServlet {
         try{
             String action = request.getParameter("action");
             switch(action){
+                case "loadCombobox":
+                    output = controllerProduccion.loadCombobox(request);
+                    break;
                 case "getProduccionByPeriodo":
                     output = controllerProduccion.getProduccionByPeriodo(request);
                     break;
