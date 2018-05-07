@@ -23,6 +23,26 @@ public class ProductosDAO {
     
     /**
      * Lista de Productos
+     * Metodo que devuelve la lista de productos de acuerdo a la linea
+     * @param idLinea
+     * @return
+     * @throws Exception 
+     */
+    public List<ProductosDTO> getProductosByLinea(int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetCatProductoAndTipo ?");
+        Object[] params = { idLinea };
+        
+        ResultSetHandler rsh = new BeanListHandler(ProductosDTO.class);
+        List<ProductosDTO> data = (List<ProductosDTO>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    /**
+     * Lista de Productos
      * Metodo que devuelve la lista del catalogo de productos
      * @return
      * @throws Exception 
