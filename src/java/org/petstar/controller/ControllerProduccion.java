@@ -53,15 +53,28 @@ public class ControllerProduccion {
                 ProductosDAO productosDAO = new ProductosDAO();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
+                MetasDAO metasDAO = new MetasDAO();
                 
-                data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
-                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
-                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
-                data.setListLineas(lineasDAO.getLineasActive());
+                int turno = getTurnoForSaveProduction();
+                Date dia = getCurrentDayByTurno(turno);
+                data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
                 
-                output.setData(data);
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
+                if(data.getMeta() != null){
+                    data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
+                    data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(),
+                                        new SimpleDateFormat("dd/MM/yyyy")));
+                    data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
+                    data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
+                    data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
+                    data.setListLineas(lineasDAO.getLineasActive());
+                    
+                    output.setData(data);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage("0");
+                    response.setSucessfull(false);
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
