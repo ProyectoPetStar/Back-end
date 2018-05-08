@@ -14,6 +14,7 @@ import org.petstar.dto.ProductosDTO;
  */
 public class ProduccionResponseJson {
     private List<ProduccionDTO> listProduccion;
+    private List<ProduccionDTO> listDetalle;
     private List<ProductosDTO> listProductos;
     private List<LineasDTO> listLineas;
     private List<CatalogosDTO> listGrupos;
@@ -28,6 +29,14 @@ public class ProduccionResponseJson {
 
     public void setListProduccion(List<ProduccionDTO> listProduccion) {
         this.listProduccion = listProduccion;
+    }
+
+    public List<ProduccionDTO> getListDetalle() {
+        return listDetalle;
+    }
+
+    public void setListDetalle(List<ProduccionDTO> listDetalle) {
+        this.listDetalle = listDetalle;
     }
 
     public List<ProductosDTO> getListProductos() {

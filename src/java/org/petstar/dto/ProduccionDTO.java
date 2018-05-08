@@ -21,6 +21,8 @@ public class ProduccionDTO {
     private String valor_linea;
     private int id_producto;
     private String valor_producto;
+    private String descripcion_producto;
+    private String descripcion_tipo_producto;
     private int estatus;
 
     public int getId_produccion() {
@@ -125,6 +127,22 @@ public class ProduccionDTO {
 
     public void setValor_producto(String valor_producto) {
         this.valor_producto = valor_producto;
+    }
+
+    public String getDescripcion_producto() {
+        return descripcion_producto;
+    }
+
+    public void setDescripcion_producto(String descripcion_producto) {
+        this.descripcion_producto = descripcion_producto;
+    }
+
+    public String getDescripcion_tipo_producto() {
+        return descripcion_tipo_producto;
+    }
+
+    public void setDescripcion_tipo_producto(String descripcion_tipo_producto) {
+        this.descripcion_tipo_producto = descripcion_tipo_producto;
     }
 
     public int getEstatus() {
