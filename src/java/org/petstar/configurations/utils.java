@@ -104,6 +104,34 @@ public class utils {
                
         return turno;
     }
+    /**
+     * Turno Acual para salvar produccion
+     * Metodo que devuelve el turno actual de acuerdo a la hora actual del sistema
+     * @return 
+     */
+    public static int getTurnoForSaveProduction(){
+        
+        Date date = new Date();
+        DateFormat hourFormat = new SimpleDateFormat("HH");
+        DateFormat minuFormat = new SimpleDateFormat("mm");
+        
+        int hh = Integer.parseInt(hourFormat.format(date));
+        int mm = Integer.parseInt(minuFormat.format(date));
+        
+        int turno;
+        
+        if((hh==23 && isBetween(mm, 11, 59)) || (isBetween(hh, 0, 6)) || (hh==7 && isBetween(mm, 0, 10))){
+            turno = 3;
+        }else if((hh==7 && isBetween(mm, 11, 59)) || (isBetween(hh, 8, 14)) || (hh==15 && isBetween(mm, 0, 10))){
+            turno = 1;
+        }else if((hh==15 && isBetween(mm, 11, 59)) ||(isBetween(hh, 16, 22)) || (hh==23 && isBetween(mm, 0, 10))){
+            turno = 2;
+        }else{
+            turno = 0;
+        }
+               
+        return turno;
+    }
     
     public static int obtenerAnio(Date date){
         if (null == date){

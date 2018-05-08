@@ -50,6 +50,9 @@ public class Produccion extends HttpServlet {
                 case "insertProduccion":
                     output = controllerProduccion.insertProduccion(request);
                     break;
+                case "getDetailsByIdMeta":
+                    output = controllerProduccion.getDetailsByIdMeta(request);
+                    break;
             }
         }catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();

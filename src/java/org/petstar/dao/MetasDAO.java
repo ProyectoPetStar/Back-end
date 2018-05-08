@@ -224,4 +224,29 @@ public class MetasDAO {
 
         return count;
     }
+    
+    /**
+     * Selecciona una Meta
+     * Metodo que devuelve la información una Meta en especifico 
+     * @param dia
+     * @param idTurno
+     * @param idGrupo
+     * @param idLinea
+     * @return
+     * @throws Exception 
+     */
+    public MetasDTO getMeta(Date dia, int idTurno, int idGrupo, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT id_meta, dia, meta, id_turno, id_grupo, id_linea ")
+                .append("FROM pet_meta WHERE ")
+                .append("id_turno= ? AND id_grupo= ? AND id_linea= ? AND dia= ?");
+        Object[] params ={ idTurno, idGrupo, idLinea, dia };
+        
+        ResultSetHandler rsh = new BeanHandler(MetasDTO.class);
+        MetasDTO dataMetas = (MetasDTO) qr.query(sql.toString(), rsh, params);
+        return dataMetas;
+    }
 }
