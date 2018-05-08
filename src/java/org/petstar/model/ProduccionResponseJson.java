@@ -2,7 +2,9 @@ package org.petstar.model;
 
 import java.util.List;
 import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.FallasDTO;
 import org.petstar.dto.LineasDTO;
+import org.petstar.dto.MetasDTO;
 import org.petstar.dto.ProduccionDTO;
 import org.petstar.dto.ProductosDTO;
 
@@ -16,7 +18,9 @@ public class ProduccionResponseJson {
     private List<LineasDTO> listLineas;
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listTurnos;
-    private String dia;
+    private List<FallasDTO> listFallas;
+    private MetasDTO meta;
+    
 
     public List<ProduccionDTO> getListProduccion() {
         return listProduccion;
@@ -58,11 +62,19 @@ public class ProduccionResponseJson {
         this.listTurnos = listTurnos;
     }
 
-    public String getDia() {
-        return dia;
+    public MetasDTO getMeta() {
+        return meta;
     }
 
-    public void setDia(String dia) {
-        this.dia = dia;
+    public void setMeta(MetasDTO meta) {
+        this.meta = meta;
+    }
+
+    public List<FallasDTO> getListFallas() {
+        return listFallas;
+    }
+
+    public void setListFallas(List<FallasDTO> listFallas) {
+        this.listFallas = listFallas;
     }
 }

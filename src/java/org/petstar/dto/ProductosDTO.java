@@ -5,8 +5,6 @@
  */
 package org.petstar.dto;
 
-import java.math.BigDecimal;
-
 /**
  * DTO de Productos
  * @author Tech-Pro
@@ -21,7 +19,7 @@ public class ProductosDTO {
     private String valor_linea;
     private String valor_tipo_producto;
     private String descripcion_tipo_producto;
-    private BigDecimal asignacion; //Este atributo solo se utiliza en vista
+    private String asignacion = ""; //Este atributo solo se utiliza en vista
 
     public int getId_producto() {
         return id_producto;
@@ -95,11 +93,11 @@ public class ProductosDTO {
         this.descripcion_tipo_producto = descripcion_tipo_producto;
     }
 
-    public BigDecimal getAsignacion() {
+    public String getAsignacion() {
         return asignacion;
     }
 
-    public void setAsignacion(BigDecimal asignacion) {
+    public void setAsignacion(String asignacion) {
         this.asignacion = asignacion;
     }
 }

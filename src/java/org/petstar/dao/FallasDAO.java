@@ -97,4 +97,18 @@ public class FallasDAO {
         
         qr.update(sql.toString(), paramas);
     }
+    
+    public List<FallasDTO> getFallasByIdMeta(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_detalleFallas ?");
+        Object[] params = { idMeta };
+        
+        ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
+        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh, params);
+        
+        return data;
+    }
 }

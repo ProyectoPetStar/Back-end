@@ -51,4 +51,17 @@ public class ProduccionDAO {
         
         qr.update(sql.toString(), params);
     }
+    
+    public List<ProduccionDTO> getProduccionByIdMeta(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_detalleProduccion ?");
+        Object[] params = { idMeta };
+        
+        ResultSetHandler rsh = new BeanListHandler(ProduccionDTO.class);
+        List<ProduccionDTO> list = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
+        return list;
+    }
 }

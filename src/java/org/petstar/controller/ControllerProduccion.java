@@ -1,6 +1,5 @@
 package org.petstar.controller;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,8 +21,11 @@ import org.petstar.dao.ProductosDAO;
 import org.petstar.dto.ProduccionDTO;
 import org.petstar.model.ProduccionResponseJson;
 import static org.petstar.configurations.utils.getTurno;
+import static org.petstar.configurations.utils.getTurnoForSaveProduction;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
+import org.petstar.dao.FallasDAO;
+import org.petstar.dao.MetasDAO;
 
 /**
  *
@@ -52,14 +54,10 @@ public class ControllerProduccion {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 
-                int tuerno = getTurno();
-                Date fecha = getCurrentDayByTurno(tuerno);
-                
                 data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
                 data.setListLineas(lineasDAO.getLineasActive());
-                data.setDia(convertSqlToDay(fecha, new SimpleDateFormat("dd/MM/yyyy")));
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
@@ -87,21 +85,38 @@ public class ControllerProduccion {
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
+                MetasDAO metasDAO = new MetasDAO();
+                
                 String[] perfiles = sesion.getPerfiles().split(",");
                 java.util.Date day = new java.util.Date();
                 
                 if (perfiles[0].equals("1") || perfiles[0].equals("2") || 
                         perfiles[0].equals("3") || perfiles[0].equals("6")) {
+                    
                     data.setListProduccion(produccionDAO.getProduccionByPeriodo(
                             obtenerMes(day), obtenerAnio(day)));
+                    
                 }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
+                    
                     data.setListProduccion(produccionDAO.getProduccionByPeriodoAndLinea(
                             obtenerMes(day), obtenerAnio(day), sesion.getId_linea()));
+                    
+                    int turno = getTurnoForSaveProduction();
+                    Date dia = getCurrentDayByTurno(turno);
+                    data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
+                    
+                    if(data.getMeta() != null){
+                        data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
+                        data.getMeta().setDia_string(
+                                convertSqlToDay(data.getMeta().getDia(),
+                                        new SimpleDateFormat("dd/MM/yyyy")));
+                    }
                 }
                 
                 for(ProduccionDTO produccion:data.getListProduccion()){
                     produccion.setDia(sumarFechasDias(produccion.getDia(), 2));
-                    produccion.setDiaString(convertSqlToDay(produccion.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                    produccion.setDiaString(convertSqlToDay(produccion.getDia(),
+                            new SimpleDateFormat("dd/MM/yyyy")));
                 }
                 
                 output.setData(data);
@@ -158,4 +173,42 @@ public class ControllerProduccion {
         return output;
     }
     
+    public OutputJson getDetailsByIdMeta(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idMeta = Integer.valueOf(request.getParameter("id_meta"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ProduccionResponseJson data = new ProduccionResponseJson();
+                ProduccionDAO produccionDAO = new ProduccionDAO();
+                FallasDAO fallasDAO = new FallasDAO();
+                MetasDAO metasDAO = new MetasDAO();
+                
+                data.setMeta(metasDAO.getMetaById(idMeta));
+                data.setListFallas(fallasDAO.getFallasByIdMeta(idMeta));
+                data.setListProduccion(produccionDAO.getProduccionByIdMeta(idMeta));
+                
+                data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
+                data.getMeta().setDia_string(convertSqlToDay(
+                        data.getMeta().getDia(), 
+                        new SimpleDateFormat("dd/MM/yyyy")));
+                
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
 }
