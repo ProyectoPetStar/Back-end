@@ -62,10 +62,7 @@ public class ControllerProduccion {
                 
                 if(data.getMeta() != null){
                     data.setListDetalle(produccionDAO.getProduccionByIdMeta(data.getMeta().getId_meta()));
-                    if(data.getListDetalle() != null){
-                        response.setMessage("-1");
-                        response.setSucessfull(false);
-                    }else{
+                    if(data.getListDetalle().isEmpty()){
                         data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
                         data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(),
                                             new SimpleDateFormat("dd/MM/yyyy")));
@@ -77,6 +74,9 @@ public class ControllerProduccion {
                         output.setData(data);
                         response.setMessage(MSG_SUCESS);
                         response.setSucessfull(true);
+                    }else{
+                        response.setMessage("-1");
+                        response.setSucessfull(false);
                     }
                 }else{
                     response.setMessage("0");
