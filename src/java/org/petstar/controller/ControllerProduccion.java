@@ -50,6 +50,7 @@ public class ControllerProduccion {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
+                ProduccionDAO produccionDAO = new ProduccionDAO();
                 ProductosDAO productosDAO = new ProductosDAO();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
@@ -60,17 +61,23 @@ public class ControllerProduccion {
                 data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
                 
                 if(data.getMeta() != null){
-                    data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
-                    data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(),
-                                        new SimpleDateFormat("dd/MM/yyyy")));
-                    data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
-                    data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
-                    data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
-                    data.setListLineas(lineasDAO.getLineasActive());
-                    
-                    output.setData(data);
-                    response.setMessage(MSG_SUCESS);
-                    response.setSucessfull(true);
+                    data.setListDetalle(produccionDAO.getProduccionByIdMeta(data.getMeta().getId_meta()));
+                    if(data.getListDetalle() != null){
+                        response.setMessage("-1");
+                        response.setSucessfull(false);
+                    }else{
+                        data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
+                        data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(),
+                                            new SimpleDateFormat("dd/MM/yyyy")));
+                        data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
+                        data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
+                        data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
+                        data.setListLineas(lineasDAO.getLineasActive());
+
+                        output.setData(data);
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    }
                 }else{
                     response.setMessage("0");
                     response.setSucessfull(false);
