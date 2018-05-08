@@ -123,6 +123,7 @@ public class ControllerProduccion {
                         data.getMeta().setDia_string(
                                 convertSqlToDay(data.getMeta().getDia(),
                                         new SimpleDateFormat("dd/MM/yyyy")));
+                        data.setListDetalle(produccionDAO.getProduccionByIdMeta(data.getMeta().getId_meta()));
                     }
                 }
                 
