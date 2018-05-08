@@ -53,6 +53,9 @@ public class Produccion extends HttpServlet {
                 case "getDetailsByIdMeta":
                     output = controllerProduccion.getDetailsByIdMeta(request);
                     break;
+                case "getDetailsProduccion":
+                    output = controllerProduccion.getDetailsProducion(request);
+                    break;
             }
         }catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();

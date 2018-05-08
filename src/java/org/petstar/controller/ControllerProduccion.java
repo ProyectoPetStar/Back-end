@@ -232,4 +232,41 @@ public class ControllerProduccion {
         output.setResponse(response);
         return output;
     }
+    
+    public OutputJson getDetailsProducion(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idMeta = Integer.valueOf(request.getParameter("id_meta"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            
+            if(sesion != null){
+                ProduccionResponseJson data = new ProduccionResponseJson();
+                ProduccionDAO produccionDAO = new ProduccionDAO();
+                MetasDAO metasDAO = new MetasDAO();
+                
+                data.setListDetalle(produccionDAO.getProduccionByIdMeta(idMeta));
+                data.setMeta(metasDAO.getMetaById(idMeta));
+                if(data.getMeta() != null){
+                    data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
+                    data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                }
+                
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
 }
