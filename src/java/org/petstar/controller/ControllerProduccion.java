@@ -72,7 +72,7 @@ public class ControllerProduccion {
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
                 }else{
-                    response.setMessage("No existe una meta");
+                    response.setMessage("0");
                     response.setSucessfull(false);
                 }
             }else{
