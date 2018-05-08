@@ -245,8 +245,13 @@ public class ControllerProduccion {
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
+                data.setListLineas(lineasDAO.getLineasActive());
                 data.setListDetalle(produccionDAO.getProduccionByIdMeta(idMeta));
                 data.setMeta(metasDAO.getMetaById(idMeta));
                 if(data.getMeta() != null){
