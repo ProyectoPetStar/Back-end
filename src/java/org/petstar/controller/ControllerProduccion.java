@@ -131,7 +131,8 @@ public class ControllerProduccion {
                 }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
                     
                     data.setListProduccion(produccionDAO.getProduccionByPeriodoAndLinea(
-                            obtenerMes(day), obtenerAnio(day), sesion.getId_linea()));
+                            obtenerMes(day), obtenerAnio(day), 
+                            sesion.getId_linea(), sesion.getId_grupo()));
                     
                     int turno = getTurnoForSaveProduction();
                     Date dia = getCurrentDayByTurno(turno);
@@ -343,6 +344,44 @@ public class ControllerProduccion {
             }
         } catch(JsonSyntaxException ex){
             response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getProduccionForLiberar(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ProduccionDAO produccionDAO = new ProduccionDAO();
+                ProduccionResponseJson data = new ProduccionResponseJson();
+                
+                String[] perfiles = sesion.getPerfiles().split(",");
+                
+                if (perfiles[0].equals("1") || perfiles[0].equals("2") || 
+                        perfiles[0].equals("3") || perfiles[0].equals("6")) {
+                    
+                    data.setListProduccion(produccionDAO.getProduccionForLiberar(0, 0));
+                }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
+                    data.setListProduccion(produccionDAO.getProduccionForLiberar(
+                            sesion.getId_linea(), sesion.getId_grupo()));
+                }
+                
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR +  ex.getMessage());
             response.setSucessfull(false);
         }
         
