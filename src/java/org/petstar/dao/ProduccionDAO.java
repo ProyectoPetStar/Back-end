@@ -1,6 +1,7 @@
 package org.petstar.dao;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -63,5 +64,16 @@ public class ProduccionDAO {
         ResultSetHandler rsh = new BeanListHandler(ProduccionDTO.class);
         List<ProduccionDTO> list = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
         return list;
+    }
+    
+    public void updateProduccion(int idProduccion, BigDecimal valor, int idUsuario, Date fecha) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_updatePetProduccion ?, ?, ?, ?");
+        Object[] params = { idProduccion, valor, fecha, idUsuario };
+        
+        qr.update(sql.toString(), params);
     }
 }
