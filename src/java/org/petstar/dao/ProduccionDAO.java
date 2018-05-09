@@ -16,6 +16,14 @@ import org.petstar.dto.ProduccionDTO;
  */
 public class ProduccionDAO {
     
+    /**
+     * Consulta Produccion por periodo
+     * Metodo que devulve un listado de los dias con produccion registrada
+     * @param mes
+     * @param anio
+     * @return
+     * @throws Exception 
+     */
     public List<ProduccionDTO> getProduccionByPeriodo(int mes, int anio) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -29,13 +37,13 @@ public class ProduccionDAO {
         return list;
     }
     
-    public List<ProduccionDTO> getProduccionByPeriodoAndLinea(int mes, int anio, int idLinea) throws Exception{
+    public List<ProduccionDTO> getProduccionByPeriodoAndLinea(int mes, int anio, int idLinea, int idGrupo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectProduccionByPeriodo ?, ?, ?");
-        Object[] params = { mes, anio, idLinea };
+        sql.append("EXEC sp_selectProduccionByPeriodo ?, ?, ?, ?");
+        Object[] params = { mes, anio, idLinea, idGrupo };
         
         ResultSetHandler rsh = new BeanListHandler(ProduccionDTO.class);
         List<ProduccionDTO> list = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
@@ -75,5 +83,18 @@ public class ProduccionDAO {
         Object[] params = { idProduccion, valor, fecha, idUsuario };
         
         qr.update(sql.toString(), params);
+    }
+    
+    public List<ProduccionDTO> getProduccionForLiberar(int idLinea, int idGrupo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectValidaProduccion ?, ?");
+        Object[] params = { idGrupo, idLinea };
+        
+        ResultSetHandler rsh = new BeanListHandler(ProduccionDTO.class);
+        List<ProduccionDTO> data = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
+        return data;
     }
 }
