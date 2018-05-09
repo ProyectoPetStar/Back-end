@@ -26,6 +26,7 @@ import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.FallasDAO;
 import org.petstar.dao.MetasDAO;
+import org.petstar.dto.FallasDTO;
 
 /**
  *
@@ -243,6 +244,10 @@ public class ControllerProduccion {
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
                 data.setListLineas(lineasDAO.getLineasActive());
                 
+                for(FallasDTO falla: data.getListFallas()){
+                    falla.setDia(sumarFechasDias(falla.getDia(), 2));
+                    falla.setDiaString(convertSqlToDay(falla.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                }
                 data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
                 data.getMeta().setDia_string(convertSqlToDay(
                         data.getMeta().getDia(), 
