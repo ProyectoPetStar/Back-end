@@ -20,10 +20,10 @@ import org.petstar.dao.LineasDAO;
 import org.petstar.dao.ProductosDAO;
 import org.petstar.dto.ProduccionDTO;
 import org.petstar.model.ProduccionResponseJson;
-import static org.petstar.configurations.utils.getTurno;
 import static org.petstar.configurations.utils.getTurnoForSaveProduction;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
+import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.FallasDAO;
 import org.petstar.dao.MetasDAO;
 
@@ -41,6 +41,12 @@ public class ControllerProduccion {
     private static final String TABLE_GROUP= "pet_cat_grupo";
     private static final String TABLE_TURNO= "pet_cat_turno";
     
+    /**
+     * llenado de listas
+     * Servicio que llena las listas que seran utilizadas en los combos
+     * @param request
+     * @return 
+     */
     public OutputJson loadCombobox(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -95,6 +101,12 @@ public class ControllerProduccion {
         return output;
     }
     
+    /**
+     * Produccion por Periodo
+     * Servicio para obtener los dias que se tienen produccion del periodo actual
+     * @param request
+     * @return 
+     */
     public OutputJson getProduccionByPeriodo(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -156,6 +168,13 @@ public class ControllerProduccion {
         return output;
     }
     
+    /**
+     * Registro de Produccion
+     * Servicio para el registrar la produccion de un turno
+     * @param request
+     * @return
+     * @throws Exception 
+     */
     public OutputJson insertProduccion(HttpServletRequest request) throws Exception{
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -194,6 +213,12 @@ public class ControllerProduccion {
         return output;
     }
     
+    /**
+     * Detalles de Produccion y Fallas
+     * Servicio que devuelve la produccion y fallas registradas previamente
+     * @param request
+     * @return 
+     */
     public OutputJson getDetailsByIdMeta(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -233,6 +258,12 @@ public class ControllerProduccion {
         return output;
     }
     
+    /**
+     * Detalles de Produccion
+     * Servicio que devuelve la lista con la produccion de un dia en especifico
+     * @param request
+     * @return 
+     */
     public OutputJson getDetailsProducion(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -267,6 +298,50 @@ public class ControllerProduccion {
                 response.setSucessfull(false);
             }
         }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    /**
+     * Modificación de Produccion
+     * Servicio para la modificación de la produccion
+     * @param request
+     * @return
+     * @throws Exception 
+     */
+    public OutputJson updateProduccion(HttpServletRequest request) throws Exception{
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            String jsonString = request.getParameter("productos");
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ProduccionDAO produccionDAO = new ProduccionDAO();
+                JsonParser jsonParser = new JsonParser();
+                String jsonArrayString = jsonString;
+                JsonArray arrayFromString = jsonParser.parse(jsonArrayString).getAsJsonArray();
+                Date fecha = getCurrentDate();
+
+                for(int i=0; i<arrayFromString.size(); i++){
+                    JsonObject objectFromString = jsonParser.parse(arrayFromString.get(i).toString()).getAsJsonObject();
+                    int idProduccion = Integer.parseInt(objectFromString.get("id_produccion").toString());
+                    BigDecimal valor = new BigDecimal(objectFromString.get("valor").toString());
+                    produccionDAO.updateProduccion(idProduccion, valor, sesion.getId_acceso(), fecha);
+                }
+                
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        } catch(JsonSyntaxException ex){
             response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);
         }

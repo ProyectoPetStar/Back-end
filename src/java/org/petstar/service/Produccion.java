@@ -56,6 +56,9 @@ public class Produccion extends HttpServlet {
                 case "getDetailsProduccion":
                     output = controllerProduccion.getDetailsProducion(request);
                     break;
+                case "updateProduccion":
+                    output = controllerProduccion.updateProduccion(request);
+                    break;
             }
         }catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();
