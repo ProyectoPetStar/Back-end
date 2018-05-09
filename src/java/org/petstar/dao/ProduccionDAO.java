@@ -97,4 +97,15 @@ public class ProduccionDAO {
         List<ProduccionDTO> data = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
         return data;
     }
+    
+    public void liberarDatos(int idMeta, int estatus) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_meta SET estatus = ? WHERE id_meta = ?");
+        Object[] params = { estatus, idMeta };
+        
+        qr.update(sql.toString(), params);
+    }
 }

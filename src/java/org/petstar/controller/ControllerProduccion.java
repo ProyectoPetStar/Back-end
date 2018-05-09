@@ -231,12 +231,17 @@ public class ControllerProduccion {
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
                 FallasDAO fallasDAO = new FallasDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 
                 data.setMeta(metasDAO.getMetaById(idMeta));
                 data.setListFallas(fallasDAO.getFallasByIdMeta(idMeta));
                 data.setListProduccion(produccionDAO.getProduccionByIdMeta(idMeta));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
+                data.setListLineas(lineasDAO.getLineasActive());
                 
                 data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
                 data.getMeta().setDia_string(convertSqlToDay(
@@ -374,6 +379,34 @@ public class ControllerProduccion {
                 }
                 
                 output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR +  ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson liberarDatos(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idMeta = Integer.valueOf(request.getParameter("id_meta"));
+            int estatus = Integer.valueOf(request.getParameter("estatus"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ProduccionDAO produccionDAO = new ProduccionDAO();
+                
+                produccionDAO.liberarDatos(idMeta,estatus);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
             }else{
