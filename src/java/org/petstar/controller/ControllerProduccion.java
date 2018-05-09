@@ -231,12 +231,17 @@ public class ControllerProduccion {
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
                 FallasDAO fallasDAO = new FallasDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 
                 data.setMeta(metasDAO.getMetaById(idMeta));
                 data.setListFallas(fallasDAO.getFallasByIdMeta(idMeta));
                 data.setListProduccion(produccionDAO.getProduccionByIdMeta(idMeta));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
+                data.setListLineas(lineasDAO.getLineasActive());
                 
                 data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
                 data.getMeta().setDia_string(convertSqlToDay(
