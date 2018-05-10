@@ -46,6 +46,9 @@ public class Reportes extends HttpServlet {
                 case"getOEEFallasByLinea":
                     output = controllerReportes.getOEEFallasByLinea(request);
                     break;
+                case"reporteEficiencia":
+                    output = controllerReportes.getReporteEficiencia(request);
+                    break;
             }
         } catch(Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
