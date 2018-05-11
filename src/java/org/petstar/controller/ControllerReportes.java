@@ -19,6 +19,7 @@ import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.getTotalHoras;
 import static org.petstar.configurations.utils.getPorcentajeParo;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.Fuentes;
 import org.petstar.dto.ResultBigDecimal;
@@ -115,9 +116,11 @@ public class ControllerReportes {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 LineasDAO lineasDAO = new LineasDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 ReportesResponseJson data = new ReportesResponseJson();
 
                 data.setListLineas(lineasDAO.getLineasActive());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 output.setData(data);
 
                 response.setSucessfull(true);

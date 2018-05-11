@@ -3,6 +3,7 @@ package org.petstar.model;
 import java.util.HashMap;
 import java.util.List;
 import org.petstar.dto.LineasDTO;
+import org.petstar.dto.PeriodosDTO;
 
 /**
  * @author Tech-Pro
@@ -10,6 +11,7 @@ import org.petstar.dto.LineasDTO;
 public class ReportesResponseJson {
     private List<HashMap> listaOEEFallas;
     private List<LineasDTO> listLineas;
+    private List<PeriodosDTO> listPeriodos;
     private List<HashMap> reporteDisponibilidad;
     private List<HashMap> datosProduccion;
     private List<HashMap> reporteOEE;
@@ -28,6 +30,14 @@ public class ReportesResponseJson {
 
     public void setListLineas(List<LineasDTO> listLineas) {
         this.listLineas = listLineas;
+    }
+
+    public List<PeriodosDTO> getListPeriodos() {
+        return listPeriodos;
+    }
+
+    public void setListPeriodos(List<PeriodosDTO> listPeriodos) {
+        this.listPeriodos = listPeriodos;
     }
 
     public List<HashMap> getReporteDisponibilidad() {
