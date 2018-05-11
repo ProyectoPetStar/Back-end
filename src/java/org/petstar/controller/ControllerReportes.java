@@ -194,13 +194,13 @@ public class ControllerReportes {
                     }
                 }
                 HashMap<String, Object> map5 = new HashMap<>();
-                map5.put("padre", 0);
+                map5.put("padre", 2);
                 map5.put("titulo", "Desempeño Efectivo Total de Equipos");
                 map5.put("hrs", desempenoEfec);
                 map5.put("porcentaje", getPorcentajeParo(desempenoEfec, tiempoDisponibleTotal));
                 reporte.add(map5);
                 HashMap<String, Object> map6 = new HashMap<>();
-                map6.put("padre", 0);
+                map6.put("padre", 2);
                 map6.put("titulo", "Total Hora de Paro");
                 map6.put("hrs", totalHoraParo);
                 map6.put("porcentaje", getPorcentajeParo(totalHoraParo, tiempoDisponibleTotal));
@@ -298,7 +298,7 @@ public class ControllerReportes {
                 map19.put("porcentaje", BigDecimal.ONE.subtract(pTEEP));
                 reporteOEE.add(map19);
                 
-                data.setReporteEficiencia(reporte);
+                data.setReporteDisponibilidad(reporte);
                 data.setDatosProduccion(datosProduccion);
                 data.setReporteOEE(reporteOEE);
                 output.setData(data);
