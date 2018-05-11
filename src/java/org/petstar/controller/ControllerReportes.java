@@ -298,7 +298,7 @@ public class ControllerReportes {
                 map19.put("porcentaje", BigDecimal.ONE.subtract(pTEEP));
                 reporteOEE.add(map19);
                 
-                data.setReporteEficiencia(reporte);
+                data.setReporteDisponibilidad(reporte);
                 data.setDatosProduccion(datosProduccion);
                 data.setReporteOEE(reporteOEE);
                 output.setData(data);

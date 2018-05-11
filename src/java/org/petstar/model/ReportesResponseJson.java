@@ -10,7 +10,7 @@ import org.petstar.dto.LineasDTO;
 public class ReportesResponseJson {
     private List<HashMap> listaOEEFallas;
     private List<LineasDTO> listLineas;
-    private List<HashMap> reporteEficiencia;
+    private List<HashMap> reporteDisponibilidad;
     private List<HashMap> datosProduccion;
     private List<HashMap> reporteOEE;
 
@@ -30,14 +30,14 @@ public class ReportesResponseJson {
         this.listLineas = listLineas;
     }
 
-    public List<HashMap> getReporteEficiencia() {
-        return reporteEficiencia;
+    public List<HashMap> getReporteDisponibilidad() {
+        return reporteDisponibilidad;
     }
 
-    public void setReporteEficiencia(List<HashMap> reporteEficiencia) {
-        this.reporteEficiencia = reporteEficiencia;
+    public void setReporteDisponibilidad(List<HashMap> reporteDisponibilidad) {
+        this.reporteDisponibilidad = reporteDisponibilidad;
     }
-
+    
     public List<HashMap> getDatosProduccion() {
         return datosProduccion;
     }
