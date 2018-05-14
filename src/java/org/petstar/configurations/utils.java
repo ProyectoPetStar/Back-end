@@ -151,6 +151,27 @@ public class utils {
         }
     }
     
+    public static java.sql.Date getDateFirstDay(int anio, int mes) {
+        Calendar calendario=Calendar.getInstance();
+        calendario.set(anio, mes-1, 1);
+        java.sql.Date fecha = new java.sql.Date(calendario.getTimeInMillis());
+        return fecha;
+    }
+    
+    public static java.sql.Date getDateLastDay(int anio, int mes) {
+        Calendar calendario=Calendar.getInstance();
+        calendario.set(anio, mes-1, getUltimoDiaMes(anio, mes));
+        java.sql.Date fecha = new java.sql.Date(calendario.getTimeInMillis());
+        System.out.println(fecha.toString());
+        return fecha;
+    }
+    
+    public static int getUltimoDiaMes (int anio, int mes) {
+        Calendar cal=Calendar.getInstance();
+	cal.set(anio, mes-1, 1);
+	return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+    
     public static java.sql.Date convertUtilToSql(java.util.Date uDate) {
         java.sql.Date sDate = new java.sql.Date(uDate.getTime());
 	return sDate;
