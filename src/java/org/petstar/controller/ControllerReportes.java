@@ -36,68 +36,75 @@ public class ControllerReportes {
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
+    private static final String MSG_NOEXIS = "Periodo Seleccionado Incorrecto";
     
     public OutputJson getOEEFallasByLinea(HttpServletRequest request) throws Exception{
-        String fechaIn = request.getParameter("fecha_inicio");
-        String fechaTe = request.getParameter("fecha_termino");
-        int idLInea = Integer.parseInt(request.getParameter("id_linea"));
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
+            int idLInea = Integer.valueOf(request.getParameter("id_linea"));
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
-                CatalogosDAO catalogosDAO = new CatalogosDAO();
-                RazonParoDAO razonParoDAO = new RazonParoDAO();
-                ReportesResponseJson data = new ReportesResponseJson();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(periodo != null){
+                    Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date FechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    
+                    CatalogosDAO catalogosDAO = new CatalogosDAO();
+                    RazonParoDAO razonParoDAO = new RazonParoDAO();
+                    ReportesResponseJson data = new ReportesResponseJson();
 
-                List<CatalogosDTO> listFuentes = new ArrayList<>();
-                listFuentes = catalogosDAO.getCatalogosActive(TABLE_FUENTES);
-                List<HashMap> listOEEFallas = new ArrayList<>();
-                BigDecimal tiempoDisponible = getTotalHoras(
-                        convertStringToSql(fechaIn), convertStringToSql(fechaTe));
-                BigDecimal totalGeneral = new BigDecimal(BigInteger.ZERO);
+                    List<CatalogosDTO> listFuentes = new ArrayList<>();
+                    listFuentes = catalogosDAO.getCatalogosActive(TABLE_FUENTES);
+                    List<HashMap> listOEEFallas = new ArrayList<>();
+                    BigDecimal tiempoDisponible = getTotalHoras(fechaInicio, FechaTermino);
+                    BigDecimal totalGeneral = new BigDecimal(BigInteger.ZERO);
 
-                for(CatalogosDTO fuente:listFuentes){
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put("padre", 1);
-                    map.put("fuente", fuente.getValor());
-                    listOEEFallas.add(map);
+                    for(CatalogosDTO fuente:listFuentes){
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("padre", 1);
+                        map.put("fuente", fuente.getValor());
+                        listOEEFallas.add(map);
 
-                    List<RazonParoDTO> listRazones = new ArrayList<>();
-                    listRazones = razonParoDAO.getFallasByOEE(
-                            convertStringToSql(fechaIn), 
-                            convertStringToSql(fechaTe), idLInea, fuente.getId());
-                    BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
+                        List<RazonParoDTO> listRazones = new ArrayList<>();
+                        listRazones = razonParoDAO.getFallasByOEE(fechaInicio, FechaTermino, idLInea, fuente.getId());
+                        BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
 
-                    for(RazonParoDTO razon:listRazones){
-                        HashMap<String, Object> raz = new HashMap<>();
-                        raz.put("padre", 0);
-                        raz.put("fuente", razon.getValor());
-                        raz.put("hrs", razon.getSuma_tiempo_paro());
-                        raz.put("porcentaje", getPorcentajeParo(
-                                razon.getSuma_tiempo_paro(), tiempoDisponible));
-                        listOEEFallas.add(raz);
+                        for(RazonParoDTO razon:listRazones){
+                            HashMap<String, Object> raz = new HashMap<>();
+                            raz.put("padre", 0);
+                            raz.put("fuente", razon.getValor());
+                            raz.put("hrs", razon.getSuma_tiempo_paro());
+                            raz.put("porcentaje", getPorcentajeParo(
+                                    razon.getSuma_tiempo_paro(), tiempoDisponible));
+                            listOEEFallas.add(raz);
 
-                        totalParcial = totalParcial.add(razon.getSuma_tiempo_paro());
-                        totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro());
-                        map.put("hrs", totalParcial);
-                        map.put("porcentaje", getPorcentajeParo(totalParcial, tiempoDisponible));
+                            totalParcial = totalParcial.add(razon.getSuma_tiempo_paro());
+                            totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro());
+                            map.put("hrs", totalParcial);
+                            map.put("porcentaje", getPorcentajeParo(totalParcial, tiempoDisponible));
+                        }
                     }
-                }
-            
-                HashMap<String, Object> mapa = new HashMap<>();
-                mapa.put("padre", 2);
-                mapa.put("fuente", "Total");
-                mapa.put("hrs", totalGeneral);
-                mapa.put("porcentaje", getPorcentajeParo(totalGeneral, tiempoDisponible));
-                listOEEFallas.add(mapa);
-                data.setListaOEEFallas(listOEEFallas);
 
-                output.setData(data);
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
+                    HashMap<String, Object> mapa = new HashMap<>();
+                    mapa.put("padre", 2);
+                    mapa.put("fuente", "Total");
+                    mapa.put("hrs", totalGeneral);
+                    mapa.put("porcentaje", getPorcentajeParo(totalGeneral, tiempoDisponible));
+                    listOEEFallas.add(mapa);
+                    data.setListaOEEFallas(listOEEFallas);
+
+                    output.setData(data);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_NOEXIS);
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -282,7 +289,12 @@ public class ControllerReportes {
                     map15.put("meta", periodo.getUtilizacion());
                     reporteOEE.add(map15);
                     HashMap<String, Object> map16 = new HashMap<>();
-                    BigDecimal pCalidad = prodBuena.getResult().divide(produccionTotal,RoundingMode.CEILING);
+                    BigDecimal pCalidad = BigDecimal.ZERO;
+                    int resultado = BigDecimal.ZERO.compareTo(prodBuena.getResult());
+                    if(resultado == -1){
+                        pCalidad = prodBuena.getResult().divide(produccionTotal,RoundingMode.CEILING);
+                    } 
+                   
                     map16.put("padre", 0);
                     map16.put("titulo", "Calidad");
                     map16.put("hrs", "");
@@ -319,7 +331,7 @@ public class ControllerReportes {
                     response.setSucessfull(true);
                 }else{
                     response.setSucessfull(false);
-                    response.setMessage(MSG_ERROR);
+                    response.setMessage(MSG_NOEXIS);
                 }
             }else{
                 response.setMessage(MSG_LOGOUT);
