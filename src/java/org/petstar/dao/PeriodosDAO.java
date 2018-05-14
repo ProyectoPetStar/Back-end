@@ -32,7 +32,7 @@ public class PeriodosDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT id_periodo, anio, mes, descripcion_mes, estatus FROM DBO.pet_periodo WHERE id_periodo= ?");
+        sql.append("EXEC sp_detallePeriodoMeta ?");
         Object[] params ={
             idPeriodo
         };
