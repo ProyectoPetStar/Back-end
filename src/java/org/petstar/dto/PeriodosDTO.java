@@ -22,6 +22,8 @@ public class PeriodosDTO {
     private BigDecimal oee;
     private BigDecimal eficiencia_teorica;
     private int id_linea;
+    private String valor_linea;
+    private int id_metas_periodo;
 
     public int getId_periodo() {
         return id_periodo;
@@ -109,5 +111,21 @@ public class PeriodosDTO {
 
     public void setId_linea(int id_linea) {
         this.id_linea = id_linea;
+    }
+
+    public String getValor_linea() {
+        return valor_linea;
+    }
+
+    public void setValor_linea(String valor_linea) {
+        this.valor_linea = valor_linea;
+    }
+
+    public int getId_metas_periodo() {
+        return id_metas_periodo;
+    }
+
+    public void setId_metas_periodo(int id_metas_periodo) {
+        this.id_metas_periodo = id_metas_periodo;
     }
 }

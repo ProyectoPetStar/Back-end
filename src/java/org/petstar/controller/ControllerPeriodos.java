@@ -133,14 +133,20 @@ public class ControllerPeriodos {
         return  output;
     }
     
-    public OutputJson closePeriodo(HttpServletRequest request){
+    public OutputJson changeEstatusPeriodo(HttpServletRequest request, int estatus){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         
         try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null ){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                periodosDAO.changeEstatus(idPeriodo, estatus);
+                
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -168,6 +174,75 @@ public class ControllerPeriodos {
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
                 
                 output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return  output;
+    }
+    
+    public OutputJson getDetailsByPeriodo(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null ){
+                PeriodosResponseJson data = new PeriodosResponseJson();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                
+                data.setListDetailsPeriodo(periodosDAO.getDetailsPeriodo(idPeriodo));
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        output.setResponse(response);
+        return  output;
+    }
+    
+    public OutputJson updateDetailsPeriodo(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            String jsonString = request.getParameter("metas_esperadas");
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null ){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                JsonParser jsonParser = new JsonParser();
+                String jsonArrayString = jsonString;
+                JsonArray arrayFromString = jsonParser.parse(jsonArrayString).getAsJsonArray();
+
+                for(int i=0; i<arrayFromString.size(); i++){
+                    PeriodosDTO row = new PeriodosDTO();
+                    JsonObject objectFromString = jsonParser.parse(arrayFromString.get(i).toString()).getAsJsonObject();
+                    row.setId_metas_periodo(Integer.parseInt(objectFromString.get("id_metas_periodo").toString()));
+                    row.setEficiencia_teorica(new BigDecimal(objectFromString.get("eficiencia_teorica").toString()));
+                    row.setDisponibilidad(new BigDecimal(objectFromString.get("disponibilidad").toString()));
+                    row.setUtilizacion(new BigDecimal(objectFromString.get("utilizacion").toString()));
+                    row.setCalidad(new BigDecimal(objectFromString.get("calidad").toString()));
+                    row.setOee(new BigDecimal(objectFromString.get("oee").toString()));
+                    periodosDAO.updateMetasPeriodo(row);
+                }
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
             }else{
