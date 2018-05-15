@@ -29,19 +29,16 @@ public class PeriodosDAO {
         return data;
     }
     
-    public PeriodosDTO getPeriodoById(int idPeriodo) throws Exception{
+    public PeriodosDTO getPeriodoById(int idPeriodo, int idLinea) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_detallePeriodoMeta ?");
-        Object[] params ={
-            idPeriodo
-        };
+        
+        sql.append("EXEC sp_detallePeriodoMeta ?, ?");
+        Object[] params ={ idPeriodo, idLinea };
         
         ResultSetHandler rsh = new BeanHandler(PeriodosDTO.class);
-        PeriodosDTO data = (PeriodosDTO) qr.query(sql.toString(), rsh, params); 
-        
+        PeriodosDTO data = (PeriodosDTO) qr.query(sql.toString(), rsh, params);
         return data;
     }
     
@@ -107,8 +104,8 @@ public class PeriodosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO pet_metas_periodo ")
-                .append("disponibilidad,calidad,utilizacion,oee, ")
-                .append("(eficiencia_teorica,id_periodo,id_linea) ")
+                .append("(disponibilidad,calidad,utilizacion,oee, ")
+                .append("eficiencia_teorica,id_periodo,id_linea) ")
                 .append("VALUES (?, ?, ?, ?, ?, ?, ?)");
         Object[] params = { periodo.getDisponibilidad(), periodo.getCalidad(),
                     periodo.getUtilizacion(), periodo.getOee(),
