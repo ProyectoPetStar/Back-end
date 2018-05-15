@@ -20,6 +20,7 @@ public class PeriodosDTO {
     private BigDecimal utilizacion;
     private BigDecimal calidad;
     private BigDecimal oee;
+    private BigDecimal eficiencia_teorica;
 
     public int getId_periodo() {
         return id_periodo;
@@ -91,5 +92,13 @@ public class PeriodosDTO {
 
     public void setOee(BigDecimal oee) {
         this.oee = oee;
+    }
+
+    public BigDecimal getEficiencia_teorica() {
+        return eficiencia_teorica;
+    }
+
+    public void setEficiencia_teorica(BigDecimal eficiencia_teorica) {
+        this.eficiencia_teorica = eficiencia_teorica;
     }
 }
