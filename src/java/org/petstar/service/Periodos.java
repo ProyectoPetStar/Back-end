@@ -15,7 +15,7 @@ import org.petstar.model.ResponseJson;
 
 /**
  *
- * @author Alfredo Neri
+ * @author Tech-Pro
  */
 @WebServlet(name = "Periodos", urlPatterns = {"/Periodos"})
 public class Periodos extends HttpServlet {
@@ -42,6 +42,12 @@ public class Periodos extends HttpServlet {
             switch(action){
                 case"getAllPeriodos":
                     output = controllerPeriodos.getAllPeriodos(request);
+                    break;
+                case"openPeriodo":
+                    output = controllerPeriodos.openPeriodo(request);
+                    break;
+                case"saveDetailsPeriodo":
+                    output = controllerPeriodos.saveDetailsPeriodo(request);
                     break;
             }
         } catch(Exception ex) {

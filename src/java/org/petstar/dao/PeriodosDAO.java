@@ -1,5 +1,6 @@
 package org.petstar.dao;
 
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -8,6 +9,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ResultInteger;
 
 /**
  * @author Tech-Pro
@@ -54,5 +56,65 @@ public class PeriodosDAO {
         List<PeriodosDTO> data = (List<PeriodosDTO>) qr.query(sql.toString(), rsh); 
         
         return data;
+    }
+    
+    public PeriodosDTO getLastPeriodo() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT TOP 1 id_periodo, anio, mes, descripcion_mes, estatus ")
+                .append("FROM dbo.pet_periodo ")
+                .append("ORDER BY id_periodo DESC");
+               
+        ResultSetHandler rsh = new BeanHandler(PeriodosDTO.class);
+        PeriodosDTO data = (PeriodosDTO) qr.query(sql.toString(), rsh); 
+        
+        return data;
+    }
+    
+    public void insertPeriodo(PeriodosDTO periodo, int idUser, Date fecha) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO pet_periodo ")
+                .append("(anio, mes, descripcion_mes ,estatus ,id_usuario_registro,fecha_registro) ")
+                .append("VALUES ")
+                .append("(?, ?, ?, ?, ?, ?)");
+        Object[] params = { periodo.getAnio(), periodo.getMes(), 
+                periodo.getDescripcion_mes(), periodo.getEstatus(), idUser, fecha};
+               
+        qr.update(sql.toString(), params);
+    }
+    
+    public ResultInteger validateForInsert(int year, int month) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_periodo WHERE anio= ? AND mes = ?");
+        Object[] params = { year, month };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public void saveMetasPeriodo(PeriodosDTO periodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO pet_metas_periodo ")
+                .append("disponibilidad,calidad,utilizacion,oee, ")
+                .append("(eficiencia_teorica,id_periodo,id_linea) ")
+                .append("VALUES (?, ?, ?, ?, ?, ?, ?)");
+        Object[] params = { periodo.getDisponibilidad(), periodo.getCalidad(),
+                    periodo.getUtilizacion(), periodo.getOee(),
+                    periodo.getEficiencia_teorica(), periodo.getId_periodo(), 
+                    periodo.getId_linea()};
+               
+        qr.update(sql.toString(), params);
     }
 }
