@@ -117,4 +117,45 @@ public class PeriodosDAO {
                
         qr.update(sql.toString(), params);
     }
+    
+    public void changeEstatus(int idPeriodo, int estatus) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_periodo SET estatus = ? WHERE id_periodo = ?");
+        Object[] params = { estatus, idPeriodo };
+               
+        qr.update(sql.toString(), params);
+    }
+    
+    public List<PeriodosDTO> getDetailsPeriodo(int idPeriodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT mp.*, li.valor AS valor_linea ")
+                .append("FROM pet_metas_periodo AS mp ")
+                .append("INNER JOIN pet_cat_linea li ON mp.id_linea = li.id_linea ")
+                .append("WHERE mp.id_periodo = ").append(idPeriodo);
+        
+        ResultSetHandler rsh = new BeanListHandler(PeriodosDTO.class);
+        List<PeriodosDTO> data = (List<PeriodosDTO>) qr.query(sql.toString(), rsh);
+        return data;
+    }
+    
+    public void updateMetasPeriodo(PeriodosDTO periodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE pet_metas_periodo SET disponibilidad = ? ")
+                .append(", calidad = ? , utilizacion = ? , oee = ? , ")
+                .append("eficiencia_teorica = ? WHERE id_metas_periodo = ?");
+        Object[] params = { periodo.getDisponibilidad(), periodo.getCalidad(),
+                    periodo.getUtilizacion(), periodo.getOee(),
+                    periodo.getEficiencia_teorica(), periodo.getId_metas_periodo()};
+               
+        qr.update(sql.toString(), params);
+    }
 }

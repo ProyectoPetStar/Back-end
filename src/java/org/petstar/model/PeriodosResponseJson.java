@@ -12,6 +12,7 @@ public class PeriodosResponseJson {
     private List<PeriodosDTO> listPeriodos;
     private PeriodosDTO periodo;
     private List<LineasDTO> listLineas;
+    private List<PeriodosDTO> listDetailsPeriodo;
 
     public List<PeriodosDTO> getListPeriodos() {
         return listPeriodos;
@@ -35,5 +36,13 @@ public class PeriodosResponseJson {
 
     public void setListLineas(List<LineasDTO> listLineas) {
         this.listLineas = listLineas;
+    }
+
+    public List<PeriodosDTO> getListDetailsPeriodo() {
+        return listDetailsPeriodo;
+    }
+
+    public void setListDetailsPeriodo(List<PeriodosDTO> listDetailsPeriodo) {
+        this.listDetailsPeriodo = listDetailsPeriodo;
     }
 }

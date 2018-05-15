@@ -49,6 +49,18 @@ public class Periodos extends HttpServlet {
                 case"saveDetailsPeriodo":
                     output = controllerPeriodos.saveDetailsPeriodo(request);
                     break;
+                case"closePeriodo":
+                    output = controllerPeriodos.changeEstatusPeriodo(request, 1);
+                    break;
+                case"reOpenPeriodo":
+                    output = controllerPeriodos.changeEstatusPeriodo(request, 0);
+                    break;
+                case"getDetailsByPeriodo":
+                    output = controllerPeriodos.getDetailsByPeriodo(request);
+                    break;
+                case"updateDetailsPeriodo":
+                    output = controllerPeriodos.updateDetailsPeriodo(request);
+                    break;
             }
         } catch(Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
