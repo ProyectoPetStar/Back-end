@@ -48,7 +48,7 @@ public class PeriodosDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT id_periodo, anio, mes, descripcion_mes, estatus FROM DBO.pet_periodo");
+        sql.append("SELECT id_periodo, anio, mes, descripcion_mes, estatus FROM pet_periodo ORDER BY anio, mes");
                 
         ResultSetHandler rsh = new BeanListHandler(PeriodosDTO.class);
         List<PeriodosDTO> data = (List<PeriodosDTO>) qr.query(sql.toString(), rsh); 
