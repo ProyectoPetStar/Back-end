@@ -21,6 +21,7 @@ public class PeriodosDTO {
     private BigDecimal calidad;
     private BigDecimal oee;
     private BigDecimal eficiencia_teorica;
+    private int id_linea;
 
     public int getId_periodo() {
         return id_periodo;
@@ -100,5 +101,13 @@ public class PeriodosDTO {
 
     public void setEficiencia_teorica(BigDecimal eficiencia_teorica) {
         this.eficiencia_teorica = eficiencia_teorica;
+    }
+
+    public int getId_linea() {
+        return id_linea;
+    }
+
+    public void setId_linea(int id_linea) {
+        this.id_linea = id_linea;
     }
 }

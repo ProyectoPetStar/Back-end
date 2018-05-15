@@ -272,4 +272,12 @@ public class utils {
         BigDecimal porcentaje = calculo.multiply(new BigDecimal(100), new MathContext(10));
         return  porcentaje;
     }
+    
+    public static String getNameOfMes(int mes) {
+        String[] meses = {"ENERO","FEBRERO","MARZO","ABRIL"
+                ,"MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE"
+	        ,"OCTUBRE","NOVIEMBRE","DICIEMBRE"};
+        
+        return meses[mes - 1];
+    }
 }
