@@ -49,7 +49,7 @@ public class Reportes extends HttpServlet {
                 case"reporteEficiencia":
                     output = controllerReportes.getReporteEficiencia(request);
                     break;
-                case"test":
+                case"reporteDiarioProduccion":
                     output = controllerReportes.getReporteDiarioProduccion(request);
                     break;
             }

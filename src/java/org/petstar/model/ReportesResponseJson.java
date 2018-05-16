@@ -2,6 +2,7 @@ package org.petstar.model;
 
 import java.util.HashMap;
 import java.util.List;
+import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
 
@@ -11,6 +12,7 @@ import org.petstar.dto.PeriodosDTO;
 public class ReportesResponseJson {
     private List<HashMap> listaOEEFallas;
     private List<LineasDTO> listLineas;
+    private List<CatalogosDTO> listGposLineas;
     private List<PeriodosDTO> listPeriodos;
     private List<HashMap> reporteDisponibilidad;
     private List<HashMap> datosProduccion;
@@ -35,6 +37,14 @@ public class ReportesResponseJson {
 
     public List<PeriodosDTO> getListPeriodos() {
         return listPeriodos;
+    }
+
+    public List<CatalogosDTO> getListGposLineas() {
+        return listGposLineas;
+    }
+
+    public void setListGposLineas(List<CatalogosDTO> listGposLineas) {
+        this.listGposLineas = listGposLineas;
     }
 
     public void setListPeriodos(List<PeriodosDTO> listPeriodos) {
