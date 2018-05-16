@@ -17,6 +17,9 @@ public class ReporteDiario {
     private BigDecimal meta_dia;
     private BigDecimal meta_dos;
     private BigDecimal meta_uno;
+    private String descripcion;
+    private BigDecimal meta;
+    private BigDecimal produccion;
 
     public Date getDia() {
         return dia;
@@ -88,5 +91,29 @@ public class ReporteDiario {
 
     public void setMeta_uno(BigDecimal meta_uno) {
         this.meta_uno = meta_uno;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public BigDecimal getMeta() {
+        return meta;
+    }
+
+    public void setMeta(BigDecimal meta) {
+        this.meta = meta;
+    }
+
+    public BigDecimal getProduccion() {
+        return produccion;
+    }
+
+    public void setProduccion(BigDecimal produccion) {
+        this.produccion = produccion;
     }
 }

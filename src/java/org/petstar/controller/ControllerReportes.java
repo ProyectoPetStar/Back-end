@@ -22,6 +22,7 @@ import static org.petstar.configurations.utils.getPorcentajeParo;
 import static org.petstar.configurations.utils.getDateLastDay;
 import static org.petstar.configurations.utils.getDateFirstDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
+import static org.petstar.configurations.utils.convertStringToSql;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.Fuentes;
@@ -563,6 +564,71 @@ public class ControllerReportes {
                     response.setSucessfull(false);
                     response.setMessage(MSG_NOEXIS);
                 }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        }catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteJUCODI(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            Date dia = convertStringToSql(request.getParameter("dia"));
+            int idGpoLinea = Integer.valueOf(request.getParameter("id_gpo_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ReportesResponseJson data = new ReportesResponseJson();
+                ReportesDAO reportesDAO = new ReportesDAO();
+                List<ReporteDiario> listData = reportesDAO.getJUCODIproduccion(dia, idGpoLinea);
+                    
+                List<HashMap> listReporte = new ArrayList<>();
+                HashMap<String, Object> encabezado = new HashMap<>();
+                encabezado.put("padre", 1);
+                encabezado.put("linea","Linea");
+                encabezado.put("dia","Dia");
+                encabezado.put("produccion","Produccion");
+                encabezado.put("meta","Meta");
+                encabezado.put("desempeno","% Desempeño");
+                encabezado.put("icon", "");
+                listReporte.add(encabezado);
+                    
+                for(ReporteDiario row:listData){
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("padre", 0);
+                    body.put("linea", row.getDescripcion());
+                    body.put("dia", convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                    body.put("produccion", row.getProduccion());
+                    body.put("meta", row.getMeta());
+                    BigDecimal desempeno = row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING);
+                    body.put("desempeno", desempeno);
+                    body.put("icon", desempeno.compareTo(new BigDecimal(100)));
+                    listReporte.add(body);
+                }
+                    
+                HashMap<String, Object> totales = new HashMap<>();
+                totales.put("padre", 2);
+                totales.put("linea","Total");
+                totales.put("dia","");
+                totales.put("produccion","Produccion");
+                totales.put("meta","Meta");
+                totales.put("desempeno","% Desempeño");
+                totales.put("icon", "");
+                listReporte.add(totales);
+                    
+                data.setReporteDailyPerformance(listReporte);
+                output.setData(data);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+                
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);

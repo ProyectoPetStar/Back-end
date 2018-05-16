@@ -107,4 +107,17 @@ public class ReportesDAO {
         List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
         return data;
     }
+    
+    public List<ReporteDiario> getJUCODIproduccion(Date dia, int idGpoLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteJucodiProduccion ?, ?");
+        Object[] parmas = {dia, idGpoLinea};
+        
+        ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
+        List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
 }
