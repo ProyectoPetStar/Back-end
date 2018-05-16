@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -506,6 +505,72 @@ public class ControllerReportes {
             response.setSucessfull(false);
         }
         
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReportDailyPerformance(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idLInea = Integer.valueOf(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(periodo != null){
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    ReportesDAO reportesDAO = new ReportesDAO();
+                    List<ReporteDiario> listData = reportesDAO.getDailyPerformance(fechaI, fechaT, idLInea);
+                    
+                    List<HashMap> listReporte = new ArrayList<>();
+                    HashMap<String, Object> encabezado = new HashMap<>();
+                    encabezado.put("padre", 1);
+                    encabezado.put("dia","Dia");
+                    encabezado.put("a","A");
+                    encabezado.put("b","B");
+                    encabezado.put("c","C");
+                    encabezado.put("d","D");
+                    encabezado.put("meta1","Meta 1ro");
+                    encabezado.put("meta2","Meta 2do");
+                    encabezado.put("meta3","Meta dia");
+                    listReporte.add(encabezado);
+                    
+                    for(ReporteDiario row:listData){
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("padre", 0);
+                        body.put("dia",convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                        body.put("a",row.getA());
+                        body.put("b",row.getB());
+                        body.put("c",row.getC());
+                        body.put("d",row.getD());
+                        body.put("meta1",row.getMeta_uno());
+                        body.put("meta2",row.getMeta_dos());
+                        body.put("meta3",row.getMeta_dia());
+                        listReporte.add(body);
+                    }
+                    data.setReporteDailyPerformance(listReporte);
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_NOEXIS);
+                }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        }catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
         output.setResponse(response);
         return output;
     }
