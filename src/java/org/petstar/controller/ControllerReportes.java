@@ -53,7 +53,7 @@ public class ControllerReportes {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, idLInea);
                 if(periodo != null){
                     Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date FechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
@@ -163,7 +163,7 @@ public class ControllerReportes {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, idLInea);
                 if(periodo != null){
                     Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date fechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
@@ -401,11 +401,11 @@ public class ControllerReportes {
                     for (int y=0; y<listLineas.size(); y++) {
                         List<ResultBigDecimal> molido = new ArrayList<>();
                         molido = reportesDAO.getMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
-                        ResultBigDecimal result = reportesDAO.getTotalesMolidos(fechaI, fechaT, listLineas.get(y).getId_linea());
+                        ResultBigDecimal result = reportesDAO.getTotalMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
                         listaMolidos.add(molido);
                         lisTotalMolidos.add(result);
                     }
-                    
+                    List<BigDecimal> suma = null;
                     BigDecimal totalTotalMolido = BigDecimal.ZERO;
                     BigDecimal totalTotalHojuela= BigDecimal.ZERO;
                     BigDecimal totalTotalPlanHojuela = BigDecimal.ZERO;
@@ -428,6 +428,7 @@ public class ControllerReportes {
                             row.put("hojuela"+(y+1), hojuela);
                             totalMolido = totalMolido.add(molido);
                             totalHojuela = totalHojuela.add(hojuela);
+                            //suma.add(molido);
                         }
                         row.put("totalMolido",	totalMolido);
                         totalTotalMolido = totalTotalMolido.add(totalMolido);
@@ -462,8 +463,8 @@ public class ControllerReportes {
                     for(int y=0; y<listLineas.size(); y++){
                         BigDecimal calculo = lisTotalMolidos.get(y).getResult().multiply(periodo.getEficiencia_teorica());
                         BigDecimal totalHojuela = calculo.divide(new BigDecimal(100), RoundingMode.CEILING);
-                        encabezado.put("molido"+(y+1),lisTotalMolidos.get(y).getResult());
-                        encabezado.put("hojuela"+(y+1),totalHojuela);
+                        totales.put("molido"+(y+1),lisTotalMolidos.get(y).getResult());
+                        totales.put("hojuela"+(y+1),totalHojuela);
                         totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
                     }
                     totales.put("totalMolido",totalTotalMolido);

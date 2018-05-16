@@ -79,20 +79,6 @@ public class ReportesDAO {
         
         ResultSetHandler rsh = new BeanHandler(ResultBigDecimal.class);
         ResultBigDecimal result = (ResultBigDecimal) qr.query(sql.toString(), rsh, params);
-        System.out.println(result.getResult());
-        return result;
-    }
-    
-    public ResultBigDecimal getTotalesMolidos(Date fechaInicio, Date fechaTermino, int idLinea) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("SELECT TOP 1 valor AS result FROM dbo.pet_produccion");
-        Object[] params ={ fechaInicio, fechaTermino, idLinea };
-        
-        ResultSetHandler rsh = new BeanHandler(ResultBigDecimal.class);
-        ResultBigDecimal result = (ResultBigDecimal) qr.query(sql.toString(), rsh);
         return result;
     }
     
