@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -16,15 +17,18 @@ import org.petstar.dto.RazonParoDTO;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ReportesResponseJson;
 import org.petstar.model.ResponseJson;
-import static org.petstar.configurations.utils.convertStringToSql;
+import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.getTotalHoras;
 import static org.petstar.configurations.utils.getPorcentajeParo;
 import static org.petstar.configurations.utils.getDateLastDay;
 import static org.petstar.configurations.utils.getDateFirstDay;
+import static org.petstar.configurations.utils.sumarFechasDias;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.Fuentes;
+import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ResultBigDecimal;
 import org.petstar.dto.UserDTO;
 
@@ -33,6 +37,7 @@ import org.petstar.dto.UserDTO;
  */
 public class ControllerReportes {
     private static final String TABLE_FUENTES = "pet_cat_fuentes_paro";
+    private static final String TABLE_GPOLINE = "pet_cat_gpo_linea";
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
@@ -49,7 +54,7 @@ public class ControllerReportes {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, idLInea);
                 if(periodo != null){
                     Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date FechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
@@ -127,10 +132,12 @@ public class ControllerReportes {
             if(sesion != null){
                 LineasDAO lineasDAO = new LineasDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
                 ReportesResponseJson data = new ReportesResponseJson();
-
+                
                 data.setListLineas(lineasDAO.getLineasActive());
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
+                data.setListGposLineas(catalogosDAO.getCatalogosActive(TABLE_GPOLINE));
                 output.setData(data);
 
                 response.setSucessfull(true);
@@ -159,7 +166,7 @@ public class ControllerReportes {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, idLInea);
                 if(periodo != null){
                     Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date fechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
@@ -341,6 +348,164 @@ public class ControllerReportes {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteDiarioProduccion(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idGpoLinea = Integer.valueOf(request.getParameter("id_gpo_linea"));
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ReportesDAO reportesDAO = new ReportesDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                
+                List<LineasDTO> listLineas = lineasDAO.getLineasByGpoLinea(idGpoLinea);
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo,listLineas.get(0).getId_linea());
+                if(periodo != null){
+                    
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    
+                    List<List<ResultBigDecimal>> listaMolidos= new ArrayList<>();
+                    List<ResultBigDecimal> lisTotalMolidos = new ArrayList<>();
+                    List<ReporteDiario> listData = reportesDAO.getReporteDiario(fechaI, fechaT, idGpoLinea);
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    List<HashMap> listReporte = new ArrayList<>();
+                    
+                    HashMap<String, Object> encabezado = new HashMap<>();
+                    encabezado.put("padre", 1);
+                    encabezado.put("dia","Dia");
+                    for(int y=0; y<listLineas.size(); y++){
+                        encabezado.put("molido"+(y+1),"Molido "+(y+1));
+                        encabezado.put("hojuela"+(y+1),"Hojuela "+(y+1));
+                    }
+                    encabezado.put("totalMolido","Total molido");
+                    encabezado.put("acumulado","Acumulado");
+                    encabezado.put("metaMolido","Plan Molido");
+                    encabezado.put("difMolido","Diferencia Molido");
+                    encabezado.put("eficiencia","Eficiencia/dia");
+                    encabezado.put("vsMetaM","+/- vs meta M");
+                    encabezado.put("eficTeorica","Efic teorica");
+                    encabezado.put("totalHoj","Total Hojuela");
+                    encabezado.put("acumHoju","Acum. Hojuela");
+                    encabezado.put("planHoju","Plan Hojuela");
+                    encabezado.put("difeHoju","Diferencia Hoj");
+                    encabezado.put("eficiDia","Eficiencia/dia H");
+                    encabezado.put("vsMetaH","+/- vs meta H");
+                    listReporte.add(encabezado);
+                    
+                    for (int y=0; y<listLineas.size(); y++) {
+                        List<ResultBigDecimal> molido = new ArrayList<>();
+                        molido = reportesDAO.getMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
+                        ResultBigDecimal result = reportesDAO.getTotalMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
+                        listaMolidos.add(molido);
+                        lisTotalMolidos.add(result);
+                    }
+                    List<BigDecimal> suma = null;
+                    BigDecimal totalTotalMolido = BigDecimal.ZERO;
+                    BigDecimal totalTotalHojuela= BigDecimal.ZERO;
+                    BigDecimal totalTotalPlanHojuela = BigDecimal.ZERO;
+                    BigDecimal totalTotalPlanMolido = BigDecimal.ZERO;
+                    
+                    BigDecimal acumulado = BigDecimal.ZERO;
+                    BigDecimal acumHojuela = BigDecimal.ZERO;
+                    
+                    for(int i=0; i<listData.size(); i++){
+                        BigDecimal planMolido = listData.get(i).getPlan_molido();
+                        HashMap<String, Object> row = new HashMap<>();
+                        row.put("padre",	0);
+                        row.put("dia",		convertSqlToDay(sumarFechasDias(listData.get(i).getDia(),2)));
+                        BigDecimal totalMolido = BigDecimal.ZERO;
+                        BigDecimal totalHojuela = BigDecimal.ZERO;
+                        for(int y=0; y<listaMolidos.size(); y++){
+                            BigDecimal molido = listaMolidos.get(y).get(i).getResult();
+                            row.put("molido"+(y+1),	molido);
+                            BigDecimal hojuela = molido.multiply(periodo.getEficiencia_teorica());
+                            row.put("hojuela"+(y+1), hojuela);
+                            totalMolido = totalMolido.add(molido);
+                            totalHojuela = totalHojuela.add(hojuela);
+                            //suma.add(molido);
+                        }
+                        row.put("totalMolido",	totalMolido);
+                        totalTotalMolido = totalTotalMolido.add(totalMolido);
+                        acumulado = acumulado.add(totalMolido);
+                        row.put("acumulado",	acumulado);
+                        row.put("metaMolido",	planMolido);
+                        totalTotalPlanMolido = planMolido;
+                        BigDecimal diferenciaMolido = acumulado.subtract(planMolido);
+                        row.put("difMolido",	diferenciaMolido);
+                        BigDecimal eficiencia = acumulado.divide(planMolido, RoundingMode.CEILING);
+                        row.put("eficiencia",	eficiencia);
+                        row.put("vsMetaM",	eficiencia.subtract(BigDecimal.ONE));
+                        row.put("eficTeorica",	periodo.getEficiencia_teorica());
+                        row.put("totalHoj",	totalHojuela);
+                        totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
+                        acumHojuela = acumHojuela.add(totalHojuela);
+                        row.put("acumHoju",	acumHojuela);
+                        BigDecimal planHojuela = planMolido.multiply(periodo.getEficiencia_teorica());
+                        totalTotalPlanHojuela = planHojuela;
+                        row.put("planHoju",	planHojuela);
+                        row.put("difeHoju",     acumHojuela.subtract(planHojuela));
+                        BigDecimal eficienciaDia = acumHojuela.divide(planHojuela, RoundingMode.CEILING);
+                        row.put("eficiDia",	eficienciaDia);
+                        row.put("vsMetaH",	eficiencia.subtract(BigDecimal.ONE));
+                        listReporte.add(row);   
+                    }
+                    
+                    HashMap<String, Object> totales = new HashMap<>();
+                    totales.put("padre", 2);
+                    totales.put("dia","Total");
+                    
+                    for(int y=0; y<listLineas.size(); y++){
+                        BigDecimal calculo = lisTotalMolidos.get(y).getResult().multiply(periodo.getEficiencia_teorica());
+                        BigDecimal totalHojuela = calculo.divide(new BigDecimal(100), RoundingMode.CEILING);
+                        totales.put("molido"+(y+1),lisTotalMolidos.get(y).getResult());
+                        totales.put("hojuela"+(y+1),totalHojuela);
+                        totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
+                    }
+                    totales.put("totalMolido",totalTotalMolido);
+                    totales.put("acumulado",acumulado);
+                    totales.put("metaMolido",totalTotalPlanMolido);
+                    BigDecimal totalTotalDifMolido = acumulado.subtract(totalTotalPlanMolido);
+                    totales.put("difMolido",totalTotalDifMolido);
+                    BigDecimal TotalEficienciaDia = acumulado.divide(totalTotalPlanMolido,RoundingMode.CEILING);
+                    totales.put("eficiencia",TotalEficienciaDia);
+                    totales.put("vsMetaM",TotalEficienciaDia.subtract(BigDecimal.ONE));
+                    totales.put("eficTeorica",periodo.getEficiencia_teorica());
+                    totales.put("totalHoj",totalTotalHojuela);
+                    totales.put("acumHoju",acumHojuela);
+                    totales.put("planHoju",totalTotalPlanHojuela);
+                    BigDecimal totalTotalDifHojuela = acumHojuela.subtract(totalTotalPlanHojuela);
+                    totales.put("difeHoju",totalTotalDifHojuela);
+                    BigDecimal totalEficienciaHojuela = acumHojuela.divide(totalTotalPlanHojuela, RoundingMode.CEILING);
+                    totales.put("eficiDia",totalEficienciaHojuela);
+                    totales.put("vsMetaH",totalEficienciaHojuela.subtract(BigDecimal.ONE));
+                    listReporte.add(totales);
+                    
+                    data.setReporteDiario(listReporte);
+                    output.setData(data);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage(MSG_NOEXIS);
+                    response.setSucessfull(false);
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
         output.setResponse(response);
         return output;
     }

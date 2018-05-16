@@ -9,6 +9,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.Fuentes;
+import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ResultBigDecimal;
 
 /**
@@ -53,5 +54,44 @@ public class ReportesDAO {
         ResultSetHandler rsh = new BeanHandler(ResultBigDecimal.class);
         ResultBigDecimal result = (ResultBigDecimal) qr.query(sql.toString(), rsh, params);
         return result;
+    }
+    
+    public List<ResultBigDecimal> getMolidoByLinea(Date fechaI, Date fechaT, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteDiarioMolido ?, ?, ?");
+        Object[] params = { fechaI, fechaT, idLinea };
+        
+        ResultSetHandler rsh = new BeanListHandler(ResultBigDecimal.class);
+        List<ResultBigDecimal> data = (List<ResultBigDecimal>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    public ResultBigDecimal getTotalMolidoByLinea(Date fechaI, Date fechaT, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteDiarioTotalMolidos ?, ?, ?");
+        Object[] params = { fechaI, fechaT, idLinea };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultBigDecimal.class);
+        ResultBigDecimal result = (ResultBigDecimal) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public List<ReporteDiario> getReporteDiario(Date fechaI, Date fechaT, int idGpoLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteDiarioDiaPlanMolido ?, ?, ?");
+        Object[] parmas = {fechaI, fechaT, idGpoLinea};
+        
+        ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
+        List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
+        return data;
     }
 }

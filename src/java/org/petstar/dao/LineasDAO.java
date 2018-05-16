@@ -176,4 +176,24 @@ public class LineasDAO {
         ResultInteger count = (ResultInteger)  qr.query(sql.toString(), rsh, params);
         return count;
     }
+    
+    /**
+     * Consulta de lineas por Grupo de linea
+     * Metodo que devuelve lista de Lineas segun el grupo de linea
+     * @param idGpoLinea
+     * @return
+     * @throws Exception 
+     */
+    public List<LineasDTO> getLineasByGpoLinea(int idGpoLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_cat_linea WHERE id_gpo_linea = ?");
+        Object[] params = { idGpoLinea };
+        
+        ResultSetHandler rsh = new BeanListHandler(LineasDTO.class);
+        List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh, params);
+        return lineasData;
+    }
 }

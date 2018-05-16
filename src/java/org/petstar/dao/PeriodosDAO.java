@@ -42,6 +42,19 @@ public class PeriodosDAO {
         return data;
     }
     
+    public PeriodosDTO getPeriodoById(int idPeriodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * from dbo.pet_periodo where id_periodo =  ?");
+        Object[] params ={ idPeriodo };
+        
+        ResultSetHandler rsh = new BeanHandler(PeriodosDTO.class);
+        PeriodosDTO data = (PeriodosDTO) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
     public List<PeriodosDTO> getAllPeriodos() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
