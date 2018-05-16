@@ -162,7 +162,7 @@ public class utils {
         Calendar calendario=Calendar.getInstance();
         calendario.set(anio, mes-1, getUltimoDiaMes(anio, mes));
         java.sql.Date fecha = new java.sql.Date(calendario.getTimeInMillis());
-        System.out.println(fecha.toString());
+        
         return fecha;
     }
     
