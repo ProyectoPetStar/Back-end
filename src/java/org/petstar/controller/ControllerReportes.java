@@ -600,28 +600,33 @@ public class ControllerReportes {
                 encabezado.put("desempeno","% Desempeño");
                 encabezado.put("icon", "");
                 listReporte.add(encabezado);
-                    
+                
+                BigDecimal totalProduccion = BigDecimal.ZERO;
+                BigDecimal totalMeta = BigDecimal.ZERO;
                 for(ReporteDiario row:listData){
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("padre", 0);
                     body.put("linea", row.getDescripcion());
                     body.put("dia", convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
                     body.put("produccion", row.getProduccion());
+                    totalProduccion=totalProduccion.add(row.getProduccion());
                     body.put("meta", row.getMeta());
+                    totalMeta = totalMeta.add(row.getMeta());
                     BigDecimal desempeno = row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING);
                     body.put("desempeno", desempeno);
                     body.put("icon", desempeno.compareTo(new BigDecimal(100)));
                     listReporte.add(body);
                 }
-                    
+                
+                BigDecimal totalDesempeno = totalProduccion.divide(totalMeta, RoundingMode.CEILING);
                 HashMap<String, Object> totales = new HashMap<>();
                 totales.put("padre", 2);
                 totales.put("linea","Total");
                 totales.put("dia","");
-                totales.put("produccion","Produccion");
-                totales.put("meta","Meta");
-                totales.put("desempeno","% Desempeño");
-                totales.put("icon", "");
+                totales.put("produccion",totalProduccion);
+                totales.put("meta",totalMeta);
+                totales.put("desempeno",totalDesempeno);
+                totales.put("icon", totalDesempeno.compareTo(new BigDecimal(100)));
                 listReporte.add(totales);
                     
                 data.setReporteDailyPerformance(listReporte);
