@@ -18,8 +18,9 @@ public class ReportesResponseJson {
     private List<HashMap> datosProduccion;
     private List<HashMap> reporteOEE;
     private List<HashMap> reporteDiario;
-    private List<HashMap> reporteDailyPerformance;
     private List<HashMap> reporteMap;
+    private List<HashMap> reporteDesempeno;
+    private List<List<HashMap>> reporteDailyPerformance;
 
     public List<HashMap> getListaOEEFallas() {
         return listaOEEFallas;
@@ -85,19 +86,27 @@ public class ReportesResponseJson {
         this.reporteDiario = reporteDiario;
     }
 
-    public List<HashMap> getReporteDailyPerformance() {
+    public List<List<HashMap>> getReporteDailyPerformance() {
         return reporteDailyPerformance;
     }
 
-    public void setReporteDailyPerformance(List<HashMap> reporteDailyPerformance) {
+    public void setReporteDailyPerformance(List<List<HashMap>> reporteDailyPerformance) {
         this.reporteDailyPerformance = reporteDailyPerformance;
     }
-
+    
     public List<HashMap> getReporteMap() {
         return reporteMap;
     }
 
     public void setReporteMap(List<HashMap> reporteMap) {
         this.reporteMap = reporteMap;
+    }
+
+    public List<HashMap> getReporteDesempeno() {
+        return reporteDesempeno;
+    }
+
+    public void setReporteDesempeno(List<HashMap> reporteDesempeno) {
+        this.reporteDesempeno = reporteDesempeno;
     }
 }
