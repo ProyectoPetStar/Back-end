@@ -28,6 +28,7 @@ import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.Fuentes;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ReporteDTO;
 import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ResultBigDecimal;
 import org.petstar.dto.UserDTO;
@@ -678,6 +679,132 @@ public class ControllerReportes {
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
                 
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        }catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteSubproductos(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idGpoLinea = Integer.valueOf(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(periodo != null){
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    ReportesDAO reportesDAO = new ReportesDAO();
+                    List<ReporteDiario> dataSubproductos = reportesDAO.getDailyPerformance(fechaI, fechaT, idGpoLinea);
+                    
+                    List<HashMap> reporteSubpro = new ArrayList<>();
+                    HashMap<String, Object> head = new HashMap<>();
+                    head.put("padre", 1);
+                    head.put("dia",   "Dia");
+                    head.put("turno", "Turno");
+                    head.put("grupo", "Grupo");
+                    head.put("valor", "Subproducto");
+                    reporteSubpro.add(head);
+                    
+                    for(ReporteDiario row:dataSubproductos){
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("padre", 1);
+                        body.put("dia",   "Dia");
+                        body.put("turno", "Turno");
+                        body.put("grupo", "Grupo");
+                        body.put("valor", "Subproducto");
+                        reporteSubpro.add(body);
+                    }
+                    
+                    HashMap<String, Object> foot = new HashMap<>();
+                    foot.put("padre", 2);
+                    foot.put("dia",   "Total");
+                    foot.put("turno", "");
+                    foot.put("grupo", "");
+                    foot.put("valor", "Subproducto");
+                    reporteSubpro.add(foot);
+                    
+                    data.setReporteMap(reporteSubpro);
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_NOEXIS);
+                }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        }catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteVelocidadPromedio(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idGpoLinea = Integer.valueOf(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(periodo != null){
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    ReportesDAO reportesDAO = new ReportesDAO();
+                    List<ReporteDTO> dataVelPromedio = reportesDAO.getReporteVelPromedio(fechaI, fechaT, idGpoLinea);
+                    
+                    List<HashMap> reporteVelPromedio = new ArrayList<>();
+                    HashMap<String, Object> head = new HashMap<>();
+                    head.put("padre", 1);
+                    head.put("dia",   "Dia");
+                    head.put("turno", "Turno");
+                    head.put("grupo", "Grupo");
+                    head.put("valor", "Velocidad Promedio");
+                    reporteVelPromedio.add(head);
+                    
+                    for(ReporteDTO row:dataVelPromedio){
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("padre", 0);
+                        body.put("dia",   convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                        body.put("turno", row.getId_turno());
+                        body.put("grupo", row.getValor_grupo());
+                        body.put("valor", row.getVelocidad_promedio().setScale(3,RoundingMode.FLOOR));
+                        reporteVelPromedio.add(body);
+                    }
+                    
+                    data.setReporteMap(reporteVelPromedio);
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_NOEXIS);
+                }
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
