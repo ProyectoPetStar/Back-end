@@ -19,6 +19,7 @@ public class ReportesResponseJson {
     private List<HashMap> reporteOEE;
     private List<HashMap> reporteDiario;
     private List<HashMap> reporteDailyPerformance;
+    private List<HashMap> reporteMap;
 
     public List<HashMap> getListaOEEFallas() {
         return listaOEEFallas;
@@ -90,5 +91,13 @@ public class ReportesResponseJson {
 
     public void setReporteDailyPerformance(List<HashMap> reporteDailyPerformance) {
         this.reporteDailyPerformance = reporteDailyPerformance;
+    }
+
+    public List<HashMap> getReporteMap() {
+        return reporteMap;
+    }
+
+    public void setReporteMap(List<HashMap> reporteMap) {
+        this.reporteMap = reporteMap;
     }
 }

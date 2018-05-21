@@ -10,6 +10,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.Fuentes;
 import org.petstar.dto.ReporteDiario;
+import org.petstar.dto.ReporteDTO;
 import org.petstar.dto.ResultBigDecimal;
 
 /**
@@ -120,4 +121,44 @@ public class ReportesDAO {
         List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
         return data;
     }
+	
+	public List<ReporteDiario> getJUCODIparos(Date dia, int idGpoLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteJucodiParo ?, ?");
+        Object[] parmas = {dia, idGpoLinea};
+        
+        ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
+        List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
+	
+	public List<ReporteDiario> getReporteSubproducto(Date fechaI, Date fechaT, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteJucodiParo ?, ?, ?");
+        Object[] parmas = {fechaI, fechaT, idLinea};
+        
+        ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
+        List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
+	
+	public List<ReporteDTO> getReporteVelPromedio(Date fechaI, Date fechaT, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteVelocidad ?, ?, ?");
+        Object[] parmas = {fechaI, fechaT, idLinea};
+        
+        ResultSetHandler rsh = new BeanListHandler(ReporteDTO.class);
+        List<ReporteDTO> data = (List<ReporteDTO>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
 }
+

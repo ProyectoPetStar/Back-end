@@ -28,6 +28,7 @@ import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.Fuentes;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ReporteDTO;
 import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ResultBigDecimal;
 import org.petstar.dto.UserDTO;
@@ -517,7 +518,7 @@ public class ControllerReportes {
         
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
-            int idLInea = Integer.valueOf(request.getParameter("id_linea"));
+            int idGpoLinea = Integer.valueOf(request.getParameter("id_gpo_linea"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
@@ -528,11 +529,12 @@ public class ControllerReportes {
                     
                     ReportesResponseJson data = new ReportesResponseJson();
                     ReportesDAO reportesDAO = new ReportesDAO();
-                    List<ReporteDiario> listData = reportesDAO.getDailyPerformance(fechaI, fechaT, idLInea);
+                    List<ReporteDiario> listData = reportesDAO.getDailyPerformance(fechaI, fechaT, idGpoLinea);
                     
                     List<HashMap> listReporte = new ArrayList<>();
                     HashMap<String, Object> encabezado = new HashMap<>();
                     encabezado.put("padre", 1);
+                    encabezado.put("linea","Linea");
                     encabezado.put("dia","Dia");
                     encabezado.put("a","A");
                     encabezado.put("b","B");
@@ -546,6 +548,7 @@ public class ControllerReportes {
                     for(ReporteDiario row:listData){
                         HashMap<String, Object> body = new HashMap<>();
                         body.put("padre", 0);
+                        body.put("linea", row.getDescripcion());
                         body.put("dia",convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
                         body.put("a",row.getA());
                         body.put("b",row.getB());
@@ -589,8 +592,10 @@ public class ControllerReportes {
                 ReportesResponseJson data = new ReportesResponseJson();
                 ReportesDAO reportesDAO = new ReportesDAO();
                 List<ReporteDiario> listData = reportesDAO.getJUCODIproduccion(dia, idGpoLinea);
+                List<ReporteDiario> dataParo = reportesDAO.getJUCODIparos(dia, idGpoLinea);
                     
                 List<HashMap> listReporte = new ArrayList<>();
+                List<HashMap> reporteTiempoParo = new ArrayList<>();
                 HashMap<String, Object> encabezado = new HashMap<>();
                 encabezado.put("padre", 1);
                 encabezado.put("linea","Linea");
@@ -600,6 +605,15 @@ public class ControllerReportes {
                 encabezado.put("desempeno","% Desempeño");
                 encabezado.put("icon", "");
                 listReporte.add(encabezado);
+                HashMap<String, Object> encabezados = new HashMap<>();
+                encabezados.put("padre", 1);
+                encabezados.put("linea","Linea");
+                encabezados.put("dia","Dia");
+                encabezados.put("tmpReal","TMP Real");
+                encabezados.put("tmpMeta","TMP Meta");
+                encabezados.put("desempeno","% Desempeño");
+                encabezados.put("icon", "");
+                reporteTiempoParo.add(encabezados);
                 
                 BigDecimal totalProduccion = BigDecimal.ZERO;
                 BigDecimal totalMeta = BigDecimal.ZERO;
@@ -612,13 +626,13 @@ public class ControllerReportes {
                     totalProduccion=totalProduccion.add(row.getProduccion());
                     body.put("meta", row.getMeta());
                     totalMeta = totalMeta.add(row.getMeta());
-                    BigDecimal desempeno = row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING);
+                    BigDecimal desempeno = (row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING)).multiply(new BigDecimal(100));
                     body.put("desempeno", desempeno);
                     body.put("icon", desempeno.compareTo(new BigDecimal(100)));
                     listReporte.add(body);
                 }
                 
-                BigDecimal totalDesempeno = totalProduccion.divide(totalMeta, RoundingMode.CEILING);
+                BigDecimal totalDesempeno = (totalProduccion.divide(totalMeta, RoundingMode.CEILING)).multiply(new BigDecimal(100));
                 HashMap<String, Object> totales = new HashMap<>();
                 totales.put("padre", 2);
                 totales.put("linea","Total");
@@ -629,11 +643,168 @@ public class ControllerReportes {
                 totales.put("icon", totalDesempeno.compareTo(new BigDecimal(100)));
                 listReporte.add(totales);
                     
+                BigDecimal totalTMPr = BigDecimal.ZERO;
+                BigDecimal totalTMPm = BigDecimal.ZERO;
+                for(ReporteDiario row:dataParo){
+                    totalTMPr=totalTMPr.add(row.getTmp_real());
+                    totalTMPm=totalTMPm.add(row.getTmp_meta());
+                    BigDecimal desempeno = row.getTmp_real().divide(row.getTmp_meta(), RoundingMode.CEILING);
+                    desempeno = desempeno.multiply(new BigDecimal(100));
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("padre", 0);
+                    body.put("linea", row.getDescripcion());
+                    body.put("dia", convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                    body.put("tmpReal", row.getTmp_real());
+                    body.put("tmpMeta", row.getTmp_meta());
+                    body.put("desempeno", desempeno);
+                    body.put("icon", desempeno.compareTo(new BigDecimal(100)));
+                    reporteTiempoParo.add(body);
+                }
+                
+                BigDecimal desempenoTotal = totalTMPr.divide(totalTMPm, RoundingMode.CEILING);
+                desempenoTotal = desempenoTotal.multiply(new BigDecimal(100));
+                HashMap<String, Object> total = new HashMap<>();
+                total.put("padre", 2);
+                total.put("linea","Total");
+                total.put("dia","");
+                total.put("produccion",totalTMPr);
+                total.put("meta",totalTMPm);
+                total.put("desempeno",desempenoTotal);
+                total.put("icon", desempenoTotal.compareTo(new BigDecimal(100)));
+                reporteTiempoParo.add(total);
+                
+                data.setReporteMap(reporteTiempoParo);
                 data.setReporteDailyPerformance(listReporte);
                 output.setData(data);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
                 
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        }catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteSubproductos(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idGpoLinea = Integer.valueOf(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(periodo != null){
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    ReportesDAO reportesDAO = new ReportesDAO();
+                    List<ReporteDiario> dataSubproductos = reportesDAO.getDailyPerformance(fechaI, fechaT, idGpoLinea);
+                    
+                    List<HashMap> reporteSubpro = new ArrayList<>();
+                    HashMap<String, Object> head = new HashMap<>();
+                    head.put("padre", 1);
+                    head.put("dia",   "Dia");
+                    head.put("turno", "Turno");
+                    head.put("grupo", "Grupo");
+                    head.put("valor", "Subproducto");
+                    reporteSubpro.add(head);
+                    
+                    for(ReporteDiario row:dataSubproductos){
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("padre", 1);
+                        body.put("dia",   "Dia");
+                        body.put("turno", "Turno");
+                        body.put("grupo", "Grupo");
+                        body.put("valor", "Subproducto");
+                        reporteSubpro.add(body);
+                    }
+                    
+                    HashMap<String, Object> foot = new HashMap<>();
+                    foot.put("padre", 2);
+                    foot.put("dia",   "Total");
+                    foot.put("turno", "");
+                    foot.put("grupo", "");
+                    foot.put("valor", "Subproducto");
+                    reporteSubpro.add(foot);
+                    
+                    data.setReporteMap(reporteSubpro);
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_NOEXIS);
+                }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        }catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteVelocidadPromedio(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idGpoLinea = Integer.valueOf(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(periodo != null){
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    ReportesDAO reportesDAO = new ReportesDAO();
+                    List<ReporteDTO> dataVelPromedio = reportesDAO.getReporteVelPromedio(fechaI, fechaT, idGpoLinea);
+                    
+                    List<HashMap> reporteVelPromedio = new ArrayList<>();
+                    HashMap<String, Object> head = new HashMap<>();
+                    head.put("padre", 1);
+                    head.put("dia",   "Dia");
+                    head.put("turno", "Turno");
+                    head.put("grupo", "Grupo");
+                    head.put("valor", "Velocidad Promedio");
+                    reporteVelPromedio.add(head);
+                    
+                    for(ReporteDTO row:dataVelPromedio){
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("padre", 0);
+                        body.put("dia",   convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                        body.put("turno", row.getId_turno());
+                        body.put("grupo", row.getValor_grupo());
+                        body.put("valor", row.getVelocidad_promedio().setScale(3,RoundingMode.FLOOR));
+                        reporteVelPromedio.add(body);
+                    }
+                    
+                    data.setReporteMap(reporteVelPromedio);
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_NOEXIS);
+                }
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);

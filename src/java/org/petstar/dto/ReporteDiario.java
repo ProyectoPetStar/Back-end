@@ -20,6 +20,8 @@ public class ReporteDiario {
     private String descripcion;
     private BigDecimal meta;
     private BigDecimal produccion;
+    private BigDecimal tmp_real;
+    private BigDecimal tmp_meta;
 
     public Date getDia() {
         return dia;
@@ -115,5 +117,21 @@ public class ReporteDiario {
 
     public void setProduccion(BigDecimal produccion) {
         this.produccion = produccion;
+    }
+
+    public BigDecimal getTmp_meta() {
+        return tmp_meta;
+    }
+
+    public void setTmp_meta(BigDecimal tmp_meta) {
+        this.tmp_meta = tmp_meta;
+    }
+
+    public BigDecimal getTmp_real() {
+        return tmp_real;
+    }
+
+    public void setTmp_real(BigDecimal tmp_real) {
+        this.tmp_real = tmp_real;
     }
 }
