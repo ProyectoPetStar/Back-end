@@ -692,8 +692,8 @@ public class ControllerReportes {
                 total.put("padre", 2);
                 total.put("linea","Total");
                 total.put("dia","");
-                total.put("produccion",totalTMPr);
-                total.put("meta",totalTMPm);
+                total.put("tmpReal",totalTMPr);
+                total.put("tmpMeta",totalTMPm);
                 total.put("desempeno",desempenoTotal);
                 total.put("icon", desempenoTotal.compareTo(new BigDecimal(100)));
                 reporteTiempoParo.add(total);
