@@ -43,6 +43,7 @@ public class ControllerReportes {
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_NOEXIS = "Periodo Seleccionado Incorrecto";
+    private static final String MSG_NODATA = "No se encontraron registros";
     
     public OutputJson getOEEFallasByLinea(HttpServletRequest request) throws Exception{
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -638,7 +639,11 @@ public class ControllerReportes {
                     totalProduccion=totalProduccion.add(row.getProduccion());
                     body.put("meta", row.getMeta());
                     totalMeta = totalMeta.add(row.getMeta());
-                    BigDecimal desempeno = (row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING)).multiply(new BigDecimal(100));
+                    int compare = row.getProduccion().compareTo(BigDecimal.ZERO);
+                    BigDecimal desempeno = BigDecimal.ZERO;
+                    if(compare == 1){
+                        desempeno = (row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING)).multiply(new BigDecimal(100));
+                    } 
                     body.put("desempeno", desempeno);
                     body.put("icon", desempeno.compareTo(new BigDecimal(100)));
                     listReporte.add(body);
@@ -660,8 +665,12 @@ public class ControllerReportes {
                 for(ReporteDiario row:dataParo){
                     totalTMPr=totalTMPr.add(row.getTmp_real());
                     totalTMPm=totalTMPm.add(row.getTmp_meta());
-                    BigDecimal desempeno = row.getTmp_real().divide(row.getTmp_meta(), RoundingMode.CEILING);
-                    desempeno = desempeno.multiply(new BigDecimal(100));
+                    int compare = row.getTmp_real().compareTo(BigDecimal.ZERO);
+                    BigDecimal desempeno = BigDecimal.ZERO;
+                    if(compare == 1){
+                        desempeno = row.getTmp_real().divide(row.getTmp_meta(), RoundingMode.CEILING);
+                        desempeno = desempeno.multiply(new BigDecimal(100));
+                    }
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("padre", 0);
                     body.put("linea", row.getDescripcion());
@@ -673,7 +682,11 @@ public class ControllerReportes {
                     reporteTiempoParo.add(body);
                 }
                 
-                BigDecimal desempenoTotal = totalTMPr.divide(totalTMPm, RoundingMode.CEILING);
+                BigDecimal desempenoTotal = BigDecimal.ZERO;
+                int compare = totalTMPr.compareTo(BigDecimal.ZERO);
+                if(compare == 1){
+                    desempenoTotal = totalTMPr.divide(totalTMPm, RoundingMode.CEILING);
+                }
                 desempenoTotal = desempenoTotal.multiply(new BigDecimal(100));
                 HashMap<String, Object> total = new HashMap<>();
                 total.put("padre", 2);
@@ -805,6 +818,94 @@ public class ControllerReportes {
                     output.setData(data);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
+                }else{
+                    response.setSucessfull(false);
+                    response.setMessage(MSG_NOEXIS);
+                }
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        }catch(Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReportePerformance(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idLinea = Integer.valueOf(request.getParameter("id_linea"));
+            String report = request.getParameter("report");
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(periodo != null){                    
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    ReportesDAO reportesDAO = new ReportesDAO();
+                    List<ReporteDiario> dataRows = null;
+                    
+                    switch(report){
+                        case"byDays":
+                            Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                            Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                            dataRows = reportesDAO.getDailyPerformance(fechaI, fechaT, idLinea);
+                            break;
+                        case"byWeeks":
+                            dataRows = reportesDAO.getReportePerformanceByWeek(periodo.getMes(), periodo.getAnio(), idLinea);
+                            break;
+                        case"byMonths":
+                            dataRows = reportesDAO.getReportePerformanceByMonth(periodo.getAnio(), idLinea);
+                            break;
+                    }
+                    
+                    List<HashMap> reportePerformance = new ArrayList<>();
+                    HashMap<String, Object> head = new HashMap<>();
+                    head.put("padre", 1);
+                    head.put("periodo","Periodo");
+                    head.put("a","A");
+                    head.put("b","B");
+                    head.put("c","C");
+                    head.put("d","D");
+                    head.put("meta1","Meta 1");
+                    head.put("meta2","Meta 2");
+                    head.put("meta3","Meta 3");
+                    reportePerformance.add(head);
+                    
+                    if(dataRows != null){
+                        for(ReporteDiario row:dataRows){
+                            HashMap<String, Object> body = new HashMap<>();
+                            if(report.equals("byDays")){
+                                body.put("periodo",convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                            }else{
+                                body.put("periodo",row.getPeriodo());
+                            }
+                            body.put("a",    row.getA().setScale(3, RoundingMode.FLOOR));
+                            body.put("b",    row.getB().setScale(3, RoundingMode.FLOOR));
+                            body.put("c",    row.getC().setScale(3, RoundingMode.FLOOR));
+                            body.put("d",    row.getD().setScale(3, RoundingMode.FLOOR));
+                            body.put("meta1",row.getMeta_uno().setScale(3, RoundingMode.FLOOR));
+                            body.put("meta2",row.getMeta_dos().setScale(3, RoundingMode.FLOOR));
+                            body.put("meta3",row.getMeta_dia().setScale(3, RoundingMode.FLOOR));
+                            body.put("padre",0);
+                            reportePerformance.add(body);
+                        }
+                        
+                        data.setReporteMap(reportePerformance);
+                        output.setData(data);
+                        response.setSucessfull(true);
+                        response.setMessage(MSG_SUCESS);
+                    }else{
+                        response.setSucessfull(false);
+                        response.setMessage(MSG_NODATA);
+                    }
                 }else{
                     response.setSucessfull(false);
                     response.setMessage(MSG_NOEXIS);
