@@ -529,12 +529,13 @@ public class ControllerReportes {
                     
                     ReportesResponseJson data = new ReportesResponseJson();
                     ReportesDAO reportesDAO = new ReportesDAO();
-                    List<ReporteDiario> listData = reportesDAO.getDailyPerformance(fechaI, fechaT, idGpoLinea);
+                    LineasDAO lineasDAO = new LineasDAO();
                     
-                    List<HashMap> listReporte = new ArrayList<>();
+                    List<List<HashMap>> listReport = new ArrayList<>();
+                    
                     HashMap<String, Object> encabezado = new HashMap<>();
                     encabezado.put("padre", 1);
-                    encabezado.put("linea","Linea");
+                    //encabezado.put("linea","Linea");
                     encabezado.put("dia","Dia");
                     encabezado.put("a","A");
                     encabezado.put("b","B");
@@ -543,23 +544,34 @@ public class ControllerReportes {
                     encabezado.put("meta1","Meta 1ro");
                     encabezado.put("meta2","Meta 2do");
                     encabezado.put("meta3","Meta dia");
-                    listReporte.add(encabezado);
                     
-                    for(ReporteDiario row:listData){
-                        HashMap<String, Object> body = new HashMap<>();
-                        body.put("padre", 0);
-                        body.put("linea", row.getDescripcion());
-                        body.put("dia",convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
-                        body.put("a",row.getA());
-                        body.put("b",row.getB());
-                        body.put("c",row.getC());
-                        body.put("d",row.getD());
-                        body.put("meta1",row.getMeta_uno());
-                        body.put("meta2",row.getMeta_dos());
-                        body.put("meta3",row.getMeta_dia());
-                        listReporte.add(body);
+                    List<LineasDTO> listLineas = lineasDAO.getLineasByGpoLinea(idGpoLinea);
+                    for(LineasDTO linea:listLineas){
+                        
+                        HashMap<String, Object> dataLinea = new HashMap<>();
+                        dataLinea.put("Linea", linea.getValor());
+                        List<ReporteDiario> listData = reportesDAO.getDailyPerformance(fechaI, fechaT, linea.getId_linea());
+                        List<HashMap> listReporteLinea = new ArrayList<>();
+                        listReporteLinea.add(dataLinea);
+                        listReporteLinea.add(encabezado);
+                        
+                        for(ReporteDiario row:listData){
+                            HashMap<String, Object> body = new HashMap<>();
+                            body.put("padre", 0);
+                            //body.put("linea", row.getDescripcion());
+                            body.put("dia",convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                            body.put("a",row.getA());
+                            body.put("b",row.getB());
+                            body.put("c",row.getC());
+                            body.put("d",row.getD());
+                            body.put("meta1",row.getMeta_uno());
+                            body.put("meta2",row.getMeta_dos());
+                            body.put("meta3",row.getMeta_dia());
+                            listReporteLinea.add(body);
+                        }
+                        listReport.add(listReporteLinea);
                     }
-                    data.setReporteDailyPerformance(listReporte);
+                    data.setReporteDailyPerformance(listReport);
                     output.setData(data);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
@@ -674,7 +686,7 @@ public class ControllerReportes {
                 reporteTiempoParo.add(total);
                 
                 data.setReporteMap(reporteTiempoParo);
-                data.setReporteDailyPerformance(listReporte);
+                data.setReporteDesempeno(listReporte);
                 output.setData(data);
                 response.setSucessfull(true);
                 response.setMessage(MSG_SUCESS);
@@ -698,7 +710,7 @@ public class ControllerReportes {
         
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
-            int idGpoLinea = Integer.valueOf(request.getParameter("id_linea"));
+            int idLinea = Integer.valueOf(request.getParameter("id_linea"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
@@ -709,7 +721,7 @@ public class ControllerReportes {
                     
                     ReportesResponseJson data = new ReportesResponseJson();
                     ReportesDAO reportesDAO = new ReportesDAO();
-                    List<ReporteDiario> dataSubproductos = reportesDAO.getDailyPerformance(fechaI, fechaT, idGpoLinea);
+                    List<ReporteDTO> dataSubproductos = reportesDAO.getReporteSubproducto(fechaI, fechaT, idLinea);
                     
                     List<HashMap> reporteSubpro = new ArrayList<>();
                     HashMap<String, Object> head = new HashMap<>();
@@ -720,23 +732,15 @@ public class ControllerReportes {
                     head.put("valor", "Subproducto");
                     reporteSubpro.add(head);
                     
-                    for(ReporteDiario row:dataSubproductos){
+                    for(ReporteDTO row:dataSubproductos){
                         HashMap<String, Object> body = new HashMap<>();
-                        body.put("padre", 1);
-                        body.put("dia",   "Dia");
-                        body.put("turno", "Turno");
-                        body.put("grupo", "Grupo");
-                        body.put("valor", "Subproducto");
+                        body.put("padre", 0);
+                        body.put("dia",   convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                        body.put("turno", row.getId_turno());
+                        body.put("grupo", row.getValor_grupo());
+                        body.put("valor", row.getSubproductos().setScale(3, RoundingMode.FLOOR));
                         reporteSubpro.add(body);
                     }
-                    
-                    HashMap<String, Object> foot = new HashMap<>();
-                    foot.put("padre", 2);
-                    foot.put("dia",   "Total");
-                    foot.put("turno", "");
-                    foot.put("grupo", "");
-                    foot.put("valor", "Subproducto");
-                    reporteSubpro.add(foot);
                     
                     data.setReporteMap(reporteSubpro);
                     output.setData(data);

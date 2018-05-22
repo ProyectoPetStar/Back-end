@@ -135,16 +135,16 @@ public class ReportesDAO {
         return data;
     }
 	
-	public List<ReporteDiario> getReporteSubproducto(Date fechaI, Date fechaT, int idLinea)throws Exception{
+	public List<ReporteDTO> getReporteSubproducto(Date fechaI, Date fechaT, int idLinea)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectReporteJucodiParo ?, ?, ?");
+        sql.append("EXEC sp_selectReporteSubproducto ?, ?, ?");
         Object[] parmas = {fechaI, fechaT, idLinea};
         
-        ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
-        List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
+        ResultSetHandler rsh = new BeanListHandler(ReporteDTO.class);
+        List<ReporteDTO> data = (List<ReporteDTO>) qr.query(sql.toString(), rsh, parmas);
         return data;
     }
 	
