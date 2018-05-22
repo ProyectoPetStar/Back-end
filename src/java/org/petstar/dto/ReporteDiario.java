@@ -9,6 +9,7 @@ import java.sql.Date;
  */
 public class ReporteDiario {
     private Date dia;
+    private String periodo;
     private BigDecimal plan_molido;
     private BigDecimal a;
     private BigDecimal b;
@@ -29,6 +30,14 @@ public class ReporteDiario {
 
     public void setDia(Date dia) {
         this.dia = dia;
+    }
+
+    public String getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(String periodo) {
+        this.periodo = periodo;
     }
 
     public BigDecimal getPlan_molido() {
