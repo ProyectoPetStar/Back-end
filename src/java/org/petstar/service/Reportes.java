@@ -61,6 +61,9 @@ public class Reportes extends HttpServlet {
                 case"reporteVelocidadPromedio":
                     output = controllerReportes.getReporteVelocidadPromedio(request);
                     break;
+                case"reporteSubproductos":
+                    output = controllerReportes.getReporteSubproductos(request);
+                    break;
             }
         } catch(Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

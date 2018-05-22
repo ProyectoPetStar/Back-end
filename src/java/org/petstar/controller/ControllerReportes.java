@@ -710,7 +710,7 @@ public class ControllerReportes {
         
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
-            int idGpoLinea = Integer.valueOf(request.getParameter("id_linea"));
+            int idLinea = Integer.valueOf(request.getParameter("id_linea"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
@@ -721,7 +721,7 @@ public class ControllerReportes {
                     
                     ReportesResponseJson data = new ReportesResponseJson();
                     ReportesDAO reportesDAO = new ReportesDAO();
-                    List<ReporteDiario> dataSubproductos = reportesDAO.getDailyPerformance(fechaI, fechaT, idGpoLinea);
+                    List<ReporteDTO> dataSubproductos = reportesDAO.getReporteSubproducto(fechaI, fechaT, idLinea);
                     
                     List<HashMap> reporteSubpro = new ArrayList<>();
                     HashMap<String, Object> head = new HashMap<>();
@@ -732,23 +732,15 @@ public class ControllerReportes {
                     head.put("valor", "Subproducto");
                     reporteSubpro.add(head);
                     
-                    for(ReporteDiario row:dataSubproductos){
+                    for(ReporteDTO row:dataSubproductos){
                         HashMap<String, Object> body = new HashMap<>();
-                        body.put("padre", 1);
-                        body.put("dia",   "Dia");
-                        body.put("turno", "Turno");
-                        body.put("grupo", "Grupo");
-                        body.put("valor", "Subproducto");
+                        body.put("padre", 0);
+                        body.put("dia",   convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                        body.put("turno", row.getId_turno());
+                        body.put("grupo", row.getValor_grupo());
+                        body.put("valor", row.getSubproductos().setScale(3, RoundingMode.FLOOR));
                         reporteSubpro.add(body);
                     }
-                    
-                    HashMap<String, Object> foot = new HashMap<>();
-                    foot.put("padre", 2);
-                    foot.put("dia",   "Total");
-                    foot.put("turno", "");
-                    foot.put("grupo", "");
-                    foot.put("valor", "Subproducto");
-                    reporteSubpro.add(foot);
                     
                     data.setReporteMap(reporteSubpro);
                     output.setData(data);

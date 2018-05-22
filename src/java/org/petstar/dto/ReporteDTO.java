@@ -13,6 +13,7 @@ public class ReporteDTO {
     private String valor_grupo;
     private String valor_linea;
     private BigDecimal velocidad_promedio;
+    private BigDecimal subproductos;
 
     public Date getDia() {
         return dia;
@@ -52,5 +53,13 @@ public class ReporteDTO {
 
     public void setVelocidad_promedio(BigDecimal velocidad_promedio) {
         this.velocidad_promedio = velocidad_promedio;
+    }
+
+    public BigDecimal getSubproductos() {
+        return subproductos;
+    }
+
+    public void setSubproductos(BigDecimal subproductos) {
+        this.subproductos = subproductos;
     }
 }
