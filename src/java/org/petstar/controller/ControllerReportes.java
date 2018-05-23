@@ -23,6 +23,7 @@ import static org.petstar.configurations.utils.getDateLastDay;
 import static org.petstar.configurations.utils.getDateFirstDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.convertStringToSql;
+import static org.petstar.configurations.utils.getUltimoDiaMes;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.Fuentes;
@@ -862,7 +863,8 @@ public class ControllerReportes {
                             dataRows = reportesDAO.getReportePerformanceByWeek(periodo.getMes(), periodo.getAnio(), idLinea);
                             break;
                         case"byMonths":
-                            dataRows = reportesDAO.getReportePerformanceByMonth(periodo.getAnio(), idLinea);
+                            int lastDayFeb = getUltimoDiaMes(periodo.getAnio(), 2);
+                            dataRows = reportesDAO.getReportePerformanceByMonth(periodo.getAnio(), idLinea,lastDayFeb);
                             break;
                     }
                     

@@ -174,13 +174,13 @@ public class ReportesDAO {
         return data;
     }
 
-	public List<ReporteDiario> getReportePerformanceByMonth(int anio, int idLinea)throws Exception{
+	public List<ReporteDiario> getReportePerformanceByMonth(int anio, int idLinea, int lastDayFeb)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
 
-        sql.append("EXEC  ?, ?, ?");
-        Object[] parmas = {anio, idLinea};
+        sql.append("EXEC sp_selectReporteJucodiAnual ?, ?, ?");
+        Object[] parmas = {anio, idLinea, lastDayFeb};
 
         ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
         List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
