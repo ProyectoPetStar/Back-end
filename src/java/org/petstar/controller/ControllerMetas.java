@@ -12,6 +12,8 @@ import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.convertSqlToDay;
+import static org.petstar.configurations.utils.obtenerAnio;
+import static org.petstar.configurations.utils.obtenerMes;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.MetasDTO;
@@ -31,6 +33,7 @@ public class ControllerMetas {
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_INVALID= "Ya existe una meta con esos valores.";
     private static final String MSG_NO_EXIST= "La meta no existe.";
+    private static final String MSG_PERIODO = "El Periodo ya esta cerrado.";
     
     /**
      * Consulta de Metas
@@ -55,6 +58,7 @@ public class ControllerMetas {
             if(sesion != null){
                 MetasDAO metasDAO = new MetasDAO();
                 MetasDataResponseJson data = new MetasDataResponseJson();
+                data.setEstatusPeriodo((periodosDTO.getEstatus()==0));
                 data.setListMetas(metasDAO.getAllMetas(periodosDTO.getMes(), periodosDTO.getAnio(), idLinea));
                 
                 for(MetasDTO meta:data.getListMetas()){
@@ -147,19 +151,29 @@ public class ControllerMetas {
         try{
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
-                MetasDAO metasDAO = new MetasDAO();
-                ResultInteger result = metasDAO.validaDataForInsertMeta(convertStringToSql(dia), idTurno, idGrupo, idLinea);
-                if(result.getResult().equals(0)){
-                    metasDAO.insertNewMeta(convertStringToSql(dia), meta, tmp, vel, idTurno, idGrupo, idLinea);
-                
-                    response.setMessage(MSG_SUCESS);
-                    response.setSucessfull(true);
+                Date day = convertStringToSql(dia);
+                int year = obtenerAnio(day);
+                int month = obtenerMes(day);
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoByMesAndAnio(month, year);
+                if(periodo.getEstatus()==0){
+                    MetasDAO metasDAO = new MetasDAO();
+                    ResultInteger result = metasDAO.validaDataForInsertMeta(day, idTurno, idGrupo, idLinea);
+                    if(result.getResult().equals(0)){
+                        metasDAO.insertNewMeta(day, meta, tmp, vel, idTurno, idGrupo, idLinea);
+
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    }else{
+                        response.setMessage(MSG_INVALID);
+                        response.setSucessfull(false);
+                    }
                 }else{
-                    response.setMessage(MSG_INVALID);
+                    response.setMessage(MSG_LOGOUT);
                     response.setSucessfull(false);
                 }
             }else{
-                response.setMessage(MSG_LOGOUT);
+                response.setMessage(MSG_PERIODO);
                 response.setSucessfull(false);
             }
         }catch (Exception ex){

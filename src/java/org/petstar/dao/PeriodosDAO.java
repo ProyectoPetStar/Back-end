@@ -55,6 +55,19 @@ public class PeriodosDAO {
         return data;
     }
     
+    public PeriodosDTO getPeriodoByMesAndAnio(int mes, int anio) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_periodo WHERE mes=? AND anio=?");
+        Object[] params = { mes, anio };
+        
+        ResultSetHandler rsh = new BeanHandler(PeriodosDTO.class);
+        PeriodosDTO periodo = (PeriodosDTO) qr.query(sql.toString(), rsh, params);
+        return periodo;
+    }
+    
     public List<PeriodosDTO> getAllPeriodos() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
