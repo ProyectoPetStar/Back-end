@@ -9,6 +9,7 @@ import java.util.List;
 import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.MetasDTO;
+import org.petstar.dto.PeriodosDTO;
 
 /**
  * Modelo del JSON de Metas
@@ -21,6 +22,7 @@ public class MetasDataResponseJson {
     private List<LineasDTO> listLineas;
     private List<CatalogosDTO> listTurnos;
     private List<CatalogosDTO> listGrupos;
+    private List<PeriodosDTO> listPeriodos;
 
     public boolean isEstatusPeriodo() {
         return estatusPeriodo;
@@ -69,5 +71,12 @@ public class MetasDataResponseJson {
     public void setListGrupos(List<CatalogosDTO> listGrupos) {
         this.listGrupos = listGrupos;
     }
-    
+
+    public List<PeriodosDTO> getListPeriodos() {
+        return listPeriodos;
+    }
+
+    public void setListPeriodos(List<PeriodosDTO> listPeriodos) {
+        this.listPeriodos = listPeriodos;
+    }
 }

@@ -5,6 +5,7 @@ import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.FallasDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.MetasDTO;
+import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ProduccionDTO;
 import org.petstar.dto.ProductosDTO;
 
@@ -15,6 +16,7 @@ import org.petstar.dto.ProductosDTO;
 public class ProduccionResponseJson {
     private List<ProduccionDTO> listProduccion;
     private List<ProduccionDTO> listDetalle;
+    private List<PeriodosDTO> listPeriodos;
     private List<ProductosDTO> listProductos;
     private List<LineasDTO> listLineas;
     private List<CatalogosDTO> listGrupos;
@@ -37,6 +39,14 @@ public class ProduccionResponseJson {
 
     public void setListDetalle(List<ProduccionDTO> listDetalle) {
         this.listDetalle = listDetalle;
+    }
+
+    public List<PeriodosDTO> getListPeriodos() {
+        return listPeriodos;
+    }
+
+    public void setListPeriodos(List<PeriodosDTO> listPeriodos) {
+        this.listPeriodos = listPeriodos;
     }
 
     public List<ProductosDTO> getListProductos() {

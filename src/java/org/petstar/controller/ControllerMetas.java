@@ -169,11 +169,11 @@ public class ControllerMetas {
                         response.setSucessfull(false);
                     }
                 }else{
-                    response.setMessage(MSG_LOGOUT);
+                    response.setMessage(MSG_PERIODO);
                     response.setSucessfull(false);
                 }
             }else{
-                response.setMessage(MSG_PERIODO);
+                response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
             }
         }catch (Exception ex){
@@ -274,9 +274,11 @@ public class ControllerMetas {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 MetasDataResponseJson data = new MetasDataResponseJson();
                 
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
                 data.setListLineas(lineasDAO.getLineasActive());
