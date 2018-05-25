@@ -12,8 +12,6 @@ import org.petstar.dao.ProduccionDAO;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
-import static org.petstar.configurations.utils.obtenerAnio;
-import static org.petstar.configurations.utils.obtenerMes;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
@@ -128,7 +126,6 @@ public class ControllerProduccion {
                 
                 PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
                 String[] perfiles = sesion.getPerfiles().split(",");
-                java.util.Date day = new java.util.Date();
                 
                 if (perfiles[0].equals("1") || perfiles[0].equals("2") || 
                         perfiles[0].equals("3") || perfiles[0].equals("6")) {
