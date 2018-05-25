@@ -28,6 +28,7 @@ import org.petstar.dao.FallasDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.FallasDTO;
+import org.petstar.dto.PeriodosDTO;
 
 /**
  *
@@ -117,25 +118,27 @@ public class ControllerProduccion {
         OutputJson output = new OutputJson();
         
         try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
                 String[] perfiles = sesion.getPerfiles().split(",");
                 java.util.Date day = new java.util.Date();
                 
                 if (perfiles[0].equals("1") || perfiles[0].equals("2") || 
                         perfiles[0].equals("3") || perfiles[0].equals("6")) {
                     
-                    data.setListProduccion(produccionDAO.getProduccionByPeriodo(
-                            obtenerMes(day), obtenerAnio(day)));
+                    data.setListProduccion(produccionDAO.getProduccionByPeriodo(periodo.getMes(), periodo.getAnio()));
                     
                 }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
                     
                     data.setListProduccion(produccionDAO.getProduccionByPeriodoAndLinea(
-                            obtenerMes(day), obtenerAnio(day), 
+                            periodo.getMes(), periodo.getAnio(),
                             sesion.getId_linea(), sesion.getId_grupo()));
                     
                     int turno = getTurnoForSaveProduction();
@@ -157,6 +160,7 @@ public class ControllerProduccion {
                             new SimpleDateFormat("dd/MM/yyyy")));
                 }
                 
+                data.setEstatusPeriodo(periodo.getEstatus()==0);
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
