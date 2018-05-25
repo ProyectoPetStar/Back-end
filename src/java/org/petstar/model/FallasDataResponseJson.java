@@ -11,6 +11,7 @@ import org.petstar.dto.EquiposDTO;
 import org.petstar.dto.FallasDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.MetasDTO;
+import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.RazonParoDTO;
 
 /**
@@ -27,6 +28,8 @@ public class FallasDataResponseJson {
     private List<CatalogosDTO> listTurnos;
     private List<CatalogosDTO> listGrupos;
     private List<LineasDTO> listLineas;
+    private List<PeriodosDTO> listPeriodos;
+    private boolean estatusPeriodo;
 
    public FallasDTO getFallasDTO() {
         return fallasDTO;
@@ -98,5 +101,21 @@ public class FallasDataResponseJson {
 
     public void setListLineas(List<LineasDTO> listLineas) {
         this.listLineas = listLineas;
+    }
+
+    public List<PeriodosDTO> getListPeriodos() {
+        return listPeriodos;
+    }
+
+    public void setListPeriodos(List<PeriodosDTO> listPeriodos) {
+        this.listPeriodos = listPeriodos;
+    }
+
+    public boolean isEstatusPeriodo() {
+        return estatusPeriodo;
+    }
+
+    public void setEstatusPeriodo(boolean estatusPeriodo) {
+        this.estatusPeriodo = estatusPeriodo;
     }
 }
