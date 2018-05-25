@@ -200,8 +200,10 @@ public class ControllerPeriodos {
             if(sesion != null ){
                 PeriodosResponseJson data = new PeriodosResponseJson();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
                 
                 data.setListDetailsPeriodo(periodosDAO.getDetailsPeriodo(idPeriodo));
+                data.setEstatusPeriodo(periodo.getEstatus() == 0);
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);

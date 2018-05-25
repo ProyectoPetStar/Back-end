@@ -22,6 +22,7 @@ public class ProduccionResponseJson {
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listTurnos;
     private List<FallasDTO> listFallas;
+    private boolean estatusPeriodo;
     private MetasDTO meta;
     
 
@@ -95,5 +96,13 @@ public class ProduccionResponseJson {
 
     public void setListFallas(List<FallasDTO> listFallas) {
         this.listFallas = listFallas;
+    }
+
+    public boolean isEstatusPeriodo() {
+        return estatusPeriodo;
+    }
+
+    public void setEstatusPeriodo(boolean estatusPeriodo) {
+        this.estatusPeriodo = estatusPeriodo;
     }
 }
