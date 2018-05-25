@@ -9,7 +9,6 @@ import org.petstar.dao.FallasDAO;
 import org.petstar.model.FallasDataResponseJson;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
-import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.convertStringToDate;
 import static org.petstar.configurations.utils.getTiempoParo;
 import static org.petstar.configurations.utils.getTurno;
@@ -17,13 +16,17 @@ import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.getCurrentDate;
+import static org.petstar.configurations.utils.getDateFirstDay;
+import static org.petstar.configurations.utils.getDateLastDay;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.EquiposDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.MetasDAO;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.RazonParoDAO;
 import org.petstar.dto.FallasDTO;
 import org.petstar.dto.MetasDTO;
+import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
 
@@ -51,6 +54,7 @@ public class ControllerFallas {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 EquiposDAO equiposDAO = new EquiposDAO();
                 RazonParoDAO paroDAO = new RazonParoDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
                 
@@ -61,6 +65,7 @@ public class ControllerFallas {
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
                 data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
                 data.setListRazonesParo(paroDAO.getAllRazonesActive());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListLineas(lineasDAO.getLineasActive());
 
                 output.setData(data);
@@ -91,6 +96,7 @@ public class ControllerFallas {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 EquiposDAO equiposDAO = new EquiposDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 RazonParoDAO paroDAO = new RazonParoDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
@@ -105,6 +111,7 @@ public class ControllerFallas {
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
                 data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
                 data.setListRazonesParo(paroDAO.getAllRazonesActive());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListLineas(lineasDAO.getLineasActive());
 
                 if(null != idMeta){
@@ -134,8 +141,7 @@ public class ControllerFallas {
     }
     
     public OutputJson getAllFallasByDays(HttpServletRequest request){
-        String fechaIn = request.getParameter("fecha_inicio");
-        String fechaTe = request.getParameter("fecha_termino");
+        int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
         int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
@@ -147,11 +153,15 @@ public class ControllerFallas {
         try{
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                java.sql.Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                java.sql.Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
                 FallasDAO fallasDAO = new FallasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
                 
-                data.setListFallas(fallasDAO.getAllFallasByDays(idLinea, idGrupo, 
-                        idTurno, convertStringToSql(fechaIn), convertStringToSql(fechaTe)));
+                data.setListFallas(fallasDAO.getAllFallasByDays(idLinea, idGrupo, idTurno, fechaI, fechaT));
+                data.setEstatusPeriodo(periodo.getEstatus()==0);
                 
                 for(FallasDTO falla:data.getListFallas()){
                     falla.setDia(sumarFechasDias(falla.getDia(), 2));
@@ -182,15 +192,8 @@ public class ControllerFallas {
         fallasDTO.setId_razon(Integer.parseInt(request.getParameter("id_razon")));
         fallasDTO.setId_equipo(Integer.parseInt(request.getParameter("id_equipo")));
         fallasDTO.setId_meta(Integer.parseInt(request.getParameter("id_meta")));
-        
-        SimpleDateFormat formato = new SimpleDateFormat("HH:mm");
-        Date horaInicio = convertStringToDate(fallasDTO.getHora_inicio(), formato);
-        Date horaFinal = convertStringToDate(fallasDTO.getHora_final(), formato);
-        int turno = getTurno();
-        if(turno==3){
-            horaFinal = sumarFechasDias(horaFinal, 1);
-        }
-        
+        fallasDTO.setTiempo_paro(new BigDecimal(request.getParameter("tiempo_paro")));
+                
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -198,20 +201,12 @@ public class ControllerFallas {
         try{
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
-                if(horaInicio.before(horaFinal)){
-                    BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
+                fallasDTO.setId_usuario_registro(sesion.getId_acceso());
+                FallasDAO fallasDAO = new FallasDAO();
+                fallasDAO.insertNewFalla(fallasDTO);
 
-                    fallasDTO.setId_usuario_registro(sesion.getId_acceso());
-                    fallasDTO.setTiempo_paro(tiempoParo);
-                    FallasDAO fallasDAO = new FallasDAO();
-                    fallasDAO.insertNewFalla(fallasDTO);
-
-                    response.setSucessfull(true);
-                    response.setMessage(MSG_SUCESS);
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Las horas son invalidas");
-                }
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
