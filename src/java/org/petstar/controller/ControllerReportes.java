@@ -32,6 +32,7 @@ import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ReporteDTO;
 import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ResultBigDecimal;
+import org.petstar.dto.ResultSQLDate;
 import org.petstar.dto.UserDTO;
 
 /**
@@ -171,174 +172,181 @@ public class ControllerReportes {
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, idLInea);
                 if(periodo != null){
-                    Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
-                    Date fechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
-                    BigDecimal tiempoDisponibleTotal = getTotalHoras(fechaInicio, fechaTermino);
-                    
                     ReportesDAO reportesDAO = new ReportesDAO();
-                
-                    List<HashMap> reporte = new ArrayList<>();
-                    HashMap<String, Object> map0 = new HashMap<>();
-                    map0.put("padre", 1);
-                    map0.put("titulo", "Titulo");
-                    map0.put("hrs", "Hrs.");
-                    map0.put("porcentaje", "%");
-                    reporte.add(map0);
-                    HashMap<String, Object> map1 = new HashMap<>();
-                    map1.put("padre", 0);
-                    map1.put("titulo", "Tiempo Disponible Total");
-                    map1.put("hrs", tiempoDisponibleTotal);
-                    map1.put("porcentaje", 100);
-                    reporte.add(map1);
-                    HashMap<String, Object> map2 = new HashMap<>();
-                    map2.put("padre", 0);
-                    map2.put("titulo", "No Ventas");
-                    map2.put("hrs", 0);
-                    map2.put("porcentaje", 0);
-                    reporte.add(map2);
-                    HashMap<String, Object> map3 = new HashMap<>();
-                    map3.put("padre", 0);
-                    map3.put("titulo", "Tiempo Disponible");
-                    map3.put("hrs", tiempoDisponibleTotal);
-                    map3.put("porcentaje", 100);
-                    reporte.add(map3);
-                    BigDecimal totalHoraParo = new BigDecimal(BigInteger.ZERO);
-                    BigDecimal desempenoEfec = new BigDecimal(BigInteger.ZERO);
-                    List<Fuentes> listFuentes = reportesDAO.getFuentes(idLInea, fechaInicio, fechaTermino);
-                    ResultBigDecimal prodBuena = reportesDAO.getProduccionBuena(idLInea, fechaInicio, fechaTermino);
-                    ResultBigDecimal subProduc = reportesDAO.getSumaSubProductos(idLInea, fechaInicio, fechaTermino);
-                    for(Fuentes fuente:listFuentes){
-                        HashMap<String, Object> map4 = new HashMap<>();
-                        map4.put("padre", 0);
-                        map4.put("titulo", fuente.getValor());
-                        map4.put("hrs", fuente.getHrs());
-                        map4.put("porcentaje", getPorcentajeParo(fuente.getHrs(), tiempoDisponibleTotal));
-                        reporte.add(map4);
-                        desempenoEfec = desempenoEfec.add(fuente.getHrs());
-                        if(fuente.getId() == 1 || fuente.getId() == 2){
-                            totalHoraParo = totalHoraParo.add(fuente.getHrs());
+                    ResultSQLDate fecIni = reportesDAO.getFirstDateofPeriodo(periodo.getMes(), periodo.getAnio(), idLInea);
+                    ResultSQLDate fecTer = reportesDAO.getLastDateofPeriodo(periodo.getMes(), periodo.getAnio(), idLInea);
+                    
+                    if(fecIni != null && fecTer != null){
+                        Date fechaInicio = sumarFechasDias(fecIni.getResult(), 2);
+                        Date fechaTermino = sumarFechasDias(fecTer.getResult(), 2);
+                        BigDecimal tiempoDisponibleTotal = getTotalHoras(fechaInicio, fechaTermino);
+                        
+                        List<HashMap> reporte = new ArrayList<>();
+                        HashMap<String, Object> map0 = new HashMap<>();
+                        map0.put("padre", 1);
+                        map0.put("titulo", "Titulo");
+                        map0.put("hrs", "Hrs.");
+                        map0.put("porcentaje", "%");
+                        reporte.add(map0);
+                        HashMap<String, Object> map1 = new HashMap<>();
+                        map1.put("padre", 0);
+                        map1.put("titulo", "Tiempo Disponible Total");
+                        map1.put("hrs", tiempoDisponibleTotal);
+                        map1.put("porcentaje", 100);
+                        reporte.add(map1);
+                        HashMap<String, Object> map2 = new HashMap<>();
+                        map2.put("padre", 0);
+                        map2.put("titulo", "No Ventas");
+                        map2.put("hrs", 0);
+                        map2.put("porcentaje", 0);
+                        reporte.add(map2);
+                        HashMap<String, Object> map3 = new HashMap<>();
+                        map3.put("padre", 0);
+                        map3.put("titulo", "Tiempo Disponible");
+                        map3.put("hrs", tiempoDisponibleTotal);
+                        map3.put("porcentaje", 100);
+                        reporte.add(map3);
+                        BigDecimal totalHoraParo = new BigDecimal(BigInteger.ZERO);
+                        BigDecimal desempenoEfec = new BigDecimal(BigInteger.ZERO);
+                        List<Fuentes> listFuentes = reportesDAO.getFuentes(idLInea, fechaInicio, fechaTermino);
+                        ResultBigDecimal prodBuena = reportesDAO.getProduccionBuena(idLInea, fechaInicio, fechaTermino);
+                        ResultBigDecimal subProduc = reportesDAO.getSumaSubProductos(idLInea, fechaInicio, fechaTermino);
+                        for(Fuentes fuente:listFuentes){
+                            HashMap<String, Object> map4 = new HashMap<>();
+                            map4.put("padre", 0);
+                            map4.put("titulo", fuente.getValor());
+                            map4.put("hrs", fuente.getHrs());
+                            map4.put("porcentaje", getPorcentajeParo(fuente.getHrs(), tiempoDisponibleTotal));
+                            reporte.add(map4);
+                            desempenoEfec = desempenoEfec.add(fuente.getHrs());
+                            if(fuente.getId() == 1 || fuente.getId() == 2){
+                                totalHoraParo = totalHoraParo.add(fuente.getHrs());
+                            }
                         }
+                        HashMap<String, Object> map5 = new HashMap<>();
+                        map5.put("padre", 2);
+                        map5.put("titulo", "Desempeño Efectivo Total de Equipos");
+                        map5.put("hrs", desempenoEfec);
+                        map5.put("porcentaje", getPorcentajeParo(desempenoEfec, tiempoDisponibleTotal));
+                        reporte.add(map5);
+                        HashMap<String, Object> map6 = new HashMap<>();
+                        map6.put("padre", 2);
+                        map6.put("titulo", "Total Hora de Paro");
+                        map6.put("hrs", totalHoraParo);
+                        map6.put("porcentaje", getPorcentajeParo(totalHoraParo, tiempoDisponibleTotal));
+                        reporte.add(map6);
+
+                        List<HashMap> datosProduccion = new ArrayList<>();
+                        HashMap<String, Object> map12 = new HashMap<>();
+                        map12.put("padre", 1);
+                        map12.put("titulo", "Datos de Producción");
+                        map12.put("hrs", "");
+                        map12.put("porcentaje", "");
+                        datosProduccion.add(map12);
+                        HashMap<String, Object> map7 = new HashMap<>();
+                        map7.put("padre", 0);
+                        map7.put("titulo", "Velocidad Ideal (Hora)");
+                        map7.put("hrs", 3.5);
+                        map7.put("porcentaje", "");
+                        datosProduccion.add(map7);
+                        HashMap<String, Object> map8 = new HashMap<>();
+                        map8.put("padre", 0);
+                        map8.put("titulo", "Capacidad Productiva (Turno)");
+                        map8.put("hrs", (3.5 * 8));
+                        map8.put("porcentaje", "");
+                        datosProduccion.add(map8);
+                        datosProduccion.add(map3);
+                        HashMap<String, Object> map9 = new HashMap<>();
+                        BigDecimal tiempoOperacion = tiempoDisponibleTotal.subtract(totalHoraParo);
+                        map9.put("padre", 0);
+                        map9.put("titulo", "Tiempo de Operación");
+                        map9.put("hrs", tiempoOperacion);
+                        map9.put("porcentaje", "");
+                        datosProduccion.add(map9);
+                        HashMap<String, Object> map10 = new HashMap<>();
+                        map10.put("padre", 0);
+                        map10.put("titulo", "Producción Buena");
+                        map10.put("hrs", prodBuena.getResult());
+                        map10.put("porcentaje", "");
+                        datosProduccion.add(map10);
+                        HashMap<String, Object> map11 = new HashMap<>();
+                        BigDecimal produccionTotal = prodBuena.getResult().add(subProduc.getResult());
+                        map11.put("padre", 0);
+                        map11.put("titulo", "Producción Total");
+                        map11.put("hrs", produccionTotal);
+                        map11.put("porcentaje", "");
+                        datosProduccion.add(map11);
+
+                        List<HashMap> reporteOEE = new ArrayList<>();
+                        HashMap<String, Object> map13 = new HashMap<>();
+                        map13.put("padre", 1);
+                        map13.put("titulo", "OEE");
+                        map13.put("hrs", "");
+                        map13.put("porcentaje", "");
+                        reporteOEE.add(map13);
+                        HashMap<String, Object> map14 = new HashMap<>();
+                        BigDecimal pDisponibilidad = getPorcentajeParo(tiempoOperacion, tiempoDisponibleTotal);
+                        map14.put("padre", 0);
+                        map14.put("titulo", "Disponibilidad");
+                        map14.put("hrs", tiempoOperacion);
+                        map14.put("porcentaje", pDisponibilidad);
+                        map14.put("meta", periodo.getDisponibilidad());
+                        reporteOEE.add(map14);
+                        HashMap<String, Object> map15 = new HashMap<>();
+                        BigDecimal utilizacion = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
+                        BigDecimal calculo = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
+                        BigDecimal pUtilizacion = calculo.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                        map15.put("padre", 0);
+                        map15.put("titulo", "Utilización");
+                        map15.put("hrs", utilizacion);
+                        map15.put("porcentaje", pUtilizacion);
+                        map15.put("meta", periodo.getUtilizacion());
+                        reporteOEE.add(map15);
+                        HashMap<String, Object> map16 = new HashMap<>();
+                        BigDecimal pCalidad = BigDecimal.ZERO;
+                        int resultado = BigDecimal.ZERO.compareTo(prodBuena.getResult());
+                        if(resultado == -1){
+                            pCalidad = prodBuena.getResult().divide(produccionTotal,RoundingMode.CEILING);
+                        } 
+
+                        map16.put("padre", 0);
+                        map16.put("titulo", "Calidad");
+                        map16.put("hrs", "");
+                        map16.put("porcentaje", pCalidad);
+                        map16.put("meta", periodo.getCalidad());
+                        reporteOEE.add(map16);
+                        HashMap<String, Object> map17 = new HashMap<>();
+                        BigDecimal oee = pDisponibilidad.multiply(pUtilizacion).multiply(pCalidad);
+                        map17.put("padre", 0);
+                        map17.put("titulo", "OEE");
+                        map17.put("hrs", "");
+                        map17.put("porcentaje", oee);
+                        map17.put("meta", periodo.getOee());
+                        reporteOEE.add(map17);
+                        HashMap<String, Object> map18 = new HashMap<>();
+                        BigDecimal pTEEP = getPorcentajeParo(desempenoEfec, tiempoDisponibleTotal);
+                        map18.put("padre", 0);
+                        map18.put("titulo", "TEEP (hrs)");
+                        map18.put("hrs", desempenoEfec);
+                        map18.put("porcentaje", pTEEP);
+                        reporteOEE.add(map18);
+                        HashMap<String, Object> map19 = new HashMap<>();
+                        map19.put("padre", 0);
+                        map19.put("titulo", "TEEP (hrs)");
+                        map19.put("hrs", tiempoDisponibleTotal.subtract(desempenoEfec));
+                        map19.put("porcentaje", BigDecimal.ONE.subtract(pTEEP));
+                        reporteOEE.add(map19);
+
+                        data.setReporteDisponibilidad(reporte);
+                        data.setDatosProduccion(datosProduccion);
+                        data.setReporteOEE(reporteOEE);
+                        output.setData(data);
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    }else{
+                        response.setSucessfull(false);
+                        response.setMessage("El Periodo no cuenta con datos para graficar");
                     }
-                    HashMap<String, Object> map5 = new HashMap<>();
-                    map5.put("padre", 2);
-                    map5.put("titulo", "Desempeño Efectivo Total de Equipos");
-                    map5.put("hrs", desempenoEfec);
-                    map5.put("porcentaje", getPorcentajeParo(desempenoEfec, tiempoDisponibleTotal));
-                    reporte.add(map5);
-                    HashMap<String, Object> map6 = new HashMap<>();
-                    map6.put("padre", 2);
-                    map6.put("titulo", "Total Hora de Paro");
-                    map6.put("hrs", totalHoraParo);
-                    map6.put("porcentaje", getPorcentajeParo(totalHoraParo, tiempoDisponibleTotal));
-                    reporte.add(map6);
-
-                    List<HashMap> datosProduccion = new ArrayList<>();
-                    HashMap<String, Object> map12 = new HashMap<>();
-                    map12.put("padre", 1);
-                    map12.put("titulo", "Datos de Producción");
-                    map12.put("hrs", "");
-                    map12.put("porcentaje", "");
-                    datosProduccion.add(map12);
-                    HashMap<String, Object> map7 = new HashMap<>();
-                    map7.put("padre", 0);
-                    map7.put("titulo", "Velocidad Ideal (Hora)");
-                    map7.put("hrs", 3.5);
-                    map7.put("porcentaje", "");
-                    datosProduccion.add(map7);
-                    HashMap<String, Object> map8 = new HashMap<>();
-                    map8.put("padre", 0);
-                    map8.put("titulo", "Capacidad Productiva (Turno)");
-                    map8.put("hrs", (3.5 * 8));
-                    map8.put("porcentaje", "");
-                    datosProduccion.add(map8);
-                    datosProduccion.add(map3);
-                    HashMap<String, Object> map9 = new HashMap<>();
-                    BigDecimal tiempoOperacion = tiempoDisponibleTotal.subtract(totalHoraParo);
-                    map9.put("padre", 0);
-                    map9.put("titulo", "Tiempo de Operación");
-                    map9.put("hrs", tiempoOperacion);
-                    map9.put("porcentaje", "");
-                    datosProduccion.add(map9);
-                    HashMap<String, Object> map10 = new HashMap<>();
-                    map10.put("padre", 0);
-                    map10.put("titulo", "Producción Buena");
-                    map10.put("hrs", prodBuena.getResult());
-                    map10.put("porcentaje", "");
-                    datosProduccion.add(map10);
-                    HashMap<String, Object> map11 = new HashMap<>();
-                    BigDecimal produccionTotal = prodBuena.getResult().add(subProduc.getResult());
-                    map11.put("padre", 0);
-                    map11.put("titulo", "Producción Total");
-                    map11.put("hrs", produccionTotal);
-                    map11.put("porcentaje", "");
-                    datosProduccion.add(map11);
-
-                    List<HashMap> reporteOEE = new ArrayList<>();
-                    HashMap<String, Object> map13 = new HashMap<>();
-                    map13.put("padre", 1);
-                    map13.put("titulo", "OEE");
-                    map13.put("hrs", "");
-                    map13.put("porcentaje", "");
-                    reporteOEE.add(map13);
-                    HashMap<String, Object> map14 = new HashMap<>();
-                    BigDecimal pDisponibilidad = getPorcentajeParo(tiempoOperacion, tiempoDisponibleTotal);
-                    map14.put("padre", 0);
-                    map14.put("titulo", "Disponibilidad");
-                    map14.put("hrs", tiempoOperacion);
-                    map14.put("porcentaje", pDisponibilidad);
-                    map14.put("meta", periodo.getDisponibilidad());
-                    reporteOEE.add(map14);
-                    HashMap<String, Object> map15 = new HashMap<>();
-                    BigDecimal utilizacion = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
-                    BigDecimal calculo = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
-                    BigDecimal pUtilizacion = calculo.divide(new BigDecimal(3.5), RoundingMode.CEILING);
-                    map15.put("padre", 0);
-                    map15.put("titulo", "Utilización");
-                    map15.put("hrs", utilizacion);
-                    map15.put("porcentaje", pUtilizacion);
-                    map15.put("meta", periodo.getUtilizacion());
-                    reporteOEE.add(map15);
-                    HashMap<String, Object> map16 = new HashMap<>();
-                    BigDecimal pCalidad = BigDecimal.ZERO;
-                    int resultado = BigDecimal.ZERO.compareTo(prodBuena.getResult());
-                    if(resultado == -1){
-                        pCalidad = prodBuena.getResult().divide(produccionTotal,RoundingMode.CEILING);
-                    } 
-                   
-                    map16.put("padre", 0);
-                    map16.put("titulo", "Calidad");
-                    map16.put("hrs", "");
-                    map16.put("porcentaje", pCalidad);
-                    map16.put("meta", periodo.getCalidad());
-                    reporteOEE.add(map16);
-                    HashMap<String, Object> map17 = new HashMap<>();
-                    BigDecimal oee = pDisponibilidad.multiply(pUtilizacion).multiply(pCalidad);
-                    map17.put("padre", 0);
-                    map17.put("titulo", "OEE");
-                    map17.put("hrs", "");
-                    map17.put("porcentaje", oee);
-                    map17.put("meta", periodo.getOee());
-                    reporteOEE.add(map17);
-                    HashMap<String, Object> map18 = new HashMap<>();
-                    BigDecimal pTEEP = getPorcentajeParo(desempenoEfec, tiempoDisponibleTotal);
-                    map18.put("padre", 0);
-                    map18.put("titulo", "TEEP (hrs)");
-                    map18.put("hrs", desempenoEfec);
-                    map18.put("porcentaje", pTEEP);
-                    reporteOEE.add(map18);
-                    HashMap<String, Object> map19 = new HashMap<>();
-                    map19.put("padre", 0);
-                    map19.put("titulo", "TEEP (hrs)");
-                    map19.put("hrs", tiempoDisponibleTotal.subtract(desempenoEfec));
-                    map19.put("porcentaje", BigDecimal.ONE.subtract(pTEEP));
-                    reporteOEE.add(map19);
-
-                    data.setReporteDisponibilidad(reporte);
-                    data.setDatosProduccion(datosProduccion);
-                    data.setReporteOEE(reporteOEE);
-                    output.setData(data);
-                    response.setMessage(MSG_SUCESS);
-                    response.setSucessfull(true);
                 }else{
                     response.setSucessfull(false);
                     response.setMessage(MSG_NOEXIS);
@@ -419,9 +427,10 @@ public class ControllerReportes {
                     
                     BigDecimal acumulado = BigDecimal.ZERO;
                     BigDecimal acumHojuela = BigDecimal.ZERO;
+                    BigDecimal planMolido = BigDecimal.ZERO;
                     
                     for(int i=0; i<listData.size(); i++){
-                        BigDecimal planMolido = listData.get(i).getPlan_molido();
+                        planMolido = planMolido.add(listData.get(i).getPlan_molido());
                         HashMap<String, Object> row = new HashMap<>();
                         row.put("padre",	0);
                         row.put("dia",		convertSqlToDay(sumarFechasDias(listData.get(i).getDia(),2)));
@@ -431,6 +440,12 @@ public class ControllerReportes {
                             BigDecimal molido = listaMolidos.get(y).get(i).getResult();
                             row.put("molido"+(y+1),	molido);
                             BigDecimal hojuela = molido.multiply(periodo.getEficiencia_teorica());
+                            int compare = hojuela.compareTo(BigDecimal.ZERO);
+                            if(compare == 0){
+                                hojuela = BigDecimal.ZERO;
+                            }else{
+                                hojuela = hojuela.divide(new BigDecimal(100));
+                            }
                             row.put("hojuela"+(y+1), hojuela);
                             totalMolido = totalMolido.add(molido);
                             totalHojuela = totalHojuela.add(hojuela);
@@ -444,21 +459,29 @@ public class ControllerReportes {
                         totalTotalPlanMolido = planMolido;
                         BigDecimal diferenciaMolido = acumulado.subtract(planMolido);
                         row.put("difMolido",	diferenciaMolido);
-                        BigDecimal eficiencia = acumulado.divide(planMolido, RoundingMode.CEILING);
+                        int compare = planMolido.compareTo(BigDecimal.ZERO);
+                        BigDecimal eficiencia = BigDecimal.ZERO;
+                        if(compare != 0){eficiencia = acumulado.divide(planMolido, RoundingMode.CEILING);}
+                        eficiencia = eficiencia.multiply(new BigDecimal(100));
                         row.put("eficiencia",	eficiencia);
-                        row.put("vsMetaM",	eficiencia.subtract(BigDecimal.ONE));
+                        row.put("vsMetaM",	eficiencia.subtract(new BigDecimal(100)));
                         row.put("eficTeorica",	periodo.getEficiencia_teorica());
                         row.put("totalHoj",	totalHojuela);
                         totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
                         acumHojuela = acumHojuela.add(totalHojuela);
                         row.put("acumHoju",	acumHojuela);
                         BigDecimal planHojuela = planMolido.multiply(periodo.getEficiencia_teorica());
-                        totalTotalPlanHojuela = planHojuela;
+                        compare = planHojuela.compareTo(BigDecimal.ZERO);
+                        if(compare == 0){ planHojuela= BigDecimal.ZERO;}else{planHojuela= planHojuela.divide(new BigDecimal(100));}
                         row.put("planHoju",	planHojuela);
                         row.put("difeHoju",     acumHojuela.subtract(planHojuela));
-                        BigDecimal eficienciaDia = acumHojuela.divide(planHojuela, RoundingMode.CEILING);
+                        BigDecimal eficienciaDia = BigDecimal.ZERO;
+                        compare = planHojuela.compareTo(BigDecimal.ZERO);
+                        if(compare != 0){eficienciaDia = acumHojuela.divide(planHojuela, RoundingMode.CEILING);}
+                        totalTotalPlanHojuela = planHojuela;
+                        eficienciaDia = eficienciaDia.multiply(new BigDecimal(100));
                         row.put("eficiDia",	eficienciaDia);
-                        row.put("vsMetaH",	eficiencia.subtract(BigDecimal.ONE));
+                        row.put("vsMetaH",	eficienciaDia.subtract(new BigDecimal(100)));
                         listReporte.add(row);   
                     }
                     
@@ -471,14 +494,16 @@ public class ControllerReportes {
                         BigDecimal totalHojuela = calculo.divide(new BigDecimal(100), RoundingMode.CEILING);
                         totales.put("molido"+(y+1),lisTotalMolidos.get(y).getResult());
                         totales.put("hojuela"+(y+1),totalHojuela);
-                        totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
+                        //totalTotalHojuela = totalTotalHojuela.add(totalHojuela);
                     }
                     totales.put("totalMolido",totalTotalMolido);
                     totales.put("acumulado",acumulado);
                     totales.put("metaMolido",totalTotalPlanMolido);
                     BigDecimal totalTotalDifMolido = acumulado.subtract(totalTotalPlanMolido);
                     totales.put("difMolido",totalTotalDifMolido);
-                    BigDecimal TotalEficienciaDia = acumulado.divide(totalTotalPlanMolido,RoundingMode.CEILING);
+                    int compare = totalTotalPlanMolido.compareTo(BigDecimal.ZERO);
+                    BigDecimal TotalEficienciaDia = BigDecimal.ZERO;
+                    if(compare != 0){ TotalEficienciaDia = acumulado.divide(totalTotalPlanMolido,RoundingMode.CEILING);}
                     totales.put("eficiencia",TotalEficienciaDia);
                     totales.put("vsMetaM",TotalEficienciaDia.subtract(BigDecimal.ONE));
                     totales.put("eficTeorica",periodo.getEficiencia_teorica());
@@ -487,7 +512,9 @@ public class ControllerReportes {
                     totales.put("planHoju",totalTotalPlanHojuela);
                     BigDecimal totalTotalDifHojuela = acumHojuela.subtract(totalTotalPlanHojuela);
                     totales.put("difeHoju",totalTotalDifHojuela);
-                    BigDecimal totalEficienciaHojuela = acumHojuela.divide(totalTotalPlanHojuela, RoundingMode.CEILING);
+                    compare = totalTotalPlanHojuela.compareTo(BigDecimal.ZERO);
+                    BigDecimal totalEficienciaHojuela = BigDecimal.ZERO;
+                    if(compare != 0){ totalEficienciaHojuela = acumHojuela.divide(totalTotalPlanHojuela, RoundingMode.CEILING); }
                     totales.put("eficiDia",totalEficienciaHojuela);
                     totales.put("vsMetaH",totalEficienciaHojuela.subtract(BigDecimal.ONE));
                     listReporte.add(totales);

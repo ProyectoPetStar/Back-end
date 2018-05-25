@@ -12,6 +12,7 @@ import org.petstar.dto.Fuentes;
 import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ReporteDTO;
 import org.petstar.dto.ResultBigDecimal;
+import org.petstar.dto.ResultSQLDate;
 
 /**
  *
@@ -185,5 +186,39 @@ public class ReportesDAO {
         ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
         List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
         return data;
+    }
+        
+    public ResultSQLDate getFirstDateofPeriodo(int mes, int anio, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT TOP 1 me.dia AS result FROM dbo.pet_meta AS me ")
+                .append("INNER JOIN dbo.pet_produccion AS pr ON pr.id_meta = me.id_meta ")
+                .append("WHERE MONTH(me.dia) = ").append(mes).
+                append(" AND YEAR(me.dia) = ").append(anio).append(" AND me.id_linea = ")
+                .append(idLinea).append(" ORDER BY me.dia ASC");
+        //Object[] params = { idLinea, mes, anio };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultSQLDate.class);
+        ResultSQLDate result = (ResultSQLDate) qr.query(sql.toString(), rsh);
+        return result;
+    }
+    
+    public ResultSQLDate getLastDateofPeriodo(int mes, int anio, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+         sql.append("SELECT TOP 1 me.dia AS result FROM dbo.pet_meta AS me ")
+                .append("INNER JOIN dbo.pet_produccion AS pr ON pr.id_meta = me.id_meta ")
+                .append("WHERE MONTH(me.dia) = ").append(mes).
+                append(" AND YEAR(me.dia) = ").append(anio).append(" AND me.id_linea = ")
+                .append(idLinea).append(" ORDER BY me.dia DESC");
+        //Object[] params = { idLinea, mes, anio };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultSQLDate.class);
+        ResultSQLDate result = (ResultSQLDate) qr.query(sql.toString(), rsh);
+        return result;
     }
 }

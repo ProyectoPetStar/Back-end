@@ -15,11 +15,20 @@ import org.petstar.dto.MetasDTO;
  * @author Tech-Pro
  */
 public class MetasDataResponseJson {
+    private boolean estatusPeriodo;
     private MetasDTO metasDTO;
     private List<MetasDTO> listMetas;
     private List<LineasDTO> listLineas;
     private List<CatalogosDTO> listTurnos;
     private List<CatalogosDTO> listGrupos;
+
+    public boolean isEstatusPeriodo() {
+        return estatusPeriodo;
+    }
+
+    public void setEstatusPeriodo(boolean estatusPeriodo) {
+        this.estatusPeriodo = estatusPeriodo;
+    }
 
     public MetasDTO getMetasDTO() {
         return metasDTO;
