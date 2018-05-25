@@ -157,8 +157,9 @@ public class PeriodosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT mp.*, li.valor AS valor_linea ")
-                .append("FROM pet_metas_periodo AS mp ")
+        sql.append("SELECT pe.estatus, mp.*, li.valor AS valor_linea ")
+                .append("FROM pet_periodo AS pe ")
+                .append("INNER JOIN pet_metas_periodo AS mp ON pe.id_periodo = mp.id_periodo ")
                 .append("INNER JOIN pet_cat_linea li ON mp.id_linea = li.id_linea ")
                 .append("WHERE mp.id_periodo = ").append(idPeriodo);
         
