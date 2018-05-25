@@ -23,6 +23,11 @@ public class ReporteDiario {
     private BigDecimal produccion;
     private BigDecimal tmp_real;
     private BigDecimal tmp_meta;
+    private BigDecimal meta_a;
+    private BigDecimal meta_b;
+    private BigDecimal meta_c;
+    private BigDecimal meta_d;
+    
 
     public Date getDia() {
         return dia;
@@ -142,5 +147,37 @@ public class ReporteDiario {
 
     public void setTmp_real(BigDecimal tmp_real) {
         this.tmp_real = tmp_real;
+    }
+
+    public BigDecimal getMeta_a() {
+        return meta_a;
+    }
+
+    public void setMeta_a(BigDecimal meta_a) {
+        this.meta_a = meta_a;
+    }
+
+    public BigDecimal getMeta_b() {
+        return meta_b;
+    }
+
+    public void setMeta_b(BigDecimal meta_b) {
+        this.meta_b = meta_b;
+    }
+
+    public BigDecimal getMeta_c() {
+        return meta_c;
+    }
+
+    public void setMeta_c(BigDecimal meta_c) {
+        this.meta_c = meta_c;
+    }
+
+    public BigDecimal getMeta_d() {
+        return meta_d;
+    }
+
+    public void setMeta_d(BigDecimal meta_d) {
+        this.meta_d = meta_d;
     }
 }

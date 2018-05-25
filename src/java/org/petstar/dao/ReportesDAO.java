@@ -136,7 +136,7 @@ public class ReportesDAO {
         return data;
     }
 
-	public List<ReporteDTO> getReporteSubproducto(Date fechaI, Date fechaT, int idLinea)throws Exception{
+    public List<ReporteDTO> getReporteSubproducto(Date fechaI, Date fechaT, int idLinea)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -149,7 +149,20 @@ public class ReportesDAO {
         return data;
     }
 
-	public List<ReporteDTO> getReporteVelPromedio(Date fechaI, Date fechaT, int idLinea)throws Exception{
+    public ResultBigDecimal getTotalSubProducto(Date fechaI, Date fechaT, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectReporteSubProductoTotal ?, ?, ?");
+        Object[] params = { fechaI, fechaT, idLinea };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultBigDecimal.class);
+        ResultBigDecimal result = (ResultBigDecimal) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public List<ReporteDTO> getReporteVelPromedio(Date fechaI, Date fechaT, int idLinea)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -175,7 +188,7 @@ public class ReportesDAO {
         return data;
     }
 
-	public List<ReporteDiario> getReportePerformanceByMonth(int anio, int idLinea, int lastDayFeb)throws Exception{
+    public List<ReporteDiario> getReportePerformanceByMonth(int anio, int idLinea, int lastDayFeb)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -185,6 +198,19 @@ public class ReportesDAO {
 
         ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
         List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
+    
+    public ReporteDiario getGraficaPerformanceByMonth(int anio, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectGraficaRadarAnual ?, ?");
+        Object[] params = {anio, idLinea};
+        
+        ResultSetHandler rsh = new BeanHandler(ReporteDiario.class);
+        ReporteDiario data = (ReporteDiario) qr.query(sql.toString(), rsh, params);
         return data;
     }
         
