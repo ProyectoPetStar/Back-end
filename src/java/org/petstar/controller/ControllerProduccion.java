@@ -22,6 +22,8 @@ import static org.petstar.configurations.utils.getTurnoForSaveProduction;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.getCurrentDate;
+import static org.petstar.configurations.utils.obtenerAnio;
+import static org.petstar.configurations.utils.obtenerMes;
 import org.petstar.dao.FallasDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dao.PeriodosDAO;
@@ -292,6 +294,7 @@ public class ControllerProduccion {
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 
@@ -304,6 +307,11 @@ public class ControllerProduccion {
                     data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
                     data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                 }
+                
+                PeriodosDTO periodo = periodosDAO.getPeriodoByMesAndAnio(
+                        obtenerMes(data.getMeta().getDia()),
+                        obtenerAnio(data.getMeta().getDia()));
+                data.setEstatusPeriodo(periodo.getEstatus()==0);
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);

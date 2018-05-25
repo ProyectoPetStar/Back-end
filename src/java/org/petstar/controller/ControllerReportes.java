@@ -60,6 +60,7 @@ public class ControllerReportes {
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, idLInea);
                 if(periodo != null){
+                    ReportesDAO reportesDAO = new ReportesDAO();
                     Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date FechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
                     
@@ -72,6 +73,7 @@ public class ControllerReportes {
                     List<HashMap> listOEEFallas = new ArrayList<>();
                     BigDecimal tiempoDisponible = getTotalHoras(fechaInicio, FechaTermino);
                     BigDecimal totalGeneral = new BigDecimal(BigInteger.ZERO);
+                    ResultBigDecimal subproductos = reportesDAO.getTotalSubProducto(fechaInicio, FechaTermino, idLInea);
 
                     for(CatalogosDTO fuente:listFuentes){
                         HashMap<String, Object> map = new HashMap<>();
@@ -87,9 +89,19 @@ public class ControllerReportes {
                             HashMap<String, Object> raz = new HashMap<>();
                             raz.put("padre", 0);
                             raz.put("fuente", razon.getValor());
-                            raz.put("hrs", razon.getSuma_tiempo_paro());
-                            raz.put("porcentaje", getPorcentajeParo(
+                            if(razon.getValor().equals("Subproductos")){
+                                BigDecimal subproducto = BigDecimal.ZERO;
+                                if(subproductos.getResult().compareTo(BigDecimal.ZERO) != 0){
+                                    subproducto = subproductos.getResult();
+                                    subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                                }
+                                raz.put("hrs", subproducto);
+                                raz.put("porcentaje", getPorcentajeParo(subproducto, tiempoDisponible));
+                            }else{
+                                raz.put("hrs", razon.getSuma_tiempo_paro());
+                                raz.put("porcentaje", getPorcentajeParo(
                                     razon.getSuma_tiempo_paro(), tiempoDisponible));
+                            }
                             listOEEFallas.add(raz);
 
                             totalParcial = totalParcial.add(razon.getSuma_tiempo_paro());
@@ -180,6 +192,7 @@ public class ControllerReportes {
                         Date fechaInicio = sumarFechasDias(fecIni.getResult(), 2);
                         Date fechaTermino = sumarFechasDias(fecTer.getResult(), 2);
                         BigDecimal tiempoDisponibleTotal = getTotalHoras(fechaInicio, fechaTermino);
+                        ResultBigDecimal subproductos = reportesDAO.getTotalSubProducto(fechaInicio, fechaTermino, idLInea);
                         
                         List<HashMap> reporte = new ArrayList<>();
                         HashMap<String, Object> map0 = new HashMap<>();
@@ -215,14 +228,26 @@ public class ControllerReportes {
                             HashMap<String, Object> map4 = new HashMap<>();
                             map4.put("padre", 0);
                             map4.put("titulo", fuente.getValor());
-                            map4.put("hrs", fuente.getHrs());
-                            map4.put("porcentaje", getPorcentajeParo(fuente.getHrs(), tiempoDisponibleTotal));
+                            BigDecimal porCalidad = BigDecimal.ZERO;
+                            if(fuente.getValor().equals("Por Calidad")){
+                                if(subproductos.getResult().compareTo(BigDecimal.ZERO) != 0){
+                                    BigDecimal subproducto = subproductos.getResult();
+                                    subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                                    porCalidad = subproducto.add(fuente.getHrs());
+                                }
+                                map4.put("hrs", porCalidad);
+                                map4.put("porcentaje", getPorcentajeParo(porCalidad, tiempoDisponibleTotal));
+                            }else{
+                                map4.put("hrs", fuente.getHrs());
+                                map4.put("porcentaje", getPorcentajeParo(fuente.getHrs(), tiempoDisponibleTotal));
+                            }
                             reporte.add(map4);
-                            desempenoEfec = desempenoEfec.add(fuente.getHrs());
+                            desempenoEfec = desempenoEfec.add(fuente.getHrs()).add(porCalidad);
                             if(fuente.getId() == 1 || fuente.getId() == 2){
                                 totalHoraParo = totalHoraParo.add(fuente.getHrs());
                             }
                         }
+                        desempenoEfec = tiempoDisponibleTotal.subtract(desempenoEfec);
                         HashMap<String, Object> map5 = new HashMap<>();
                         map5.put("padre", 2);
                         map5.put("titulo", "Desempeño Efectivo Total de Equipos");
@@ -296,6 +321,7 @@ public class ControllerReportes {
                         BigDecimal utilizacion = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
                         BigDecimal calculo = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
                         BigDecimal pUtilizacion = calculo.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                        pUtilizacion = pUtilizacion.multiply(new BigDecimal(100));
                         map15.put("padre", 0);
                         map15.put("titulo", "Utilización");
                         map15.put("hrs", utilizacion);
@@ -307,6 +333,7 @@ public class ControllerReportes {
                         int resultado = BigDecimal.ZERO.compareTo(prodBuena.getResult());
                         if(resultado == -1){
                             pCalidad = prodBuena.getResult().divide(produccionTotal,RoundingMode.CEILING);
+                            pCalidad = pCalidad.multiply(new BigDecimal(100));
                         } 
 
                         map16.put("padre", 0);
@@ -317,6 +344,7 @@ public class ControllerReportes {
                         reporteOEE.add(map16);
                         HashMap<String, Object> map17 = new HashMap<>();
                         BigDecimal oee = pDisponibilidad.multiply(pUtilizacion).multiply(pCalidad);
+                        oee = oee.divide(new BigDecimal(10000),RoundingMode.CEILING);
                         map17.put("padre", 0);
                         map17.put("titulo", "OEE");
                         map17.put("hrs", "");
@@ -334,7 +362,7 @@ public class ControllerReportes {
                         map19.put("padre", 0);
                         map19.put("titulo", "TEEP (hrs)");
                         map19.put("hrs", tiempoDisponibleTotal.subtract(desempenoEfec));
-                        map19.put("porcentaje", BigDecimal.ONE.subtract(pTEEP));
+                        map19.put("porcentaje", new BigDecimal(100).subtract(pTEEP));
                         reporteOEE.add(map19);
 
                         data.setReporteDisponibilidad(reporte);
@@ -879,6 +907,7 @@ public class ControllerReportes {
                     ReportesResponseJson data = new ReportesResponseJson();
                     ReportesDAO reportesDAO = new ReportesDAO();
                     List<ReporteDiario> dataRows = null;
+                    ReporteDiario grafRows = null;
                     
                     switch(report){
                         case"byDays":
@@ -892,10 +921,12 @@ public class ControllerReportes {
                         case"byMonths":
                             int lastDayFeb = getUltimoDiaMes(periodo.getAnio(), 2);
                             dataRows = reportesDAO.getReportePerformanceByMonth(periodo.getAnio(), idLinea,lastDayFeb);
+                            grafRows = reportesDAO.getGraficaPerformanceByMonth(periodo.getAnio(), idLinea);
                             break;
                     }
                     
                     List<HashMap> reportePerformance = new ArrayList<>();
+                    List<HashMap> graficaPerformance = new ArrayList<>();
                     HashMap<String, Object> head = new HashMap<>();
                     head.put("padre", 1);
                     head.put("periodo","Periodo");
@@ -907,8 +938,19 @@ public class ControllerReportes {
                     head.put("meta2","Meta 2");
                     head.put("meta3","Meta 3");
                     reportePerformance.add(head);
+                    HashMap<String, Object> header = new HashMap<>();
+                    header.put("reala","Real A");
+                    header.put("realb","Real B");
+                    header.put("realc","Real C");
+                    header.put("reald","Real D");
+                    header.put("metaa","Meta A");
+                    header.put("metab","Meta B");
+                    header.put("metac","Meta C");
+                    header.put("metad","Meta D");
+                    header.put("padre", 1);
+                    graficaPerformance.add(header);
                     
-                    if(dataRows != null){
+                    if(dataRows != null && grafRows != null){
                         for(ReporteDiario row:dataRows){
                             HashMap<String, Object> body = new HashMap<>();
                             if(report.equals("byDays")){
@@ -927,6 +969,19 @@ public class ControllerReportes {
                             reportePerformance.add(body);
                         }
                         
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("reala",grafRows.getA().setScale(3, RoundingMode.FLOOR));
+                        map.put("realb",grafRows.getB().setScale(3, RoundingMode.FLOOR));
+                        map.put("realc",grafRows.getC().setScale(3, RoundingMode.FLOOR));
+                        map.put("reald",grafRows.getD().setScale(3, RoundingMode.FLOOR));
+                        map.put("metaa",grafRows.getMeta_a().setScale(3, RoundingMode.FLOOR));
+                        map.put("metab",grafRows.getMeta_b().setScale(3, RoundingMode.FLOOR));
+                        map.put("metac",grafRows.getMeta_c().setScale(3, RoundingMode.FLOOR));
+                        map.put("metad",grafRows.getMeta_d().setScale(3, RoundingMode.FLOOR));
+                        map.put("padre",0);
+                        graficaPerformance.add(map);
+                        
+                        data.setGraficaMap(graficaPerformance);
                         data.setReporteMap(reportePerformance);
                         output.setData(data);
                         response.setSucessfull(true);
