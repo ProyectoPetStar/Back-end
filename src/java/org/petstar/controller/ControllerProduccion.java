@@ -26,6 +26,7 @@ import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.FallasDAO;
 import org.petstar.dao.MetasDAO;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.FallasDTO;
 
 /**
@@ -60,12 +61,14 @@ public class ControllerProduccion {
                 ProduccionDAO produccionDAO = new ProduccionDAO();
                 ProductosDAO productosDAO = new ProductosDAO();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 
                 int turno = getTurnoForSaveProduction();
                 Date dia = getCurrentDayByTurno(turno);
                 data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 
                 if(data.getMeta() != null){
                     data.setListDetalle(produccionDAO.getProduccionByIdMeta(data.getMeta().getId_meta()));
