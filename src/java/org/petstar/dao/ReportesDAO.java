@@ -175,7 +175,7 @@ public class ReportesDAO {
         return data;
     }
 
-	public List<ReporteDiario> getReportePerformanceByWeek(int mes, int anio, int idLinea)throws Exception{
+    public List<ReporteDiario> getReportePerformanceByWeek(int mes, int anio, int idLinea)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -187,7 +187,20 @@ public class ReportesDAO {
         List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
         return data;
     }
-
+    
+    public ReporteDiario getGraficaPerformanceByWeek(int anio, int mes, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectGraficaMes ?, ?, ?");
+        Object[] params = { anio, mes, idLinea };
+        
+        ResultSetHandler rsh = new BeanHandler(ReporteDiario.class);
+        ReporteDiario data = (ReporteDiario) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
     public List<ReporteDiario> getReportePerformanceByMonth(int anio, int idLinea, int lastDayFeb)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
