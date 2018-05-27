@@ -914,9 +914,11 @@ public class ControllerReportes {
                             Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                             Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
                             dataRows = reportesDAO.getDailyPerformance(fechaI, fechaT, idLinea);
+                            grafRows = reportesDAO.getGraficaPerformanceByWeek(periodo.getAnio(), periodo.getMes(), idLinea);
                             break;
                         case"byWeeks":
                             dataRows = reportesDAO.getReportePerformanceByWeek(periodo.getMes(), periodo.getAnio(), idLinea);
+                            grafRows = reportesDAO.getGraficaPerformanceByWeek(periodo.getAnio(), periodo.getMes(), idLinea);
                             break;
                         case"byMonths":
                             int lastDayFeb = getUltimoDiaMes(periodo.getAnio(), 2);
