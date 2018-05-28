@@ -70,19 +70,18 @@ public class ControllerProduccion {
                 Date dia = getCurrentDayByTurno(turno);
                 data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
-                
+                data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
+                data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
+                data.setListLineas(lineasDAO.getLineasActive());
+                        
                 if(data.getMeta() != null){
                     data.setListDetalle(produccionDAO.getProduccionByIdMeta(data.getMeta().getId_meta()));
                     if(data.getListDetalle().isEmpty()){
                         data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
                         data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(),
                                             new SimpleDateFormat("dd/MM/yyyy")));
-                        data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
-                        data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
-                        data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
-                        data.setListLineas(lineasDAO.getLineasActive());
-
-                        output.setData(data);
+                        
                         response.setMessage(MSG_SUCESS);
                         response.setSucessfull(true);
                     }else{
@@ -93,6 +92,7 @@ public class ControllerProduccion {
                     response.setMessage("0");
                     response.setSucessfull(false);
                 }
+                output.setData(data);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
