@@ -182,4 +182,17 @@ public class PeriodosDAO {
                
         qr.update(sql.toString(), params);
     }
+    
+    public ResultInteger validateForClose(int mes, int anio) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta WHERE MONTH(dia) = ? AND YEAR(dia) = ? AND estatus = 0");
+        Object[] params = { mes, anio };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
 }

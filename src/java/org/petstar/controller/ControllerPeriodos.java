@@ -26,6 +26,7 @@ public class ControllerPeriodos {
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_NOEXIS = "El Periodo ya fue registrado";
     private static final String MSG_ERRINS = "Ocurrio un error al abrir periodo";
+    private static final String MSG_CLOSE  = "No se puede cerrar el periodo, queda producción por validar.";
     
     public OutputJson openPeriodo(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -140,13 +141,26 @@ public class ControllerPeriodos {
         
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            String action = request.getParameter("action");
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null ){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                periodosDAO.changeEstatus(idPeriodo, estatus);
-                
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                if(action.equals("closePeriodo")){
+                    ResultInteger count = periodosDAO.validateForClose(periodo.getMes(), periodo.getAnio());
+                    if(count.getResult().equals(0)){
+                        periodosDAO.changeEstatus(idPeriodo, estatus);
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    }else{
+                        response.setMessage(MSG_CLOSE);
+                        response.setSucessfull(false);
+                    }
+                }else{
+                    periodosDAO.changeEstatus(idPeriodo, estatus);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
