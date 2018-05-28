@@ -86,11 +86,11 @@ public class ControllerProduccion {
                         response.setSucessfull(true);
                     }else{
                         response.setMessage("-1");
-                        response.setSucessfull(false);
+                        response.setSucessfull(true);
                     }
                 }else{
                     response.setMessage("0");
-                    response.setSucessfull(false);
+                    response.setSucessfull(true);
                 }
                 output.setData(data);
             }else{
