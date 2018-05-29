@@ -912,13 +912,21 @@ public class ControllerReportes {
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("padre", 0);
                     body.put("grupoa","Grupo A");
-                    body.put("sppeda",acumuladoVelA.divide(countA,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    if(acumuladoVelA.compareTo(countA) != 0){
+                        body.put("sppeda",acumuladoVelA.divide(countA,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
                     body.put("grupob","Grupo B");
-                    body.put("sppedb",acumuladoVelB.divide(countB,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    if(acumuladoVelB.compareTo(countB) != 0){
+                        body.put("sppedb",acumuladoVelB.divide(countB,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
                     body.put("grupoc","Grupo C");
-                    body.put("sppedc",acumuladoVelC.divide(countC,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    if(acumuladoVelC.compareTo(countC) != 0){
+                        body.put("sppedc",acumuladoVelC.divide(countC,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
                     body.put("grupod","Grupo D");
-                    body.put("sppedd",acumuladoVelD.divide(countD,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    if(acumuladoVelD.compareTo(countD) != 0){
+                        body.put("sppedd",acumuladoVelD.divide(countD,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
                     graficaVelPromedio.add(body);
                     
                     data.setGraficaMap(graficaVelPromedio);
