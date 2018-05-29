@@ -3,6 +3,7 @@ package org.petstar.model;
 import java.util.HashMap;
 import java.util.List;
 import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.FallasDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
 
@@ -22,6 +23,7 @@ public class ReportesResponseJson {
     private List<HashMap> graficaMap;
     private List<HashMap> reporteDesempeno;
     private List<List<HashMap>> reporteDailyPerformance;
+    private List<FallasDTO> listFallas;
 
     public List<HashMap> getListaOEEFallas() {
         return listaOEEFallas;
@@ -117,5 +119,13 @@ public class ReportesResponseJson {
 
     public void setReporteDesempeno(List<HashMap> reporteDesempeno) {
         this.reporteDesempeno = reporteDesempeno;
+    }
+
+    public List<FallasDTO> getListFallas() {
+        return listFallas;
+    }
+
+    public void setListFallas(List<FallasDTO> listFallas) {
+        this.listFallas = listFallas;
     }
 }

@@ -395,6 +395,11 @@ public class ControllerProduccion {
                             sesion.getId_linea(), sesion.getId_grupo()));
                 }
                 
+                for(ProduccionDTO prod:data.getListProduccion()){
+                    prod.setDia(sumarFechasDias(prod.getDia(), 2));
+                    prod.setDiaString(convertSqlToDay(prod.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                }
+                
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
