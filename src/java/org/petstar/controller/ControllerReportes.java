@@ -69,8 +69,7 @@ public class ControllerReportes {
                     RazonParoDAO razonParoDAO = new RazonParoDAO();
                     ReportesResponseJson data = new ReportesResponseJson();
 
-                    List<CatalogosDTO> listFuentes = new ArrayList<>();
-                    listFuentes = catalogosDAO.getCatalogosActive(TABLE_FUENTES);
+                    List<CatalogosDTO> listFuentes = catalogosDAO.getCatalogosActive(TABLE_FUENTES);
                     List<HashMap> listOEEFallas = new ArrayList<>();
                     BigDecimal tiempoDisponible = getTotalHoras(fechaInicio, FechaTermino);
                     BigDecimal totalGeneral = new BigDecimal(BigInteger.ZERO);
@@ -82,8 +81,7 @@ public class ControllerReportes {
                         map.put("fuente", fuente.getValor());
                         listOEEFallas.add(map);
 
-                        List<RazonParoDTO> listRazones = new ArrayList<>();
-                        listRazones = razonParoDAO.getFallasByOEE(fechaInicio, FechaTermino, idLInea, fuente.getId());
+                        List<RazonParoDTO> listRazones = razonParoDAO.getFallasByOEE(fechaInicio, FechaTermino, idLInea, fuente.getId());
                         BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
 
                         for(RazonParoDTO razon:listRazones){
@@ -361,7 +359,7 @@ public class ControllerReportes {
                         reporteOEE.add(map18);
                         HashMap<String, Object> map19 = new HashMap<>();
                         map19.put("padre", 0);
-                        map19.put("titulo", "TEEP (hrs)");
+                        map19.put("titulo", "TMP (hrs)");
                         map19.put("hrs", tiempoDisponibleTotal.subtract(desempenoEfec));
                         map19.put("porcentaje", new BigDecimal(100).subtract(pTEEP));
                         reporteOEE.add(map19);
@@ -442,13 +440,11 @@ public class ControllerReportes {
                     listReporte.add(encabezado);
                     
                     for (int y=0; y<listLineas.size(); y++) {
-                        List<ResultBigDecimal> molido = new ArrayList<>();
-                        molido = reportesDAO.getMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
+                        List<ResultBigDecimal> molido = reportesDAO.getMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
                         ResultBigDecimal result = reportesDAO.getTotalMolidoByLinea(fechaI, fechaT, listLineas.get(y).getId_linea());
                         listaMolidos.add(molido);
                         lisTotalMolidos.add(result);
                     }
-                    List<BigDecimal> suma = null;
                     BigDecimal totalTotalMolido = BigDecimal.ZERO;
                     BigDecimal totalTotalHojuela= BigDecimal.ZERO;
                     BigDecimal totalTotalPlanHojuela = BigDecimal.ZERO;
