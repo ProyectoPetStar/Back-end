@@ -693,8 +693,9 @@ public class ControllerReportes {
                     body.put("meta", row.getMeta());
                     totalMeta = totalMeta.add(row.getMeta());
                     int compare = row.getProduccion().compareTo(BigDecimal.ZERO);
+                    int compara = row.getMeta().compareTo(BigDecimal.ZERO);
                     BigDecimal desempeno = BigDecimal.ZERO;
-                    if(compare == 1){
+                    if(compare != 0 && compara != 0){
                         desempeno = (row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING)).multiply(new BigDecimal(100));
                     } 
                     body.put("desempeno", desempeno);
@@ -702,7 +703,13 @@ public class ControllerReportes {
                     listReporte.add(body);
                 }
                 
-                BigDecimal totalDesempeno = (totalProduccion.divide(totalMeta, RoundingMode.CEILING)).multiply(new BigDecimal(100));
+                BigDecimal totalDesempeno = BigDecimal.ZERO;
+                int compare = totalMeta.compareTo(BigDecimal.ZERO);
+                int compara = totalProduccion.compareTo(BigDecimal.ZERO);
+                if(compara != 0 && compare != 0){
+                    totalDesempeno=(totalProduccion.divide(totalMeta, RoundingMode.CEILING)).multiply(new BigDecimal(100));
+                }
+                
                 HashMap<String, Object> totales = new HashMap<>();
                 totales.put("padre", 2);
                 totales.put("linea","Total");
@@ -718,9 +725,10 @@ public class ControllerReportes {
                 for(ReporteDiario row:dataParo){
                     totalTMPr=totalTMPr.add(row.getTmp_real());
                     totalTMPm=totalTMPm.add(row.getTmp_meta());
-                    int compare = row.getTmp_real().compareTo(BigDecimal.ZERO);
+                    compare = row.getTmp_real().compareTo(BigDecimal.ZERO);
+                    compara = row.getTmp_meta().compareTo(BigDecimal.ZERO);
                     BigDecimal desempeno = BigDecimal.ZERO;
-                    if(compare == 1){
+                    if(compare != 0 && compara != 0){
                         desempeno = row.getTmp_real().divide(row.getTmp_meta(), RoundingMode.CEILING);
                         desempeno = desempeno.multiply(new BigDecimal(100));
                     }
@@ -736,8 +744,9 @@ public class ControllerReportes {
                 }
                 
                 BigDecimal desempenoTotal = BigDecimal.ZERO;
-                int compare = totalTMPr.compareTo(BigDecimal.ZERO);
-                if(compare == 1){
+                compare = totalTMPr.compareTo(BigDecimal.ZERO);
+                compara = totalTMPm.compareTo(BigDecimal.ZERO);
+                if(compare != 0 && compara != 0){
                     desempenoTotal = totalTMPr.divide(totalTMPm, RoundingMode.CEILING);
                 }
                 desempenoTotal = desempenoTotal.multiply(new BigDecimal(100));
