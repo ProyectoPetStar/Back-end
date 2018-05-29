@@ -110,24 +110,18 @@ public class utils {
      * @return 
      */
     public static int getTurnoForSaveProduction(){
-        
         Date date = new Date();
         DateFormat hourFormat = new SimpleDateFormat("HH");
-        DateFormat minuFormat = new SimpleDateFormat("mm");
         
         int hh = Integer.parseInt(hourFormat.format(date));
-        int mm = Integer.parseInt(minuFormat.format(date));
+        int turno = 0;
         
-        int turno;
-        
-        if((hh==23 && isBetween(mm, 11, 59)) || (isBetween(hh, 0, 6)) || (hh==7 && isBetween(mm, 0, 10))){
+        if((isBetween(hh, 0, 7))){
             turno = 3;
-        }else if((hh==7 && isBetween(mm, 11, 59)) || (isBetween(hh, 8, 14)) || (hh==15 && isBetween(mm, 0, 10))){
+        }else if(isBetween(hh, 8, 15)){
             turno = 1;
-        }else if((hh==15 && isBetween(mm, 11, 59)) ||(isBetween(hh, 16, 22)) || (hh==23 && isBetween(mm, 0, 10))){
+        }else if(isBetween(hh, 16, 23)){
             turno = 2;
-        }else{
-            turno = 0;
         }
                
         return turno;

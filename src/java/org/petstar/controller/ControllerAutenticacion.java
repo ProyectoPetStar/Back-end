@@ -39,13 +39,13 @@ public class ControllerAutenticacion {
 
         String jwt = Jwts.builder()
                 .setSubject(String.valueOf(usuario.getId_acceso()))
-                .setExpiration(new Date(System.currentTimeMillis() + 604800000))
+                .setExpiration(new Date(System.currentTimeMillis() + 8640000000L))
                 .claim("id_acceso", usuario.getId_acceso())
                 .claim("nombre", usuario.getNombre())
                 .claim("id_grupo",usuario.getId_grupo())
                 .claim("id_linea", usuario.getId_linea())
                 .claim("perfiles", usuario.getPerfiles())
-                .claim("roles_cua", usuario.getRoles_cua())
+                .claim("roles_oee", usuario.getRoles_oee())
                 .claim("roles_kpi", usuario.getRoles_kpi())
                 .claim("roles_ishikawa", usuario.getRoles_ishikawa())
                 .claim("roles_generales", usuario.getRoles_generales())
@@ -79,7 +79,7 @@ public class ControllerAutenticacion {
                 usuario.setId_grupo(claims.get("id_grupo", Integer.class));
                 usuario.setId_linea(claims.get("id_linea", Integer.class));
                 usuario.setPerfiles(claims.get("perfiles", String.class));
-                usuario.setRoles_cua(claims.get("roles_cua", String.class));
+                usuario.setRoles_oee(claims.get("roles_oee", String.class));
                 usuario.setRoles_kpi(claims.get("roles_kpi", String.class));
                 usuario.setRoles_ishikawa(claims.get("roles_ishikawa", String.class));
                 usuario.setRoles_generales(claims.get("roles_generales", String.class));
