@@ -20,7 +20,7 @@ public class UserDTO {
     private int id_linea;
     private int activo;
     private String perfiles;
-    private String roles_cua;
+    private String roles_oee;
     private String roles_kpi;
     private String roles_ishikawa;
     private String roles_generales;
@@ -98,12 +98,12 @@ public class UserDTO {
         this.perfiles = perfiles;
     }
 
-    public String getRoles_cua() {
-        return roles_cua;
+    public String getRoles_oee() {
+        return roles_oee;
     }
 
-    public void setRoles_cua(String roles_cua) {
-        this.roles_cua = roles_cua;
+    public void setRoles_oee(String roles_oee) {
+        this.roles_oee = roles_oee;
     }
 
     public String getRoles_kpi() {
