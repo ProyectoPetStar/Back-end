@@ -26,6 +26,7 @@ import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.getUltimoDiaMes;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
+import org.petstar.dto.FallasDTO;
 import org.petstar.dto.Fuentes;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
@@ -1064,6 +1065,53 @@ public class ControllerReportes {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteFallas(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idLinea = Integer.valueOf(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                
+                if(periodo != null){
+                    ReportesResponseJson data = new ReportesResponseJson();
+                    ReportesDAO reportesDAO = new ReportesDAO();
+                    
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    data.setListFallas(reportesDAO.getFallasByPeriodo(fechaI, fechaT, idLinea));
+                    
+                    for(FallasDTO falla:data.getListFallas()){
+                        falla.setDia(sumarFechasDias(falla.getDia(), 2));
+                        falla.setDiaString(convertSqlToDay(falla.getDia()));
+                    }
+                    
+                    output.setData(data);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage(MSG_NOEXIS);
+                    response.setSucessfull(false);
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        } catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
         output.setResponse(response);
         return output;
     }

@@ -8,6 +8,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
+import org.petstar.dto.FallasDTO;
 import org.petstar.dto.Fuentes;
 import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ReporteDTO;
@@ -259,5 +260,18 @@ public class ReportesDAO {
         ResultSetHandler rsh = new BeanHandler(ResultSQLDate.class);
         ResultSQLDate result = (ResultSQLDate) qr.query(sql.toString(), rsh);
         return result;
+    }
+    
+    public List<FallasDTO> getFallasByPeriodo(Date fechaI, Date fechaT, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectAllFallas ?, ?, ?");
+        Object[] params = { fechaI, fechaT, idLinea };
+        
+        ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
+        List<FallasDTO> listFallas = (List<FallasDTO>) qr.query(sql.toString(), rsh, params);
+        return listFallas;
     }
 }
