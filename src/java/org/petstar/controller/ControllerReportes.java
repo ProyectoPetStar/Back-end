@@ -860,16 +860,76 @@ public class ControllerReportes {
                     head.put("valor", "Velocidad Promedio");
                     reporteVelPromedio.add(head);
                     
+                    BigDecimal acumuladoVelA = BigDecimal.ZERO;
+                    BigDecimal acumuladoVelB = BigDecimal.ZERO;
+                    BigDecimal acumuladoVelC = BigDecimal.ZERO;
+                    BigDecimal acumuladoVelD = BigDecimal.ZERO;
+                    BigDecimal countA = BigDecimal.ZERO;
+                    BigDecimal countB = BigDecimal.ZERO;
+                    BigDecimal countC = BigDecimal.ZERO;
+                    BigDecimal countD = BigDecimal.ZERO;
                     for(ReporteDTO row:dataVelPromedio){
                         HashMap<String, Object> body = new HashMap<>();
                         body.put("padre", 0);
                         body.put("dia",   convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
                         body.put("turno", row.getId_turno());
                         body.put("grupo", row.getValor_grupo());
-                        body.put("valor", row.getVelocidad_promedio().setScale(3,RoundingMode.FLOOR));
+                        body.put("valor", row.getVelocidad_promedio().setScale(2,RoundingMode.FLOOR));
                         reporteVelPromedio.add(body);
+                        
+                        switch(row.getValor_grupo()){
+                            case"A":
+                                acumuladoVelA = acumuladoVelA.add(row.getVelocidad_promedio());
+                                countA = countA.add(BigDecimal.ONE);
+                                break;
+                            case"B":
+                                acumuladoVelB = acumuladoVelB.add(row.getVelocidad_promedio());
+                                countB = countB.add(BigDecimal.ONE);
+                                break;
+                            case"C":
+                                acumuladoVelC = acumuladoVelC.add(row.getVelocidad_promedio());
+                                countC = countC.add(BigDecimal.ONE);
+                                break;
+                            case"D":
+                                acumuladoVelD = acumuladoVelD.add(row.getVelocidad_promedio());
+                                countD = countD.add(BigDecimal.ONE);
+                                break;
+                        }
                     }
+                    List<HashMap> graficaVelPromedio = new ArrayList<>();
+                    HashMap<String, Object> header = new HashMap<>();
+                    header.put("padre", 1);
+                    header.put("grupoa","Grupo A");
+                    header.put("sppeda","Velocidad A");
+                    header.put("grupob","Grupo B");
+                    header.put("sppedb","Velocidad B");
+                    header.put("grupoc","Grupo C");
+                    header.put("sppedc","Velocidad C");
+                    header.put("grupod","Grupo D");
+                    header.put("sppedd","Velocidad D");
+                    graficaVelPromedio.add(header);
                     
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("padre", 0);
+                    body.put("grupoa","Grupo A");
+                    if(acumuladoVelA.compareTo(countA) != 0){
+                        body.put("sppeda",acumuladoVelA.divide(countA,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
+                    body.put("grupob","Grupo B");
+                    if(acumuladoVelB.compareTo(countB) != 0){
+                        body.put("sppedb",acumuladoVelB.divide(countB,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
+                    body.put("grupoc","Grupo C");
+                    if(acumuladoVelC.compareTo(countC) != 0){
+                        body.put("sppedc",acumuladoVelC.divide(countC,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
+                    body.put("grupod","Grupo D");
+                    if(acumuladoVelD.compareTo(countD) != 0){
+                        body.put("sppedd",acumuladoVelD.divide(countD,RoundingMode.CEILING).setScale(2,RoundingMode.FLOOR));
+                    }
+                    graficaVelPromedio.add(body);
+                    
+                    data.setGraficaMap(graficaVelPromedio);
                     data.setReporteMap(reporteVelPromedio);
                     output.setData(data);
                     response.setSucessfull(true);
