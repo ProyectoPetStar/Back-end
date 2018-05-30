@@ -1007,14 +1007,9 @@ public class ControllerReportes {
                     List<HashMap> graficaPerformance = new ArrayList<>();
                     HashMap<String, Object> head = new HashMap<>();
                     head.put("padre", 1);
-                    head.put("periodo","Periodo");
-                    head.put("a","A");
-                    head.put("b","B");
-                    head.put("c","C");
-                    head.put("d","D");
-                    head.put("meta1","Meta 1");
-                    head.put("meta2","Meta 2");
-                    head.put("meta3","Meta 3");
+                    head.put("periodo", "Periodo");
+                    head.put("real",    "Real");
+                    head.put("meta",    "Meta");
                     reportePerformance.add(head);
                     HashMap<String, Object> header = new HashMap<>();
                     header.put("reala","Real A");
@@ -1036,13 +1031,9 @@ public class ControllerReportes {
                             }else{
                                 body.put("periodo",row.getPeriodo());
                             }
-                            body.put("a",    row.getA().setScale(3, RoundingMode.FLOOR));
-                            body.put("b",    row.getB().setScale(3, RoundingMode.FLOOR));
-                            body.put("c",    row.getC().setScale(3, RoundingMode.FLOOR));
-                            body.put("d",    row.getD().setScale(3, RoundingMode.FLOOR));
-                            body.put("meta1",row.getMeta_uno().setScale(3, RoundingMode.FLOOR));
-                            body.put("meta2",row.getMeta_dos().setScale(3, RoundingMode.FLOOR));
-                            body.put("meta3",row.getMeta_dia().setScale(3, RoundingMode.FLOOR));
+                            BigDecimal suma = row.getA().add(row.getB()).add(row.getC()).add(row.getD());
+                            body.put("real", suma.setScale(3, RoundingMode.FLOOR));
+                            body.put("meta", row.getMeta_dia().setScale(3, RoundingMode.FLOOR));
                             body.put("padre",0);
                             reportePerformance.add(body);
                         }
