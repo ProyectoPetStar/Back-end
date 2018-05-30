@@ -103,9 +103,11 @@ public class ControllerPeriodos {
                             PeriodosDTO row = new PeriodosDTO();
                             JsonObject objectFromString = jsonParser.parse(arrayFromString.get(i).toString()).getAsJsonObject();
                             row.setEficiencia_teorica(new BigDecimal(objectFromString.get("eficiencia_teorica").toString()));
+                            row.setVelocidad_ideal(new BigDecimal(objectFromString.get("velocidad_ideal").toString()));
                             row.setDisponibilidad(new BigDecimal(objectFromString.get("disponibilidad").toString()));
                             row.setUtilizacion(new BigDecimal(objectFromString.get("utilizacion").toString()));
                             row.setId_linea(Integer.parseInt(objectFromString.get("id_linea").toString()));
+                            row.setNo_ventas(new BigDecimal(objectFromString.get("no_ventas").toString()));
                             row.setCalidad(new BigDecimal(objectFromString.get("calidad").toString()));
                             row.setOee(new BigDecimal(objectFromString.get("oee").toString()));
                             row.setId_periodo(periodo.getId_periodo());
@@ -253,8 +255,10 @@ public class ControllerPeriodos {
                     JsonObject objectFromString = jsonParser.parse(arrayFromString.get(i).toString()).getAsJsonObject();
                     row.setId_metas_periodo(Integer.parseInt(objectFromString.get("id_metas_periodo").toString()));
                     row.setEficiencia_teorica(new BigDecimal(objectFromString.get("eficiencia_teorica").toString()));
+                    row.setVelocidad_ideal(new BigDecimal(objectFromString.get("velocidad_ideal").toString()));
                     row.setDisponibilidad(new BigDecimal(objectFromString.get("disponibilidad").toString()));
                     row.setUtilizacion(new BigDecimal(objectFromString.get("utilizacion").toString()));
+                    row.setNo_ventas(new BigDecimal(objectFromString.get("no_ventas").toString()));
                     row.setCalidad(new BigDecimal(objectFromString.get("calidad").toString()));
                     row.setOee(new BigDecimal(objectFromString.get("oee").toString()));
                     periodosDAO.updateMetasPeriodo(row);
