@@ -21,6 +21,8 @@ public class PeriodosDTO {
     private BigDecimal calidad;
     private BigDecimal oee;
     private BigDecimal eficiencia_teorica;
+    private BigDecimal no_ventas;
+    private BigDecimal velocidad_ideal;
     private int id_linea;
     private String valor_linea;
     private int id_metas_periodo;
@@ -103,6 +105,22 @@ public class PeriodosDTO {
 
     public void setEficiencia_teorica(BigDecimal eficiencia_teorica) {
         this.eficiencia_teorica = eficiencia_teorica;
+    }
+
+    public BigDecimal getNo_ventas() {
+        return no_ventas;
+    }
+
+    public void setNo_ventas(BigDecimal no_ventas) {
+        this.no_ventas = no_ventas;
+    }
+
+    public BigDecimal getVelocidad_ideal() {
+        return velocidad_ideal;
+    }
+
+    public void setVelocidad_ideal(BigDecimal velocidad_ideal) {
+        this.velocidad_ideal = velocidad_ideal;
     }
 
     public int getId_linea() {
