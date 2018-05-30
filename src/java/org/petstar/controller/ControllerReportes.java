@@ -85,11 +85,11 @@ public class ControllerReportes {
                         BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
 
                         for(RazonParoDTO razon:listRazones){
+                            BigDecimal subproducto = BigDecimal.ZERO;
                             HashMap<String, Object> raz = new HashMap<>();
                             raz.put("padre", 0);
                             raz.put("fuente", razon.getValor());
                             if(razon.getValor().equals("Subproductos")){
-                                BigDecimal subproducto = BigDecimal.ZERO;
                                 if(subproductos.getResult().compareTo(BigDecimal.ZERO) != 0){
                                     subproducto = subproductos.getResult();
                                     subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
@@ -99,12 +99,12 @@ public class ControllerReportes {
                             }else{
                                 raz.put("hrs", razon.getSuma_tiempo_paro());
                                 raz.put("porcentaje", getPorcentajeParo(
-                                    razon.getSuma_tiempo_paro(), tiempoDisponible));
+                                razon.getSuma_tiempo_paro(), tiempoDisponible));
                             }
                             listOEEFallas.add(raz);
 
-                            totalParcial = totalParcial.add(razon.getSuma_tiempo_paro());
-                            totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro());
+                            totalParcial = totalParcial.add(razon.getSuma_tiempo_paro().add(subproducto));
+                            totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro().add(subproducto));
                             map.put("hrs", totalParcial);
                             map.put("porcentaje", getPorcentajeParo(totalParcial, tiempoDisponible));
                         }
@@ -223,11 +223,15 @@ public class ControllerReportes {
                         List<Fuentes> listFuentes = reportesDAO.getFuentes(idLInea, fechaInicio, fechaTermino);
                         ResultBigDecimal prodBuena = reportesDAO.getProduccionBuena(idLInea, fechaInicio, fechaTermino);
                         ResultBigDecimal subProduc = reportesDAO.getSumaSubProductos(idLInea, fechaInicio, fechaTermino);
+                        BigDecimal reduccionVelocidad = BigDecimal.ZERO;
                         for(Fuentes fuente:listFuentes){
                             HashMap<String, Object> map4 = new HashMap<>();
                             map4.put("padre", 0);
                             map4.put("titulo", fuente.getValor());
                             BigDecimal porCalidad = BigDecimal.ZERO;
+                            if(fuente.getValor().equals("Reducción de velocidad") || fuente.getId() == 3){
+                                reduccionVelocidad = fuente.getHrs();
+                            }
                             if(fuente.getValor().equals("Por Calidad")){
                                 if(subproductos.getResult().compareTo(BigDecimal.ZERO) != 0){
                                     BigDecimal subproducto = subproductos.getResult();
@@ -317,8 +321,9 @@ public class ControllerReportes {
                         map14.put("meta", periodo.getDisponibilidad());
                         reporteOEE.add(map14);
                         HashMap<String, Object> map15 = new HashMap<>();
-                        BigDecimal utilizacion = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
-                        BigDecimal calculo = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
+                        BigDecimal calculo = tiempoOperacion.subtract(reduccionVelocidad);
+                        BigDecimal utilizacion = prodBuena.getResult().divide(calculo, RoundingMode.CEILING);
+                        calculo = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
                         BigDecimal pUtilizacion = calculo.divide(new BigDecimal(3.5), RoundingMode.CEILING);
                         pUtilizacion = pUtilizacion.multiply(new BigDecimal(100));
                         map15.put("padre", 0);
