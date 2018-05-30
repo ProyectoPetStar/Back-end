@@ -172,7 +172,7 @@ public class PeriodosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE pet_metas_periodo SET disponibilidad = ? ")
-                .append(", calidad = ? , utilizacion = ? , oee = ? , ")
+                .append(", calidad = ? , utilizacion = ? , oee = ? ")
                 .append(", no_ventas = ? , velocidad_ideal = ? , ")
                 .append("eficiencia_teorica = ? WHERE id_metas_periodo = ?");
         Object[] params = { periodo.getDisponibilidad(), periodo.getCalidad(),
