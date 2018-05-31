@@ -119,6 +119,7 @@ public class ControllerProduccion {
         
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idLinea = Integer.valueOf(request.getParameter("id_linea"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
@@ -132,7 +133,7 @@ public class ControllerProduccion {
                 if (perfiles[0].equals("1") || perfiles[0].equals("2") || 
                         perfiles[0].equals("3") || perfiles[0].equals("6")) {
                     
-                    data.setListProduccion(produccionDAO.getProduccionByPeriodo(periodo.getMes(), periodo.getAnio()));
+                    data.setListProduccion(produccionDAO.getProduccionByPeriodo(periodo.getMes(), periodo.getAnio(), idLinea));
                     
                 }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
                     
