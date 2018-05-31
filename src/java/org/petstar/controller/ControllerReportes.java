@@ -614,7 +614,9 @@ public class ControllerReportes {
                         
                         HashMap<String, Object> dataLinea = new HashMap<>();
                         dataLinea.put("Linea", linea.getValor());
+                        dataLinea.put("titulo_grafica", "Desempeño Diario de " + linea.getDescripcion());
                         List<ReporteDiario> listData = reportesDAO.getDailyPerformance(fechaI, fechaT, linea.getId_linea());
+                        List<HashMap> listPO = new ArrayList<>();
                         List<HashMap> listReporteLinea = new ArrayList<>();
                         listReporteLinea.add(dataLinea);
                         listReporteLinea.add(encabezado);
@@ -634,6 +636,33 @@ public class ControllerReportes {
                             listReporteLinea.add(body);
                         }
                         listReport.add(listReporteLinea);
+                        
+                        if(idGpoLinea == 1){
+                            HashMap<String, Object> dataLineaPO = new HashMap<>();
+                            dataLineaPO.put("Linea", linea.getValor());
+                            dataLineaPO.put("titulo_grafica", "Desempeño Diario Poliolefinas " + linea.getDescripcion());
+                            PeriodosDTO periodoLinea = periodosDAO.getPeriodoById(idPeriodo, linea.getId_linea());
+                            BigDecimal meta1 = periodoLinea.getVelocidad_po().multiply(new BigDecimal(8));
+                            BigDecimal meta2 = periodoLinea.getVelocidad_po().multiply(new BigDecimal(16));
+                            BigDecimal meta3 = periodoLinea.getVelocidad_po().multiply(new BigDecimal(24));
+                            listPO.add(dataLineaPO);
+                            listPO.add(encabezado);
+                            List<ReporteDiario> listDataPO = reportesDAO.getDailyPerformancePO(fechaI, fechaT, linea.getId_linea());
+                            for(ReporteDiario row:listDataPO){
+                                HashMap<String, Object> body = new HashMap<>();
+                                body.put("padre",0);
+                                body.put("dia",  convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                                body.put("a",    row.getA());
+                                body.put("b",    row.getB());
+                                body.put("c",    row.getC());
+                                body.put("d",    row.getD());
+                                body.put("meta1",meta1);
+                                body.put("meta2",meta2);
+                                body.put("meta3",meta3);
+                                listPO.add(body);
+                            }
+                            listReport.add(listPO);
+                        }
                     }
                     data.setReporteDailyPerformance(listReport);
                     output.setData(data);
