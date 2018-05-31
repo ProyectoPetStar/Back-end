@@ -23,6 +23,7 @@ public class PeriodosDTO {
     private BigDecimal eficiencia_teorica;
     private BigDecimal no_ventas;
     private BigDecimal velocidad_ideal;
+    private BigDecimal velocidad_po;
     private int id_linea;
     private String valor_linea;
     private int id_metas_periodo;
@@ -121,6 +122,14 @@ public class PeriodosDTO {
 
     public void setVelocidad_ideal(BigDecimal velocidad_ideal) {
         this.velocidad_ideal = velocidad_ideal;
+    }
+
+    public BigDecimal getVelocidad_po() {
+        return velocidad_po;
+    }
+
+    public void setVelocidad_po(BigDecimal velocidad_po) {
+        this.velocidad_po = velocidad_po;
     }
 
     public int getId_linea() {

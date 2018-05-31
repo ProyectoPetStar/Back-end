@@ -129,12 +129,12 @@ public class PeriodosDAO {
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_insertPetMetasPeriodo ?, ?, ?, ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_insertPetMetasPeriodo ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] params = { periodo.getDisponibilidad(), periodo.getCalidad(),
                     periodo.getUtilizacion(), periodo.getOee(),
                     periodo.getEficiencia_teorica(), periodo.getNo_ventas(),
-                    periodo.getVelocidad_ideal(), periodo.getId_periodo(), 
-                    periodo.getId_linea()};
+                    periodo.getVelocidad_ideal(), periodo.getVelocidad_po(),
+                    periodo.getId_periodo(), periodo.getId_linea()};
                
         qr.update(sql.toString(), params);
     }
@@ -173,12 +173,14 @@ public class PeriodosDAO {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE pet_metas_periodo SET disponibilidad = ? ")
                 .append(", calidad = ? , utilizacion = ? , oee = ? ")
-                .append(", no_ventas = ? , velocidad_ideal = ? , ")
-                .append("eficiencia_teorica = ? WHERE id_metas_periodo = ?");
+                .append(", no_ventas = ? , velocidad_ideal = ? ")
+                .append(", velocidad_po = ? , eficiencia_teorica = ? ")
+                .append("WHERE id_metas_periodo = ?");
         Object[] params = { periodo.getDisponibilidad(), periodo.getCalidad(),
                     periodo.getUtilizacion(), periodo.getOee(),
                     periodo.getNo_ventas(), periodo.getVelocidad_ideal(),
-                    periodo.getEficiencia_teorica(), periodo.getId_metas_periodo()};
+                    periodo.getVelocidad_po(), periodo.getEficiencia_teorica(), 
+                    periodo.getId_metas_periodo()};
                
         qr.update(sql.toString(), params);
     }

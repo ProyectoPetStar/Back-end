@@ -105,6 +105,7 @@ public class ControllerPeriodos {
                             row.setEficiencia_teorica(new BigDecimal(objectFromString.get("eficiencia_teorica").toString()));
                             row.setVelocidad_ideal(new BigDecimal(objectFromString.get("velocidad_ideal").toString()));
                             row.setDisponibilidad(new BigDecimal(objectFromString.get("disponibilidad").toString()));
+                            row.setVelocidad_po(new BigDecimal(objectFromString.get("velocidad_po").toString()));
                             row.setUtilizacion(new BigDecimal(objectFromString.get("utilizacion").toString()));
                             row.setId_linea(Integer.parseInt(objectFromString.get("id_linea").toString()));
                             row.setNo_ventas(new BigDecimal(objectFromString.get("no_ventas").toString()));
@@ -257,6 +258,7 @@ public class ControllerPeriodos {
                     row.setEficiencia_teorica(new BigDecimal(objectFromString.get("eficiencia_teorica").toString()));
                     row.setVelocidad_ideal(new BigDecimal(objectFromString.get("velocidad_ideal").toString()));
                     row.setDisponibilidad(new BigDecimal(objectFromString.get("disponibilidad").toString()));
+                    row.setVelocidad_po(new BigDecimal(objectFromString.get("velocidad_po").toString()));
                     row.setUtilizacion(new BigDecimal(objectFromString.get("utilizacion").toString()));
                     row.setNo_ventas(new BigDecimal(objectFromString.get("no_ventas").toString()));
                     row.setCalidad(new BigDecimal(objectFromString.get("calidad").toString()));
