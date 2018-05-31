@@ -25,6 +25,7 @@ public class PeriodosDTO {
     private BigDecimal velocidad_ideal;
     private BigDecimal velocidad_po;
     private int id_linea;
+    private int id_gpo_linea;
     private String valor_linea;
     private int id_metas_periodo;
 
@@ -138,6 +139,14 @@ public class PeriodosDTO {
 
     public void setId_linea(int id_linea) {
         this.id_linea = id_linea;
+    }
+
+    public int getId_gpo_linea() {
+        return id_gpo_linea;
+    }
+
+    public void setId_gpo_linea(int id_gpo_linea) {
+        this.id_gpo_linea = id_gpo_linea;
     }
 
     public String getValor_linea() {
