@@ -24,13 +24,13 @@ public class ProduccionDAO {
      * @return
      * @throws Exception 
      */
-    public List<ProduccionDTO> getProduccionByPeriodo(int mes, int anio) throws Exception{
+    public List<ProduccionDTO> getProduccionByPeriodo(int mes, int anio, int idLinea) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetProduccionByAnioMes ?, ?");
-        Object[] params = { mes, anio };
+        sql.append("EXEC sp_selectPetProduccionByAnioMes ?, ?, ?");
+        Object[] params = { mes, anio, idLinea };
         
         ResultSetHandler rsh = new BeanListHandler(ProduccionDTO.class);
         List<ProduccionDTO> list = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
