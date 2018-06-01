@@ -208,8 +208,9 @@ public class ControllerMetas {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 MetasDAO metasDAO = new MetasDAO();
+                MetasDTO currentMeta = metasDAO.getMetaById(idMeta);
                 ResultInteger result = metasDAO.validaDataForUpdateMeta(idMeta, 
-                        convertStringToSql(dia), idTurno, idGrupo);
+                        convertStringToSql(dia), idTurno, idGrupo, currentMeta.getId_linea());
                 
                 if(result.getResult().equals(0)){
                     Date fechaMod = getCurrentDate();

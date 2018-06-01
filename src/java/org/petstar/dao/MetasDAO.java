@@ -167,17 +167,18 @@ public class MetasDAO {
     * @param dia
     * @param idTurno
     * @param idGrupo
+     * @param idLinea
     * @return
     * @throws Exception 
     */
-    public ResultInteger validaDataForUpdateMeta(int idMeta, Date dia, int idTurno, int idGrupo) throws Exception{
+    public ResultInteger validaDataForUpdateMeta(int idMeta, Date dia, int idTurno, int idGrupo, int idLinea) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_validaUpdate_petMetas ?, ?, ?, ?");
+        sql.append("EXEC sp_validaUpdate_petMetas ?, ?, ?, ?, ?");
         Object[] params = {
-            idMeta, dia, idTurno, idGrupo
+            idMeta, dia, idTurno, idGrupo, idLinea
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
