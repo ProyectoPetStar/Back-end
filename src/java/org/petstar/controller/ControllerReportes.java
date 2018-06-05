@@ -324,11 +324,10 @@ public class ControllerReportes {
                         HashMap<String, Object> map15 = new HashMap<>();
                         BigDecimal calculo = tiempoOperacion.subtract(reduccionVelocidad);
                         BigDecimal utilizacion = prodBuena.getResult().divide(calculo, RoundingMode.CEILING);
-                        calculo = prodBuena.getResult().divide(tiempoOperacion, RoundingMode.CEILING);
                         int compare = periodo.getVelocidad_ideal().compareTo(BigDecimal.ZERO);
                         BigDecimal pUtilizacion = BigDecimal.ZERO;
                         if(compare != 0){
-                            pUtilizacion = calculo.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
+                            pUtilizacion = utilizacion.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
                         }
                         pUtilizacion = pUtilizacion.multiply(new BigDecimal(100));
                         map15.put("padre", 0);
