@@ -102,4 +102,17 @@ public class ForecastDAO {
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
     }
+    
+    public void rewriteFile(int idPeriodo, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_update_petMetas ?, ?");
+        Object[] params = {
+            idPeriodo, idLinea
+        };
+        
+        qr.update(sql.toString(), params);
+    }
 }

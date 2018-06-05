@@ -11,7 +11,7 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.convertStringToDate;
 import static org.petstar.configurations.utils.getTiempoParo;
-import static org.petstar.configurations.utils.getTurno;
+import static org.petstar.configurations.utils.getTurnoForSaveProduction;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
@@ -100,7 +100,7 @@ public class ControllerFallas {
                 RazonParoDAO paroDAO = new RazonParoDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
-                int turno = getTurno();
+                int turno = getTurnoForSaveProduction();
                 java.sql.Date dia = getCurrentDayByTurno(turno);
                 int idGrupo = sesion.getId_grupo();
                 int idLinea = sesion.getId_linea();
@@ -233,7 +233,7 @@ public class ControllerFallas {
         SimpleDateFormat formato = new SimpleDateFormat("HH:mm");
         Date horaInicio = convertStringToDate(fallasDTO.getHora_inicio(), formato);
         Date horaFinal = convertStringToDate(fallasDTO.getHora_final(), formato);
-        int turno = getTurno();
+        int turno = getTurnoForSaveProduction();
         if(turno==3){
             horaFinal = sumarFechasDias(horaFinal, 1);
         }

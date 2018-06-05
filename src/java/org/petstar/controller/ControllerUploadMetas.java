@@ -90,44 +90,38 @@ public class ControllerUploadMetas {
                 int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
 
                 ForecastDAO forecastDAO = new ForecastDAO();
-                ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
+                
+                SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
+                Date date = new Date();
+                String nameFile = formato.format(date) + ".csv";
 
-                if(foundFiles.getResult() < 1){
-                    SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
-                    Date date = new Date();
-                    String nameFile = formato.format(date) + ".csv";
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                PeriodosDTO periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
+                int year = periodosDTO.getAnio();
+                int month = periodosDTO.getMes();
+                boolean save = saveFIle(stringFile, nameFile);
+                if(save){
+                    boolean valid = validateFile(nameFile, month, year, idLinea);
+                    if(valid){
 
-                    PeriodosDAO periodosDAO = new PeriodosDAO();
-                    PeriodosDTO periodosDTO = periodosDAO.getPeriodoById(idPeriodo);
-                    int year = periodosDTO.getAnio();
-                    int month = periodosDTO.getMes();
-                    boolean save = saveFIle(stringFile, nameFile);
-                    if(save){
-                        boolean valid = validateFile(nameFile, month, year, idLinea);
-                        if(valid){
+                        java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                        forecastDAO.saveFile(nameFile, idPeriodo, idLinea, sesion.getId_acceso(), fecha);
+                        ResultInteger idFile= forecastDAO.getIdFile(nameFile);
+                        UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
 
-                            java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                            forecastDAO.saveFile(nameFile, idPeriodo, idLinea, sesion.getId_acceso(), fecha);
-                            ResultInteger idFile= forecastDAO.getIdFile(nameFile);
-                            UploadMetasDataResponseJson data = new UploadMetasDataResponseJson();
+                        forecastDAO.loadForecast(listRows, idLinea, idFile.getResult(), idPeriodo);
+                        data.setListMetas(listRows);
+                        output.setData(data);
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
 
-                            forecastDAO.loadForecast(listRows, idLinea, idFile.getResult(), idPeriodo);
-                            data.setListMetas(listRows);
-                            output.setData(data);
-                            response.setMessage(MSG_SUCESS);
-                            response.setSucessfull(true);
-
-                        }else{
-                            response.setMessage("El archivo contiene errores.");
-                            response.setSucessfull(false);
-                            deleteFiles(nameFile);
-                        }
                     }else{
-                        response.setMessage("Error al carga el archivo.");
+                        response.setMessage("El archivo contiene errores.");
                         response.setSucessfull(false);
+                        deleteFiles(nameFile);
                     }
                 }else{
-                    response.setMessage("Ya hay archivos cargados para este periodo.");
+                    response.setMessage("Error al carga el archivo.");
                     response.setSucessfull(false);
                 }
             }else{
@@ -248,16 +242,49 @@ public class ControllerUploadMetas {
                 int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
 
                 ForecastDAO forecastDAO = new ForecastDAO();
-                forecastDAO.procesarFile(idLinea, idPeriodo);
-
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
+                ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
+                if (foundFiles.getResult().equals(0)) {
+                    forecastDAO.procesarFile(idLinea, idPeriodo);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage("999");
+                    response.setSucessfull(false);
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
             }
         }catch(Exception ex){
             response.setMessage(MSG_ERROR +  ex.getMessage());
+            response.setSucessfull(false);
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson reWriteFile(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+                int idLinea =  Integer.valueOf(request.getParameter("id_linea"));
+                
+                ForecastDAO forecastDAO = new ForecastDAO();
+                forecastDAO.rewriteFile(idPeriodo, idLinea);
+                
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        } catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);
         }
         output.setResponse(response);

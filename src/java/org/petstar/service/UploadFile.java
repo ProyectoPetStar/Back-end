@@ -61,6 +61,9 @@ public class UploadFile extends HttpServlet {
                 case "procesarFile":
                     output = controllerUploadMetas.procesarFile(request);
                     break;
+                case "reWriteFile":
+                    output = controllerUploadMetas.reWriteFile(request);
+                    break;
             }
         } catch (IOException ex) {
             ResponseJson reponseJson = new ResponseJson();

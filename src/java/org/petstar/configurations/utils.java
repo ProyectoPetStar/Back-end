@@ -116,11 +116,11 @@ public class utils {
         int hh = Integer.parseInt(hourFormat.format(date));
         int turno = 0;
         
-        if((isBetween(hh, 0, 7))){
+        if((isBetween(hh, 0, 8))){
             turno = 3;
-        }else if(isBetween(hh, 8, 15)){
+        }else if(isBetween(hh, 9, 16)){
             turno = 1;
-        }else if(isBetween(hh, 16, 23)){
+        }else if(isBetween(hh, 17, 23)){
             turno = 2;
         }
                
