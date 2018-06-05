@@ -90,9 +90,9 @@ public class ControllerUploadMetas {
                 int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
 
                 ForecastDAO forecastDAO = new ForecastDAO();
-                ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
+                //ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
 
-                if(foundFiles.getResult() < 1){
+                //if(foundFiles.getResult() < 1){
                     SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
                     Date date = new Date();
                     String nameFile = formato.format(date) + ".csv";
@@ -126,10 +126,11 @@ public class ControllerUploadMetas {
                         response.setMessage("Error al carga el archivo.");
                         response.setSucessfull(false);
                     }
-                }else{
+                /*}else{
                     response.setMessage("Ya hay archivos cargados para este periodo.");
                     response.setSucessfull(false);
                 }
+                */
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -248,16 +249,49 @@ public class ControllerUploadMetas {
                 int idLinea =  Integer.parseInt(request.getParameter("id_linea"));
 
                 ForecastDAO forecastDAO = new ForecastDAO();
-                forecastDAO.procesarFile(idLinea, idPeriodo);
-
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
+                ResultInteger foundFiles = forecastDAO.validateLoadedFiles(idPeriodo, idLinea);
+                if (foundFiles.getResult().equals(0)) {
+                    forecastDAO.procesarFile(idLinea, idPeriodo);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage("999");
+                    response.setSucessfull(false);
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
             }
         }catch(Exception ex){
             response.setMessage(MSG_ERROR +  ex.getMessage());
+            response.setSucessfull(false);
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson reWriteFile(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+                int idLinea =  Integer.valueOf(request.getParameter("id_linea"));
+                
+                ForecastDAO forecastDAO = new ForecastDAO();
+                forecastDAO.rewriteFile(idPeriodo, idLinea);
+                
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        } catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);
         }
         output.setResponse(response);
