@@ -28,6 +28,7 @@ import org.petstar.dao.FallasDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.FallasDTO;
+import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
 
 /**
@@ -392,8 +393,10 @@ public class ControllerProduccion {
                     
                     data.setListProduccion(produccionDAO.getProduccionForLiberar(0, 0));
                 }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
+                    LineasDAO lineasDAO = new LineasDAO();
+                    LineasDTO linea = lineasDAO.getLineasDataById(sesion.getId_linea());
                     data.setListProduccion(produccionDAO.getProduccionForLiberar(
-                            sesion.getId_linea(), sesion.getId_grupo()));
+                            linea.getId_gpo_linea(), sesion.getId_grupo()));
                 }
                 
                 for(ProduccionDTO prod:data.getListProduccion()){
