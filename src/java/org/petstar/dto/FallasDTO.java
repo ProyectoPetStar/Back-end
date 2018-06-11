@@ -33,6 +33,8 @@ public class FallasDTO {
     private String valor_turno;
     private String valor_linea;
     private String descripcion_equipo;
+    private int estatus_validado;
+    private boolean validado;
 
     public int getId_falla() {
         return id_falla;
@@ -232,5 +234,21 @@ public class FallasDTO {
 
     public void setDescripcion_equipo(String descripcion_equipo) {
         this.descripcion_equipo = descripcion_equipo;
+    }
+
+    public int getEstatus_validado() {
+        return estatus_validado;
+    }
+
+    public void setEstatus_validado(int estatus_validado) {
+        this.estatus_validado = estatus_validado;
+    }
+
+    public boolean isValidado() {
+        return validado;
+    }
+
+    public void setValidado(boolean validado) {
+        this.validado = validado;
     }
 }
