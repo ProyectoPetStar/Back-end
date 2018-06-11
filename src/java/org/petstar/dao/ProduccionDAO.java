@@ -85,13 +85,13 @@ public class ProduccionDAO {
         qr.update(sql.toString(), params);
     }
     
-    public List<ProduccionDTO> getProduccionForLiberar(int idLinea, int idGrupo) throws Exception{
+    public List<ProduccionDTO> getProduccionForLiberar(int idGpoLinea, int idGrupo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("EXEC sp_selectValidaProduccion ?, ?");
-        Object[] params = { idGrupo, idLinea };
+        Object[] params = { idGrupo, idGpoLinea };
         
         ResultSetHandler rsh = new BeanListHandler(ProduccionDTO.class);
         List<ProduccionDTO> data = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
