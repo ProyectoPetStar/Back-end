@@ -5,6 +5,8 @@
  */
 package org.petstar.dao;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 import org.petstar.configurations.PoolDataSource;
 import javax.sql.DataSource;
@@ -14,7 +16,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
-import org.petstar.dto.UserSonarthDTO;
+import org.petstar.dto.UserSonarhDTO;
 
 /**
  *
@@ -29,100 +31,56 @@ public class UsersDAO {
      * @return
      * @throws Exception 
      */
-    public List<UserSonarthDTO> getUsersSonarh() throws Exception {
+    public List<UserSonarhDTO> getUsersSonarh() throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
+        
         sql.append(" EXEC sp_SelectSonarh ");
-         ResultSetHandler rsh = new BeanListHandler(UserSonarthDTO.class);
-         List<UserSonarthDTO> usuarios_sonarh = (List<UserSonarthDTO>) qr.query(sql.toString(), rsh); 
+        
+        ResultSetHandler rsh = new BeanListHandler(UserSonarhDTO.class);
+        List<UserSonarhDTO> usuarios_sonarh = (List<UserSonarhDTO>) qr.query(sql.toString(), rsh); 
         return usuarios_sonarh;
     }
-    
-    /**
-     * Mi perfil
-     * Metodo que devuelve los datos del usuario que se encuentra logueado
-     * @param idUsuario
-     * @return
-     * @throws Exception 
-     */
-    public UserDTO getPerfilUserSonarh(int idUsuario) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-      
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_selectPetUsuarioById ?");
-        Object[] params = {
-            idUsuario
-        };
-        ResultSetHandler rsh = new BeanHandler(UserDTO.class);
-        UserDTO datosUsuario = (UserDTO) qr.query(sql.toString(), rsh, params);
-
-        return datosUsuario;
-    }
-    
+       
     /**
      * Perfil Sonarh
      * Metodo que devuelve la información a detalle de un usuario sonarh
-     * @param idUsuarioSonarh
+     * @param numeroEmpleado
      * @return
      * @throws Exception 
      */
-    public UserSonarthDTO getUserSonarhById(int idUsuarioSonarh) throws Exception{
+    public UserSonarhDTO getUserSonarhById(int numeroEmpleado) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         sql.append("EXEC sp_selectSonarhById ?");
         Object[] params = {
-            idUsuarioSonarh
+            numeroEmpleado
         };
-        ResultSetHandler rsh = new BeanHandler(UserSonarthDTO.class);
-        UserSonarthDTO datosUsuario = (UserSonarthDTO) qr.query(sql.toString(), rsh, params);
-
-        return datosUsuario;
-    }
-    
-    /**
-     * Validación Password
-     * Metodo que realiza la validacion del password del usuario
-     * @param contraseniaAnterior
-     * @param idUsuario
-     * @return
-     * @throws Exception 
-     */
-    public ResultInteger validaPassword(String contraseniaAnterior, int idUsuario) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-      
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_validaPetUsuarioByPass ?, ?");
-        Object[] params = {
-            idUsuario, contraseniaAnterior 
-        };
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger resultInteger = (ResultInteger)  qr.query(sql.toString(), rsh, params);
-
-        return resultInteger;
         
+        ResultSetHandler rsh = new BeanHandler(UserSonarhDTO.class);
+        UserSonarhDTO datosUsuario = (UserSonarhDTO) qr.query(sql.toString(), rsh, params);
+        return datosUsuario;
     }
     
     /**
      * Actualización de Password
      * Metodo que actualiza el password del usuario
      * @param contraseniaNueva
-     * @param idUsuario
+     * @param idAcceso
      * @throws Exception 
      */
-    public void changePassword(String contraseniaNueva, int idUsuario) throws Exception{
+    public void changePassword(String contraseniaNueva, int idAcceso) throws Exception{
         
        DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_UpdatePassPetUsuarios ?, ?");
+        sql.append("EXEC sp_updateContrasenia ?, ?");
         Object[] params = {
-            idUsuario, contraseniaNueva 
+            idAcceso, contraseniaNueva 
         };
         
         qr.update(sql.toString(), params);
@@ -132,20 +90,22 @@ public class UsersDAO {
     /**
      * Actualización de Usuario
      * Metodo que actiualiza los datos de un usuario.
-     * @param idUsuario
-     * @param idTurno
-     * @param idPerfil
-     * @param activo
+     * @param idAcceso
+     * @param idLinea
+     * @param idGrupo
+     * @param idUsuarioMod
+     * @param fecha
      * @throws Exception 
      */
-    public void updatePerfilUser(int idUsuario, int idTurno, int idPerfil, int activo) throws Exception{
+    public void updateUserETAD(int idAcceso, int idLinea, int idGrupo, 
+            int idUsuarioMod, Date fecha) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_updatePetUsuarios ?, ?, ?, ?");
+        
+        sql.append("EXEC sp_updateEtad ?, ?, ?, ?, ?");
         Object[] params = {
-            idUsuario, idTurno, idPerfil, activo
+            idAcceso, idLinea, idGrupo, idUsuarioMod, fecha
         };
         
         qr.update(sql.toString(), params);
@@ -154,23 +114,23 @@ public class UsersDAO {
     /**
      * Registro de un Usuario
      * Metodo que permite registrar usuarios nuevos al sistema.
-     * @param nombre
-     * @param idSonarh
+     * @param numeroEmpleado
      * @param idLinea
      * @param idGrupo
-     * @param idTurno
-     * @param usuarioAcceso
-     * @param idPerfil
+     * @param fecha
+     * @param idSistema
+     * @param idUserRegistra
      * @throws Exception 
      */
-    public void insertNewUser(String nombre, int idSonarh, int idLinea, int idGrupo, int idTurno, String usuarioAcceso, int idPerfil) throws Exception{
+    public void insertNewUser(int numeroEmpleado, int idLinea, int idGrupo, Date fecha,
+            int idSistema, int idUserRegistra) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_insertPetUsuario ?, ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_insertUsuarios ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            nombre, idSonarh, idLinea, idGrupo, idTurno, usuarioAcceso, idPerfil
+            numeroEmpleado, idSistema, idGrupo, idLinea, fecha, idUserRegistra
         };
         
         qr.update(sql.toString(), params);
@@ -186,27 +146,39 @@ public class UsersDAO {
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append(" EXEC sp_selectPetUsuarios ");
+        sql.append("EXEC sp_selectUsuariosEtad");
         ResultSetHandler rsh = new BeanListHandler(UserDTO.class);
         List<UserDTO> usuariosETAD = (List<UserDTO>) qr.query(sql.toString(), rsh); 
         return usuariosETAD;
     }
     
-    /**
-     * Eliminación de USuarios
-     * Metodo para eliminar usuarios del sistema
-     * @param idUsers
-     * @throws Exception 
-     */
-    public void deleteUsersETAD(int idUsers) throws Exception{
+    public UserDTO getUserEtadByID(int idAcceso) throws SQLException{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_deletePetUsuarios ?");
-        Object[] params = {
-            idUsers
-        };
+        sql.append("EXEC sp_selectEtadById ?");
+        Object[] params = { idAcceso };
+        
+        ResultSetHandler rsh = new BeanHandler(UserDTO.class);
+        UserDTO usuarioETAD = (UserDTO) qr.query(sql.toString(), rsh, params);
+        return usuarioETAD;
+    }
+    
+    /**
+     * Eliminación de USuarios
+     * Metodo para eliminar usuarios del sistema
+     * @param idAcceso
+     * @param activo
+     * @throws Exception 
+     */
+    public void deleteUsersETAD(int idAcceso, int activo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_acceso SET activo = ? WHERE id_acceso = ?");
+        Object[] params = { activo, idAcceso };
         
         qr.update(sql.toString(), params);
     }
@@ -214,18 +186,18 @@ public class UsersDAO {
     /**
      * Validación usuario valido
      * Metodo que valida que el usuario Sonarh no este registrado en ETAD
-     * @param idUserSonarh
+     * @param numeroEmpleado
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaExistUsers(int idUserSonarh) throws Exception{
+    public ResultInteger validaExistUsers(int numeroEmpleado) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetValidaUsuario ?");
+        sql.append("SELECT COUNT(1) AS result FROM ETADSonarh WHERE NumEmpleado = ?");
         Object[] params = {
-            idUserSonarh
+            numeroEmpleado
         };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
@@ -236,22 +208,46 @@ public class UsersDAO {
     /**
      * Validación Usuario ETAD
      * Metodo que valida que el usuario ETAD exista
-     * @param idUser
+     * @param idAcceso
      * @return
      * @throws Exception 
      */
-    public ResultInteger validaExistUsersETAD(int idUser) throws Exception{
+    public ResultInteger validaExistUsersETAD(int idAcceso) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetValidaUsuarioEtad ?");
-        Object[] params = {
-            idUser
-        };
+        sql.append("SELECT COUNT(1) AS result FROM pet_acceso WHERE id_acceso = ?");
+        Object[] params = { idAcceso };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
+    }
+    
+    public ResultInteger getIdUserByNumeroEmpleado(int numeroEmpleado) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT id_acceso AS result FROM pet_acceso WHERE usuario_sonarh = ")
+                .append(numeroEmpleado);
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh);
+        return result;
+    }
+    
+    public void registraPerfilByUser(int idAcceso, int idPerfil) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+      
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        sql.append("EXEC sp_insert_petPerfilAcceso ?, ?");
+        Object[] params = {
+            idAcceso, idPerfil
+        };
+        
+        qr.update(sql.toString(), params);
     }
 }

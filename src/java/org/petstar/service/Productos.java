@@ -46,34 +46,24 @@ public class Productos extends HttpServlet {
         try{
             String action = request.getParameter("action");
             switch(action){
-                case "loadCombobox":
-                    output = controller.loadCombobox(request);
+                case "getAllProductos":
+                    output = controller.getAllProductos(request);
                     break;
-                case "getAllDataCarProductos":
-                    output = controller.getAllCarProductos(request);
+                case "getProductoById":
+                    output = controller.getProductoById(request);
                     break;
-                case "getCarProductoById":
-                    output = controller.getCarProductoById(request);
+                case "insertProductos":
+                    output = controller.insertProductos(request);
                     break;
-                case "insertNewCarProductos":
-                    output = controller.insertNewCarProductos(request);
+                case "updateProductos":
+                    output = controller.updateProductos(request);
                     break;
-                case "updateCarProductos":
-                    output = controller.updateCarProductos(request);
+                case "blockProducto":
+                    output = controller.blockProducto(request);
                     break;
-                case "getAllAsignacionMetasByDays":
-                    output = controller.getAllAsignacionesMetasByDays(request);
+                case "loadList":
+                    output = controller.loadLIsts(request);
                     break;
-                /*case "getAllProductosForAsignar":
-                    output = controller.getAllProductosForAsignacion(request);
-                    break;
-                case "registraAsignacionByProducto":
-                    output = controller.registraAsignacionByProducto(request);
-                    break;
-                case "getAllAsignacionesByDay":
-                    output = controller.getAllAsignacionesByDays(request);
-                    break;
-                    */
             }
         } catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();

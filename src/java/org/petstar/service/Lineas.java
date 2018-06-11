@@ -56,8 +56,8 @@ public class Lineas extends HttpServlet {
                 case "updateLineas":
                     output = controllerLineas.updateLinea(request);
                     break;
-                case "deleteLineas":
-                    output = controllerLineas.deleteLinea(request);
+                case "blockLineas":
+                    output = controllerLineas.blockLinea(request);
                     break;
                 case "getDataByID":
                     output = controllerLineas.getDataCatalogosById(request);

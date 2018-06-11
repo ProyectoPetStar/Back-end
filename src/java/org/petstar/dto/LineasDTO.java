@@ -11,6 +11,7 @@ package org.petstar.dto;
  */
 public class LineasDTO {
     private int id_linea;
+    private String valor;
     private String descripcion;
     private int activo;
     private int id_gpo_linea;
@@ -22,6 +23,14 @@ public class LineasDTO {
 
     public void setId_linea(int id_linea) {
         this.id_linea = id_linea;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
     }
 
     public String getDescripcion() {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.petstar.service;
 
 import com.google.gson.Gson;
@@ -14,21 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.petstar.configurations.Configuration;
-import org.petstar.controller.ControllerEquipoAmut;
+import org.petstar.controller.ControllerRazonParo;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- * Servlet de Equipos Amut
- * Clase que administra el acceso a Equipos Amut
+ *
  * @author Tech-Pro
  */
-@WebServlet(name = "EquipoAmut", urlPatterns = {"/EquipoAmut"})
-public class EquipoAmut extends HttpServlet {
+@WebServlet(name = "RazonParo", urlPatterns = {"/RazonParo"})
+public class RazonParo extends HttpServlet {
 
     /**
-     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o
-     * <code>POST</code> respectivamente.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -38,37 +32,39 @@ public class EquipoAmut extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Configuration.setHeadersJson(response);
-    
         PrintWriter out = response.getWriter();
         OutputJson output = new OutputJson();
-        ControllerEquipoAmut controller = new ControllerEquipoAmut();
-        
+        ControllerRazonParo controller = new ControllerRazonParo();
         Gson gson = new Gson();
-        try {
+        
+        try{
             String action = request.getParameter("action");
-            switch (action) {
-                case "getEquipos":
-                    output =  controller.getEquiposAmutList(request);
+            switch(action){
+                case "getAllRazon":
+                    output = controller.getAllRazon(request);
                     break;
-                case "insertNewEquipos":
-                    output = controller.insertNewEquipoAmut(request);
+                case "getRazonById":
+                    output = controller.getRazonById(request);
                     break;
-                case "updateEquipos":
-                    output = controller.updateEquipoAmut(request);
+                case "insertRazon":
+                    output = controller.insertRazon(request);
                     break;
-                case "deleteEquipos":
-                    output = controller.deleteEquipoAmut(request);
+                case "updateRazon":
+                    output = controller.updateRazon(request);
                     break;
-                case "getDataByID":
-                    output = controller.getDataEquipoAmoutById(request);
+                case "blockRazon":
+                    output = controller.blockRazon(request);
+                    break;
+                case "loadList":
+                    output = controller.loadList(request);
                     break;
             }
-        } catch (Exception ex) {
-            ResponseJson reponseJson = new ResponseJson();
-            reponseJson.setSucessfull(false);
-            reponseJson.setMessage(ex.getMessage());
-            output.setResponse(reponseJson);
-        } finally {
+        } catch(Exception ex){
+            ResponseJson responseJson = new ResponseJson();
+            responseJson.setSucessfull(false);
+            responseJson.setMessage(ex.getMessage());
+            output.setResponse(responseJson);
+        } finally{
             out.print(gson.toJson(output));
             out.close();
         }
@@ -102,8 +98,9 @@ public class EquipoAmut extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
+    
     /**
+     * 
      * @param req
      * @param response
      * @throws ServletException
@@ -113,7 +110,7 @@ public class EquipoAmut extends HttpServlet {
     protected void doOptions(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
         Configuration.setHeadersJson(response);
     }
-    
+
     /**
      * Returns a short description of the servlet.
      *
@@ -121,7 +118,7 @@ public class EquipoAmut extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "EquipoAmut";
+        return "Razones de Paro";
     }// </editor-fold>
 
 }

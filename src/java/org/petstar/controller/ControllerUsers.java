@@ -5,20 +5,29 @@
  */
 package org.petstar.controller;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
+import org.petstar.dao.CatalogosDAO;
+import org.petstar.dao.LineasDAO;
 import org.petstar.dao.UsersDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
+import org.petstar.model.ResponseJson;
 import org.petstar.model.UserETADResponseJson;
 import org.petstar.model.UserResponseJson;
-import org.petstar.model.UserSonarthResponseJson;
+import org.petstar.model.UserSonarhResponseJson;
+import static org.petstar.configurations.utils.getCurrentDate;
+import org.petstar.dto.UserDTO;
 
 /**
  * 
  * @author Tech-Pro
  */
 public class ControllerUsers {
-
+    private static final String TABLE_GRUPOS = "pet_cat_grupo";
+    private static final String TABLE_PERFIL = "pet_cat_perfil";
+    
     /**
      * Lista de usuarios Sonarh
      * Metodo que devuelve la lista de usuarios de sonarh conforme al modelo.
@@ -27,17 +36,17 @@ public class ControllerUsers {
      */
     public OutputJson getUsersSonarh(HttpServletRequest request) {
         
-        UserResponseJson response = new UserResponseJson();
+        ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO dao = new UsersDAO();
-                UserSonarthResponseJson list = new UserSonarthResponseJson();
-                list.setList(dao.getUsersSonarh());
-                output.setData(list);
+                UserSonarhResponseJson json = new UserSonarhResponseJson();
+                json.setListUserSonarh(dao.getUsersSonarh());
+                output.setData(json);
                 response.setSucessfull(true);
                 response.setMessage("OK");
             } else {
@@ -54,32 +63,33 @@ public class ControllerUsers {
     }
 
     /**
-     * Mi Perfil
+     * Consulta de usuario por id
      * Metodo que devuelve la información del usuario logueado
      * @param request
      * @return 
      */
-    public OutputJson getPerfilUserSonarh(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
+    public OutputJson getUserETADById(HttpServletRequest request){
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-            if (auth.isValidToken(request)) {
-                if(auth.id_usuario_valido(request) != "-1"){
-                    UsersDAO userDAO = new UsersDAO();
-                    UserResponseJson userResponseJson = new UserResponseJson();
-                    userResponseJson.setUsuario(userDAO.getPerfilUserSonarh(idUsuario));
-                    output.setData(userResponseJson);
-                    response.setMessage("OK");
-                    response.setSucessfull(true);
-                    
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Usuario Incorrecto");
-                }
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
+                UsersDAO userDAO = new UsersDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                UserETADResponseJson data = new UserETADResponseJson();
+                
+                data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
+                data.setListLineas(lineasDAO.getLineasActive());
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
+                
+                output.setData(data);
+                response.setMessage("OK");
+                response.setSucessfull(true);
             } else {
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");
@@ -87,45 +97,6 @@ public class ControllerUsers {
         } catch (Exception ex) {
             response.setSucessfull(false);
             response.setMessage("Descripcion de error: " + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
-    
-    /**
-     * Perfil de usuarios 
-     * Metodo para obtener datos de los diferentes usuarios de ETAD
-     * @param request
-     * @return 
-     */
-    public OutputJson getPerfilUserEtadById(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario_buscar"));
-        UserResponseJson response = new UserResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                UsersDAO userDAO = new UsersDAO();
-                ResultInteger result = userDAO.validaExistUsersETAD(idUsuario);
-                if(result.getResult().equals(1)){
-                    UserETADResponseJson userData = new UserETADResponseJson();
-                    userData.setUserDTO(userDAO.getPerfilUserSonarh(idUsuario));
-
-                    output.setData(userData);
-                    response.setSucessfull(true);
-                    response.setMessage("OK");
-                }else{
-                    response.setSucessfull(true);
-                    response.setMessage("El usuario no se ha registrado.");
-                }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage("Inicie sesión nuevamente");
-            }
-        } catch (Exception ex){
-            response.setSucessfull(false);
-            response.setMessage("Error: " + ex.getMessage());
         }
         output.setResponse(response);
         return output;
@@ -138,25 +109,31 @@ public class ControllerUsers {
      * @return 
      */
     public OutputJson getPerfilUserSonarhById(HttpServletRequest request){
-        int idUsuarioSonarh = Integer.parseInt(request.getParameter("id_usuario_sonarh"));
+        int numeroEmpleado = Integer.parseInt(request.getParameter("numero_empleado"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+            UserDTO usuario = autenticacion.isValidToken(request);
+            if(usuario != null){
                 UsersDAO userDAO = new UsersDAO();
-                ResultInteger result = userDAO.validaExistUsers(idUsuarioSonarh);
-                if(result.getResult().equals(0)){
-                    UserSonarthResponseJson userData = new UserSonarthResponseJson();
-                    userData.setUsuarioSonarth(userDAO.getUserSonarhById(idUsuarioSonarh));
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                ResultInteger result = userDAO.validaExistUsers(numeroEmpleado);
+                if(result.getResult().equals(1)){
+                    UserSonarhResponseJson userData = new UserSonarhResponseJson();
+                    userData.setUsuarioSonarh(userDAO.getUserSonarhById(numeroEmpleado));
+                    userData.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                    userData.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
+                    userData.setListLineas(lineasDAO.getLineasActive());
 
                     output.setData(userData);
                     response.setSucessfull(true);
                     response.setMessage("OK");
                 }else{
                     response.setSucessfull(false);
-                    response.setMessage("El usuario ya fue registrado previamente.");
+                    response.setMessage("Usuario incorrecto");
                 }
             }else{
                 response.setSucessfull(false);
@@ -177,29 +154,22 @@ public class ControllerUsers {
      * @return 
      */
     public OutputJson changePasswordUser(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
-        String contraseniaAnterior = request.getParameter("contraseniaAnterior");
-        String contraseniaNueva = request.getParameter("contraseniaNueva");
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
+        String newPassword = request.getParameter("new_password");
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO userDAO = new UsersDAO();
-                ResultInteger resultado = userDAO.validaPassword(contraseniaAnterior, idUsuario);
-                if( resultado.getResult().equals(1)){
-                    userDAO.changePassword(contraseniaNueva, idUsuario);
+                
+                userDAO.changePassword(newPassword, idAcceso);
                     
-                    response.setMessage("OK");
-                    response.setSucessfull(true);
-                    
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Contraseña Invalida");
-                }
+                response.setMessage("OK");
+                response.setSucessfull(true);
             } else {
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");
@@ -218,28 +188,42 @@ public class ControllerUsers {
      * @param request
      * @return 
      */
-    public OutputJson insertNewUsersETAD(HttpServletRequest request){
-        String nombre = request.getParameter("nombre");
-        int idSonarh = Integer.parseInt(request.getParameter("id_sonarh"));
+    public OutputJson insertUsersETAD(HttpServletRequest request){
+        int numeroEmpleado = Integer.parseInt(request.getParameter("numero_empleado"));
         int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idPerfil = Integer.parseInt(request.getParameter("id_perfil"));
-        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
-        String usuario = request.getParameter("usuario_acceso");
+        String perfiles = request.getParameter("perfiles");
+        String[] listPerfiles = perfiles.split(",");
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO userDAO = new UsersDAO();
-                
-                userDAO.insertNewUser(nombre, idSonarh, idLinea, idGrupo, idTurno, usuario, idPerfil);
-                response.setMessage("OK");
-                response.setSucessfull(true);
-                
+                ResultInteger existeUSuario = userDAO.validaExistUsers(numeroEmpleado);
+                if(existeUSuario.getResult().equals(1)){
+                    Date fecha = getCurrentDate();
+                    userDAO.insertNewUser(numeroEmpleado, idLinea, idGrupo, fecha, 1, usuario.getId_acceso());
+
+                    ResultInteger result = userDAO.getIdUserByNumeroEmpleado(numeroEmpleado);
+                    if(null != result){
+                        for(String perfil:listPerfiles){
+                            userDAO.registraPerfilByUser(result.getResult(), Integer.parseInt(perfil));
+
+                            response.setMessage("OK");
+                            response.setSucessfull(true);
+                        }
+                    }else{
+                        response.setMessage("Error");
+                        response.setSucessfull(false);
+                    }
+                }else{
+                    response.setMessage("No existe el usuario de Sonarh");
+                    response.setSucessfull(false);
+                }
             } else {
                 response.setSucessfull(false);
                 response.setMessage("Inicie sesión nuevamente");
@@ -258,22 +242,31 @@ public class ControllerUsers {
      * @param request
      * @return 
      */
-    public OutputJson updatePerfilUser(HttpServletRequest request){
-        int idUsuario = Integer.parseInt(request.getParameter("id_usuario_modificar"));
-        int idPerfil = Integer.parseInt(request.getParameter("id_perfil"));
-        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
-        int activo = Integer.parseInt(request.getParameter("activo"));
+    public OutputJson updateUserETAD(HttpServletRequest request){
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
+        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+        String perfiles = request.getParameter("perfiles");
         
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO userDAO = new UsersDAO();
                 
-                userDAO.updatePerfilUser(idUsuario, idTurno, idPerfil, activo);
+                Date fecha = getCurrentDate();
+                userDAO.updateUserETAD(idAcceso, idLinea, idGrupo, usuario.getId_acceso(), fecha);
+                String[] listPerfiles = perfiles.split(",");
+                for(String perfil:listPerfiles){
+                    userDAO.registraPerfilByUser(idAcceso, Integer.parseInt(perfil));
+
+                    response.setMessage("OK");
+                    response.setSucessfull(true);
+                }
+                
                 response.setMessage("OK");
                 response.setSucessfull(true);
                 
@@ -301,11 +294,11 @@ public class ControllerUsers {
         ControllerAutenticacion auth = new ControllerAutenticacion();
         
         try {
-             
-            if (auth.isValidToken(request)) {
+            UserDTO usuario = auth.isValidToken(request);
+            if (usuario != null) {
                 UsersDAO dao = new UsersDAO();
                 UserETADResponseJson list = new UserETADResponseJson();
-                list.setListUserDTO(dao.getUsersETAD());
+                list.setListUserETAD(dao.getUsersETAD());
                 output.setData(list);
                 response.setSucessfull(true);
                 response.setMessage("OK");
@@ -328,15 +321,17 @@ public class ControllerUsers {
      * @return 
      */
     public OutputJson deleteUsersETAD(HttpServletRequest request){
-        int idUser = Integer.parseInt(request.getParameter("id_usuario_delete"));
+        int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
+        int activo = Integer.parseInt(request.getParameter("activo"));
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+            UserDTO usuario = autenticacion.isValidToken(request);
+            if(usuario != null){
                 UsersDAO usersDAO = new UsersDAO();
-                usersDAO.deleteUsersETAD(idUser);
+                usersDAO.deleteUsersETAD(idAcceso, activo);
                 
                 response.setSucessfull(true);
                 response.setMessage("OK");
@@ -347,6 +342,39 @@ public class ControllerUsers {
         } catch (Exception ex){
             response.setSucessfull(false);
             response.setMessage("Descripcion del Error: " + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getMiPerfil(HttpServletRequest request) throws Exception{
+        UserResponseJson response = new UserResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                UsersDAO usersDAO = new UsersDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                UserETADResponseJson data = new UserETADResponseJson();
+                
+                data.setUserETAD(usersDAO.getUserEtadByID(sesion.getId_acceso()));
+                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
+                data.setListLineas(lineasDAO.getLineasActive());
+                output.setData(data);
+                
+                response.setMessage("OK");
+                response.setSucessfull(true);
+            }else{
+                response.setMessage("Inicie sesión nuevamente");
+                response.setSucessfull(false);
+            }
+        }catch(SQLException ex){
+            response.setMessage("Descripción Error: " + ex.getMessage());
+            response.setSucessfull(false);
         }
         output.setResponse(response);
         return output;
