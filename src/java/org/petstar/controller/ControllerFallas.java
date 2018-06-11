@@ -167,6 +167,11 @@ public class ControllerFallas {
                     falla.setDia(sumarFechasDias(falla.getDia(), 2));
                     falla.setDiaString(convertSqlToDay(
                             falla.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                    if(falla.getEstatus_validado() == 1){
+                        falla.setValidado(true);
+                    }else{
+                        falla.setValidado(false);
+                    }
                 }
                 
                 output.setData(data);
