@@ -20,6 +20,7 @@ import static org.petstar.configurations.utils.getDateFirstDay;
 import static org.petstar.configurations.utils.getDateLastDay;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.EquiposDAO;
+import org.petstar.dao.GposLineaDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dao.PeriodosDAO;
@@ -52,6 +53,7 @@ public class ControllerFallas {
             
             if(sesion != null){
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
+                GposLineaDAO gposLineaDAO = new GposLineaDAO();
                 EquiposDAO equiposDAO = new EquiposDAO();
                 RazonParoDAO paroDAO = new RazonParoDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
@@ -64,6 +66,7 @@ public class ControllerFallas {
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
                 data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+                data.setListGposLineas(gposLineaDAO.getGposLineaActiveForOEE());
                 data.setListRazonesParo(paroDAO.getAllRazonesActive());
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListLineas(lineasDAO.getLineasActive());
@@ -145,6 +148,7 @@ public class ControllerFallas {
         int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idTurno = Integer.parseInt(request.getParameter("id_turno"));
+        int idGpoLn = Integer.parseInt(request.getParameter("id_gpo_linea"));
         
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
@@ -160,7 +164,12 @@ public class ControllerFallas {
                 FallasDAO fallasDAO = new FallasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
                 
-                data.setListFallas(fallasDAO.getAllFallasByDays(idLinea, idGrupo, idTurno, fechaI, fechaT));
+                String[] perfiles = sesion.getPerfiles().split(",");
+                if(perfiles[0].equals("4")){
+                    data.setListFallas(fallasDAO.getAllFallasByDaysAndGpoLn(idGpoLn, idGrupo, idTurno, fechaI, fechaT));
+                }else{
+                    data.setListFallas(fallasDAO.getAllFallasByDays(idLinea, idGrupo, idTurno, fechaI, fechaT));
+                }
                 data.setEstatusPeriodo(periodo.getEstatus()==0);
                 
                 for(FallasDTO falla:data.getListFallas()){

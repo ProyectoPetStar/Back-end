@@ -9,6 +9,7 @@ import java.util.List;
 import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.EquiposDTO;
 import org.petstar.dto.FallasDTO;
+import org.petstar.dto.GposLineaDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.MetasDTO;
 import org.petstar.dto.PeriodosDTO;
@@ -29,6 +30,7 @@ public class FallasDataResponseJson {
     private List<CatalogosDTO> listGrupos;
     private List<LineasDTO> listLineas;
     private List<PeriodosDTO> listPeriodos;
+    private List<GposLineaDTO> listGposLineas;
     private boolean estatusPeriodo;
 
    public FallasDTO getFallasDTO() {
@@ -109,6 +111,14 @@ public class FallasDataResponseJson {
 
     public void setListPeriodos(List<PeriodosDTO> listPeriodos) {
         this.listPeriodos = listPeriodos;
+    }
+
+    public List<GposLineaDTO> getListGposLineas() {
+        return listGposLineas;
+    }
+
+    public void setListGposLineas(List<GposLineaDTO> listGposLineas) {
+        this.listGposLineas = listGposLineas;
     }
 
     public boolean isEstatusPeriodo() {

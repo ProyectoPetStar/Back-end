@@ -38,6 +38,23 @@ public class FallasDAO {
         return data;
     }
     
+    public List<FallasDTO> getAllFallasByDaysAndGpoLn(int idGpoLn, int idGrupo, 
+            int idTurno, Date fechaIn, Date fechaTe) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_sp_selectAlFallas_petFallasAndGpoLinea ?, ?, ?, ?, ?");
+        Object[] params = {
+            fechaIn, fechaTe, idTurno, idGrupo, idGpoLn
+        };
+        
+        ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
+        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh, params);
+        
+        return data;
+    }
+    
     public FallasDTO getFallaById(int idFalla) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
