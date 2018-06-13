@@ -47,6 +47,7 @@ public class ControllerAutenticacion {
                 .claim("perfiles", usuario.getPerfiles())
                 .claim("roles_oee", usuario.getRoles_oee())
                 .claim("roles_etad", usuario.getRoles_etad())
+                .claim("id_grupo_linea", usuario.getId_grupo_linea())
                 .claim("roles_ishikawa", usuario.getRoles_ishikawa())
                 .claim("roles_generales", usuario.getRoles_generales())
                 .signWith(
@@ -81,6 +82,7 @@ public class ControllerAutenticacion {
                 usuario.setPerfiles(claims.get("perfiles", String.class));
                 usuario.setRoles_oee(claims.get("roles_oee", String.class));
                 usuario.setRoles_etad(claims.get("roles_etad", String.class));
+                usuario.setId_grupo_linea(claims.get("id_grupo_linea", Integer.class));
                 usuario.setRoles_ishikawa(claims.get("roles_ishikawa", String.class));
                 usuario.setRoles_generales(claims.get("roles_generales", String.class));
             } catch (SignatureException | ClaimJwtException | MalformedJwtException | UnsupportedJwtException e) {
