@@ -22,6 +22,7 @@ public class ProduccionResponseJson {
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listTurnos;
     private List<FallasDTO> listFallas;
+    private List<CatalogosDTO> listGposLinea;
     private boolean estatusPeriodo;
     private MetasDTO meta;
     
@@ -96,6 +97,14 @@ public class ProduccionResponseJson {
 
     public void setListFallas(List<FallasDTO> listFallas) {
         this.listFallas = listFallas;
+    }
+
+    public List<CatalogosDTO> getListGposLinea() {
+        return listGposLinea;
+    }
+
+    public void setListGposLinea(List<CatalogosDTO> listGposLinea) {
+        this.listGposLinea = listGposLinea;
     }
 
     public boolean isEstatusPeriodo() {

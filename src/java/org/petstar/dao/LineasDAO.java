@@ -196,4 +196,6 @@ public class LineasDAO {
         List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh, params);
         return lineasData;
     }
+    
+    
 }
