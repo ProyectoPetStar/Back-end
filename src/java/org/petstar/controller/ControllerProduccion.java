@@ -25,6 +25,7 @@ import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.obtenerAnio;
 import static org.petstar.configurations.utils.obtenerMes;
 import org.petstar.dao.FallasDAO;
+import org.petstar.dao.GposLineaDAO;
 import org.petstar.dao.MetasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.FallasDTO;
@@ -39,10 +40,6 @@ public class ControllerProduccion {
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
-    private static final String MSG_INVALID= "Valor o Descripción ya existe";
-    private static final String TABLE_NAME = "pet_cat_equipos";
-    private static final String MSG_NOEXIT = "El registro no existe";
-    private static final String TABLE_GPOLN= "pet_cat_gpo_linea";
     private static final String TABLE_GROUP= "pet_cat_grupo";
     private static final String TABLE_TURNO= "pet_cat_turno";
     
@@ -62,6 +59,7 @@ public class ControllerProduccion {
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
+                GposLineaDAO gposLineaDAO = new GposLineaDAO();
                 ProductosDAO productosDAO = new ProductosDAO();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
@@ -73,7 +71,7 @@ public class ControllerProduccion {
                 data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
-                data.setListGposLinea(catalogosDAO.getCatalogosActive(TABLE_GPOLN));
+                data.setListGposLinea(gposLineaDAO.getGposLineaActiveForOEE());
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
                 data.setListLineas(lineasDAO.getLineasActive());

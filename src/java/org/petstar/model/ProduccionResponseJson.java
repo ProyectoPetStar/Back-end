@@ -3,6 +3,7 @@ package org.petstar.model;
 import java.util.List;
 import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.FallasDTO;
+import org.petstar.dto.GposLineaDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.MetasDTO;
 import org.petstar.dto.PeriodosDTO;
@@ -22,7 +23,7 @@ public class ProduccionResponseJson {
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listTurnos;
     private List<FallasDTO> listFallas;
-    private List<CatalogosDTO> listGposLinea;
+    private List<GposLineaDTO> listGposLinea;
     private boolean estatusPeriodo;
     private MetasDTO meta;
     
@@ -99,11 +100,11 @@ public class ProduccionResponseJson {
         this.listFallas = listFallas;
     }
 
-    public List<CatalogosDTO> getListGposLinea() {
+    public List<GposLineaDTO> getListGposLinea() {
         return listGposLinea;
     }
 
-    public void setListGposLinea(List<CatalogosDTO> listGposLinea) {
+    public void setListGposLinea(List<GposLineaDTO> listGposLinea) {
         this.listGposLinea = listGposLinea;
     }
 
