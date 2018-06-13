@@ -42,6 +42,7 @@ public class ControllerProduccion {
     private static final String MSG_INVALID= "Valor o Descripción ya existe";
     private static final String TABLE_NAME = "pet_cat_equipos";
     private static final String MSG_NOEXIT = "El registro no existe";
+    private static final String TABLE_GPOLN= "pet_cat_gpo_linea";
     private static final String TABLE_GROUP= "pet_cat_grupo";
     private static final String TABLE_TURNO= "pet_cat_turno";
     
@@ -72,6 +73,7 @@ public class ControllerProduccion {
                 data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListProductos(productosDAO.getProductosByLinea(sesion.getId_linea()));
+                data.setListGposLinea(catalogosDAO.getCatalogosActive(TABLE_GPOLN));
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNO));
                 data.setListLineas(lineasDAO.getLineasActive());
@@ -121,6 +123,7 @@ public class ControllerProduccion {
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
             int idLinea = Integer.valueOf(request.getParameter("id_linea"));
+            int idGpoLn = Integer.valueOf(request.getParameter("id_gpo_linea"));
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 ProduccionResponseJson data = new ProduccionResponseJson();
@@ -136,11 +139,27 @@ public class ControllerProduccion {
                     
                     data.setListProduccion(produccionDAO.getProduccionByPeriodo(periodo.getMes(), periodo.getAnio(), idLinea));
                     
-                }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
+                }else if(perfiles[0].equals("5")){
                     
                     data.setListProduccion(produccionDAO.getProduccionByPeriodoAndLinea(
                             periodo.getMes(), periodo.getAnio(),
                             sesion.getId_linea(), sesion.getId_grupo()));
+                    
+                    int turno = getTurnoForSaveProduction();
+                    Date dia = getCurrentDayByTurno(turno);
+                    data.setMeta(metasDAO.getMeta(dia, turno, sesion.getId_grupo(), sesion.getId_linea()));
+                    
+                    if(data.getMeta() != null){
+                        data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
+                        data.getMeta().setDia_string(
+                                convertSqlToDay(data.getMeta().getDia(),
+                                        new SimpleDateFormat("dd/MM/yyyy")));
+                        data.setListDetalle(produccionDAO.getProduccionByIdMeta(data.getMeta().getId_meta()));
+                    }
+                }else if(perfiles[0].equals("4")){
+                    data.setListProduccion(produccionDAO.getProduccionByPeriodoAndGpoln(
+                            periodo.getMes(), periodo.getAnio(),
+                            idGpoLn, sesion.getId_grupo()));
                     
                     int turno = getTurnoForSaveProduction();
                     Date dia = getCurrentDayByTurno(turno);
