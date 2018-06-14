@@ -3,22 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.petstar.dao;
+package org.petstar.dao.ETAD;
 
 import java.util.HashMap;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
-import org.petstar.dto.CatalogosDTO;
 
 /**
  *
  * @author Tech-Pro
  */
-public class EtadMetasMasivasDAO {
+public class MetasMasivasDAO {
     public void insertTMPObjetivosOperativos(List<HashMap> data) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);

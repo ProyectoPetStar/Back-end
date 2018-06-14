@@ -10,8 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.axis.encoding.Base64;
-import org.petstar.dao.EtadMetasMasivasDAO;
+import org.petstar.model.OutputJson;
+import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.getCurrentDate;
+import static org.petstar.configurations.Validation.validateDecimales;
 
 /**
  *
@@ -83,34 +85,44 @@ public class Tools {
         return listdata;
     }
     
-    public static boolean validateFileObjetivosEstrategicosAnual(HttpServletRequest request, String nameFile, int usuario) throws Exception{
+    public static OutputJson validateFileObjetivosEstrategicosAnual(HttpServletRequest request, String nameFile, int usuario) throws Exception{
+        OutputJson out = new OutputJson();
+        ResponseJson res = new ResponseJson();
         int year = Integer.valueOf(request.getParameter("anio"));
         int idEtad = Integer.valueOf(request.getParameter("id_etad"));
         String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
         List<HashMap> listdata = new ArrayList<>();
-        boolean bandera = false;
+        
         try {
             CsvReader csvReader = new CsvReader(pathFile);
             csvReader.readHeaders();
             Date date = getCurrentDate();
+            res.setSucessfull(true);
+            
             while (csvReader.readRecord()) {
-                HashMap map = new HashMap();
-                map.put("objetivo", csvReader.get("Objetivo"));
-                map.put("um", csvReader.get("UM"));
-                map.put("meta", csvReader.get("Meta"));
-                map.put("year", year);
-                map.put("idEtad", idEtad);
-                map.put("usuario", usuario);
-                map.put("fecha", date);
-                
-                listdata.add(map);
-                EtadMetasMasivasDAO dAO = new EtadMetasMasivasDAO();
-                dAO.insertTMPObjetivosOperativos(listdata);
-                bandera= true;
+                boolean validMeta = validateDecimales(csvReader.get("Meta"));
+                if(validMeta){
+                    HashMap map = new HashMap();
+                    map.put("objetivo", csvReader.get("Objetivo"));
+                    map.put("um", csvReader.get("UM"));
+                    map.put("meta", csvReader.get("Meta"));
+                    map.put("year", year);
+                    map.put("idEtad", idEtad);
+                    map.put("usuario", usuario);
+                    map.put("fecha", date);
+                    listdata.add(map);
+                    out.setData(listdata);
+                }else{
+                    res.setSucessfull(false);
+                    res.setMessage("Invalido");
+                }
             }
             csvReader.close();
         }catch(IOException ex){
+            res.setSucessfull(false);
+            res.setMessage(ex.getMessage());
         }
-        return bandera;
+        out.setResponse(res);
+        return out;
     }
 }

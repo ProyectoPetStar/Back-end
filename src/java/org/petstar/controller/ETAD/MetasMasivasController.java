@@ -1,0 +1,205 @@
+package org.petstar.controller.ETAD;
+
+import com.csvreader.CsvWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.petstar.configurations.Configuration;
+import org.petstar.controller.ControllerAutenticacion;
+import org.petstar.dao.LineasDAO;
+import org.petstar.dao.PeriodosDAO;
+import org.petstar.dto.UserDTO;
+import org.petstar.model.ETAD.MetasMasivasModel;
+import org.petstar.model.OutputJson;
+import org.petstar.model.ResponseJson;
+import static org.petstar.configurations.Tools.saveFIle;
+import static org.petstar.configurations.Tools.listRows;
+import static org.petstar.configurations.Tools.validateFileObjetivosEstrategicosAnual;
+import org.petstar.dao.ETAD.MetasMasivasDAO;
+import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
+import org.petstar.dto.ETAD.ObjetivosOperativosDTO;
+
+/**
+ *
+ * @author Tech-Pro
+ */
+public class MetasMasivasController {
+    private static final String MSG_SUCESS = "OK";
+    private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
+    private static final String MSG_ERROR  = "Descripción de error: ";
+    private static final String MSG_FAILED = "Ha ocurrido un error al cargar el archivo";
+    private static final String MSG_INVALID= "El archivo contiene errores";
+    
+    public OutputJson loadCombobox(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                MetasMasivasModel data = new MetasMasivasModel();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                
+                data.setListPeriodos(periodosDAO.getPeriodos());
+                data.setListLineas(lineasDAO.getLineasActiveByETAD());
+                
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson preview(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                StringBuilder stringFile = new StringBuilder();
+                stringFile.append(request.getParameter("file"));
+                String tipoMeta = request.getParameter("tipo_meta");
+                String frecuencia = request.getParameter("frecuencia");
+                
+                SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
+                Date date = new Date();
+                String nameFile = tipoMeta+"_"+frecuencia+"_"+formato.format(date) + ".csv";
+                
+                boolean save = saveFIle(stringFile, nameFile);
+                if(save){
+                    OutputJson valid = new OutputJson();
+                    ResponseJson rj = new ResponseJson();
+                    /**
+                     * Tipos de Metas
+                     * 1.- Metas Estrategicas
+                     * 2.- Metas Operativas
+                     * 3.- KPI Operativo
+                     */
+                    switch(tipoMeta){
+                        case"1":
+                            if(frecuencia.equals("anual")){
+                                valid = validateFileObjetivosEstrategicosAnual(request, nameFile, session.getId_acceso());
+                                rj = (ResponseJson) valid.getResponse();
+                            }
+                        break;
+                    }
+                    
+                    
+                    if(rj.isSucessfull()){
+                        switch(tipoMeta){
+                            case"1":
+                                if(frecuencia.equals("anual")){
+                                    MetasMasivasDAO masivasDAO = new MetasMasivasDAO();
+                                    masivasDAO.insertTMPObjetivosOperativos((List<HashMap>) valid.getData());
+                                }
+                        }
+                        
+                        MetasMasivasModel data = new MetasMasivasModel();
+                        data.setListData(listRows(nameFile));
+                        output.setData(data);
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    }else{
+                        response.setMessage(MSG_INVALID);
+                        response.setSucessfull(false);
+                    }
+                }else{
+                    response.setMessage(MSG_FAILED);
+                    response.setSucessfull(false);
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson downloadTemplate(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            String tipoMeta = request.getParameter("tipo_meta");
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
+                List<ObjetivosOperativosDTO> listObjetivos = operativosDAO.getListObjetivosOperativos();
+                
+                String pathFile = Configuration.PATH_DOWNLOAD_FILE;
+                
+                String outputFile = pathFile+tipoMeta+"Template.csv";
+                boolean alreadyExists = new File(outputFile).exists();
+
+                if(alreadyExists){
+                    File ArchivoEmpleados = new File(outputFile);
+                    ArchivoEmpleados.delete();
+                }     
+
+                try {
+                    CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');
+                    /**
+                     * Tipos de Metas
+                     * 1.- Metas Estrategicas
+                     * 2.- Metas Operativas
+                     * 3.- KPI Operativo
+                     */
+                    switch(tipoMeta){
+                        case "1":
+                            csvOutput.write("Objetivo");
+                            csvOutput.write("UM");
+                            csvOutput.write("Meta");
+                            csvOutput.endRecord();
+                            for(ObjetivosOperativosDTO objetivo: listObjetivos){
+                                csvOutput.write(objetivo.getValor());
+                                csvOutput.write(objetivo.getUnidad_medida_objetivo_operativo());
+                                csvOutput.endRecord();                   
+                            }
+                            break;
+                    }
+                    csvOutput.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+}

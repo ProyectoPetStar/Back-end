@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.petstar.configurations.Configuration;
-import org.petstar.controller.EtadMetasMasivasController;
+import org.petstar.controller.ETAD.MetasMasivasController;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
@@ -34,7 +34,7 @@ public class EtadMetasMasivas extends HttpServlet {
         Configuration.setHeadersJson(response);
         PrintWriter out = response.getWriter();
         OutputJson output = new OutputJson();
-        EtadMetasMasivasController controller = new EtadMetasMasivasController();
+        MetasMasivasController controller = new MetasMasivasController();
         
         Gson gson = new Gson();
         try {
@@ -45,6 +45,9 @@ public class EtadMetasMasivas extends HttpServlet {
                     break;
                 case "preview":
                    output = controller.preview(request);
+                   break;
+                 case "downloadTempleate":
+                   output = controller.downloadTemplate(request);
                    break;
             }
         } catch (Exception ex) {
