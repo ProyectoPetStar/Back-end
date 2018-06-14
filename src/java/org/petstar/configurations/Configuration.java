@@ -13,6 +13,7 @@ public class Configuration {
     
     public static final String HEADER_STRING = "Authorization";
     public static final String PATH_UPLOAD_FILE = "C:\\petstar\\upfiles\\";
+    public static final String PATH_DOWNLOAD_FILE = "C:\\petstar\\downfiles\\";
     
     /**
      * Método que permite establecer las cabeceras de un servlet, en particular 
