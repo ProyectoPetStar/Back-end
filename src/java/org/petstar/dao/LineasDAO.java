@@ -197,5 +197,15 @@ public class LineasDAO {
         return lineasData;
     }
     
-    
+    public List<LineasDTO> getLineasActiveByETAD() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_cat_linea WHERE etad = 1");
+        
+        ResultSetHandler rsh = new BeanListHandler(LineasDTO.class);
+        List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh);
+        return lineasData;
+    }
 }
