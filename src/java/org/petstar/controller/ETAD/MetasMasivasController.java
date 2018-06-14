@@ -2,14 +2,18 @@ package org.petstar.controller.ETAD;
 
 import com.csvreader.CsvWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.axis.encoding.Base64;
 import org.petstar.configurations.Configuration;
 import org.petstar.controller.ControllerAutenticacion;
 import org.petstar.dao.LineasDAO;
@@ -157,8 +161,8 @@ public class MetasMasivasController {
                 boolean alreadyExists = new File(outputFile).exists();
 
                 if(alreadyExists){
-                    File ArchivoEmpleados = new File(outputFile);
-                    ArchivoEmpleados.delete();
+                    File newFile = new File(outputFile);
+                    newFile.delete();
                 }     
 
                 try {
@@ -183,13 +187,17 @@ public class MetasMasivasController {
                             break;
                     }
                     csvOutput.close();
+                    
+                    byte[] bFile = Files.readAllBytes(new File(outputFile).toPath());
+                    StringBuilder file = new StringBuilder();
+                    file.append(Base64.encode(bFile));
 
+                    response.setMessage(file.toString());
+                    response.setSucessfull(true);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    response.setMessage(MSG_ERROR + e.getMessage());
+                    response.setSucessfull(false);
                 }
-
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
