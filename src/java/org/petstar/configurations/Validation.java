@@ -83,4 +83,14 @@ public class Validation {
             return false;
         }
     }
+    
+    public static boolean validateDecimales(String valor){
+        if(valor.equals("")){
+            return false;
+        }else if(valor.matches("^[0-9]*[.]{0,1}[0-9]{0,3}$")){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

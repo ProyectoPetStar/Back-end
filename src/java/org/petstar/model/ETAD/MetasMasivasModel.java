@@ -1,4 +1,4 @@
-package org.petstar.model;
+package org.petstar.model.ETAD;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.petstar.dto.PeriodosDTO;
  *
  * @author Tech-Pro
  */
-public class EtadMetasMasivasModel {
+public class MetasMasivasModel {
     private List<PeriodosDTO> listPeriodos;
     private List<LineasDTO> listLineas;
     private List<HashMap> listData;
