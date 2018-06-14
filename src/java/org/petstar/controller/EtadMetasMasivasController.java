@@ -11,6 +11,7 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.Tools.saveFIle;
 import static org.petstar.configurations.Tools.listRows;
+import static org.petstar.configurations.Tools.validateFileObjetivosEstrategicosAnual;
 
 /**
  *
@@ -21,6 +22,7 @@ public class EtadMetasMasivasController {
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_FAILED = "Ha ocurrido un error al cargar el archivo";
+    private static final String MSG_INVALID= "El archivo contiene errores";
     
     public OutputJson loadCombobox(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -72,12 +74,17 @@ public class EtadMetasMasivasController {
                 
                 boolean save = saveFIle(stringFile, nameFile);
                 if(save){
-                    EtadMetasMasivasModel data = new EtadMetasMasivasModel();
-                    //listRows(nameFile);
-                    data.setListData(listRows(nameFile));
-                    output.setData(data);
-                    response.setMessage(MSG_SUCESS);
-                    response.setSucessfull(true);
+                    boolean valid = validateFileObjetivosEstrategicosAnual(request, nameFile, session.getId_acceso());
+                    if(valid){
+                        EtadMetasMasivasModel data = new EtadMetasMasivasModel();
+                        data.setListData(listRows(nameFile));
+                        output.setData(data);
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    }else{
+                        response.setMessage(MSG_INVALID);
+                        response.setSucessfull(false);
+                    }
                 }else{
                     response.setMessage(MSG_FAILED);
                     response.setSucessfull(false);

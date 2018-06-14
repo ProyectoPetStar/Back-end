@@ -4,10 +4,14 @@ import com.csvreader.CsvReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.axis.encoding.Base64;
+import org.petstar.dao.EtadMetasMasivasDAO;
+import static org.petstar.configurations.utils.getCurrentDate;
 
 /**
  *
@@ -77,5 +81,36 @@ public class Tools {
         }
         
         return listdata;
+    }
+    
+    public static boolean validateFileObjetivosEstrategicosAnual(HttpServletRequest request, String nameFile, int usuario) throws Exception{
+        int year = Integer.valueOf(request.getParameter("anio"));
+        int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+        String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
+        List<HashMap> listdata = new ArrayList<>();
+        boolean bandera = false;
+        try {
+            CsvReader csvReader = new CsvReader(pathFile);
+            csvReader.readHeaders();
+            Date date = getCurrentDate();
+            while (csvReader.readRecord()) {
+                HashMap map = new HashMap();
+                map.put("objetivo", csvReader.get("Objetivo"));
+                map.put("um", csvReader.get("UM"));
+                map.put("meta", csvReader.get("Meta"));
+                map.put("year", year);
+                map.put("idEtad", idEtad);
+                map.put("usuario", usuario);
+                map.put("fecha", date);
+                
+                listdata.add(map);
+                EtadMetasMasivasDAO dAO = new EtadMetasMasivasDAO();
+                dAO.insertTMPObjetivosOperativos(listdata);
+                bandera= true;
+            }
+            csvReader.close();
+        }catch(IOException ex){
+        }
+        return bandera;
     }
 }
