@@ -83,7 +83,7 @@ public class ControllerUsers {
                 UserETADResponseJson data = new UserETADResponseJson();
                 
                 data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
-                data.setListLineas(lineasDAO.getLineasActive());
+                data.setListLineas(lineasDAO.getLineasActiveByUser());
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                 data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
                 
@@ -126,7 +126,7 @@ public class ControllerUsers {
                     userData.setUsuarioSonarh(userDAO.getUserSonarhById(numeroEmpleado));
                     userData.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                     userData.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
-                    userData.setListLineas(lineasDAO.getLineasActive());
+                    userData.setListLineas(lineasDAO.getLineasActiveByUser());
 
                     output.setData(userData);
                     response.setSucessfull(true);
@@ -363,7 +363,7 @@ public class ControllerUsers {
                 data.setUserETAD(usersDAO.getUserEtadByID(sesion.getId_acceso()));
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                 data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
-                data.setListLineas(lineasDAO.getLineasActive());
+                data.setListLineas(lineasDAO.getLineasActiveByUser());
                 output.setData(data);
                 
                 response.setMessage("OK");
