@@ -208,4 +208,16 @@ public class LineasDAO {
         List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh);
         return lineasData;
     }
+    
+    public List<LineasDTO> getLineasActiveByUser() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_selectPetLineaDarAlta");
+        
+        ResultSetHandler rsh = new BeanListHandler(LineasDTO.class);
+        List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh);
+        return lineasData;
+    }
 }
