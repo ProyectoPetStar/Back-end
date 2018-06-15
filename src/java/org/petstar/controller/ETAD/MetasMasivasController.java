@@ -25,9 +25,11 @@ import static org.petstar.configurations.Tools.validateFileObjetivosEstrategicos
 import static org.petstar.configurations.Tools.validateFileKPIOperativoAnual;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
+import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.MetasMasivasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dto.ETAD.KPIOperativosDTO;
+import org.petstar.dto.ETAD.MetasEstrategicasDTO;
 import org.petstar.dto.ETAD.ObjetivosOperativosDTO;
 import org.petstar.dto.ResultInteger;
 
@@ -188,6 +190,21 @@ public class MetasMasivasController {
                      * 3.- KPI Operativo
                      */
                     switch(tipoMeta){
+                        case"1":
+                            MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                            if(frecuencia.equals("anual")){
+                                List<MetasEstrategicasDTO> listEstrategicas = estrategicasDAO.getListMetasEstrategicasAnuales();
+                                csvOutput.write("Meta");
+                                csvOutput.write("UM");
+                                csvOutput.write("Valor");
+                                csvOutput.endRecord();
+                                for(MetasEstrategicasDTO meta: listEstrategicas){
+                                    csvOutput.write(meta.getValor());
+                                    csvOutput.write(meta.getUnidad_medida_me());
+                                    csvOutput.endRecord();                   
+                                }
+                            }
+                        break;
                         case "2":
                             ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
                             List<ObjetivosOperativosDTO> listObjetivos = operativosDAO.getListObjetivosOperativos();
