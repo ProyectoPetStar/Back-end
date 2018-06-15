@@ -46,7 +46,10 @@ public class EtadMetasMasivas extends HttpServlet {
                 case "preview":
                    output = controller.preview(request);
                    break;
-                 case "downloadTempleate":
+                case "loadData":
+                   output = controller.loadData(request);
+                   break;   
+                case "downloadTempleate":
                    output = controller.downloadTemplate(request);
                    break;
             }

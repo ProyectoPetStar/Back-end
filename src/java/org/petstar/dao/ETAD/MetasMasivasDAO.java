@@ -20,6 +20,21 @@ import org.petstar.dto.ResultInteger;
  * @author Tech-Pro
  */
 public class MetasMasivasDAO {
+    public void insertMetasEstrategicasAnuales(List<HashMap> data, int archivo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertpetTmpMetaAnualEstrategica ?, ?, ?, ?, ?, ?, ?");
+        for(int i=0; i<data.size(); i++){
+            Object[] params = { data.get(i).get("idEtad"), data.get(i).get("meta"), 
+                    data.get(i).get("year"), data.get(i).get("valor"), archivo,
+                    data.get(i).get("usuario"), data.get(i).get("fecha") };
+            
+            qr.update(sql.toString(),params);
+        }
+    }
+    
     public void insertTMPObjetivosOperativos(List<HashMap> data, int archivo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -61,5 +76,38 @@ public class MetasMasivasDAO {
             
             qr.update(sql.toString(),params);
         }
+    }
+    
+    public void loadDataAnualMetasEstrategicas(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetMetaAnualEstrategica ?, ?");
+        Object[] params = { idEtad, year };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void loadDataAnualObjetivosOperativos(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetMetaAnualObjetivoOperativo ?, ?");
+        Object[] params = { idEtad, year };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void loadDataAnualKPIOperativos(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetMetaAnualKpi ?, ?");
+        Object[] params = { idEtad, year };
+        
+        qr.update(sql.toString(), params);
     }
 }
