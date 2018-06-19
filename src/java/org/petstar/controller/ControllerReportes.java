@@ -1000,18 +1000,25 @@ public class ControllerReportes {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
             int idLinea = Integer.valueOf(request.getParameter("id_linea"));
             String report = request.getParameter("report");
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
+                ReportesResponseJson data = new ReportesResponseJson();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
-                if(periodo != null){                    
-                    ReportesResponseJson data = new ReportesResponseJson();
-                    ReportesDAO reportesDAO = new ReportesDAO();
-                    List<ReporteDiario> dataRows = null;
-                    ReporteDiario grafRows = null;
+                ReportesDAO reportesDAO = new ReportesDAO();
+                List<ReporteDiario> dataRows = null;
+                ReporteDiario grafRows = null;
+                
+                if(report.equals("byMonths")){
+                    int anio = Integer.valueOf(request.getParameter("anio"));
+                    int lastDayFeb = getUltimoDiaMes(anio, 2);
+                    
+                    dataRows = reportesDAO.getReportePerformanceByMonth(anio, idLinea,lastDayFeb);
+                    grafRows = reportesDAO.getGraficaPerformanceByMonth(anio, idLinea);
+                }else{
+                    int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+                    PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
                     
                     switch(report){
                         case"byDays":
@@ -1024,72 +1031,64 @@ public class ControllerReportes {
                             dataRows = reportesDAO.getReportePerformanceByWeek(periodo.getMes(), periodo.getAnio(), idLinea);
                             grafRows = reportesDAO.getGraficaPerformanceByWeek(periodo.getAnio(), periodo.getMes(), idLinea);
                             break;
-                        case"byMonths":
-                            int lastDayFeb = getUltimoDiaMes(periodo.getAnio(), 2);
-                            dataRows = reportesDAO.getReportePerformanceByMonth(periodo.getAnio(), idLinea,lastDayFeb);
-                            grafRows = reportesDAO.getGraficaPerformanceByMonth(periodo.getAnio(), idLinea);
-                            break;
                     }
+                }
+                
+                List<HashMap> reportePerformance = new ArrayList<>();
+                List<HashMap> graficaPerformance = new ArrayList<>();
+                HashMap<String, Object> head = new HashMap<>();
+                head.put("padre", 1);
+                head.put("periodo", "Periodo");
+                head.put("real",    "Real");
+                head.put("meta",    "Meta");
+                reportePerformance.add(head);
+                HashMap<String, Object> header = new HashMap<>();
+                header.put("reala","Real A");
+                header.put("realb","Real B");
+                header.put("realc","Real C");
+                header.put("reald","Real D");
+                header.put("metaa","Meta A");
+                header.put("metab","Meta B");
+                header.put("metac","Meta C");
+                header.put("metad","Meta D");
+                header.put("padre", 1);
+                graficaPerformance.add(header);
                     
-                    List<HashMap> reportePerformance = new ArrayList<>();
-                    List<HashMap> graficaPerformance = new ArrayList<>();
-                    HashMap<String, Object> head = new HashMap<>();
-                    head.put("padre", 1);
-                    head.put("periodo", "Periodo");
-                    head.put("real",    "Real");
-                    head.put("meta",    "Meta");
-                    reportePerformance.add(head);
-                    HashMap<String, Object> header = new HashMap<>();
-                    header.put("reala","Real A");
-                    header.put("realb","Real B");
-                    header.put("realc","Real C");
-                    header.put("reald","Real D");
-                    header.put("metaa","Meta A");
-                    header.put("metab","Meta B");
-                    header.put("metac","Meta C");
-                    header.put("metad","Meta D");
-                    header.put("padre", 1);
-                    graficaPerformance.add(header);
-                    
-                    if(dataRows != null && grafRows != null){
-                        for(ReporteDiario row:dataRows){
-                            HashMap<String, Object> body = new HashMap<>();
-                            if(report.equals("byDays")){
-                                body.put("periodo",convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
-                            }else{
-                                body.put("periodo",row.getPeriodo());
-                            }
-                            BigDecimal suma = row.getA().add(row.getB()).add(row.getC()).add(row.getD());
-                            body.put("real", suma.setScale(3, RoundingMode.FLOOR));
-                            body.put("meta", row.getMeta_dia().setScale(3, RoundingMode.FLOOR));
-                            body.put("padre",0);
-                            reportePerformance.add(body);
+                if(dataRows != null && grafRows != null){
+                    for(ReporteDiario row:dataRows){
+                        HashMap<String, Object> body = new HashMap<>();
+                        if(report.equals("byDays")){
+                            body.put("periodo",convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+                        }else{
+                            body.put("periodo",row.getPeriodo());
                         }
-                        
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("reala",grafRows.getA().setScale(3, RoundingMode.FLOOR));
-                        map.put("realb",grafRows.getB().setScale(3, RoundingMode.FLOOR));
-                        map.put("realc",grafRows.getC().setScale(3, RoundingMode.FLOOR));
-                        map.put("reald",grafRows.getD().setScale(3, RoundingMode.FLOOR));
-                        map.put("metaa",grafRows.getMeta_a().setScale(3, RoundingMode.FLOOR));
-                        map.put("metab",grafRows.getMeta_b().setScale(3, RoundingMode.FLOOR));
-                        map.put("metac",grafRows.getMeta_c().setScale(3, RoundingMode.FLOOR));
-                        map.put("metad",grafRows.getMeta_d().setScale(3, RoundingMode.FLOOR));
-                        map.put("padre",0);
-                        graficaPerformance.add(map);
-                        
-                        data.setGraficaMap(graficaPerformance);
-                        data.setReporteMap(reportePerformance);
-                        output.setData(data);
-                        response.setSucessfull(true);
-                        response.setMessage(MSG_SUCESS);
-                    }else{
-                        response.setSucessfull(false);
-                        response.setMessage(MSG_NODATA);
+                        BigDecimal suma = row.getA().add(row.getB()).add(row.getC()).add(row.getD());
+                        body.put("real", suma.setScale(3, RoundingMode.FLOOR));
+                        body.put("meta", row.getMeta_dia().setScale(3, RoundingMode.FLOOR));
+                        body.put("padre",0);
+                        reportePerformance.add(body);
                     }
+                        
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("reala",grafRows.getA().setScale(3, RoundingMode.FLOOR));
+                    map.put("realb",grafRows.getB().setScale(3, RoundingMode.FLOOR));
+                    map.put("realc",grafRows.getC().setScale(3, RoundingMode.FLOOR));
+                    map.put("reald",grafRows.getD().setScale(3, RoundingMode.FLOOR));
+                    map.put("metaa",grafRows.getMeta_a().setScale(3, RoundingMode.FLOOR));
+                    map.put("metab",grafRows.getMeta_b().setScale(3, RoundingMode.FLOOR));
+                    map.put("metac",grafRows.getMeta_c().setScale(3, RoundingMode.FLOOR));
+                    map.put("metad",grafRows.getMeta_d().setScale(3, RoundingMode.FLOOR));
+                    map.put("padre",0);
+                    graficaPerformance.add(map);
+                        
+                    data.setGraficaMap(graficaPerformance);
+                    data.setReporteMap(reportePerformance);
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
                 }else{
                     response.setSucessfull(false);
-                    response.setMessage(MSG_NOEXIS);
+                    response.setMessage(MSG_NODATA);
                 }
             }else{
                 response.setSucessfull(false);
