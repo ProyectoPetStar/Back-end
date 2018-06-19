@@ -62,6 +62,9 @@ public class Produccion extends HttpServlet {
                 case "getProducuccionForLiberar":
                     output = controllerProduccion.getProduccionForLiberar(request);
                     break;
+                case "getProducuccionLiberada":
+                    output = controllerProduccion.getProduccionLiberada(request);
+                    break;
                 case "liberarDatos":
                     output = controllerProduccion.liberarDatos(request);
                     break;
