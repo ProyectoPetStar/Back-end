@@ -24,6 +24,7 @@ import static org.petstar.configurations.utils.getDateFirstDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.getUltimoDiaMes;
+import org.petstar.dao.GposLineaDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.FallasDTO;
@@ -41,7 +42,6 @@ import org.petstar.dto.UserDTO;
  */
 public class ControllerReportes {
     private static final String TABLE_FUENTES = "pet_cat_fuentes_paro";
-    private static final String TABLE_GPOLINE = "pet_cat_gpo_linea";
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
@@ -147,12 +147,12 @@ public class ControllerReportes {
             if(sesion != null){
                 LineasDAO lineasDAO = new LineasDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                GposLineaDAO gposLineaDAO = new GposLineaDAO();
                 ReportesResponseJson data = new ReportesResponseJson();
                 
                 data.setListLineas(lineasDAO.getLineasActive());
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
-                data.setListGposLineas(catalogosDAO.getCatalogosActive(TABLE_GPOLINE));
+                data.setListGposLineas(gposLineaDAO.getGposLineaActiveForOEE());
                 output.setData(data);
 
                 response.setSucessfull(true);
