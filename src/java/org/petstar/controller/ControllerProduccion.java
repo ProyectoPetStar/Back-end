@@ -20,6 +20,8 @@ import org.petstar.dto.ProduccionDTO;
 import org.petstar.model.ProduccionResponseJson;
 import static org.petstar.configurations.utils.getTurnoForSaveProduction;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
+import static org.petstar.configurations.utils.getDateFirstDay;
+import static org.petstar.configurations.utils.getDateLastDay;
 import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.obtenerAnio;
@@ -420,6 +422,53 @@ public class ControllerProduccion {
                     prod.setDia(sumarFechasDias(prod.getDia(), 2));
                     prod.setDiaString(convertSqlToDay(prod.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                 }
+                
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR +  ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getProduccionLiberada(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idLinea = Integer.valueOf(request.getParameter("id_linea"));
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                ProduccionDAO produccionDAO = new ProduccionDAO();
+                ProduccionResponseJson data = new ProduccionResponseJson();
+                
+                String[] perfiles = sesion.getPerfiles().split(",");
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                
+                if (perfiles[0].equals("1") || perfiles[0].equals("2") || perfiles[0].equals("3") || perfiles[0].equals("6")) {
+                    data.setListProduccion(produccionDAO.getProduccionLiberada(0,fechaI, fechaT));
+                }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
+                    data.setListProduccion(produccionDAO.getProduccionLiberada(idLinea, fechaI, fechaT));
+                }
+                
+                for(ProduccionDTO prod:data.getListProduccion()){
+                    prod.setDia(sumarFechasDias(prod.getDia(), 2));
+                    prod.setDiaString(convertSqlToDay(prod.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                }
+                data.setEstatusPeriodo(periodo.getEstatus()==0);
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);

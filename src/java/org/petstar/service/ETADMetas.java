@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.petstar.configurations.Configuration;
-import org.petstar.controller.ControllerProduccion;
+import org.petstar.controller.ETAD.MetasController;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
@@ -17,8 +17,8 @@ import org.petstar.model.ResponseJson;
  *
  * @author Tech-Pro
  */
-@WebServlet(name = "Produccion", urlPatterns = {"/Produccion"})
-public class Produccion extends HttpServlet {
+@WebServlet(name = "ETADMetas", urlPatterns = {"/ETADMetas"})
+public class ETADMetas extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,51 +32,28 @@ public class Produccion extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Configuration.setHeadersJson(response);
-        
-        PrintWriter printWriter = response.getWriter();
+        PrintWriter out = response.getWriter();
         OutputJson output = new OutputJson();
-        ControllerProduccion controllerProduccion = new ControllerProduccion();
-        Gson gson = new Gson();
+        MetasController controller = new MetasController();
         
-        try{
+        Gson gson = new Gson();
+        try {
             String action = request.getParameter("action");
-            switch(action){
+            switch (action) {
                 case "loadCombobox":
-                    output = controllerProduccion.loadCombobox(request);
+                    output = controller.loadCombobox(request);
                     break;
-                case "getProduccionByPeriodo":
-                    output = controllerProduccion.getProduccionByPeriodo(request);
-                    break;
-                case "insertProduccion":
-                    output = controllerProduccion.insertProduccion(request);
-                    break;
-                case "getDetailsByIdMeta":
-                    output = controllerProduccion.getDetailsByIdMeta(request);
-                    break;
-                case "getDetailsProduccion":
-                    output = controllerProduccion.getDetailsProducion(request);
-                    break;
-                case "updateProduccion":
-                    output = controllerProduccion.updateProduccion(request);
-                    break;
-                case "getProducuccionForLiberar":
-                    output = controllerProduccion.getProduccionForLiberar(request);
-                    break;
-                case "getProducuccionLiberada":
-                    output = controllerProduccion.getProduccionLiberada(request);
-                    break;
-                case "liberarDatos":
-                    output = controllerProduccion.liberarDatos(request);
-                    break;
+                case"getAllMetas":
+                    output = controller.getAllMetas(request);
             }
-        }catch(Exception ex){
-            ResponseJson responseJson = new ResponseJson();
-            responseJson.setMessage(ex.getMessage());
-            responseJson.setSucessfull(false);
-            output.setResponse(responseJson);
-        }finally{
-            printWriter.print(gson.toJson(output));
-            printWriter.close();
+        } catch (Exception ex) {
+            ResponseJson reponseJson = new ResponseJson();
+            reponseJson.setSucessfull(false);
+            reponseJson.setMessage(ex.getMessage());
+            output.setResponse(reponseJson);
+        } finally {
+            out.print(gson.toJson(output));
+            out.close();
         }
     }
 
@@ -95,6 +72,11 @@ public class Produccion extends HttpServlet {
         processRequest(request, response);
     }
 
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
+        Configuration.setHeadersJson(response);
+    }
+    
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -109,11 +91,6 @@ public class Produccion extends HttpServlet {
         processRequest(request, response);
     }
 
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
-        Configuration.setHeadersJson(response);
-    }
-    
     /**
      * Returns a short description of the servlet.
      *
@@ -121,7 +98,7 @@ public class Produccion extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Produccion";
+        return "Administracion de Metas";
     }// </editor-fold>
 
 }

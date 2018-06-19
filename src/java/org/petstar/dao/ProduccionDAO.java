@@ -111,6 +111,19 @@ public class ProduccionDAO {
         return data;
     }
     
+    public List<ProduccionDTO> getProduccionLiberada(int idLinea, Date fechaI, Date fechaT) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_petValidaProduccionByPeriodo ?, ?, ?");
+        Object[] params = { idLinea, fechaI, fechaT };
+        
+        ResultSetHandler rsh = new BeanListHandler(ProduccionDTO.class);
+        List<ProduccionDTO> data = (List<ProduccionDTO>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
     public void liberarDatos(int idMeta, int estatus) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
