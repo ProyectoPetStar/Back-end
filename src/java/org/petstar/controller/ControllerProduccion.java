@@ -260,6 +260,7 @@ public class ControllerProduccion {
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 ProduccionDAO produccionDAO = new ProduccionDAO();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 FallasDAO fallasDAO = new FallasDAO();
                 MetasDAO metasDAO = new MetasDAO();
@@ -275,6 +276,10 @@ public class ControllerProduccion {
                     falla.setDia(sumarFechasDias(falla.getDia(), 2));
                     falla.setDiaString(convertSqlToDay(falla.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                 }
+                PeriodosDTO periodo = periodosDAO.getPeriodoByMesAndAnio(
+                        obtenerMes(data.getMeta().getDia()),
+                        obtenerAnio(data.getMeta().getDia()));
+                data.setEstatusPeriodo(periodo.getEstatus()==0);
                 data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
                 data.getMeta().setDia_string(convertSqlToDay(
                         data.getMeta().getDia(), 
