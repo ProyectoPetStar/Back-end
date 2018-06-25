@@ -33,6 +33,7 @@ import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.FallasDTO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ResultInteger;
 
 /**
  *
@@ -216,19 +217,25 @@ public class ControllerProduccion {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 ProduccionDAO produccionDAO = new ProduccionDAO();
-                JsonParser jsonParser = new JsonParser();
-                String jsonArrayString = jsonString;
-                JsonArray arrayFromString = jsonParser.parse(jsonArrayString).getAsJsonArray();
+                ResultInteger result = produccionDAO.validateForSaveProduccion(idMeta);
+                if(result.getResult().equals(0)){
+                    JsonParser jsonParser = new JsonParser();
+                    String jsonArrayString = jsonString;
+                    JsonArray arrayFromString = jsonParser.parse(jsonArrayString).getAsJsonArray();
 
-                for(int i=0; i<arrayFromString.size(); i++){
-                    JsonObject objectFromString = jsonParser.parse(arrayFromString.get(i).toString()).getAsJsonObject();
-                    int idProducto = Integer.parseInt(objectFromString.get("id_producto").toString());
-                    BigDecimal valor = new BigDecimal(objectFromString.get("valor").toString());
-                    produccionDAO.insertProduccion(idMeta, idProducto, valor,sesion.getId_acceso());
+                    for(int i=0; i<arrayFromString.size(); i++){
+                        JsonObject objectFromString = jsonParser.parse(arrayFromString.get(i).toString()).getAsJsonObject();
+                        int idProducto = Integer.parseInt(objectFromString.get("id_producto").toString());
+                        BigDecimal valor = new BigDecimal(objectFromString.get("valor").toString());
+                        produccionDAO.insertProduccion(idMeta, idProducto, valor,sesion.getId_acceso());
+                    }
+
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage("Ya existe producción registrada.");
+                    response.setSucessfull(false);
                 }
-                
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
