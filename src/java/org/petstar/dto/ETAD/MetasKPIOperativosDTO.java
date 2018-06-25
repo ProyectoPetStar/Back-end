@@ -10,6 +10,8 @@ public class MetasKPIOperativosDTO {
     private int id_meta_anual_kpi;
     private String valor_linea;
     private String valor_kpi;
+    private String tipo_kpi;
+    private String um_kpi;
     private int anio;
     private BigDecimal valor;
     private int estatus;
@@ -36,6 +38,22 @@ public class MetasKPIOperativosDTO {
 
     public void setValor_kpi(String valor_kpi) {
         this.valor_kpi = valor_kpi;
+    }
+
+    public String getTipo_kpi() {
+        return tipo_kpi;
+    }
+
+    public void setTipo_kpi(String tipo_kpi) {
+        this.tipo_kpi = tipo_kpi;
+    }
+
+    public String getUm_kpi() {
+        return um_kpi;
+    }
+
+    public void setUm_kpi(String um_kpi) {
+        this.um_kpi = um_kpi;
     }
 
     public int getAnio() {

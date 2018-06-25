@@ -45,6 +45,7 @@ public class ETADMetas extends HttpServlet {
                     break;
                 case"getAllMetas":
                     output = controller.getAllMetas(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
