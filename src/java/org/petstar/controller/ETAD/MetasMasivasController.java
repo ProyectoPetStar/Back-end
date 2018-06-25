@@ -188,6 +188,7 @@ public class MetasMasivasController {
                 String tipoMeta = request.getParameter("tipo_meta");
                 
                 MetasMasivasDAO masivasDAO = new MetasMasivasDAO();
+                ResultInteger result = new ResultInteger();
                 /**
                 * Tipos de Metas
                 * 1.- Metas Estrategicas
@@ -197,22 +198,88 @@ public class MetasMasivasController {
                 switch(tipoMeta){
                     case"1":
                         if(frecuencia.equals("anual")){
-                            masivasDAO.loadDataAnualMetasEstrategicas(idEtad, year);
+                            result = masivasDAO.validateExistDataMetasEstrategiasAnuales(idEtad, year);
+                            if(result.getResult().equals(0)){
+                                masivasDAO.loadDataAnualMetasEstrategicas(idEtad, year);
+                                response = messageForValidate(true);
+                            }else{
+                                response = messageForValidate(false);
+                            }
                         }
                         break;
                     case"2":
                         if(frecuencia.equals("anual")){
-                            masivasDAO.loadDataAnualObjetivosOperativos(idEtad, year);
+                            result = masivasDAO.validateExistDataMetasOperativasAnuales(idEtad, year);
+                            if(result.getResult().equals(0)){
+                                masivasDAO.loadDataAnualObjetivosOperativos(idEtad, year);
+                                response = messageForValidate(true);
+                            }else{
+                                response = messageForValidate(false);
+                            }
                         }
                         break;
                     case"3":
                         if(frecuencia.equals("anual")){
-                            masivasDAO.loadDataAnualKPIOperativos(idEtad, year);
+                            result = masivasDAO.validateExistDataMetasKPIOperativoAnuales(idEtad, year);
+                            if(result.getResult().equals(0)){
+                                masivasDAO.loadDataAnualKPIOperativos(idEtad, year);
+                                response = messageForValidate(true);
+                            }else{
+                                response = messageForValidate(false);
+                            }
                         }
                         break;
                 }
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson rewriteData(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+                int year = Integer.valueOf(request.getParameter("anio"));
+                String frecuencia = request.getParameter("frecuencia");
+                String tipoMeta = request.getParameter("tipo_meta");
+                
+                MetasMasivasDAO masivasDAO = new MetasMasivasDAO();
+                /**
+                * Tipos de Metas
+                * 1.- Metas Estrategicas
+                * 2.- Metas Operativas
+                * 3.- KPI Operativo
+                */
+                switch(tipoMeta){
+                    case"1":
+                        if(frecuencia.equals("anual")){
+                            masivasDAO.rewriteDataAnualMetasEstrategicas(idEtad, year);
+                        }
+                        break;
+                    case"2":
+                        if(frecuencia.equals("anual")){
+                            masivasDAO.rewriteDataAnualObjetivosOperativos(idEtad, year);
+                        }
+                        break;
+                    case"3":
+                        if(frecuencia.equals("anual")){
+                            masivasDAO.rewriteDataAnualKPIOperativos(idEtad, year);
+                        }
+                        break;
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -325,5 +392,17 @@ public class MetasMasivasController {
         
         output.setResponse(response);
         return output;
+    }
+    
+    public ResponseJson messageForValidate(boolean result){
+        ResponseJson response = new ResponseJson();
+        if(result){
+            response.setMessage(MSG_SUCESS);
+            response.setSucessfull(true);
+        }else{
+            response.setMessage("999");
+            response.setSucessfull(false);
+        }
+        return response;
     }
 }

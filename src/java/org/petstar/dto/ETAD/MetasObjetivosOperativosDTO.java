@@ -12,6 +12,7 @@ public class MetasObjetivosOperativosDTO {
     private int estatus;
     private String valor_linea;
     private String valor_cat_obj_anual;
+    private String um_obj_ope;
     private BigDecimal valor;
 
     public int getId_meta_anual_estrategica() {
@@ -52,6 +53,14 @@ public class MetasObjetivosOperativosDTO {
 
     public void setValor_cat_obj_anual(String valor_cat_obj_anual) {
         this.valor_cat_obj_anual = valor_cat_obj_anual;
+    }
+
+    public String getUm_obj_ope() {
+        return um_obj_ope;
+    }
+
+    public void setUm_obj_ope(String um_obj_ope) {
+        this.um_obj_ope = um_obj_ope;
     }
 
     public BigDecimal getValor() {

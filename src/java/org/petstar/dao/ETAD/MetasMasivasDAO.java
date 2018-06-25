@@ -110,4 +110,76 @@ public class MetasMasivasDAO {
         
         qr.update(sql.toString(), params);
     }
+    
+    public void rewriteDataAnualMetasEstrategicas(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC  ?, ?");
+        Object[] params = { idEtad, year };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void rewriteDataAnualObjetivosOperativos(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC  ?, ?");
+        Object[] params = { idEtad, year };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void rewriteDataAnualKPIOperativos(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC  ?, ?");
+        Object[] params = { idEtad, year };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public ResultInteger validateExistDataMetasEstrategiasAnuales(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_estrategica WHERE id_linea = ? AND anio = ?");
+        Object[] params = { idEtad, year };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public ResultInteger validateExistDataMetasOperativasAnuales(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_objetivo_operativo WHERE id_linea = ? AND anio = ?");
+        Object[] params = { idEtad, year };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public ResultInteger validateExistDataMetasKPIOperativoAnuales(int idEtad, int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_kpi WHERE id_linea = ? AND anio = ?");
+        Object[] params = { idEtad, year };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
 }

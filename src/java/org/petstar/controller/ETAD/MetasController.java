@@ -2,12 +2,15 @@ package org.petstar.controller.ETAD;
 
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.controller.ControllerAutenticacion;
+import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.ETAD.MetasDAO;
+import org.petstar.dao.ETAD.MetasEstrategicasDAO;
+import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.MetasMasivasModel;
-import org.petstar.model.ETAD.MetasModel;
+import org.petstar.model.ETAD.MetasResponse;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
@@ -28,10 +31,16 @@ public class MetasController {
         try{
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
-                MetasMasivasModel data = new MetasMasivasModel();
+                ObjetivosOperativosDAO objetivosOperativosDAO = new ObjetivosOperativosDAO();
+                MetasEstrategicasDAO metasEstrategicasDAO = new MetasEstrategicasDAO();
+                KPIOperativosDAO kPIOperativosDAO = new KPIOperativosDAO();
+                MetasResponse data = new MetasResponse();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 
+                data.setListObjetivosOperativos(objetivosOperativosDAO.getListObjetivosOperativos());
+                data.setListMetasEstrategicas(metasEstrategicasDAO.getListMetasEstrategicasAnuales());
+                data.setListKPIOperativos(kPIOperativosDAO.getListKPIOperativos());
                 data.setListPeriodos(periodosDAO.getPeriodos());
                 data.setListLineas(lineasDAO.getLineasActiveByETAD());
                 
@@ -63,7 +72,7 @@ public class MetasController {
             String tipoMeta = request.getParameter("tipo_meta");
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
-                MetasModel metasModel= new MetasModel();
+                MetasResponse metasModel= new MetasResponse();
                 MetasDAO metasDAO = new MetasDAO();
                 /**
                 * Tipos de Metas
@@ -74,19 +83,19 @@ public class MetasController {
                 switch(tipoMeta){
                     case"1":
                         if(frecuencia.equals("anual")){
-                            metasModel.setListMetasEstrategicas(
+                            metasModel.setListMetasMetasEstrategicas(
                                     metasDAO.getAllMetasMetasEstrategicasAnuales(idEtad, year));
                         }
                     break;
                     case"2":
                         if(frecuencia.equals("anual")){
-                            metasModel.setListObjetivosOperativos(
+                            metasModel.setListMetasObjetivosOperativos(
                                     metasDAO.getAllMetasObjetivosOperativosAnuales(idEtad, year));
                         }
                     break;
                     case"3":
                         if(frecuencia.equals("anual")){
-                            metasModel.setListKPIOperativos(
+                            metasModel.setListMetasKPIOperativos(
                                     metasDAO.getAllMetasKPIOperativosAnuales(idEtad, year));
                         }
                     break;
