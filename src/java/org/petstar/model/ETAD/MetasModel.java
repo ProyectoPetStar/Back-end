@@ -1,8 +1,8 @@
 package org.petstar.model.ETAD;
 
-import org.petstar.dto.ETAD.KPIOperativosDTO;
-import org.petstar.dto.ETAD.MetasEstrategicasDTO;
-import org.petstar.dto.ETAD.ObjetivosOperativosDTO;
+import org.petstar.dto.ETAD.PetCatKpiOperativo;
+import org.petstar.dto.ETAD.PetCatMetaEstrategica;
+import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 
 /**
  *
@@ -14,9 +14,9 @@ public class MetasModel {
     private String frecuencia;
     private int anio;
     private int id_periodo;
-    private KPIOperativosDTO kPIOperativo;
-    private MetasEstrategicasDTO metaEstrategica;
-    private ObjetivosOperativosDTO objetivoOperativo;
+    private PetCatKpiOperativo kPIOperativo;
+    private PetCatMetaEstrategica metaEstrategica;
+    private PetCatObjetivoOperativo objetivoOperativo;
 
     public int getId_etad() {
         return id_etad;
@@ -58,27 +58,27 @@ public class MetasModel {
         this.id_periodo = id_periodo;
     }
 
-    public KPIOperativosDTO getkPIOperativo() {
+    public PetCatKpiOperativo getkPIOperativo() {
         return kPIOperativo;
     }
 
-    public void setkPIOperativo(KPIOperativosDTO kPIOperativo) {
+    public void setkPIOperativo(PetCatKpiOperativo kPIOperativo) {
         this.kPIOperativo = kPIOperativo;
     }
 
-    public MetasEstrategicasDTO getMetaEstrategica() {
+    public PetCatMetaEstrategica getMetaEstrategica() {
         return metaEstrategica;
     }
 
-    public void setMetaEstrategica(MetasEstrategicasDTO metaEstrategica) {
+    public void setMetaEstrategica(PetCatMetaEstrategica metaEstrategica) {
         this.metaEstrategica = metaEstrategica;
     }
 
-    public ObjetivosOperativosDTO getObjetivoOperativo() {
+    public PetCatObjetivoOperativo getObjetivoOperativo() {
         return objetivoOperativo;
     }
 
-    public void setObjetivoOperativo(ObjetivosOperativosDTO objetivoOperativo) {
+    public void setObjetivoOperativo(PetCatObjetivoOperativo objetivoOperativo) {
         this.objetivoOperativo = objetivoOperativo;
     }
 }

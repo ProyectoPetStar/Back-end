@@ -6,7 +6,7 @@ import org.petstar.dto.CatalogosDTO;
  *
  * @author Tech-Pro
  */
-public class MetasEstrategicasDTO extends CatalogosDTO{
+public class PetCatMetaEstrategica extends CatalogosDTO{
     private String unidad_medida_me;
     private int anual;
     private int mensual;

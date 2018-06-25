@@ -6,16 +6,16 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
-import org.petstar.dto.ETAD.MetasKPIOperativosDTO;
-import org.petstar.dto.ETAD.MetasMetasEstrategicasDTO;
-import org.petstar.dto.ETAD.MetasObjetivosOperativosDTO;
+import org.petstar.dto.ETAD.PetMetaAnualKpi;
+import org.petstar.dto.ETAD.PetMetaAnualEstrategica;
+import org.petstar.dto.ETAD.PetMetaAnualObjetivoOperativo;
 
 /**
  *
  * @author Tech-Pro
  */
 public class MetasDAO {
-    public List<MetasMetasEstrategicasDTO> getAllMetasMetasEstrategicasAnuales(
+    public List<PetMetaAnualEstrategica> getAllMetasMetasEstrategicasAnuales(
             int idEtad, int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -24,13 +24,13 @@ public class MetasDAO {
         sql.append("EXEC sp_selectPetMetaAnualMetEstrategicas ?, ?");
         Object[] params = { year, idEtad };
         
-        ResultSetHandler rsh = new BeanListHandler(MetasMetasEstrategicasDTO.class);
-        List<MetasMetasEstrategicasDTO> listData = 
-                (List<MetasMetasEstrategicasDTO>) qr.query(sql.toString(), rsh, params);
+        ResultSetHandler rsh = new BeanListHandler(PetMetaAnualEstrategica.class);
+        List<PetMetaAnualEstrategica> listData = 
+                (List<PetMetaAnualEstrategica>) qr.query(sql.toString(), rsh, params);
         return listData;
     }
     
-    public List<MetasObjetivosOperativosDTO> getAllMetasObjetivosOperativosAnuales(
+    public List<PetMetaAnualObjetivoOperativo> getAllMetasObjetivosOperativosAnuales(
             int idEtad, int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -39,13 +39,13 @@ public class MetasDAO {
         sql.append("EXEC sp_selectPetMetaAnualObjOpe ?, ?");
         Object[] params = { year, idEtad };
         
-        ResultSetHandler rsh = new BeanListHandler(MetasObjetivosOperativosDTO.class);
-        List<MetasObjetivosOperativosDTO> listData = 
-                (List<MetasObjetivosOperativosDTO>) qr.query(sql.toString(), rsh, params);
+        ResultSetHandler rsh = new BeanListHandler(PetMetaAnualObjetivoOperativo.class);
+        List<PetMetaAnualObjetivoOperativo> listData = 
+                (List<PetMetaAnualObjetivoOperativo>) qr.query(sql.toString(), rsh, params);
         return listData;
     }
     
-    public List<MetasKPIOperativosDTO> getAllMetasKPIOperativosAnuales(
+    public List<PetMetaAnualKpi> getAllMetasKPIOperativosAnuales(
             int idEtad, int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -54,9 +54,9 @@ public class MetasDAO {
         sql.append("EXEC sp_selectPetMetaAnualKpi ?, ?");
         Object[] params = { year, idEtad };
         
-        ResultSetHandler rsh = new BeanListHandler(MetasKPIOperativosDTO.class);
-        List<MetasKPIOperativosDTO> listData = 
-                (List<MetasKPIOperativosDTO>) qr.query(sql.toString(), rsh, params);
+        ResultSetHandler rsh = new BeanListHandler(PetMetaAnualKpi.class);
+        List<PetMetaAnualKpi> listData = 
+                (List<PetMetaAnualKpi>) qr.query(sql.toString(), rsh, params);
         return listData;
     }
 }

@@ -29,9 +29,9 @@ import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.MetasMasivasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
-import org.petstar.dto.ETAD.KPIOperativosDTO;
-import org.petstar.dto.ETAD.MetasEstrategicasDTO;
-import org.petstar.dto.ETAD.ObjetivosOperativosDTO;
+import org.petstar.dto.ETAD.PetCatKpiOperativo;
+import org.petstar.dto.ETAD.PetCatMetaEstrategica;
+import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 import org.petstar.dto.ResultInteger;
 
 /**
@@ -325,12 +325,12 @@ public class MetasMasivasController {
                         case"1":
                             MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
                             if(frecuencia.equals("anual")){
-                                List<MetasEstrategicasDTO> listEstrategicas = estrategicasDAO.getListMetasEstrategicasAnuales();
+                                List<PetCatMetaEstrategica> listEstrategicas = estrategicasDAO.getListMetasEstrategicasAnuales();
                                 csvOutput.write("Meta");
                                 csvOutput.write("UM");
                                 csvOutput.write("Valor");
                                 csvOutput.endRecord();
-                                for(MetasEstrategicasDTO meta: listEstrategicas){
+                                for(PetCatMetaEstrategica meta: listEstrategicas){
                                     csvOutput.write(meta.getValor());
                                     csvOutput.write(meta.getUnidad_medida_me());
                                     csvOutput.endRecord();                   
@@ -339,13 +339,13 @@ public class MetasMasivasController {
                         break;
                         case "2":
                             ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
-                            List<ObjetivosOperativosDTO> listObjetivos = operativosDAO.getListObjetivosOperativos();
+                            List<PetCatObjetivoOperativo> listObjetivos = operativosDAO.getListObjetivosOperativos();
                             if(frecuencia.equals("anual")){
                                 csvOutput.write("Objetivo");
                                 csvOutput.write("UM");
                                 csvOutput.write("Meta");
                                 csvOutput.endRecord();
-                                for(ObjetivosOperativosDTO objetivo: listObjetivos){
+                                for(PetCatObjetivoOperativo objetivo: listObjetivos){
                                     csvOutput.write(objetivo.getValor());
                                     csvOutput.write(objetivo.getUnidad_medida_objetivo_operativo());
                                     csvOutput.endRecord();                   
@@ -354,14 +354,14 @@ public class MetasMasivasController {
                             break;
                         case"3":
                             KPIOperativosDAO kPIOperativosDAO = new KPIOperativosDAO();
-                            List<KPIOperativosDTO> listKPIOperativos = kPIOperativosDAO.getListKPIOperativos();
+                            List<PetCatKpiOperativo> listKPIOperativos = kPIOperativosDAO.getListKPIOperativos();
                             if(frecuencia.equals("anual")){
                                 csvOutput.write("KPI");
                                 csvOutput.write("Tipo");
                                 csvOutput.write("UM");
                                 csvOutput.write("Meta");
                                 csvOutput.endRecord();
-                                for(KPIOperativosDTO kpi: listKPIOperativos){
+                                for(PetCatKpiOperativo kpi: listKPIOperativos){
                                     csvOutput.write(kpi.getValor());
                                     csvOutput.write(kpi.getTipo_kpi());
                                     csvOutput.write(kpi.getUnidad_medida_kpi_operativo());
