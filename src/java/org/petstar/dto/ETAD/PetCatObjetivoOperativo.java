@@ -6,7 +6,7 @@ import org.petstar.dto.CatalogosDTO;
  *
  * @author Tech-Pro
  */
-public class ObjetivosOperativosDTO extends CatalogosDTO{
+public class PetCatObjetivoOperativo extends CatalogosDTO{
     private String unidad_medida_objetivo_operativo;
 
     public String getUnidad_medida_objetivo_operativo() {

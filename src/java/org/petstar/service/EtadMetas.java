@@ -18,7 +18,7 @@ import org.petstar.model.ResponseJson;
  * @author Tech-Pro
  */
 @WebServlet(name = "ETADMetas", urlPatterns = {"/ETADMetas"})
-public class ETADMetas extends HttpServlet {
+public class EtadMetas extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

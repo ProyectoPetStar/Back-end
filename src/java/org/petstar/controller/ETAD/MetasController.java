@@ -1,6 +1,10 @@
 package org.petstar.controller.ETAD;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import javax.servlet.http.HttpServletRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.petstar.controller.ControllerAutenticacion;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.LineasDAO;
@@ -9,7 +13,7 @@ import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.UserDTO;
-import org.petstar.model.ETAD.MetasMasivasModel;
+import org.petstar.model.ETAD.MetasModel;
 import org.petstar.model.ETAD.MetasResponse;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;

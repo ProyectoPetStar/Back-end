@@ -6,7 +6,7 @@ import org.petstar.dto.CatalogosDTO;
  *
  * @author Tech-Pro
  */
-public class KPIOperativosDTO extends CatalogosDTO{
+public class PetCatKpiOperativo extends CatalogosDTO{
     private String tipo_kpi;
     private String unidad_medida_kpi_operativo;
 

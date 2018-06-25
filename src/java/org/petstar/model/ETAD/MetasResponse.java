@@ -1,12 +1,12 @@
 package org.petstar.model.ETAD;
 
 import java.util.List;
-import org.petstar.dto.ETAD.KPIOperativosDTO;
-import org.petstar.dto.ETAD.MetasEstrategicasDTO;
-import org.petstar.dto.ETAD.MetasKPIOperativosDTO;
-import org.petstar.dto.ETAD.MetasMetasEstrategicasDTO;
-import org.petstar.dto.ETAD.MetasObjetivosOperativosDTO;
-import org.petstar.dto.ETAD.ObjetivosOperativosDTO;
+import org.petstar.dto.ETAD.PetCatKpiOperativo;
+import org.petstar.dto.ETAD.PetCatMetaEstrategica;
+import org.petstar.dto.ETAD.PetMetaAnualKpi;
+import org.petstar.dto.ETAD.PetMetaAnualEstrategica;
+import org.petstar.dto.ETAD.PetMetaAnualObjetivoOperativo;
+import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
 
@@ -16,60 +16,60 @@ import org.petstar.dto.PeriodosDTO;
  */
 public class MetasResponse {
     
-    private List<MetasObjetivosOperativosDTO> listMetasObjetivosOperativos;
-    private List<MetasMetasEstrategicasDTO> listMetasMetasEstrategicas;
-    private List<MetasKPIOperativosDTO> listMetasKPIOperativos;
-    private List<ObjetivosOperativosDTO> listObjetivosOperativos;
-    private List<MetasEstrategicasDTO> listMetasEstrategicas;
-    private List<KPIOperativosDTO> listKPIOperativos;
+    private List<PetMetaAnualObjetivoOperativo> listMetasObjetivosOperativos;
+    private List<PetMetaAnualEstrategica> listMetasMetasEstrategicas;
+    private List<PetMetaAnualKpi> listMetasKPIOperativos;
+    private List<PetCatObjetivoOperativo> listObjetivosOperativos;
+    private List<PetCatMetaEstrategica> listMetasEstrategicas;
+    private List<PetCatKpiOperativo> listKPIOperativos;
     private List<PeriodosDTO> listPeriodos;
     private List<LineasDTO> listLineas;
 
-    public List<MetasObjetivosOperativosDTO> getListMetasObjetivosOperativos() {
+    public List<PetMetaAnualObjetivoOperativo> getListMetasObjetivosOperativos() {
         return listMetasObjetivosOperativos;
     }
 
-    public void setListMetasObjetivosOperativos(List<MetasObjetivosOperativosDTO> listMetasObjetivosOperativos) {
+    public void setListMetasObjetivosOperativos(List<PetMetaAnualObjetivoOperativo> listMetasObjetivosOperativos) {
         this.listMetasObjetivosOperativos = listMetasObjetivosOperativos;
     }
 
-    public List<MetasMetasEstrategicasDTO> getListMetasMetasEstrategicas() {
+    public List<PetMetaAnualEstrategica> getListMetasMetasEstrategicas() {
         return listMetasMetasEstrategicas;
     }
 
-    public void setListMetasMetasEstrategicas(List<MetasMetasEstrategicasDTO> listMetasMetasEstrategicas) {
+    public void setListMetasMetasEstrategicas(List<PetMetaAnualEstrategica> listMetasMetasEstrategicas) {
         this.listMetasMetasEstrategicas = listMetasMetasEstrategicas;
     }
 
-    public List<MetasKPIOperativosDTO> getListMetasKPIOperativos() {
+    public List<PetMetaAnualKpi> getListMetasKPIOperativos() {
         return listMetasKPIOperativos;
     }
 
-    public void setListMetasKPIOperativos(List<MetasKPIOperativosDTO> listMetasKPIOperativos) {
+    public void setListMetasKPIOperativos(List<PetMetaAnualKpi> listMetasKPIOperativos) {
         this.listMetasKPIOperativos = listMetasKPIOperativos;
     }
 
-    public List<ObjetivosOperativosDTO> getListObjetivosOperativos() {
+    public List<PetCatObjetivoOperativo> getListObjetivosOperativos() {
         return listObjetivosOperativos;
     }
 
-    public void setListObjetivosOperativos(List<ObjetivosOperativosDTO> listObjetivosOperativos) {
+    public void setListObjetivosOperativos(List<PetCatObjetivoOperativo> listObjetivosOperativos) {
         this.listObjetivosOperativos = listObjetivosOperativos;
     }
 
-    public List<MetasEstrategicasDTO> getListMetasEstrategicas() {
+    public List<PetCatMetaEstrategica> getListMetasEstrategicas() {
         return listMetasEstrategicas;
     }
 
-    public void setListMetasEstrategicas(List<MetasEstrategicasDTO> listMetasEstrategicas) {
+    public void setListMetasEstrategicas(List<PetCatMetaEstrategica> listMetasEstrategicas) {
         this.listMetasEstrategicas = listMetasEstrategicas;
     }
 
-    public List<KPIOperativosDTO> getListKPIOperativos() {
+    public List<PetCatKpiOperativo> getListKPIOperativos() {
         return listKPIOperativos;
     }
 
-    public void setListKPIOperativos(List<KPIOperativosDTO> listKPIOperativos) {
+    public void setListKPIOperativos(List<PetCatKpiOperativo> listKPIOperativos) {
         this.listKPIOperativos = listKPIOperativos;
     }
 
