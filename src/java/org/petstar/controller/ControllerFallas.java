@@ -326,7 +326,6 @@ public class ControllerFallas {
         try{
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
-                int idLinea = sesion.getId_linea();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 EquiposDAO equiposDAO = new EquiposDAO();
                 RazonParoDAO paroDAO = new RazonParoDAO();
@@ -334,6 +333,7 @@ public class ControllerFallas {
                 FallasDAO fallasDAO = new FallasDAO();
 
                 data.setFallasDTO(fallasDAO.getFallaById(idFalla));
+                int idLinea = data.getFallasDTO().getId_linea();
                 data.getFallasDTO().setDia(sumarFechasDias(data.getFallasDTO().getDia(), 2));
                 data.getFallasDTO().setDiaString(convertSqlToDay(
                         data.getFallasDTO().getDia(), 
