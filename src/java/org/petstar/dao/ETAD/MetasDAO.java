@@ -1,5 +1,6 @@
 package org.petstar.dao.ETAD;
 
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -9,6 +10,7 @@ import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.ETAD.PetMetaAnualKpi;
 import org.petstar.dto.ETAD.PetMetaAnualEstrategica;
 import org.petstar.dto.ETAD.PetMetaAnualObjetivoOperativo;
+import org.petstar.model.ETAD.MetasModel;
 
 /**
  *
@@ -57,5 +59,18 @@ public class MetasDAO {
         List<PetMetaAnualKpi> listData = 
                 (List<PetMetaAnualKpi>) qr.query(sql.toString(), rsh, params);
         return listData;
+    }
+    
+    public void insertMetaEstrategicaAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertManualPetMetaAnualEstrategica ?, ?, ?, ?, ?, ?");
+        Object[] params = { meta.getId_etad(), 
+            meta.getMetaEstrategica().getId_meta_estrategica(), meta.getAnio(), 
+            meta.getMetaEstrategica().getValor(), usuario, fecha };
+        
+        qr.update(sql.toString(),params);
     }
 }

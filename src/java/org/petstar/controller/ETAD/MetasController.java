@@ -22,6 +22,7 @@ import org.petstar.model.ETAD.MetasModel;
 import org.petstar.model.ETAD.MetasResponse;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
+import static org.petstar.configurations.utils.getCurrentDate;
 
 /**
  *
@@ -153,6 +154,59 @@ public class MetasController {
                 response.setSucessfull(false);
             }
         }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson insertMetas(HttpServletRequest request) throws Exception{
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        Gson gson = new Gson();
+        
+        try{
+            String jsonString = request.getParameter("meta");
+            
+            JSONObject jsonResponse = new JSONObject(jsonString);
+            MetasModel meta = gson.fromJson(jsonResponse.getJSONObject("meta").toString(), MetasModel.class);
+
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                MetasResponse metasResponse= new MetasResponse();
+                MetasDAO metasDAO = new MetasDAO();
+                /**
+                * Tipos de Metas
+                * 1.- Metas Estrategicas
+                * 2.- Metas Operativas
+                * 3.- KPI Operativo
+                */
+                switch(meta.getTipo_meta()){
+                    case 1:
+                        if(meta.getFrecuencia().equals("anual")){
+                            metasDAO.insertMetaEstrategicaAnual(meta, session.getId_acceso(), getCurrentDate());
+                        }
+                    break;
+                    case 2:
+                        if(meta.getFrecuencia().equals("anual")){
+                        }
+                    break;
+                    case 3:
+                        if(meta.getFrecuencia().equals("anual")){
+                        }
+                    break;
+                }
+                output.setData(metasResponse);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(JsonSyntaxException | JSONException ex){
             response.setMessage(MSG_ERROR + ex.getMessage());
             response.setSucessfull(false);
         }
