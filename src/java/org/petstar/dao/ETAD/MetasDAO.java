@@ -73,4 +73,30 @@ public class MetasDAO {
         
         qr.update(sql.toString(),params);
     }
+    
+    public void insertObjetivosOperativosAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC  ?, ?, ?, ?, ?, ?");
+        Object[] params = { meta.getId_etad(), 
+            meta.getObjetivoOperativo().getId_objetivo_operativo(), meta.getAnio(), 
+            meta.getObjetivoOperativo().getValor(), usuario, fecha };
+        
+        qr.update(sql.toString(),params);
+    }
+    
+    public void insertKPIOperativosAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertManualPetMetaAnualEstrategica ?, ?, ?, ?, ?, ?");
+        Object[] params = { meta.getId_etad(), 
+            meta.getkPIOperativo().getId_kpi_operativo(), meta.getAnio(), 
+            meta.getkPIOperativo().getValor(), usuario, fecha };
+        
+        qr.update(sql.toString(),params);
+    }
 }

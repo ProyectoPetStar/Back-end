@@ -176,7 +176,6 @@ public class MetasController {
 
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
-                MetasResponse metasResponse= new MetasResponse();
                 MetasDAO metasDAO = new MetasDAO();
                 /**
                 * Tipos de Metas
@@ -192,14 +191,15 @@ public class MetasController {
                     break;
                     case 2:
                         if(meta.getFrecuencia().equals("anual")){
+                            metasDAO.insertObjetivosOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
                         }
                     break;
                     case 3:
                         if(meta.getFrecuencia().equals("anual")){
+                            metasDAO.insertKPIOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
                         }
                     break;
                 }
-                output.setData(metasResponse);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
             }else{

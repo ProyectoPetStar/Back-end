@@ -19,7 +19,7 @@ public class KPIOperativosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_cat_kpi_operativo WHERE activo = 1");
+        sql.append("EXEC sp_selectCatKpiOperativo");
         
         ResultSetHandler rsh = new BeanListHandler(PetCatKpiOperativo.class);
         List<PetCatKpiOperativo> listData = (List<PetCatKpiOperativo>) qr.query(sql.toString(), rsh);

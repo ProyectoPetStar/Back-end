@@ -11,6 +11,7 @@ public class PetCatKpiOperativo extends CatalogosDTO{
     private String unidad_medida;
     private int mensual;
     private int anual;
+    private String lineas;
 
     public int getTipo_kpi() {
         return tipo_kpi;
@@ -42,5 +43,13 @@ public class PetCatKpiOperativo extends CatalogosDTO{
 
     public void setAnual(int anual) {
         this.anual = anual;
+    }
+
+    public String getLineas() {
+        return lineas;
+    }
+
+    public void setLineas(String lineas) {
+        this.lineas = lineas;
     }
 }
