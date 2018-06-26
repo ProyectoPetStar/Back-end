@@ -19,7 +19,7 @@ public class MetasEstrategicasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_cat_meta_estrategica WHERE activo = 1 AND anual =1;");
+        sql.append("SELECT * FROM pet_cat_meta_estrategica WHERE activo = 1 AND anual =1");
         
         ResultSetHandler rsh = new BeanListHandler(PetCatMetaEstrategica.class);
         List<PetCatMetaEstrategica> listData = (List<PetCatMetaEstrategica>) qr.query(sql.toString(), rsh);
