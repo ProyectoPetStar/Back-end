@@ -2,6 +2,8 @@ package org.petstar.controller.ETAD;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +14,7 @@ import org.petstar.dao.ETAD.MetasDAO;
 import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dao.PeriodosDAO;
+import org.petstar.dto.ETAD.PetMetaAnualEstrategica;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.MetasModel;
 import org.petstar.model.ETAD.MetasResponse;
@@ -73,11 +76,14 @@ public class MetasController {
             int idEtad = Integer.valueOf(request.getParameter("id_etad"));
             int year = Integer.valueOf(request.getParameter("anio"));
             String frecuencia = request.getParameter("frecuencia");
-            String tipoMeta = request.getParameter("tipo_meta");
+            int tipoMeta = Integer.valueOf(request.getParameter("tipo_meta"));
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 MetasResponse metasModel= new MetasResponse();
                 MetasDAO metasDAO = new MetasDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                MetasEstrategicasDAO meDAO = new MetasEstrategicasDAO();
+                
                 /**
                 * Tipos de Metas
                 * 1.- Metas Estrategicas
@@ -85,19 +91,30 @@ public class MetasController {
                 * 3.- KPI Operativo
                 */
                 switch(tipoMeta){
-                    case"1":
+                    case 1:
                         if(frecuencia.equals("anual")){
-                            metasModel.setListMetasMetasEstrategicas(
-                                    metasDAO.getAllMetasMetasEstrategicasAnuales(idEtad, year));
+                            MetasModel data = new MetasModel();
+                            List<PetMetaAnualEstrategica> list = metasDAO.getAllMetasMetasEstrategicasAnuales(idEtad, year);
+                            for(PetMetaAnualEstrategica row:list){
+                                row.setLinea(lineasDAO.getLineasDataById(row.getId_linea()));
+                                row.setMetaEstrategica(meDAO.getMetaEstrategicaAnualById(row.getId_meta_estrategica()));
+                                data.setListMetaEstrategica(list);
+                            }
+                            data.setAnio(year);
+                            data.setFrecuencia(frecuencia);
+                            data.setId_etad(idEtad);
+                            data.setTipo_meta(tipoMeta);
+                            data.setListMetaEstrategica(list);
+                            metasModel.setMetasEstrategicas(data);
                         }
                     break;
-                    case"2":
+                    case 2:
                         if(frecuencia.equals("anual")){
                             metasModel.setListMetasObjetivosOperativos(
                                     metasDAO.getAllMetasObjetivosOperativosAnuales(idEtad, year));
                         }
                     break;
-                    case"3":
+                    case 3:
                         if(frecuencia.equals("anual")){
                             metasModel.setListMetasKPIOperativos(
                                     metasDAO.getAllMetasKPIOperativosAnuales(idEtad, year));

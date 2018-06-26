@@ -1,8 +1,9 @@
 package org.petstar.model.ETAD;
 
-import org.petstar.dto.ETAD.PetCatKpiOperativo;
-import org.petstar.dto.ETAD.PetCatMetaEstrategica;
-import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
+import java.util.List;
+import org.petstar.dto.ETAD.PetMetaAnualEstrategica;
+import org.petstar.dto.ETAD.PetMetaAnualKpi;
+import org.petstar.dto.ETAD.PetMetaAnualObjetivoOperativo;
 
 /**
  *
@@ -14,9 +15,12 @@ public class MetasModel {
     private String frecuencia;
     private int anio;
     private int id_periodo;
-    private PetCatKpiOperativo kPIOperativo;
-    private PetCatMetaEstrategica metaEstrategica;
-    private PetCatObjetivoOperativo objetivoOperativo;
+    private PetMetaAnualKpi kPIOperativo;
+    private PetMetaAnualEstrategica metaEstrategica;
+    private PetMetaAnualObjetivoOperativo objetivoOperativo;
+    private List<PetMetaAnualKpi> listKPIOperativo;
+    private List<PetMetaAnualEstrategica> ListMetaEstrategica;
+    private List<PetMetaAnualObjetivoOperativo> listObjetivoOperativo;
 
     public int getId_etad() {
         return id_etad;
@@ -58,27 +62,51 @@ public class MetasModel {
         this.id_periodo = id_periodo;
     }
 
-    public PetCatKpiOperativo getkPIOperativo() {
+    public PetMetaAnualKpi getkPIOperativo() {
         return kPIOperativo;
     }
 
-    public void setkPIOperativo(PetCatKpiOperativo kPIOperativo) {
+    public void setkPIOperativo(PetMetaAnualKpi kPIOperativo) {
         this.kPIOperativo = kPIOperativo;
     }
 
-    public PetCatMetaEstrategica getMetaEstrategica() {
+    public PetMetaAnualEstrategica getMetaEstrategica() {
         return metaEstrategica;
     }
 
-    public void setMetaEstrategica(PetCatMetaEstrategica metaEstrategica) {
+    public void setMetaEstrategica(PetMetaAnualEstrategica metaEstrategica) {
         this.metaEstrategica = metaEstrategica;
     }
 
-    public PetCatObjetivoOperativo getObjetivoOperativo() {
+    public PetMetaAnualObjetivoOperativo getObjetivoOperativo() {
         return objetivoOperativo;
     }
 
-    public void setObjetivoOperativo(PetCatObjetivoOperativo objetivoOperativo) {
+    public void setObjetivoOperativo(PetMetaAnualObjetivoOperativo objetivoOperativo) {
         this.objetivoOperativo = objetivoOperativo;
+    }
+
+    public List<PetMetaAnualKpi> getListKPIOperativo() {
+        return listKPIOperativo;
+    }
+
+    public void setListKPIOperativo(List<PetMetaAnualKpi> listKPIOperativo) {
+        this.listKPIOperativo = listKPIOperativo;
+    }
+
+    public List<PetMetaAnualEstrategica> getListMetaEstrategica() {
+        return ListMetaEstrategica;
+    }
+
+    public void setListMetaEstrategica(List<PetMetaAnualEstrategica> ListMetaEstrategica) {
+        this.ListMetaEstrategica = ListMetaEstrategica;
+    }
+
+    public List<PetMetaAnualObjetivoOperativo> getListObjetivoOperativo() {
+        return listObjetivoOperativo;
+    }
+
+    public void setListObjetivoOperativo(List<PetMetaAnualObjetivoOperativo> listObjetivoOperativo) {
+        this.listObjetivoOperativo = listObjetivoOperativo;
     }
 }

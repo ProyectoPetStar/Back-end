@@ -17,7 +17,7 @@ import org.petstar.dto.PeriodosDTO;
 public class MetasResponse {
     
     private List<PetMetaAnualObjetivoOperativo> listMetasObjetivosOperativos;
-    private List<PetMetaAnualEstrategica> listMetasMetasEstrategicas;
+    private MetasModel metasEstrategicas;
     private List<PetMetaAnualKpi> listMetasKPIOperativos;
     private List<PetCatObjetivoOperativo> listObjetivosOperativos;
     private List<PetCatMetaEstrategica> listMetasEstrategicas;
@@ -33,14 +33,14 @@ public class MetasResponse {
         this.listMetasObjetivosOperativos = listMetasObjetivosOperativos;
     }
 
-    public List<PetMetaAnualEstrategica> getListMetasMetasEstrategicas() {
-        return listMetasMetasEstrategicas;
+    public MetasModel getMetasEstrategicas() {
+        return metasEstrategicas;
     }
 
-    public void setListMetasMetasEstrategicas(List<PetMetaAnualEstrategica> listMetasMetasEstrategicas) {
-        this.listMetasMetasEstrategicas = listMetasMetasEstrategicas;
+    public void setMetasEstrategicas(MetasModel metasEstrategicas) {
+        this.metasEstrategicas = metasEstrategicas;
     }
-
+    
     public List<PetMetaAnualKpi> getListMetasKPIOperativos() {
         return listMetasKPIOperativos;
     }

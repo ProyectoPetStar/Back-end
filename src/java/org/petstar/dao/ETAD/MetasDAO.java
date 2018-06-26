@@ -21,7 +21,7 @@ public class MetasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetMetaAnualMetEstrategicas ?, ?");
+        sql.append("SELECT * FROM pet_meta_anual_estrategica WHERE anio=? and id_linea= ?");
         Object[] params = { year, idEtad };
         
         ResultSetHandler rsh = new BeanListHandler(PetMetaAnualEstrategica.class);
