@@ -339,7 +339,7 @@ public class MetasMasivasController {
                         break;
                         case "2":
                             ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
-                            List<PetCatObjetivoOperativo> listObjetivos = operativosDAO.getListObjetivosOperativos();
+                            List<PetCatObjetivoOperativo> listObjetivos = operativosDAO.getListObjetivosOperativosAnuales();
                             if(frecuencia.equals("anual")){
                                 csvOutput.write("Objetivo");
                                 csvOutput.write("UM");
@@ -354,7 +354,7 @@ public class MetasMasivasController {
                             break;
                         case"3":
                             KPIOperativosDAO kPIOperativosDAO = new KPIOperativosDAO();
-                            List<PetCatKpiOperativo> listKPIOperativos = kPIOperativosDAO.getListKPIOperativos();
+                            List<PetCatKpiOperativo> listKPIOperativos = kPIOperativosDAO.getListKPIOperativosAnuales();
                             if(frecuencia.equals("anual")){
                                 csvOutput.write("KPI");
                                 csvOutput.write("Tipo");
