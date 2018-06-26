@@ -47,9 +47,9 @@ public class MetasController {
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 
-                data.setListObjetivosOperativos(objetivosOperativosDAO.getListObjetivosOperativosAnuales());
-                data.setListMetasEstrategicas(metasEstrategicasDAO.getListMetasEstrategicasAnuales());
-                data.setListKPIOperativos(kPIOperativosDAO.getListKPIOperativosAnuales());
+                data.setListObjetivosOperativos(objetivosOperativosDAO.getAllObjetivosOperativosActive());
+                data.setListMetasEstrategicas(metasEstrategicasDAO.getAllMetasEstrategicasActive());
+                data.setListKPIOperativos(kPIOperativosDAO.getAllKPIOperativosActive());
                 data.setListPeriodos(periodosDAO.getPeriodos());
                 data.setListLineas(lineasDAO.getLineasActiveByETAD());
                 
