@@ -14,6 +14,18 @@ import org.petstar.dto.ETAD.PetCatMetaEstrategica;
  * @author Tech-Pro
  */
 public class MetasEstrategicasDAO {
+    public List<PetCatMetaEstrategica> getAllMetasEstrategicasActive() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_cat_meta_estrategica WHERE activo = 1");
+        
+        ResultSetHandler rsh = new BeanListHandler(PetCatMetaEstrategica.class);
+        List<PetCatMetaEstrategica> listData = (List<PetCatMetaEstrategica>) qr.query(sql.toString(), rsh);
+        return listData;
+    }
+    
     public List<PetCatMetaEstrategica> getListMetasEstrategicasAnuales() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
