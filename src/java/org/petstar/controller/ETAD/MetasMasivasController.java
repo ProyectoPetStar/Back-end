@@ -332,7 +332,7 @@ public class MetasMasivasController {
                                 csvOutput.endRecord();
                                 for(PetCatMetaEstrategica meta: listEstrategicas){
                                     csvOutput.write(meta.getValor());
-                                    csvOutput.write(meta.getUnidad_medida_me());
+                                    csvOutput.write(meta.getUnidad_medida());
                                     csvOutput.endRecord();                   
                                 }
                             }
@@ -347,7 +347,7 @@ public class MetasMasivasController {
                                 csvOutput.endRecord();
                                 for(PetCatObjetivoOperativo objetivo: listObjetivos){
                                     csvOutput.write(objetivo.getValor());
-                                    csvOutput.write(objetivo.getUnidad_medida_objetivo_operativo());
+                                    csvOutput.write(objetivo.getUnidad_medida());
                                     csvOutput.endRecord();                   
                                 }
                             }
@@ -363,8 +363,8 @@ public class MetasMasivasController {
                                 csvOutput.endRecord();
                                 for(PetCatKpiOperativo kpi: listKPIOperativos){
                                     csvOutput.write(kpi.getValor());
-                                    csvOutput.write(kpi.getTipo_kpi());
-                                    csvOutput.write(kpi.getUnidad_medida_kpi_operativo());
+                                    csvOutput.write((kpi.getTipo_kpi()==1 ? "Mas es mejor":"Menos es Mejor"));
+                                    csvOutput.write(kpi.getUnidad_medida());
                                     csvOutput.endRecord();                   
                                 } 
                             }

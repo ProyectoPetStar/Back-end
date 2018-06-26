@@ -15,6 +15,8 @@ import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ETAD.PetMetaAnualEstrategica;
+import org.petstar.dto.ETAD.PetMetaAnualKpi;
+import org.petstar.dto.ETAD.PetMetaAnualObjetivoOperativo;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.MetasModel;
 import org.petstar.model.ETAD.MetasResponse;
@@ -79,10 +81,12 @@ public class MetasController {
             int tipoMeta = Integer.valueOf(request.getParameter("tipo_meta"));
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
-                MetasResponse metasModel= new MetasResponse();
+                MetasResponse metasResponse= new MetasResponse();
                 MetasDAO metasDAO = new MetasDAO();
                 LineasDAO lineasDAO = new LineasDAO();
+                KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
                 MetasEstrategicasDAO meDAO = new MetasEstrategicasDAO();
+                ObjetivosOperativosDAO ooDAO = new ObjetivosOperativosDAO();
                 
                 /**
                 * Tipos de Metas
@@ -98,30 +102,50 @@ public class MetasController {
                             for(PetMetaAnualEstrategica row:list){
                                 row.setLinea(lineasDAO.getLineasDataById(row.getId_linea()));
                                 row.setMetaEstrategica(meDAO.getMetaEstrategicaAnualById(row.getId_meta_estrategica()));
-                                data.setListMetaEstrategica(list);
                             }
+                            data.setListMetaEstrategica(list);
                             data.setAnio(year);
                             data.setFrecuencia(frecuencia);
                             data.setId_etad(idEtad);
                             data.setTipo_meta(tipoMeta);
                             data.setListMetaEstrategica(list);
-                            metasModel.setMetasEstrategicas(data);
+                            metasResponse.setMetasEstrategicas(data);
                         }
                     break;
                     case 2:
                         if(frecuencia.equals("anual")){
-                            metasModel.setListMetasObjetivosOperativos(
-                                    metasDAO.getAllMetasObjetivosOperativosAnuales(idEtad, year));
+                            MetasModel data = new MetasModel();
+                            List<PetMetaAnualObjetivoOperativo> list = metasDAO.getAllMetasObjetivosOperativosAnuales(idEtad, year);
+                            for(PetMetaAnualObjetivoOperativo row:list){
+                                row.setLinea(lineasDAO.getLineasDataById(row.getId_linea()));
+                                row.setObjetivoOperativo(ooDAO.getObjetivoOperativoById(row.getId_objetivo_operativo()));
+                            }
+                            data.setListObjetivoOperativo(list);
+                            data.setFrecuencia(frecuencia);
+                            data.setTipo_meta(tipoMeta);
+                            data.setId_etad(idEtad);
+                            data.setAnio(year);
+                            metasResponse.setMetasObjetivosOperativos(data);
                         }
                     break;
                     case 3:
                         if(frecuencia.equals("anual")){
-                            metasModel.setListMetasKPIOperativos(
-                                    metasDAO.getAllMetasKPIOperativosAnuales(idEtad, year));
+                            MetasModel data = new MetasModel();
+                            List<PetMetaAnualKpi> list = metasDAO.getAllMetasKPIOperativosAnuales(idEtad, year);
+                            for(PetMetaAnualKpi row:list){
+                                row.setLinea(lineasDAO.getLineasDataById(row.getId_linea()));
+                                row.setkPIOperativo(kpioDAO.getKPIOperativoById(row.getId_kpi_operativo()));
+                            }
+                            data.setListKPIOperativo(list);
+                            data.setFrecuencia(frecuencia);
+                            data.setTipo_meta(tipoMeta);
+                            data.setId_etad(idEtad);
+                            data.setAnio(year);
+                            metasResponse.setMetasKPIOperativos(data);
                         }
                     break;
                 }
-                output.setData(metasModel);
+                output.setData(metasResponse);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
             }else{

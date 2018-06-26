@@ -36,7 +36,7 @@ public class MetasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetMetaAnualObjOpe ?, ?");
+        sql.append("SELECT * FROM pet_meta_anual_objetivo_operativo WHERE anio=? AND id_linea=?");
         Object[] params = { year, idEtad };
         
         ResultSetHandler rsh = new BeanListHandler(PetMetaAnualObjetivoOperativo.class);
@@ -45,13 +45,12 @@ public class MetasDAO {
         return listData;
     }
     
-    public List<PetMetaAnualKpi> getAllMetasKPIOperativosAnuales(
-            int idEtad, int year) throws Exception{
+    public List<PetMetaAnualKpi> getAllMetasKPIOperativosAnuales(int idEtad, int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectPetMetaAnualKpi ?, ?");
+        sql.append("SELECT * FROM pet_meta_anual_kpi WHERE anio=? AND id_linea=?");
         Object[] params = { year, idEtad };
         
         ResultSetHandler rsh = new BeanListHandler(PetMetaAnualKpi.class);
