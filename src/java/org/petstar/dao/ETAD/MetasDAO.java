@@ -5,11 +5,13 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.ETAD.PetMetaAnualKpi;
 import org.petstar.dto.ETAD.PetMetaAnualEstrategica;
 import org.petstar.dto.ETAD.PetMetaAnualObjetivoOperativo;
+import org.petstar.dto.ResultInteger;
 import org.petstar.model.ETAD.MetasModel;
 
 /**
@@ -61,6 +63,51 @@ public class MetasDAO {
         return listData;
     }
     
+    public ResultInteger validateForInsertMetaEstrategicaAnual(MetasModel meta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_estrategica ")
+                .append("WHERE anio=? AND id_linea=? AND id_meta_estrategica=?");
+        Object[] params = { meta.getAnio(), meta.getId_etad(), 
+            meta.getMetaEstrategica().getId_meta_estrategica() };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public ResultInteger validateForInsertObjetivoOperativoAnual(MetasModel meta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_objetivo_operativo ")
+                .append("WHERE anio=? AND id_linea=? AND id_objetivo_operativo=?");
+        Object[] params = { meta.getAnio(), meta.getId_etad(), 
+            meta.getObjetivoOperativo().getId_objetivo_operativo() };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public ResultInteger validateForInsertKPIOperativoAnual(MetasModel meta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_kpi ")
+                .append("WHERE anio=? AND id_linea=? AND id_kpi_operativo=?");
+        Object[] params = { meta.getAnio(), meta.getId_etad(), 
+            meta.getkPIOperativo().getId_kpi_operativo() };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
     public void insertMetaEstrategicaAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -79,7 +126,7 @@ public class MetasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC  ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_insertManualPetMetaAnualObjOperativo ?, ?, ?, ?, ?, ?");
         Object[] params = { meta.getId_etad(), 
             meta.getObjetivoOperativo().getId_objetivo_operativo(), meta.getAnio(), 
             meta.getObjetivoOperativo().getValor(), usuario, fecha };
@@ -92,7 +139,7 @@ public class MetasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertManualPetMetaAnualEstrategica ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_insertManualPetMetaAnualKpi ?, ?, ?, ?, ?, ?");
         Object[] params = { meta.getId_etad(), 
             meta.getkPIOperativo().getId_kpi_operativo(), meta.getAnio(), 
             meta.getkPIOperativo().getValor(), usuario, fecha };

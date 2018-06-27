@@ -2,7 +2,6 @@ package org.petstar.controller.ETAD;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONException;
@@ -23,6 +22,7 @@ import org.petstar.model.ETAD.MetasResponse;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.getCurrentDate;
+import org.petstar.dto.ResultInteger;
 
 /**
  *
@@ -32,6 +32,7 @@ public class MetasController {
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
+    private static final String MSG_EXIST  = "Ya existe una meta con estos valores.";
     
     public OutputJson loadCombobox(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -186,22 +187,38 @@ public class MetasController {
                 switch(meta.getTipo_meta()){
                     case 1:
                         if(meta.getFrecuencia().equals("anual")){
-                            metasDAO.insertMetaEstrategicaAnual(meta, session.getId_acceso(), getCurrentDate());
+                            ResultInteger result = metasDAO.validateForInsertMetaEstrategicaAnual(meta);
+                            if(result.getResult().equals(0)){
+                                metasDAO.insertMetaEstrategicaAnual(meta, session.getId_acceso(), getCurrentDate());
+                                response = messageForSave(true);
+                            }else{
+                                response = messageForSave(false);
+                            }
                         }
                     break;
                     case 2:
                         if(meta.getFrecuencia().equals("anual")){
-                            metasDAO.insertObjetivosOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
+                            ResultInteger result = metasDAO.validateForInsertObjetivoOperativoAnual(meta);
+                            if(result.getResult().equals(0)){
+                                metasDAO.insertObjetivosOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
+                                response = messageForSave(true);
+                            }else{
+                                response = messageForSave(false);
+                            }
                         }
                     break;
                     case 3:
                         if(meta.getFrecuencia().equals("anual")){
-                            metasDAO.insertKPIOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
+                            ResultInteger result = metasDAO.validateForInsertKPIOperativoAnual(meta);
+                            if(result.getResult().equals(0)){
+                                metasDAO.insertKPIOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
+                                response = messageForSave(true);
+                            }else{
+                                response = messageForSave(false);
+                            }
                         }
                     break;
                 }
-                response.setMessage(MSG_SUCESS);
-                response.setSucessfull(true);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
@@ -213,5 +230,17 @@ public class MetasController {
         
         output.setResponse(response);
         return output;
+    }
+    
+    public ResponseJson messageForSave(boolean result){
+        ResponseJson response = new ResponseJson();
+        if(result){
+            response.setMessage(MSG_SUCESS);
+            response.setSucessfull(true);
+        }else{
+            response.setMessage(MSG_EXIST);
+            response.setSucessfull(false);
+        }
+        return response;
     }
 }
