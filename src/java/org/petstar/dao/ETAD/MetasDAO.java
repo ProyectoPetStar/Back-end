@@ -146,4 +146,43 @@ public class MetasDAO {
         
         qr.update(sql.toString(),params);
     }
+    
+    public PetMetaAnualEstrategica getMetaAnualEstrategicaById(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_meta_anual_estrategica WHERE id_meta_anual_estrategica = ?");
+        Object[] params = { idMeta };
+        
+        ResultSetHandler rsh = new BeanHandler(PetMetaAnualEstrategica.class);
+        PetMetaAnualEstrategica data = (PetMetaAnualEstrategica) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    public PetMetaAnualObjetivoOperativo getMetaAnualObjetivoOperativoById(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_meta_anual_objetivo_operativo WHERE id_meta_anual_objetivo_operativo = ?");
+        Object[] params = { idMeta };
+        
+        ResultSetHandler rsh = new BeanHandler(PetMetaAnualObjetivoOperativo.class);
+        PetMetaAnualObjetivoOperativo data = (PetMetaAnualObjetivoOperativo) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    public PetMetaAnualKpi getMetaAnualKPIOperativoById(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_meta_anual_kpi WHERE id_meta_anual_kpi = ?");
+        Object[] params = { idMeta };
+        
+        ResultSetHandler rsh = new BeanHandler(PetMetaAnualKpi.class);
+        PetMetaAnualKpi data = (PetMetaAnualKpi) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
 }
