@@ -49,6 +49,12 @@ public class EtadMetas extends HttpServlet {
                 case"insertMetas":
                     output = controller.insertMetas(request);
                     break;
+                case"deleteMeta":
+                    output = controller.deleteMeta(request);
+                    break;
+                case"getMetaById":
+                    output = controller.getMetaById(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
