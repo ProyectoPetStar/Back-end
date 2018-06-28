@@ -240,11 +240,11 @@ public class MetasController {
         Gson gson = new Gson();
         
         try{
+            int tipoMeta = Integer.parseInt(request.getParameter("tipo_meta"));
+            String frecuencia = request.getParameter("frecuencia");
             String jsonString = request.getParameter("meta");
             
             JSONObject jsonResponse = new JSONObject(jsonString);
-            MetasModel meta =gson.fromJson(jsonResponse.getJSONObject("meta").toString(), MetasModel.class);
-
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 MetasDAO metasDAO = new MetasDAO();
@@ -254,21 +254,27 @@ public class MetasController {
                 * 2.- Metas Operativas
                 * 3.- KPI Operativo
                 */
-                switch(meta.getTipo_meta()){
+                switch(tipoMeta){
                     case 1:
-                        if(meta.getFrecuencia().equals("anual")){
+                        if(frecuencia.equals("anual")){
+                            PetMetaAnualEstrategica meta = gson.fromJson(jsonResponse.
+                                    getJSONObject("meta").toString(), PetMetaAnualEstrategica.class);
                             metasDAO.deleteMetaEstrategicaAnual(meta);
                             response = messageForSave(true, MSG_SUCESS);
                         }
                     break;
                     case 2:
-                        if(meta.getFrecuencia().equals("anual")){
+                        if(frecuencia.equals("anual")){
+                            PetMetaAnualObjetivoOperativo meta = gson.fromJson(jsonResponse.
+                                    getJSONObject("meta").toString(), PetMetaAnualObjetivoOperativo.class);
                             metasDAO.deleteObjetivosOperativosAnual(meta);
                             response = messageForSave(true, MSG_SUCESS);
                         }
                     break;
                     case 3:
-                        if(meta.getFrecuencia().equals("anual")){
+                        if(frecuencia.equals("anual")){
+                            PetMetaAnualKpi meta = gson.fromJson(jsonResponse.
+                                    getJSONObject("meta").toString(), PetMetaAnualKpi.class);
                             metasDAO.deleteKPIOperativosAnual(meta);
                             response = messageForSave(true, MSG_SUCESS);
                         }
@@ -398,11 +404,11 @@ public class MetasController {
         Gson gson = new Gson();
         
         try{
+            int tipoMeta = Integer.parseInt(request.getParameter("tipo_meta"));
+            String frecuencia = request.getParameter("frecuencia");
             String jsonString = request.getParameter("meta");
             
             JSONObject jsonResponse = new JSONObject(jsonString);
-            MetasModel meta = gson.fromJson(jsonResponse.getJSONObject("meta").toString(), MetasModel.class);
-
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 MetasDAO metasDAO = new MetasDAO();
@@ -412,21 +418,27 @@ public class MetasController {
                 * 2.- Metas Operativas
                 * 3.- KPI Operativo
                 */
-                switch(meta.getTipo_meta()){
+                switch(tipoMeta){
                     case 1:
-                        if(meta.getFrecuencia().equals("anual")){
+                        if(frecuencia.equals("anual")){
+                            PetMetaAnualEstrategica meta = gson.fromJson(
+                                    jsonResponse.getJSONObject("meta").toString(), PetMetaAnualEstrategica.class);
                             metasDAO.updateMetaEstrategicaAnual(meta, session.getId_acceso(), getCurrentDate());
                             response = messageForSave(true, MSG_SUCESS);
                         }
                     break;
                     case 2:
-                        if(meta.getFrecuencia().equals("anual")){
+                        if(frecuencia.equals("anual")){
+                            PetMetaAnualObjetivoOperativo meta = gson.fromJson(
+                                    jsonResponse.getJSONObject("meta").toString(), PetMetaAnualObjetivoOperativo.class);
                             metasDAO.updateObjetivosOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
                             response = messageForSave(true, MSG_SUCESS);
                         }
                     break;
                     case 3:
-                        if(meta.getFrecuencia().equals("anual")){
+                        if(frecuencia.equals("anual")){
+                            PetMetaAnualKpi meta = gson.fromJson(
+                                    jsonResponse.getJSONObject("meta").toString(), PetMetaAnualKpi.class);
                             metasDAO.updateKPIOperativosAnual(meta, session.getId_acceso(), getCurrentDate());
                             response = messageForSave(true, MSG_SUCESS);
                         }
