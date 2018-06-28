@@ -233,6 +233,60 @@ public class MetasController {
         return output;
     }
     
+    public OutputJson deleteMeta(HttpServletRequest request) throws Exception{
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        Gson gson = new Gson();
+        
+        try{
+            String jsonString = request.getParameter("meta");
+            
+            JSONObject jsonResponse = new JSONObject(jsonString);
+            MetasModel meta =gson.fromJson(jsonResponse.getJSONObject("meta").toString(), MetasModel.class);
+
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                MetasDAO metasDAO = new MetasDAO();
+                /**
+                * Tipos de Metas
+                * 1.- Metas Estrategicas
+                * 2.- Metas Operativas
+                * 3.- KPI Operativo
+                */
+                switch(meta.getTipo_meta()){
+                    case 1:
+                        if(meta.getFrecuencia().equals("anual")){
+                            metasDAO.deleteMetaEstrategicaAnual(meta);
+                            response = messageForSave(true, MSG_SUCESS);
+                        }
+                    break;
+                    case 2:
+                        if(meta.getFrecuencia().equals("anual")){
+                            metasDAO.deleteObjetivosOperativosAnual(meta);
+                            response = messageForSave(true, MSG_SUCESS);
+                        }
+                    break;
+                    case 3:
+                        if(meta.getFrecuencia().equals("anual")){
+                            metasDAO.deleteKPIOperativosAnual(meta);
+                            response = messageForSave(true, MSG_SUCESS);
+                        }
+                    break;
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(JsonSyntaxException | JSONException ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
     public OutputJson getMetaById(HttpServletRequest request) throws Exception{
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();

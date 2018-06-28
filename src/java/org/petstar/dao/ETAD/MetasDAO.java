@@ -185,4 +185,39 @@ public class MetasDAO {
         PetMetaAnualKpi data = (PetMetaAnualKpi) qr.query(sql.toString(), rsh, params);
         return data;
     }
+    
+    public void deleteMetaEstrategicaAnual(MetasModel meta)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("DELETE FROM pet_meta_anual_estrategica")
+                .append(" WITH (TABLOCK) WHERE id_meta_anual_estrategica=?");
+        Object[] params = { meta.getMetaEstrategica().getId_meta_anual_estrategica() };
+        
+        qr.update(sql.toString(),params);
+    }
+    
+    public void deleteObjetivosOperativosAnual(MetasModel meta)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("DELETE FROM pet_meta_anual_objetivo_operativo ")
+                .append("WITH (TABLOCK) WHERE id_meta_anual_objetivo_operativo=? ");
+        Object[] params = { meta.getObjetivoOperativo().getId_meta_anual_objetivo_operativo() };
+        
+        qr.update(sql.toString(),params);
+    }
+    
+    public void deleteKPIOperativosAnual(MetasModel meta)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("DELETE FROM pet_meta_anual_kpi WITH (TABLOCK) WHERE id_meta_anual_kpi=?");
+        Object[] params = { meta.getkPIOperativo().getId_meta_anual_kpi() };
+        
+        qr.update(sql.toString(),params);
+    }
 }
