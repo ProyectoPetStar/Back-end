@@ -186,42 +186,42 @@ public class MetasDAO {
         return data;
     }
     
-    public void deleteMetaEstrategicaAnual(MetasModel meta)throws Exception{
+    public void deleteMetaEstrategicaAnual(PetMetaAnualEstrategica meta)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("DELETE FROM pet_meta_anual_estrategica")
                 .append(" WITH (TABLOCK) WHERE id_meta_anual_estrategica=?");
-        Object[] params = { meta.getMetaEstrategica().getId_meta_anual_estrategica() };
+        Object[] params = { meta.getId_meta_anual_estrategica() };
         
         qr.update(sql.toString(),params);
     }
     
-    public void deleteObjetivosOperativosAnual(MetasModel meta)throws Exception{
+    public void deleteObjetivosOperativosAnual(PetMetaAnualObjetivoOperativo meta)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("DELETE FROM pet_meta_anual_objetivo_operativo ")
                 .append("WITH (TABLOCK) WHERE id_meta_anual_objetivo_operativo=? ");
-        Object[] params = { meta.getObjetivoOperativo().getId_meta_anual_objetivo_operativo() };
+        Object[] params = { meta.getId_meta_anual_objetivo_operativo() };
         
         qr.update(sql.toString(),params);
     }
     
-    public void deleteKPIOperativosAnual(MetasModel meta)throws Exception{
+    public void deleteKPIOperativosAnual(PetMetaAnualKpi meta)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("DELETE FROM pet_meta_anual_kpi WITH (TABLOCK) WHERE id_meta_anual_kpi=?");
-        Object[] params = { meta.getkPIOperativo().getId_meta_anual_kpi() };
+        Object[] params = { meta.getId_meta_anual_kpi() };
         
         qr.update(sql.toString(),params);
     }
     
-    public void updateMetaEstrategicaAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+    public void updateMetaEstrategicaAnual(PetMetaAnualEstrategica meta, int usuario, Date fecha)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -229,13 +229,13 @@ public class MetasDAO {
         sql.append("UPDATE pet_meta_anual_estrategica SET valor=?, ")
                 .append("id_usuario_modificacion=?, fecha_modificacion=? ")
                 .append("WHERE id_meta_anual_estrategica = ?");
-        Object[] params = { meta.getMetaEstrategica().getValor(), usuario, fecha, 
-            meta.getMetaEstrategica().getId_meta_anual_estrategica()};
+        Object[] params = { meta.getValor(), usuario, fecha, 
+            meta.getId_meta_anual_estrategica()};
         
         qr.update(sql.toString(),params);
     }
     
-    public void updateObjetivosOperativosAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+    public void updateObjetivosOperativosAnual(PetMetaAnualObjetivoOperativo meta, int usuario, Date fecha)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -243,13 +243,13 @@ public class MetasDAO {
         sql.append("UPDATE pet_meta_anual_objetivo_operativo SET valor=?, ")
                 .append("id_usuario_modifica_registro=?, fecha_modificacion_registro=? ")
                 .append("WHERE id_meta_anual_objetivo_operativo = ?");
-        Object[] params = { meta.getObjetivoOperativo().getValor(), usuario, fecha,
-            meta.getObjetivoOperativo().getId_meta_anual_objetivo_operativo()};
+        Object[] params = { meta.getValor(), usuario, fecha,
+            meta.getId_meta_anual_objetivo_operativo()};
         
         qr.update(sql.toString(),params);
     }
     
-    public void updateKPIOperativosAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+    public void updateKPIOperativosAnual(PetMetaAnualKpi meta, int usuario, Date fecha)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -257,8 +257,8 @@ public class MetasDAO {
         sql.append("UPDATE pet_meta_anual_kpi SET valor=?, ")
                 .append("id_usuario_modifica_registro=?, fecha_modificacion=? ")
                 .append("WHERE id_meta_anual_kpi = ?");
-        Object[] params = { meta.getkPIOperativo().getValor(), usuario, fecha,
-            meta.getkPIOperativo().getId_meta_anual_kpi() };
+        Object[] params = { meta.getValor(), usuario, fecha,
+            meta.getId_meta_anual_kpi() };
         
         qr.update(sql.toString(),params);
     }
