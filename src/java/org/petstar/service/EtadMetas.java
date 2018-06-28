@@ -55,6 +55,9 @@ public class EtadMetas extends HttpServlet {
                 case"getMetaById":
                     output = controller.getMetaById(request);
                     break;
+                case"updateMeta":
+                    output = controller.updateMeta(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

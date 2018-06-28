@@ -220,4 +220,46 @@ public class MetasDAO {
         
         qr.update(sql.toString(),params);
     }
+    
+    public void updateMetaEstrategicaAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_meta_anual_estrategica SET valor=?, ")
+                .append("id_usuario_modificacion=?, fecha_modificacion=? ")
+                .append("WHERE id_meta_anual_estrategica = ?");
+        Object[] params = { meta.getMetaEstrategica().getValor(), usuario, fecha, 
+            meta.getMetaEstrategica().getId_meta_anual_estrategica()};
+        
+        qr.update(sql.toString(),params);
+    }
+    
+    public void updateObjetivosOperativosAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_meta_anual_objetivo_operativo SET valor=?, ")
+                .append("id_usuario_modifica_registro=?, fecha_modificacion_registro=? ")
+                .append("WHERE id_meta_anual_objetivo_operativo = ?");
+        Object[] params = { meta.getObjetivoOperativo().getValor(), usuario, fecha,
+            meta.getObjetivoOperativo().getId_meta_anual_objetivo_operativo()};
+        
+        qr.update(sql.toString(),params);
+    }
+    
+    public void updateKPIOperativosAnual(MetasModel meta, int usuario, Date fecha)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_meta_anual_kpi SET valor=?, ")
+                .append("id_usuario_modifica_registro=?, fecha_modificacion=? ")
+                .append("WHERE id_meta_anual_kpi = ?");
+        Object[] params = { meta.getkPIOperativo().getValor(), usuario, fecha,
+            meta.getkPIOperativo().getId_meta_anual_kpi() };
+        
+        qr.update(sql.toString(),params);
+    }
 }
