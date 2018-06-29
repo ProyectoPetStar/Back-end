@@ -56,7 +56,7 @@ public class ObjetivosOperativosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_cat_objetivo_operativo WHERE id=?");
+        sql.append("EXEC sp_selectCatObjetivoOperativoById ?");
         Object[] params = { id };
         
         ResultSetHandler rsh = new BeanHandler(PetCatObjetivoOperativo.class);
