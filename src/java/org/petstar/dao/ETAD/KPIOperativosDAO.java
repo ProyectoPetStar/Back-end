@@ -56,7 +56,7 @@ public class KPIOperativosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_cat_kpi_operativo WHERE id = ?");
+        sql.append("EXEC sp_selectCatKpiOperativoById ?");
         Object[] params = { id };
         
         ResultSetHandler rsh = new BeanHandler(PetCatKpiOperativo.class);
