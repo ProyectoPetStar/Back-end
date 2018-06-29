@@ -45,8 +45,10 @@ public class CatalogosController {
             if(session != null){
                 CatalogosResponse data = new CatalogosResponse();
                 LineasDAO lineasDAO = new LineasDAO();
+                ObjetivosOperativosDAO oodao = new ObjetivosOperativosDAO();
                 
                 data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListObjetivoOperativos(oodao.getAllObjetivosOperativosActive());
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
@@ -97,6 +99,10 @@ public class CatalogosController {
                     break;
                     case 3:
                         data.setListKpiOperativos(kpioDAO.getAllKPIOperativos());
+                        for(PetCatKpiOperativo row:data.getListKpiOperativos()){
+                            row.setObjetivoOperativo(operativosDAO.
+                                    getObjetivoOperativoById(row.getId_pet_cat_objetivo_operativo()));
+                        }
                     break;
                 }
                 output.setData(data);
@@ -140,7 +146,12 @@ public class CatalogosController {
                 ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
                 MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
                 KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
                 CatalogosResponse data = new CatalogosResponse();
+                
+                data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListObjetivoOperativos(operativosDAO.getAllObjetivosOperativosActive());
+                
                 switch(tipoCatalogo){
                     case 1:
                         data.setMetaEstrategica(estrategicasDAO.getMetaEstrategicaAnualById(idCatalogo));
@@ -163,6 +174,10 @@ public class CatalogosController {
                     case 3:
                         data.setKpiOperativo(kpioDAO.getKPIOperativoById(idCatalogo));
                         if(data.getKpiOperativo() != null){
+                            data.getKpiOperativo().setObjetivoOperativo(
+                                    operativosDAO.getObjetivoOperativoById(
+                                            data.getKpiOperativo()
+                                                    .getId_pet_cat_objetivo_operativo()));
                             output.setData(data);
                             response = message(true, MSG_SUCESS);
                         }else{

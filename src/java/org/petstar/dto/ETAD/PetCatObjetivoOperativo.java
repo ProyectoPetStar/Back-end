@@ -10,6 +10,7 @@ public class PetCatObjetivoOperativo extends CatalogosDTO{
     private String unidad_medida;
     private int mensual;
     private int anual;
+    private int indicador;
     private String lineas;
 
     public String getUnidad_medida() {
@@ -34,6 +35,14 @@ public class PetCatObjetivoOperativo extends CatalogosDTO{
 
     public void setAnual(int anual) {
         this.anual = anual;
+    }
+
+    public int getIndicador() {
+        return indicador;
+    }
+
+    public void setIndicador(int indicador) {
+        this.indicador = indicador;
     }
 
     public String getLineas() {
