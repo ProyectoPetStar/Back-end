@@ -11,7 +11,9 @@ public class PetCatKpiOperativo extends CatalogosDTO{
     private String unidad_medida;
     private int mensual;
     private int anual;
+    private int id_pet_cat_objetivo_operativo;
     private String lineas;
+    private PetCatObjetivoOperativo objetivoOperativo;
 
     public int getTipo_kpi() {
         return tipo_kpi;
@@ -45,11 +47,27 @@ public class PetCatKpiOperativo extends CatalogosDTO{
         this.anual = anual;
     }
 
+    public int getId_pet_cat_objetivo_operativo() {
+        return id_pet_cat_objetivo_operativo;
+    }
+
+    public void setId_pet_cat_objetivo_operativo(int id_pet_cat_objetivo_operativo) {
+        this.id_pet_cat_objetivo_operativo = id_pet_cat_objetivo_operativo;
+    }
+
     public String getLineas() {
         return lineas;
     }
 
     public void setLineas(String lineas) {
         this.lineas = lineas;
+    }
+
+    public PetCatObjetivoOperativo getObjetivoOperativo() {
+        return objetivoOperativo;
+    }
+
+    public void setObjetivoOperativo(PetCatObjetivoOperativo objetivoOperativo) {
+        this.objetivoOperativo = objetivoOperativo;
     }
 }

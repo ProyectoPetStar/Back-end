@@ -142,11 +142,12 @@ public class KPIOperativosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("INSERT INTO pet_cat_kpi_operativo ")
-                .append("(valor,descripcion,tipo_kpi,unidad_medida,anual,mensual,activo) ")
+        sql.append("INSERT INTO pet_cat_kpi_operativo (valor,descripcion,tipo_kpi,")
+                .append("unidad_medida,anual,mensual,d_pet_cat_objetivo_operativo,activo) ")
                 .append("OUTPUT INSERTED.ID AS result VALUES(?,?,?,?,?,?,?)");
         Object[] params = { pcko.getValor(), pcko.getDescripcion(), pcko.getTipo_kpi(),
-            pcko.getUnidad_medida(), pcko.getAnual(), pcko.getMensual(), 1 };
+            pcko.getUnidad_medida(), pcko.getAnual(), pcko.getMensual(), 
+            pcko.getId_pet_cat_objetivo_operativo(), 1 };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
