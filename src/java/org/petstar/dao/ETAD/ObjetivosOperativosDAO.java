@@ -89,6 +89,20 @@ public class ObjetivosOperativosDAO {
         return result;
     }
     
+    public ResultInteger validateInsert(PetCatObjetivoOperativo pcoo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_cat_objetivo_operativo ")
+                .append("WHERE valor = ? OR descripcion = ?");
+        Object[] params = { pcoo.getValor(), pcoo.getDescripcion() };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
     public void updateMetaEstrategica(PetCatObjetivoOperativo pcoo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -107,7 +121,7 @@ public class ObjetivosOperativosDAO {
         qr.update(sql2.toString(), params2);
     }
     
-    public void asignaLineasToMetaEstrategica(PetCatObjetivoOperativo pcoo) throws Exception{
+    public void asignaLineasToObjetivoOperativo(PetCatObjetivoOperativo pcoo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -121,5 +135,21 @@ public class ObjetivosOperativosDAO {
             Object[] params = { pcoo.getId(), Integer.valueOf(linea) };
             qr.update(sql.toString(), params);
         }
+    }
+    
+    public ResultInteger insertObjetivoOperativo(PetCatObjetivoOperativo pcoo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("INSERT INTO pet_cat_objetivo_operativo ")
+                .append("(valor,descripcion,unidad_medida,anual,mensual,activo) ")
+                .append("OUTPUT INSERTED.ID AS result VALUES (?,?,?,?,?,?)");
+        Object[] params = { pcoo.getValor(), pcoo.getDescripcion(), 
+            pcoo.getUnidad_medida(), pcoo.getAnual(), pcoo.getMensual(), 1 };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
     }
 }

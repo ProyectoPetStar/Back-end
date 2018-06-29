@@ -58,6 +58,9 @@ public class EtadCatalogos extends HttpServlet {
                 case "updateCatalogo":
                     output = controller.updateCatalogo(request);
                     break;
+                case "insertCatalogo":
+                    output = controller.insertCatalogo(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

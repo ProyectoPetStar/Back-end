@@ -234,6 +234,12 @@ public class CatalogosController {
         return output;
     }
     
+    /**
+     * Actualización de datos
+     * Servicio para la modificación de valores de un registro en especifico
+     * @param request
+     * @return 
+     */
     public OutputJson updateCatalogo(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -276,7 +282,7 @@ public class CatalogosController {
                         ResultInteger resultOO = operativosDAO.validateUpdate(pcoo);
                         if(resultOO.getResult().equals(0)){
                             operativosDAO.updateMetaEstrategica(pcoo);
-                            operativosDAO.asignaLineasToMetaEstrategica(pcoo);
+                            operativosDAO.asignaLineasToObjetivoOperativo(pcoo);
                             response = message(true, MSG_SUCESS);
                         }else{
                             response = message(false, MSG_EXIST);
@@ -289,14 +295,96 @@ public class CatalogosController {
                         ResultInteger resultKO = kpioDAO.validateUpdate(pcko);
                         if (resultKO.getResult().equals(0)) {
                             kpioDAO.updateKPIOperativo(pcko);
-                            kpioDAO.asignaLineasToMetaEstrategica(pcko);
+                            kpioDAO.asignaLineasToKPIOperativos(pcko);
                             response = message(true, MSG_SUCESS);
                         }else{
                             response = message(false, MSG_EXIST);
                         }
                     break;
                 }
-                response = message(true, MSG_SUCESS);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    /**
+     * Insercion de nuevos Registros
+     * Servicio que permite registrar un nuevos elementos a los catalogos
+     * @param request
+     * @return 
+     */
+    public OutputJson insertCatalogo(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        Gson gson = new Gson();
+            
+        try{
+            int tipoCatalogo = Integer.valueOf(request.getParameter("tipo_catalogo"));
+            String jsonString = request.getParameter("record");
+            JSONObject jsonResponse = new JSONObject(jsonString);
+            
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                /**
+                * Tipos de Catalogos
+                * 1.- Metas Estrategicas
+                * 2.- Metas Operativas
+                * 3.- KPI Operativo
+                */
+                ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
+                MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
+                switch(tipoCatalogo){
+                    case 1:
+                        PetCatMetaEstrategica pcme = gson.fromJson(jsonResponse.
+                                getJSONObject("record").toString(), PetCatMetaEstrategica.class);
+                        
+                        ResultInteger resultME = estrategicasDAO.validateInsert(pcme);
+                        if(resultME.getResult().equals(0)){
+                            estrategicasDAO.insertMetaEstrategica(pcme);
+                            response = message(true, MSG_SUCESS);
+                        }else{
+                            response = message(false, MSG_EXIST);
+                        }
+                    break;
+                    case 2:
+                        PetCatObjetivoOperativo pcoo = gson.fromJson(jsonResponse.
+                                getJSONObject("record").toString(), PetCatObjetivoOperativo.class);
+                        
+                        ResultInteger resultOO = operativosDAO.validateInsert(pcoo);
+                        if(resultOO.getResult().equals(0)){
+                            ResultInteger idOO = operativosDAO.insertObjetivoOperativo(pcoo);
+                            pcoo.setId(idOO.getResult());
+                            operativosDAO.asignaLineasToObjetivoOperativo(pcoo);
+                            response = message(true, MSG_SUCESS);
+                        }else{
+                            response = message(false, MSG_EXIST);
+                        }
+                    break;
+                    case 3:
+                        PetCatKpiOperativo pcko = gson.fromJson(jsonResponse.
+                                getJSONObject("record").toString(), PetCatKpiOperativo.class);
+                        
+                        ResultInteger resultKO = kpioDAO.validateInsert(pcko);
+                        if (resultKO.getResult().equals(0)) {
+                            ResultInteger idKO = kpioDAO.insertKPIOperativo(pcko);
+                            pcko.setId(idKO.getResult());
+                            kpioDAO.asignaLineasToKPIOperativos(pcko);
+                            response = message(true, MSG_SUCESS);
+                        }else{
+                            response = message(false, MSG_EXIST);
+                        }
+                    break;
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
