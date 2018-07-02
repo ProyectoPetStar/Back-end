@@ -91,6 +91,7 @@ public class CatalogosController {
                 */
                 ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
                 //MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                FrecuenciasDAO frecuenciasDAO = new FrecuenciasDAO();
                 KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
                 CatalogosResponse data = new CatalogosResponse();
                 switch(tipoCatalogo){
@@ -104,6 +105,7 @@ public class CatalogosController {
                     case 3:
                         data.setListKpiOperativos(kpioDAO.getAllKPIOperativos());
                         for(PetCatKpiOperativo row:data.getListKpiOperativos()){
+                            row.setFrecuencia(frecuenciasDAO.getFrecuenciaById(row.getId_frecuencia()));
                             row.setObjetivoOperativo(operativosDAO.
                                     getObjetivoOperativoById(row.getId_cat_objetivo_operativo()));
                         }
@@ -181,10 +183,10 @@ public class CatalogosController {
                     case 3:
                         data.setKpiOperativo(kpioDAO.getKPIOperativoById(idCatalogo));
                         if(data.getKpiOperativo() != null){
-                            data.getKpiOperativo().setObjetivoOperativo(
-                                    operativosDAO.getObjetivoOperativoById(
-                                            data.getKpiOperativo()
-                                                    .getId_cat_objetivo_operativo()));
+                            data.getKpiOperativo().setFrecuencia(frecuenciasDAO.getFrecuenciaById(
+                                    data.getKpiOperativo().getId_frecuencia()));
+                            data.getKpiOperativo().setObjetivoOperativo(operativosDAO.getObjetivoOperativoById(
+                                    data.getKpiOperativo().getId_cat_objetivo_operativo()));
                             output.setData(data);
                             response = message(true, MSG_SUCESS);
                         }else{
