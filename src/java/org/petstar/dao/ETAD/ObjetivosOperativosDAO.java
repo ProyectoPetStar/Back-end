@@ -32,7 +32,7 @@ public class ObjetivosOperativosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectCatObjetivoOperativo");
+        sql.append("SELECT * FROM pet_cat_objetivo_operativo WHERE activo = 1");
         
         ResultSetHandler rsh = new BeanListHandler(PetCatObjetivoOperativo.class);
         List<PetCatObjetivoOperativo> listData = (List<PetCatObjetivoOperativo>) qr.query(sql.toString(), rsh);
@@ -56,7 +56,7 @@ public class ObjetivosOperativosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_selectCatObjetivoOperativoById ?");
+        sql.append("SELECT * FROM pet_cat_objetivo_operativo WHERE id = ?");
         Object[] params = { id };
         
         ResultSetHandler rsh = new BeanHandler(PetCatObjetivoOperativo.class);
@@ -107,20 +107,20 @@ public class ObjetivosOperativosDAO {
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql1 = new StringBuilder();
-        StringBuilder sql2 = new StringBuilder();
+        //StringBuilder sql2 = new StringBuilder();
         
         sql1.append("UPDATE pet_cat_objetivo_operativo SET valor = ?, descripcion = ?, ")
-                .append("unidad_medida = ?, anual = ?, mensual = ? WHERE id = ?");
+                .append("unidad_medida = ? WHERE id = ?");
         Object[] params1 = { pcoo.getValor(), pcoo.getDescripcion(), 
-            pcoo.getUnidad_medida(), pcoo.getAnual(), pcoo.getMensual(), pcoo.getId() };
+            pcoo.getUnidad_medida(), pcoo.getId() };
         
-        sql2.append("DELETE FROM pet_linea_objetivo_operativo ")
-                .append("WITH (TABLOCK) WHERE id_objetivo_operativo = ?");
-        Object[] params2 = { pcoo.getId() };
+        //sql2.append("DELETE FROM pet_linea_objetivo_operativo ")
+        //        .append("WITH (TABLOCK) WHERE id_objetivo_operativo = ?");
+        //Object[] params2 = { pcoo.getId() };
         qr.update(sql1.toString(), params1);
-        qr.update(sql2.toString(), params2);
+        //qr.update(sql2.toString(), params2);
     }
-    
+    /*
     public void asignaLineasToObjetivoOperativo(PetCatObjetivoOperativo pcoo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -136,17 +136,17 @@ public class ObjetivosOperativosDAO {
             qr.update(sql.toString(), params);
         }
     }
-    
+    */
     public ResultInteger insertObjetivoOperativo(PetCatObjetivoOperativo pcoo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("INSERT INTO pet_cat_objetivo_operativo ")
-                .append("(valor,descripcion,unidad_medida,anual,mensual,activo) ")
-                .append("OUTPUT INSERTED.ID AS result VALUES (?,?,?,?,?,?)");
+                .append("(valor,descripcion,unidad_medida,activo) ")
+                .append("OUTPUT INSERTED.ID AS result VALUES (?,?,?,?)");
         Object[] params = { pcoo.getValor(), pcoo.getDescripcion(), 
-            pcoo.getUnidad_medida(), pcoo.getAnual(), pcoo.getMensual(), 1 };
+            pcoo.getUnidad_medida(), 1 };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);

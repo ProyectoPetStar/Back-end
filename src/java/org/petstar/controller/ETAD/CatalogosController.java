@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 import org.petstar.controller.ControllerAutenticacion;
+import org.petstar.dao.ETAD.FrecuenciasDAO;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
@@ -44,10 +45,12 @@ public class CatalogosController {
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 CatalogosResponse data = new CatalogosResponse();
+                FrecuenciasDAO frecuenciasDAO = new FrecuenciasDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 ObjetivosOperativosDAO oodao = new ObjetivosOperativosDAO();
                 
                 data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListFrecuencias(frecuenciasDAO.getAllFrecuenciasActive());
                 data.setListObjetivoOperativos(oodao.getAllObjetivosOperativosActive());
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
@@ -87,13 +90,14 @@ public class CatalogosController {
                 * 3.- KPI Operativo
                 */
                 ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
-                MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                //MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
                 KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
                 CatalogosResponse data = new CatalogosResponse();
                 switch(tipoCatalogo){
-                    case 1:
+                    /*case 1:
                         data.setListMetasEstrategicas(estrategicasDAO.getAllMetasEstrategicas());
                     break;
+                    */
                     case 2:
                         data.setListObjetivoOperativos(operativosDAO.getAllObjetivosOperativos());
                     break;
@@ -101,7 +105,7 @@ public class CatalogosController {
                         data.setListKpiOperativos(kpioDAO.getAllKPIOperativos());
                         for(PetCatKpiOperativo row:data.getListKpiOperativos()){
                             row.setObjetivoOperativo(operativosDAO.
-                                    getObjetivoOperativoById(row.getId_pet_cat_objetivo_operativo()));
+                                    getObjetivoOperativoById(row.getId_cat_objetivo_operativo()));
                         }
                     break;
                 }
@@ -144,16 +148,18 @@ public class CatalogosController {
                 * 3.- KPI Operativo
                 */
                 ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
-                MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                //MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
                 KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
+                FrecuenciasDAO frecuenciasDAO = new FrecuenciasDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 CatalogosResponse data = new CatalogosResponse();
                 
                 data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListFrecuencias(frecuenciasDAO.getAllFrecuenciasActive());
                 data.setListObjetivoOperativos(operativosDAO.getAllObjetivosOperativosActive());
                 
                 switch(tipoCatalogo){
-                    case 1:
+                    /*case 1:
                         data.setMetaEstrategica(estrategicasDAO.getMetaEstrategicaAnualById(idCatalogo));
                         if(data.getMetaEstrategica() != null){
                             output.setData(data);
@@ -162,6 +168,7 @@ public class CatalogosController {
                             response = message(false, MSG_NOFOUND);
                         }
                     break;
+                    */
                     case 2:
                         data.setObjetivoOperativo(operativosDAO.getObjetivoOperativoById(idCatalogo));
                         if(data.getObjetivoOperativo() != null){
@@ -177,7 +184,7 @@ public class CatalogosController {
                             data.getKpiOperativo().setObjetivoOperativo(
                                     operativosDAO.getObjetivoOperativoById(
                                             data.getKpiOperativo()
-                                                    .getId_pet_cat_objetivo_operativo()));
+                                                    .getId_cat_objetivo_operativo()));
                             output.setData(data);
                             response = message(true, MSG_SUCESS);
                         }else{
@@ -222,12 +229,13 @@ public class CatalogosController {
                 * 3.- KPI Operativo
                 */
                 ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
-                MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                //MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
                 KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
                 switch(tipoCatalogo){
-                    case 1:
+                    /*case 1:
                         estrategicasDAO.changeEstatus(idCatalogo, estatus);
                     break;
+                    */
                     case 2:
                         operativosDAO.changeEstatus(idCatalogo, estatus);
                     break;
@@ -275,10 +283,10 @@ public class CatalogosController {
                 * 3.- KPI Operativo
                 */
                 ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
-                MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                //MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
                 KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
                 switch(tipoCatalogo){
-                    case 1:
+                    /*case 1:
                         PetCatMetaEstrategica pcme = gson.fromJson(jsonResponse.
                                 getJSONObject("record").toString(), PetCatMetaEstrategica.class);
                         
@@ -290,6 +298,7 @@ public class CatalogosController {
                             response = message(false, MSG_EXIST);
                         }
                     break;
+                    */
                     case 2:
                         PetCatObjetivoOperativo pcoo = gson.fromJson(jsonResponse.
                                 getJSONObject("record").toString(), PetCatObjetivoOperativo.class);
@@ -297,7 +306,7 @@ public class CatalogosController {
                         ResultInteger resultOO = operativosDAO.validateUpdate(pcoo);
                         if(resultOO.getResult().equals(0)){
                             operativosDAO.updateMetaEstrategica(pcoo);
-                            operativosDAO.asignaLineasToObjetivoOperativo(pcoo);
+                            //operativosDAO.asignaLineasToObjetivoOperativo(pcoo);
                             response = message(true, MSG_SUCESS);
                         }else{
                             response = message(false, MSG_EXIST);
@@ -379,7 +388,7 @@ public class CatalogosController {
                         if(resultOO.getResult().equals(0)){
                             ResultInteger idOO = operativosDAO.insertObjetivoOperativo(pcoo);
                             pcoo.setId(idOO.getResult());
-                            operativosDAO.asignaLineasToObjetivoOperativo(pcoo);
+                            //operativosDAO.asignaLineasToObjetivoOperativo(pcoo);
                             response = message(true, MSG_SUCESS);
                         }else{
                             response = message(false, MSG_EXIST);

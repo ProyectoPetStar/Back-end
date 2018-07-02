@@ -7,13 +7,29 @@ import org.petstar.dto.CatalogosDTO;
  * @author Tech-Pro
  */
 public class PetCatKpiOperativo extends CatalogosDTO{
+    private int id_cat_objetivo_operativo;
+    private int id_frecuencia;
     private int tipo_kpi;
     private String unidad_medida;
-    private int mensual;
-    private int anual;
-    private int id_pet_cat_objetivo_operativo;
     private String lineas;
     private PetCatObjetivoOperativo objetivoOperativo;
+    private PetCatFrecuencia frecuencia;
+
+    public int getId_cat_objetivo_operativo() {
+        return id_cat_objetivo_operativo;
+    }
+
+    public void setId_cat_objetivo_operativo(int id_cat_objetivo_operativo) {
+        this.id_cat_objetivo_operativo = id_cat_objetivo_operativo;
+    }
+
+    public int getId_frecuencia() {
+        return id_frecuencia;
+    }
+
+    public void setId_frecuencia(int id_frecuencia) {
+        this.id_frecuencia = id_frecuencia;
+    }
 
     public int getTipo_kpi() {
         return tipo_kpi;
@@ -31,30 +47,6 @@ public class PetCatKpiOperativo extends CatalogosDTO{
         this.unidad_medida = unidad_medida;
     }
 
-    public int getMensual() {
-        return mensual;
-    }
-
-    public void setMensual(int mensual) {
-        this.mensual = mensual;
-    }
-
-    public int getAnual() {
-        return anual;
-    }
-
-    public void setAnual(int anual) {
-        this.anual = anual;
-    }
-
-    public int getId_pet_cat_objetivo_operativo() {
-        return id_pet_cat_objetivo_operativo;
-    }
-
-    public void setId_pet_cat_objetivo_operativo(int id_pet_cat_objetivo_operativo) {
-        this.id_pet_cat_objetivo_operativo = id_pet_cat_objetivo_operativo;
-    }
-
     public String getLineas() {
         return lineas;
     }
@@ -69,5 +61,13 @@ public class PetCatKpiOperativo extends CatalogosDTO{
 
     public void setObjetivoOperativo(PetCatObjetivoOperativo objetivoOperativo) {
         this.objetivoOperativo = objetivoOperativo;
+    }
+
+    public PetCatFrecuencia getFrecuencia() {
+        return frecuencia;
+    }
+
+    public void setFrecuencia(PetCatFrecuencia frecuencia) {
+        this.frecuencia = frecuencia;
     }
 }

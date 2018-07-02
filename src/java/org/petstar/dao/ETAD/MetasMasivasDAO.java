@@ -35,7 +35,20 @@ public class MetasMasivasDAO {
         }
     }
     
-    public void insertTMPObjetivosOperativos(List<HashMap> data, int archivo) throws Exception{
+    public void insertMetasEstrategicasMensual(List<HashMap> data, int archivo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        for(int i=0; i<data.size(); i++){
+            Object[] params = {  };
+            
+            qr.update(sql.toString(),params);
+        }
+    }
+    
+    public void insertObjetivosOperativosAnual(List<HashMap> data, int archivo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -45,6 +58,19 @@ public class MetasMasivasDAO {
             Object[] params = { data.get(i).get("idEtad"), data.get(i).get("objetivo"), 
                     data.get(i).get("year"), data.get(i).get("meta"), archivo,
                     data.get(i).get("usuario"), data.get(i).get("fecha") };
+            
+            qr.update(sql.toString(),params);
+        }
+    }
+    
+    public void insertObjetivosOperativosMensual(List<HashMap> data, int archivo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        for(int i=0; i<data.size(); i++){
+            Object[] params = {  };
             
             qr.update(sql.toString(),params);
         }
@@ -63,7 +89,7 @@ public class MetasMasivasDAO {
         return result;
     }
     
-    public void insertKPIOperativos(List<HashMap> data, int archivo) throws Exception{
+    public void insertKPIOperativosAnual(List<HashMap> data, int archivo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -73,6 +99,19 @@ public class MetasMasivasDAO {
             Object[] params = { data.get(i).get("idEtad"), data.get(i).get("kpi"), 
                     data.get(i).get("year"), data.get(i).get("meta"), archivo,
                     data.get(i).get("usuario"), data.get(i).get("fecha") };
+            
+            qr.update(sql.toString(),params);
+        }
+    }
+    
+    public void insertKPIOperativosMensual(List<HashMap> data, int archivo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        for(int i=0; i<data.size(); i++){
+            Object[] params = {  };
             
             qr.update(sql.toString(),params);
         }
@@ -89,6 +128,17 @@ public class MetasMasivasDAO {
         qr.update(sql.toString(), params);
     }
     
+    public void loadDataMensualMetasEstrategicas(int idEtad, int idPeriodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = { idEtad, idPeriodo };
+        
+        qr.update(sql.toString(), params);
+    }
+    
     public void loadDataAnualObjetivosOperativos(int idEtad, int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -96,6 +146,17 @@ public class MetasMasivasDAO {
         
         sql.append("EXEC sp_insertPetMetaAnualObjetivoOperativo ?, ?");
         Object[] params = { idEtad, year };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void loadDataMensualObjetivosOperativos(int idEtad, int IdPeriodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = { idEtad, IdPeriodo };
         
         qr.update(sql.toString(), params);
     }
@@ -157,6 +218,19 @@ public class MetasMasivasDAO {
         return result;
     }
     
+    public ResultInteger validateExistDataMetasEstrategiasMensual(int idEtad, int idPeriodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = { idEtad, idPeriodo };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
     public ResultInteger validateExistDataMetasOperativasAnuales(int idEtad, int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -164,6 +238,19 @@ public class MetasMasivasDAO {
         
         sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_objetivo_operativo WHERE id_linea = ? AND anio = ?");
         Object[] params = { idEtad, year };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public ResultInteger validateExistDataMetasOperativasMensual(int idEtad, int idPeriodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = { idEtad, idPeriodo };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
