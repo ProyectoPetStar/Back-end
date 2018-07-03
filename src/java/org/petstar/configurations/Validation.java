@@ -93,4 +93,17 @@ public class Validation {
             return false;
         }
     }
+    
+    public static boolean validateEnteros(String valor){
+        if(valor.equals("")){
+            return false;
+        }else{
+            int num = Integer.valueOf(valor);
+            if(num >= 0 && num <= 100){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
 }
