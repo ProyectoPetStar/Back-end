@@ -1,18 +1,30 @@
 package org.petstar.controller.ETAD;
 
+import com.csvreader.CsvWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.axis.encoding.Base64;
+import org.petstar.configurations.Configuration;
 import static org.petstar.configurations.Tools.saveFIle;
 import static org.petstar.configurations.Tools.validateFilePonderacionKPIOperativo;
 import static org.petstar.configurations.Tools.validateFilePonderacionObjetivoOperativo;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.controller.ControllerAutenticacion;
+import org.petstar.dao.ETAD.KPIOperativosDAO;
+import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
+import org.petstar.dao.ETAD.PonderacionDAO;
 import org.petstar.dao.ETAD.PonderacionMasivaDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
+import org.petstar.dto.ETAD.PetCatKpiOperativo;
+import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.PonderacionResponse;
@@ -72,7 +84,7 @@ public class PonderacionMasivaController {
                 StringBuilder stringFile = new StringBuilder();
                 stringFile.append(request.getParameter("file"));
                 int anio = Integer.valueOf(request.getParameter("anio"));
-                String tipoPond = request.getParameter("tipo_ponderacion");
+                int tipoPond = Integer.valueOf(request.getParameter("tipo_ponderacion"));
                 
                 SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
                 Date date = getCurrentDate();
@@ -89,11 +101,11 @@ public class PonderacionMasivaController {
                      * 2.- Ponderacion Anual de KPI operativos
                      */
                     switch(tipoPond){
-                        case"1":
+                        case 1:
                             valid = validateFilePonderacionObjetivoOperativo(request, nameFile, session.getId_acceso());
                             rj = (ResponseJson) valid.getResponse();
                         break;
-                        case"2":
+                        case 2:
                             valid = validateFilePonderacionKPIOperativo(request, nameFile, session.getId_acceso());
                             rj = (ResponseJson) valid.getResponse();
                         break;
@@ -104,10 +116,10 @@ public class PonderacionMasivaController {
                         Date fecha = getCurrentDate();
                         ResultInteger idFile = masivaDAO.saveFile(nameFile, session.getId_acceso(), fecha);
                         switch(tipoPond){
-                            case"1":
+                            case 1:
                                 masivaDAO.insertPonderacionObjetivosOperativos((List<HashMap>) valid.getData(),idFile.getResult());
                             break;
-                            case"2":
+                            case 2:
                                 masivaDAO.insertPonderacionKPIOperativos((List<HashMap>) valid.getData(),idFile.getResult());
                             break;
                         }
@@ -121,6 +133,74 @@ public class PonderacionMasivaController {
                     }
                 }else{
                     response.setMessage(MSG_FAILED);
+                    response.setSucessfull(false);
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson downloadTemplate(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int tipoPond = Integer.valueOf(request.getParameter("tipo_ponderacion"));
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                String pathFile = Configuration.PATH_DOWNLOAD_FILE;
+                
+                String outputFile = pathFile+"Ponderacion"+tipoPond+"Template.csv";
+                boolean alreadyExists = new File(outputFile).exists();
+
+                if(alreadyExists){
+                    File newFile = new File(outputFile);
+                    newFile.delete();
+                }     
+
+                try {
+                    CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');
+                    /**
+                     * Tipos de Ponderacion
+                     * 1.- Ponderacion Anual de Objetivos Operativos
+                     * 2.- Ponderacion Anual de KPI operativos
+                     */
+                    switch(tipoPond){
+                        case 1:
+                            ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
+                            List<PetCatObjetivoOperativo> listObjetivos = operativosDAO.getAllObjetivosOperativosActive();
+                            csvOutput.write("Objetivo");
+                            csvOutput.write("Ponderacion");
+                            csvOutput.endRecord();
+                            for(PetCatObjetivoOperativo row: listObjetivos){
+                                csvOutput.write(row.getValor());
+                                csvOutput.endRecord();                   
+                            }
+                        break;
+                        case 2:
+                            KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
+                            //List<KPIOperativosDAO> listKPIs = kpioDAO.get
+                        break;
+                    }
+                    csvOutput.close();
+                    
+                    byte[] bFile = Files.readAllBytes(new File(outputFile).toPath());
+                    StringBuilder file = new StringBuilder();
+                    file.append(Base64.encode(bFile));
+
+                    response.setMessage(file.toString());
+                    response.setSucessfull(true);
+                } catch (IOException e) {
+                    response.setMessage(MSG_ERROR + e.getMessage());
                     response.setSucessfull(false);
                 }
             }else{
