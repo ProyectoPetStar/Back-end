@@ -364,12 +364,10 @@ public class MetasMasivasController {
                             List<PetCatObjetivoOperativo> listObjetivos = operativosDAO.getListObjetivosOperativosAnuales();
                             if(frecuencia.equals("anual")){
                                 csvOutput.write("Objetivo");
-                                csvOutput.write("UM");
                                 csvOutput.write("Meta");
                                 csvOutput.endRecord();
                                 for(PetCatObjetivoOperativo objetivo: listObjetivos){
                                     csvOutput.write(objetivo.getValor());
-                                    csvOutput.write(objetivo.getUnidad_medida());
                                     csvOutput.endRecord();                   
                                 }
                             }

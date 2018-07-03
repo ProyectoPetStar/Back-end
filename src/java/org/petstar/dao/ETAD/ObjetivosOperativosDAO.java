@@ -109,10 +109,9 @@ public class ObjetivosOperativosDAO {
         StringBuilder sql1 = new StringBuilder();
         //StringBuilder sql2 = new StringBuilder();
         
-        sql1.append("UPDATE pet_cat_objetivo_operativo SET valor = ?, descripcion = ?, ")
-                .append("unidad_medida = ? WHERE id = ?");
-        Object[] params1 = { pcoo.getValor(), pcoo.getDescripcion(), 
-            pcoo.getUnidad_medida(), pcoo.getId() };
+        sql1.append("UPDATE pet_cat_objetivo_operativo SET valor = ?, descripcion = ? ")
+                .append("WHERE id = ?");
+        Object[] params1 = { pcoo.getValor(), pcoo.getDescripcion(), pcoo.getId() };
         
         //sql2.append("DELETE FROM pet_linea_objetivo_operativo ")
         //        .append("WITH (TABLOCK) WHERE id_objetivo_operativo = ?");
@@ -143,10 +142,9 @@ public class ObjetivosOperativosDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("INSERT INTO pet_cat_objetivo_operativo ")
-                .append("(valor,descripcion,unidad_medida,activo) ")
+                .append("(valor,descripcion,activo) ")
                 .append("OUTPUT INSERTED.ID AS result VALUES (?,?,?,?)");
-        Object[] params = { pcoo.getValor(), pcoo.getDescripcion(), 
-            pcoo.getUnidad_medida(), 1 };
+        Object[] params = { pcoo.getValor(), pcoo.getDescripcion(), 1 };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
