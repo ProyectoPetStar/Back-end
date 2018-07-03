@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.petstar.configurations.Configuration;
-import org.petstar.controller.ETAD.MetasMasivasController;
 import org.petstar.controller.ETAD.PonderacionMasivaController;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
@@ -47,10 +46,10 @@ public class EtadPonderacion extends HttpServlet {
                 case "preview":
                    output = controller.preview(request);
                    break;
-                /*case "loadData":
+                case "loadData":
                    output = controller.loadData(request);
                    break; 
-                case "rewriteData":
+                /*case "rewriteData":
                    output = controller.rewriteData(request);
                    break;   
                 */case "downloadTempleate":
