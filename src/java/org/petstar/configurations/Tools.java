@@ -222,23 +222,31 @@ public class Tools {
             csvReader.readHeaders();
             Date date = getCurrentDate();
             res.setSucessfull(true);
+            int total = 0;
             
             while (csvReader.readRecord()) {
                 boolean validMeta = validateEnteros(csvReader.get("Ponderacion"));
                 if(validMeta){
                     HashMap map = new HashMap();
+                    total = total + Integer.valueOf(csvReader.get("Ponderacion"));
                     map.put("objetivo", csvReader.get("Objetivo"));
                     map.put("ponderacion", csvReader.get("Ponderacion"));
                     map.put("year", year);
                     map.put("usuario", usuario);
                     map.put("fecha", date);
                     listdata.add(map);
-                    out.setData(listdata);
                 }else{
                     res.setSucessfull(false);
                     res.setMessage("Invalido");
                 }
             }
+            if(total == 100){
+                out.setData(listdata);
+            }else{
+                res.setSucessfull(false);
+                res.setMessage("Suma Invalida");
+            }
+            
             csvReader.close();
         }catch(IOException ex){
             res.setSucessfull(false);

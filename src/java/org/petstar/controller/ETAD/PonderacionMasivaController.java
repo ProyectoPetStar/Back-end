@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import static org.petstar.configurations.Tools.listRows;
 import static org.petstar.configurations.Tools.saveFIle;
 import static org.petstar.configurations.Tools.validateFilePonderacionKPIOperativo;
 import static org.petstar.configurations.Tools.validateFilePonderacionObjetivoOperativo;
@@ -16,7 +15,6 @@ import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
-import org.petstar.model.ETAD.MetasMasivasModel;
 import org.petstar.model.ETAD.PonderacionResponse;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
@@ -113,9 +111,7 @@ public class PonderacionMasivaController {
                                 masivaDAO.insertPonderacionKPIOperativos((List<HashMap>) valid.getData(),idFile.getResult());
                             break;
                         }
-                        data.setList((List<HashMap>) valid.getData());
-                        //MetasMasivasModel data = new MetasMasivasModel();
-                        //data.setListData(listRows(nameFile));
+                        data.setListData((List<HashMap>) valid.getData());
                         output.setData(data);
                         response.setMessage(MSG_SUCESS);
                         response.setSucessfull(true);

@@ -95,15 +95,17 @@ public class Validation {
     }
     
     public static boolean validateEnteros(String valor){
+        boolean bandera = false;
         if(valor.equals("")){
-            return false;
-        }else{
+            bandera = false;
+        }else if(valor.matches("^[0-9]{0,3}$")){
             int num = Integer.valueOf(valor);
             if(num >= 0 && num <= 100){
-                return true;
+                bandera = true;
             }else{
-                return false;
+                bandera = false;
             }
         }
+        return bandera;
     }
 }
