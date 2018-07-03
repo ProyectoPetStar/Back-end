@@ -12,7 +12,7 @@ import org.petstar.dto.PeriodosDTO;
 public class PonderacionResponse {
     private List<PeriodosDTO> listPeriodos;
     private List<LineasDTO> listEtads;
-    private List<HashMap> list;
+    private List<HashMap> listData;
 
     public List<PeriodosDTO> getListPeriodos() {
         return listPeriodos;
@@ -30,12 +30,11 @@ public class PonderacionResponse {
         this.listEtads = listEtads;
     }
 
-    public List<HashMap> getList() {
-        return list;
+    public List<HashMap> getListData() {
+        return listData;
     }
 
-    public void setList(List<HashMap> list) {
-        this.list = list;
-    }
-    
+    public void setListData(List<HashMap> listData) {
+        this.listData = listData;
+    }    
 }
