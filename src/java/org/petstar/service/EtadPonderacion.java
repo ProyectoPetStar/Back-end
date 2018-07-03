@@ -49,10 +49,10 @@ public class EtadPonderacion extends HttpServlet {
                 case "loadData":
                    output = controller.loadData(request);
                    break; 
-                /*case "rewriteData":
+                case "rewriteData":
                    output = controller.rewriteData(request);
                    break;   
-                */case "downloadTempleate":
+                case "downloadTempleate":
                    output = controller.downloadTemplate(request);
                    break;
             }

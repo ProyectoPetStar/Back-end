@@ -32,6 +32,10 @@ public class PonderacionMasivaDAO {
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
+        StringBuilder sql1 = new StringBuilder();
+        sql1.append("DELETE FROM pet_tmp_ponderacion_objetivo_operativo WITH (TABLOCK) WHERE anio=?");
+        Object[] params1 = {data.get(0).get("year")};
+        qr.update(sql1.toString(),params1);
         
         sql.append("EXEC sp_insertTmpPonderacionObjOperativo ?, ?, ?, ?");
         for(int i=0; i<data.size(); i++){
@@ -78,6 +82,17 @@ public class PonderacionMasivaDAO {
         
         sql.append("EXEC sp_insertPetPonderacionObjOperativo ?");
         Object[] params = { anio };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void rewriteDataAnualObjetivosOperativos(int year) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_UpdatePonderacionObjetivoOperativo ?");
+        Object[] params = { year };
         
         qr.update(sql.toString(), params);
     }
