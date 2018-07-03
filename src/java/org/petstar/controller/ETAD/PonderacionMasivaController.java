@@ -19,11 +19,9 @@ import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.controller.ControllerAutenticacion;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
-import org.petstar.dao.ETAD.PonderacionDAO;
 import org.petstar.dao.ETAD.PonderacionMasivaDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
-import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
@@ -51,11 +49,13 @@ public class PonderacionMasivaController {
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 PonderacionResponse data = new PonderacionResponse();
+                ObjetivosOperativosDAO objetivosDAO= new ObjetivosOperativosDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 
                 data.setListPeriodos(periodosDAO.getPeriodos());
                 data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListObjetivosOperativos(objetivosDAO.getAllObjetivosOperativosActive());
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
@@ -147,6 +147,50 @@ public class PonderacionMasivaController {
         output.setResponse(response);
         return output;
     }
+    public OutputJson loadData(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                int year = Integer.valueOf(request.getParameter("anio"));
+                int tipoPond = Integer.valueOf(request.getParameter("tipo_ponderacion"));
+                
+                PonderacionMasivaDAO masivaDAO = new PonderacionMasivaDAO();
+                ResultInteger result = new ResultInteger();
+                /**
+                * Tipos de Ponderacion
+                * 1.- Ponderacion Anual de Objetivos Operativos
+                * 2.- Ponderacion Anual de KPI operativos
+                */
+                switch(tipoPond){
+                    case 1:
+                        result = masivaDAO.validateExistDataObjetivosOperativos(year);
+                        if(result.getResult().equals(0)){
+                            masivaDAO.loadDataObjetivosOperativos(year);
+                            response = messageForValidate(true);
+                        }else{
+                            response = messageForValidate(false);
+                        }
+                    break;
+                    case 2:
+                        
+                    break;
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
     
     public OutputJson downloadTemplate(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -214,5 +258,17 @@ public class PonderacionMasivaController {
         
         output.setResponse(response);
         return output;
+    }
+    
+    public ResponseJson messageForValidate(boolean result){
+        ResponseJson response = new ResponseJson();
+        if(result){
+            response.setMessage(MSG_SUCESS);
+            response.setSucessfull(true);
+        }else{
+            response.setMessage("999");
+            response.setSucessfull(false);
+        }
+        return response;
     }
 }

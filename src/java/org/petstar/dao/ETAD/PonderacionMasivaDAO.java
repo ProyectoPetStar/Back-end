@@ -57,4 +57,29 @@ public class PonderacionMasivaDAO {
             qr.update(sql.toString(),params);
         }
     }
+    
+    public ResultInteger validateExistDataObjetivosOperativos(int anio) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result ")
+                .append("FROM pet_ponderacion_objetivo_operativo WHERE anio = ?");
+        Object[] params = { anio };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
+    public void loadDataObjetivosOperativos(int anio) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("");
+        Object[] params = { anio };
+        
+        qr.update(sql.toString(), params);
+    }
 }
