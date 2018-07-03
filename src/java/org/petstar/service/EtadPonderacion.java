@@ -53,9 +53,9 @@ public class EtadPonderacion extends HttpServlet {
                 case "rewriteData":
                    output = controller.rewriteData(request);
                    break;   
-                case "downloadTempleate":
+                */case "downloadTempleate":
                    output = controller.downloadTemplate(request);
-                   break;*/
+                   break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
