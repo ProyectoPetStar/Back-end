@@ -3,6 +3,7 @@ package org.petstar.model.ETAD;
 import java.util.HashMap;
 import java.util.List;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
+import org.petstar.dto.ETAD.PetPonderacionObjetivoOperativo;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
@@ -12,11 +13,20 @@ import org.petstar.dto.ResultInteger;
  * @author Tech-Pro
  */
 public class PonderacionResponse {
+    private List<PetPonderacionObjetivoOperativo> listPonderacionObjetivos;
     private List<PetCatObjetivoOperativo> listObjetivosOperativos;
     private List<PeriodosDTO> listPeriodos;
     private List<ResultInteger> listYears;
     private List<LineasDTO> listEtads;
     private List<HashMap> listData;
+
+    public List<PetPonderacionObjetivoOperativo> getListPonderacionObjetivos() {
+        return listPonderacionObjetivos;
+    }
+
+    public void setListPonderacionObjetivos(List<PetPonderacionObjetivoOperativo> listPonderacionObjetivos) {
+        this.listPonderacionObjetivos = listPonderacionObjetivos;
+    }
 
     public List<PetCatObjetivoOperativo> getListObjetivosOperativos() {
         return listObjetivosOperativos;

@@ -9,6 +9,7 @@ public class PetPonderacionObjetivoOperativo {
     private int anio;
     private int ponderacion;
     private int id_objetivo_operativo;
+    private PetCatObjetivoOperativo objetivoOperativo;
 
     public int getId_ponderacion_obj_operativo() {
         return id_ponderacion_obj_operativo;
@@ -41,4 +42,12 @@ public class PetPonderacionObjetivoOperativo {
     public void setId_objetivo_operativo(int id_objetivo_operativo) {
         this.id_objetivo_operativo = id_objetivo_operativo;
     }
-}
+
+    public PetCatObjetivoOperativo getObjetivoOperativo() {
+        return objetivoOperativo;
+    }
+
+    public void setObjetivoOperativo(PetCatObjetivoOperativo objetivoOperativo) {
+        this.objetivoOperativo = objetivoOperativo;
+    }
+}   

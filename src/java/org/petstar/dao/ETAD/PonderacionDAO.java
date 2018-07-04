@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.ETAD.PetPonderacionObjetivoOperativo;
 import org.petstar.dto.ResultInteger;
@@ -44,5 +45,24 @@ public class PonderacionDAO {
                 row.getId_objetivo_operativo(), usuario, fecha};
             qr.update(sql.toString(), params);
         }
+    }
+        
+    public List<PetPonderacionObjetivoOperativo> getPonderacionObejtivos(int anio) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_ponderacion_objetivo_operativo WHERE anio=?");
+        Object[] params = { anio };
+        
+        ResultSetHandler rsh = new BeanListHandler(PetPonderacionObjetivoOperativo.class);
+        List<PetPonderacionObjetivoOperativo> data = (List<PetPonderacionObjetivoOperativo>) 
+                qr.query(sql.toString(), rsh, params);
+        
+        ObjetivosOperativosDAO oodao = new ObjetivosOperativosDAO();
+        for(PetPonderacionObjetivoOperativo row : data){
+            row.setObjetivoOperativo(oodao.getObjetivoOperativoById(row.getId_objetivo_operativo()));
+        }
+        return data;
     }
 }
