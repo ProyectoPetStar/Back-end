@@ -193,6 +193,43 @@ public class PonderacionMasivaController {
         return output;
     }
     
+    public OutputJson rewriteData(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                int year = Integer.valueOf(request.getParameter("anio"));
+                int tipoPond = Integer.valueOf(request.getParameter("tipo_ponderacion"));
+                
+                PonderacionMasivaDAO masivaDAO = new PonderacionMasivaDAO();
+                /**
+                * Tipos de Ponderacion
+                * 1.- Ponderacion Anual de Objetivos Operativos
+                * 2.- Ponderacion Anual de KPI operativos
+                */
+                switch(tipoPond){
+                    case 1:
+                        masivaDAO.rewriteDataAnualObjetivosOperativos(year);
+                    break;
+                    case 2:
+                    break;
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
     public OutputJson downloadTemplate(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
