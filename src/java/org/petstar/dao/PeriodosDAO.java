@@ -205,7 +205,7 @@ public class PeriodosDAO {
         
         sql.append("SELECT PE.anio AS result FROM pet_periodo pe LEFT JOIN ")
                 .append("pet_ponderacion_objetivo_operativo po ON ")
-                .append("po.anio = pe.anio GROUP BY pe.anio");
+                .append("po.anio <> pe.anio GROUP BY pe.anio");
         
         ResultSetHandler rsh = new BeanListHandler(ResultInteger.class);
         List<ResultInteger> listresult = (List<ResultInteger>) qr.query(sql.toString(), rsh);
