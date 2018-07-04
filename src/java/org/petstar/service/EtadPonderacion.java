@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.petstar.configurations.Configuration;
+import org.petstar.controller.ETAD.PonderacionController;
 import org.petstar.controller.ETAD.PonderacionMasivaController;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
@@ -35,6 +36,7 @@ public class EtadPonderacion extends HttpServlet {
         PrintWriter out = response.getWriter();
         OutputJson output = new OutputJson();
         PonderacionMasivaController controller = new PonderacionMasivaController();
+        PonderacionController controller1 = new PonderacionController();
         
         Gson gson = new Gson();
         try {
@@ -54,6 +56,9 @@ public class EtadPonderacion extends HttpServlet {
                    break;   
                 case "downloadTempleate":
                    output = controller.downloadTemplate(request);
+                   break;
+                case "insertPonderacion":
+                   output = controller1.insertPonderacion(request);
                    break;
             }
         } catch (Exception ex) {
