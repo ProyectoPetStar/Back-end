@@ -63,6 +63,9 @@ public class EtadPonderacion extends HttpServlet {
                 case "getPonderacion":
                    output = controller1.getPonderacion(request);
                    break;
+                case "updatePonderacion":
+                   output = controller1.updatePonderacion(request);
+                   break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

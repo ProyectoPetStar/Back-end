@@ -17,6 +17,7 @@ public class PonderacionResponse {
     private List<PetCatObjetivoOperativo> listObjetivosOperativos;
     private List<PeriodosDTO> listPeriodos;
     private List<ResultInteger> listYears;
+    private List<ResultInteger> listYearsOP;
     private List<LineasDTO> listEtads;
     private List<HashMap> listData;
 
@@ -50,6 +51,14 @@ public class PonderacionResponse {
 
     public void setListYears(List<ResultInteger> listYears) {
         this.listYears = listYears;
+    }
+
+    public List<ResultInteger> getListYearsOP() {
+        return listYearsOP;
+    }
+
+    public void setListYearsOP(List<ResultInteger> listYearsOP) {
+        this.listYearsOP = listYearsOP;
     }
 
     public List<LineasDTO> getListEtads() {

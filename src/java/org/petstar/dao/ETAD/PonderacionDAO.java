@@ -46,6 +46,23 @@ public class PonderacionDAO {
             qr.update(sql.toString(), params);
         }
     }
+    
+    public void updatePonderacionObjetivos
+        (List<PetPonderacionObjetivoOperativo> data, int usuario, Date fecha) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_ponderacion_objetivo_operativo SET ponderacion = ?, ")
+                .append("id_usuario_modifica_registro = ?, fecha_modificacion = ? ")
+                .append("WHERE id_ponderacion_obj_operativo = ?");
+        
+        for (PetPonderacionObjetivoOperativo row : data) {
+            Object[] params = { row.getPonderacion(), usuario, fecha, 
+                row.getId_ponderacion_obj_operativo()};
+            qr.update(sql.toString(), params);
+        }
+    }
         
     public List<PetPonderacionObjetivoOperativo> getPonderacionObejtivos(int anio) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();

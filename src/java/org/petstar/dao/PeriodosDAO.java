@@ -211,4 +211,18 @@ public class PeriodosDAO {
         List<ResultInteger> listresult = (List<ResultInteger>) qr.query(sql.toString(), rsh);
         return listresult;
     }
+    
+    public List<ResultInteger> yearsWithPonderacionObjetivos() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT PE.anio AS result FROM pet_periodo pe INNER JOIN ")
+                .append("pet_ponderacion_objetivo_operativo po ON ")
+                .append("po.anio = pe.anio GROUP BY pe.anio");
+        
+        ResultSetHandler rsh = new BeanListHandler(ResultInteger.class);
+        List<ResultInteger> listresult = (List<ResultInteger>) qr.query(sql.toString(), rsh);
+        return listresult;
+    }
 }
