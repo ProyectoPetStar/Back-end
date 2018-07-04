@@ -120,4 +120,49 @@ public class PonderacionController {
         output.setResponse(response);
         return output;
     }
+    
+    public OutputJson updatePonderacion(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        Gson gson = new Gson();
+            
+        try{
+            int tipoPond = Integer.valueOf(request.getParameter("tipo_ponderacion"));
+            String jsonString = request.getParameter("meta");
+            JSONObject jsonResponse = new JSONObject(jsonString);
+            
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                PonderacionDAO ponderacionDAO = new PonderacionDAO();
+                /**
+                * Tipos de Ponderacion
+                * 1.- Ponderacion Anual de Objetivos Operativos
+                * 2.- Ponderacion Anual de KPI operativos
+                */
+                switch(tipoPond){
+                    case 1:
+                        TypeToken<List<PetPonderacionObjetivoOperativo>> token =
+                                new TypeToken<List<PetPonderacionObjetivoOperativo>>(){};
+                        List<PetPonderacionObjetivoOperativo> listPPOO = gson.fromJson(
+                                jsonResponse.getJSONArray("ponderaciones").toString(), token.getType());
+                        
+                        ponderacionDAO.updatePonderacionObjetivos(
+                                listPPOO, session.getId_acceso(), getCurrentDate());
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    break;
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
 }
