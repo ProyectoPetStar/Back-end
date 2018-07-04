@@ -217,6 +217,8 @@ public class PonderacionMasivaController {
                     case 2:
                     break;
                 }
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);

@@ -13,6 +13,7 @@ import org.petstar.dto.UserDTO;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.getCurrentDate;
+import org.petstar.model.ETAD.PonderacionResponse;
 
 /**
  *
@@ -23,7 +24,7 @@ public class PonderacionController {
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_EXIST  = "Ya existe ponderacion para este año";
-    private static final String MSG_INVALID= "El archivo contiene errores";
+    private static final String MSG_EMPTY  = "No hay registros para este año";
     
     public OutputJson insertPonderacion(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -59,6 +60,50 @@ public class PonderacionController {
                             response.setSucessfull(true);
                         }else{
                             response.setMessage(MSG_EXIST);
+                            response.setSucessfull(false);
+                        }
+                    break;
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getPonderacion(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int tipoPond = Integer.valueOf(request.getParameter("tipo_ponderacion"));
+            int year = Integer.valueOf(request.getParameter("anio"));
+            
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                PonderacionResponse ponderacionResponse = new PonderacionResponse();
+                PonderacionDAO ponderacionDAO = new PonderacionDAO();
+                /**
+                * Tipos de Ponderacion
+                * 1.- Ponderacion Anual de Objetivos Operativos
+                * 2.- Ponderacion Anual de KPI operativos
+                */
+                switch(tipoPond){
+                    case 1:
+                        ponderacionResponse.setListPonderacionObjetivos(ponderacionDAO.getPonderacionObejtivos(year));
+                        if(!ponderacionResponse.getListPonderacionObjetivos().isEmpty()){
+                            output.setData(ponderacionResponse);
+                            response.setMessage(MSG_SUCESS);
+                            response.setSucessfull(true);
+                        }else{
+                            response.setMessage(MSG_EMPTY);
                             response.setSucessfull(false);
                         }
                     break;
