@@ -203,7 +203,7 @@ public class PeriodosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT PE.anio AS result FROM pet_periodo pe LEFT JOIN ")
+        sql.append("SELECT PE.anio AS result FROM pet_periodo pe INNER JOIN ")
                 .append("pet_ponderacion_objetivo_operativo po ON ")
                 .append("po.anio <> pe.anio GROUP BY pe.anio");
         
