@@ -19,10 +19,13 @@ import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.controller.ControllerAutenticacion;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
+import org.petstar.dao.ETAD.PonderacionDAO;
 import org.petstar.dao.ETAD.PonderacionMasivaDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
+import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
+import org.petstar.dto.ETAD.PetPonderacionObjetivoOperativo;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.PonderacionResponse;
@@ -149,6 +152,7 @@ public class PonderacionMasivaController {
         output.setResponse(response);
         return output;
     }
+    
     public OutputJson loadData(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -272,12 +276,31 @@ public class PonderacionMasivaController {
                             }
                         break;
                         case 2:
+                            int year = Integer.valueOf(request.getParameter("anio"));
+                            int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+                            PonderacionDAO ponderacionDAO = new PonderacionDAO();
                             KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
-                            //List<KPIOperativosDAO> listKPIs = kpioDAO.get
+                            List<PetPonderacionObjetivoOperativo> listPonObj = ponderacionDAO.getPonderacionObejtivos(year);
+                            
                             csvOutput.write("Clasificacion");
                             csvOutput.write("KPI");
                             csvOutput.write("Ponderacion");
                             csvOutput.endRecord();
+                            for(PetPonderacionObjetivoOperativo row:listPonObj){
+                                List<PetCatKpiOperativo> listKPIs = kpioDAO.
+                                        getKPIOperativosByObjetivoAndEtad(row.getId_objetivo_operativo(), idEtad);
+                                if(!listKPIs.isEmpty()){
+                                    csvOutput.write("OBJ");
+                                    csvOutput.write(row.getObjetivoOperativo().getValor());
+                                    csvOutput.write(String.valueOf(row.getPonderacion()));
+                                    csvOutput.endRecord();
+                                    for(PetCatKpiOperativo field:listKPIs){
+                                        csvOutput.write("KPI");
+                                        csvOutput.write(field.getValor());
+                                        csvOutput.endRecord();
+                                    }
+                                }
+                            }
                         break;
                     }
                     csvOutput.close();

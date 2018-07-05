@@ -51,11 +51,10 @@ public class PonderacionMasivaDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("INSERT INTO pet_tmp_ponderacion_kpi_operativo ")
-                .append("(anio,valor,id_kpi_operativo,id_archivo_kpi) VALUES (?,?,?,?)");
+        sql.append("EXEC sp_TmpPonderacionKpi ?,?,?,?,?");
         for(int i=0; i<data.size(); i++){
-            Object[] params = { data.get(i).get("year"), data.get(i).get("ponderacion"),
-                    data.get(i).get("kpi"), archivo };
+            Object[] params = { data.get(i).get("year"), data.get(i).get("kpi"),
+                data.get(i).get("ponderacion"), archivo, data.get(i).get("idEtad") };
             
             qr.update(sql.toString(),params);
         }
