@@ -274,6 +274,10 @@ public class PonderacionMasivaController {
                         case 2:
                             KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
                             //List<KPIOperativosDAO> listKPIs = kpioDAO.get
+                            csvOutput.write("Clasificacion");
+                            csvOutput.write("KPI");
+                            csvOutput.write("Ponderacion");
+                            csvOutput.endRecord();
                         break;
                     }
                     csvOutput.close();
