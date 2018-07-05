@@ -39,6 +39,21 @@ public class KPIOperativosDAO {
         return listData;
     }
     
+    public List<PetCatKpiOperativo> getKPIOperativosByObjetivoAndEtad(int idObjetivo, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT cko.* FROM pet_cat_kpi_operativo cko ")
+                .append("INNER JOIN pet_etad_kpi pek ON cko.id = pek.id_kpi_operativo ")
+                .append("WHERE cko.id_cat_objetivo_operativo = ").append(idObjetivo)
+                .append(" AND pek.id_etad = ").append(idEtad);
+        //Object[] params = { idObjetivo, idEtad };
+        ResultSetHandler rsh = new BeanListHandler(PetCatKpiOperativo.class);
+        List<PetCatKpiOperativo> listData = (List<PetCatKpiOperativo>) qr.query(sql.toString(), rsh);
+        return listData;
+    }
+    
     public List<PetCatKpiOperativo> getListKPIOperativosAnuales() throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -110,9 +125,10 @@ public class KPIOperativosDAO {
         StringBuilder sql2 = new StringBuilder();
         
         sql1.append("UPDATE pet_cat_kpi_operativo SET valor = ?, descripcion = ?, ")
-                .append("unidad_medida = ?, tipo_kpi = ?, id_frecuencia = ? WHERE id = ?");
+                .append("unidad_medida = ?, tipo_kpi = ?, id_frecuencia = ?, ")
+                .append("tipo_operacion = ? WHERE id = ?");
         Object[] params1 = { pcko.getValor(), pcko.getDescripcion(), pcko.getUnidad_medida(),
-            pcko.getTipo_kpi(), pcko.getId_frecuencia(), pcko.getId() };
+            pcko.getTipo_kpi(), pcko.getId_frecuencia(), pcko.getTipo_operacion(), pcko.getId() };
         
         sql2.append("DELETE FROM pet_etad_kpi ")
                 .append("WITH (TABLOCK) WHERE id_kpi_operativo = ?");
@@ -144,9 +160,10 @@ public class KPIOperativosDAO {
         
         sql.append("INSERT INTO pet_cat_kpi_operativo (valor,descripcion,")
                 .append("id_cat_objetivo_operativo,id_frecuencia,unidad_medida,")
-                .append("tipo_kpi,activo) OUTPUT INSERTED.ID AS result VALUES(?,?,?,?,?,?,?)");
+                .append("tipo_kpi,tipo_operacion,activo) ")
+                .append("OUTPUT INSERTED.ID AS result VALUES(?,?,?,?,?,?,?,?)");
         Object[] params = { pcko.getValor(), pcko.getDescripcion(), pcko.getId_cat_objetivo_operativo(),
-            pcko.getId_frecuencia(), pcko.getUnidad_medida(), pcko.getTipo_kpi(), 1 };
+            pcko.getId_frecuencia(), pcko.getUnidad_medida(), pcko.getTipo_kpi(), pcko.getTipo_kpi(), 1 };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
