@@ -10,6 +10,7 @@ public class PetCatKpiOperativo extends CatalogosDTO{
     private int id_cat_objetivo_operativo;
     private int id_frecuencia;
     private int tipo_kpi;
+    private int tipo_operacion;
     private String unidad_medida;
     private String lineas;
     private PetCatObjetivoOperativo objetivoOperativo;
@@ -37,6 +38,14 @@ public class PetCatKpiOperativo extends CatalogosDTO{
 
     public void setTipo_kpi(int tipo_kpi) {
         this.tipo_kpi = tipo_kpi;
+    }
+
+    public int getTipo_operacion() {
+        return tipo_operacion;
+    }
+
+    public void setTipo_operacion(int tipo_operacion) {
+        this.tipo_operacion = tipo_operacion;
     }
 
     public String getUnidad_medida() {
