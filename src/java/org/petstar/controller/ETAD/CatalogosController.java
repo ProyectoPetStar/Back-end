@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 import org.petstar.controller.ControllerAutenticacion;
+import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.ETAD.FrecuenciasDAO;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
-import org.petstar.dao.LineasDAO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ETAD.PetCatMetaEstrategica;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
@@ -28,6 +28,7 @@ public class CatalogosController {
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_EXIST  = "Ya existe un registro con estos valores.";
     private static final String MSG_NOFOUND= "Registro no encontrado.";
+    private static final String TABLE_ETAD = "pet_cat_etad";
     
     /**
      * Carga de Combos
@@ -46,10 +47,10 @@ public class CatalogosController {
             if(session != null){
                 CatalogosResponse data = new CatalogosResponse();
                 FrecuenciasDAO frecuenciasDAO = new FrecuenciasDAO();
-                LineasDAO lineasDAO = new LineasDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
                 ObjetivosOperativosDAO oodao = new ObjetivosOperativosDAO();
                 
-                data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListEtads(catalogosDAO.getCatalogosActive(TABLE_ETAD));
                 data.setListFrecuencias(frecuenciasDAO.getAllFrecuenciasActive());
                 data.setListObjetivoOperativos(oodao.getAllObjetivosOperativosActive());
                 output.setData(data);
@@ -151,12 +152,12 @@ public class CatalogosController {
                 */
                 ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
                 //MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
                 KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
                 FrecuenciasDAO frecuenciasDAO = new FrecuenciasDAO();
-                LineasDAO lineasDAO = new LineasDAO();
                 CatalogosResponse data = new CatalogosResponse();
                 
-                data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListEtads(catalogosDAO.getCatalogosActive(TABLE_ETAD));
                 data.setListFrecuencias(frecuenciasDAO.getAllFrecuenciasActive());
                 data.setListObjetivoOperativos(operativosDAO.getAllObjetivosOperativosActive());
                 

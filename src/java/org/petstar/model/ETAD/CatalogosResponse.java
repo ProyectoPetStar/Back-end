@@ -1,11 +1,11 @@
 package org.petstar.model.ETAD;
 
 import java.util.List;
+import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ETAD.PetCatFrecuencia;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ETAD.PetCatMetaEstrategica;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
-import org.petstar.dto.LineasDTO;
 
 /**
  *
@@ -19,7 +19,7 @@ public class CatalogosResponse {
     private List<PetCatFrecuencia> listFrecuencias;
     private PetCatMetaEstrategica metaEstrategica;
     private PetCatKpiOperativo kpiOperativo;
-    private List<LineasDTO> listEtads;
+    private List<CatalogosDTO> listEtads;
 
     public List<PetCatObjetivoOperativo> getListObjetivoOperativos() {
         return listObjetivoOperativos;
@@ -77,11 +77,11 @@ public class CatalogosResponse {
         this.kpiOperativo = kpiOperativo;
     }
 
-    public List<LineasDTO> getListEtads() {
+    public List<CatalogosDTO> getListEtads() {
         return listEtads;
     }
 
-    public void setListEtads(List<LineasDTO> listEtads) {
+    public void setListEtads(List<CatalogosDTO> listEtads) {
         this.listEtads = listEtads;
     }
 }

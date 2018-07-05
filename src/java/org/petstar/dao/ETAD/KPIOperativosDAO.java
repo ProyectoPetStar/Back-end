@@ -114,7 +114,7 @@ public class KPIOperativosDAO {
         Object[] params1 = { pcko.getValor(), pcko.getDescripcion(), pcko.getUnidad_medida(),
             pcko.getTipo_kpi(), pcko.getId_frecuencia(), pcko.getId() };
         
-        sql2.append("DELETE FROM pet_linea_kpi_operativo ")
+        sql2.append("DELETE FROM pet_etad_kpi ")
                 .append("WITH (TABLOCK) WHERE id_kpi_operativo = ?");
         Object[] params2 = { pcko.getId() };
         qr.update(sql1.toString(), params1);
@@ -128,8 +128,8 @@ public class KPIOperativosDAO {
         
         String[] lineas = pcko.getLineas().split(",");
         
-        sql.append("INSERT INTO pet_linea_kpi_operativo ")
-                .append("(id_kpi_operativo, id_linea) VALUES (?, ?)");
+        sql.append("INSERT INTO pet_etad_kpi ")
+                .append("(id_kpi_operativo, id_etad) VALUES (?, ?)");
         
         for(String linea:lineas){
             Object[] params = { pcko.getId(), Integer.valueOf(linea) };
