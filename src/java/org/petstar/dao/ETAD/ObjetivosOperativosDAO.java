@@ -143,7 +143,7 @@ public class ObjetivosOperativosDAO {
         
         sql.append("INSERT INTO pet_cat_objetivo_operativo ")
                 .append("(valor,descripcion,activo) ")
-                .append("OUTPUT INSERTED.ID AS result VALUES (?,?,?,?)");
+                .append("OUTPUT INSERTED.ID AS result VALUES (?,?,?)");
         Object[] params = { pcoo.getValor(), pcoo.getDescripcion(), 1 };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
