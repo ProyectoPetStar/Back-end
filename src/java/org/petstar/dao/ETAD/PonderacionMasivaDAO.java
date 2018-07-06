@@ -55,10 +55,12 @@ public class PonderacionMasivaDAO {
         
         sql.append("EXEC sp_insertTmpPonderacionKpi ?,?,?,?,?");
         for(int i=0; i<data.size(); i++){
-            Object[] params = { data.get(i).get("year"), data.get(i).get("ponderacion"),
-                data.get(i).get("kpi"), archivo, data.get(i).get("idEtad") };
+            if(data.get(i).get("tipo").equals("KPI")){
+                Object[] params = { data.get(i).get("year"), data.get(i).get("ponderacion"),
+                    data.get(i).get("kpi"), archivo, data.get(i).get("idEtad") };
             
-            qr.update(sql.toString(),params);
+                qr.update(sql.toString(),params);
+            }
         }
     }
     

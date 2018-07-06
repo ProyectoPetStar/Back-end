@@ -274,24 +274,23 @@ public class Tools {
             while (csvReader.readRecord()) {
                 boolean validMeta = validateEnteros(csvReader.get("Ponderacion"));
                 if(validMeta){
-                    if(csvReader.get("Clasificacion").equals("KPI")){
-                        sumaPonderacion = sumaPonderacion + Integer.valueOf(csvReader.get("Ponderacion"));
-                        HashMap map = new HashMap();
-                        map.put("kpi", csvReader.get("KPI"));
-                        map.put("ponderacion", csvReader.get("Ponderacion"));
-                        map.put("year", year);
-                        map.put("idEtad", idEtad);
-                        map.put("usuario", usuario);
-                        map.put("fecha", date);
-                        listdata.add(map);
-                    }
+                    sumaPonderacion = sumaPonderacion + Integer.valueOf(csvReader.get("Ponderacion"));
+                    HashMap map = new HashMap();
+                    map.put("tipo", csvReader.get("Clasificacion"));
+                    map.put("kpi", csvReader.get("KPI"));
+                    map.put("ponderacion", csvReader.get("Ponderacion"));
+                    map.put("year", year);
+                    map.put("idEtad", idEtad);
+                    map.put("usuario", usuario);
+                    map.put("fecha", date);
+                    listdata.add(map);
                 }else{
                     res.setSucessfull(false);
                     res.setMessage("Invalido");
                 }
             }
             csvReader.close();
-            if(sumaPonderacion == 100){
+            if(sumaPonderacion == 200){
                 out.setData(listdata);
             }else{
                 res.setSucessfull(false);
