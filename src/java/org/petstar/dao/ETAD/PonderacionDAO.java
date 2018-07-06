@@ -32,6 +32,21 @@ public class PonderacionDAO {
         return result;
     }
     
+    public ResultInteger validateExistRecordsKPI(int anio, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_ponderacion_kpi_operativo pko ")
+                .append("INNER JOIN pet_etad_kpi pek ON pko.id_kpi_etad = pek.id_kpi_etad")
+                .append("WHERE pko.anio = ? AND pek.id_etad = ? ");
+        Object[] params = { anio, idEtad };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
+    }
+    
     public void insertPonderacionObjetivos
         (List<PetPonderacionObjetivoOperativo> data, int usuario, Date fecha) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
@@ -45,6 +60,23 @@ public class PonderacionDAO {
         for (PetPonderacionObjetivoOperativo row : data) {
             Object[] params = { row.getAnio(), row.getPonderacion(),
                 row.getId_objetivo_operativo(), usuario, fecha};
+            qr.update(sql.toString(), params);
+        }
+    }
+        
+    public void insertPonderacionKPI
+        (List<PetPonderacionKpiOperativo> data, int usuario, Date fecha) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("INSERT INTO pet_ponderacion_kpi_operativo (anio,")
+                .append("ponderacion,id_kpi_etad,id_usuario_registro,fecha_registro) ")
+                .append("VALUES (?,?,?,?,?)");
+        
+        for (PetPonderacionKpiOperativo row : data) {
+            Object[] params = { row.getAnio(), row.getPonderacion(),
+                row.getId_kpi_etad(), usuario, fecha};
             qr.update(sql.toString(), params);
         }
     }
@@ -62,6 +94,23 @@ public class PonderacionDAO {
         for (PetPonderacionObjetivoOperativo row : data) {
             Object[] params = { row.getPonderacion(), usuario, fecha, 
                 row.getId_ponderacion_obj_operativo()};
+            qr.update(sql.toString(), params);
+        }
+    }
+        
+    public void updatePonderacionKPI
+        (List<PetPonderacionKpiOperativo> data, int usuario, Date fecha) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_ponderacion_kpi_operativo SET ponderacion = ?, ")
+                .append("id_usuario_modifica_registro = ?, fecha_modificacion = ? ")
+                .append("WHERE id_ponderacion_kpi_operativo = ?");
+        
+        for (PetPonderacionKpiOperativo row : data) {
+            Object[] params = { row.getPonderacion(), usuario, fecha, 
+                row.getId_ponderacion_kpi_operativo()};
             qr.update(sql.toString(), params);
         }
     }
@@ -130,6 +179,23 @@ public class PonderacionDAO {
         
         sql.append("SELECT * FROM pet_etad_kpi WHERE id_kpi_etad = ?");
         Object[] params = { idEtadKpi };
+        
+        ResultSetHandler rsh = new BeanHandler(PetEtadKpi.class);
+        PetEtadKpi petEtadKpi = (PetEtadKpi) qr.query(sql.toString(), rsh, params);
+        
+        KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
+        petEtadKpi.setKpiOperativo(kpioDAO.getKPIOperativoById(petEtadKpi.getId_kpi_operativo()));
+        
+        return petEtadKpi;
+    }
+    
+    public PetEtadKpi getEtadKpi(int idKPI, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_etad_kpi WHERE id_etad=? AND id_kpi_operativo =?");
+        Object[] params = { idEtad, idKPI };
         
         ResultSetHandler rsh = new BeanHandler(PetEtadKpi.class);
         PetEtadKpi petEtadKpi = (PetEtadKpi) qr.query(sql.toString(), rsh, params);

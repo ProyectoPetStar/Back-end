@@ -132,7 +132,7 @@ public class PonderacionMasivaDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("EXEC sp_updatePonderacionKpiOperativo ?, ?");
-        Object[] params = { year };
+        Object[] params = { year, idEtad };
         
         qr.update(sql.toString(), params);
     }

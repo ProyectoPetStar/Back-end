@@ -18,6 +18,7 @@ public class PonderacionResponse {
     private List<PeriodosDTO> listPeriodos;
     private List<ResultInteger> listYears;
     private List<ResultInteger> listYearsOP;
+    private List<ResultInteger> yearsForKPI;
     private List<LineasDTO> listEtads;
     private List<HashMap> listData;
 
@@ -59,6 +60,14 @@ public class PonderacionResponse {
 
     public void setListYearsOP(List<ResultInteger> listYearsOP) {
         this.listYearsOP = listYearsOP;
+    }
+
+    public List<ResultInteger> getYearsForKPI() {
+        return yearsForKPI;
+    }
+
+    public void setYearsForKPI(List<ResultInteger> yearsForKPI) {
+        this.yearsForKPI = yearsForKPI;
     }
 
     public List<LineasDTO> getListEtads() {
