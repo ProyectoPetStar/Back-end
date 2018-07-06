@@ -8,6 +8,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
+import org.petstar.dto.ETAD.PetEtadKpi;
+import org.petstar.dto.ETAD.PetPonderacionKpiOperativo;
 import org.petstar.dto.ETAD.PetPonderacionObjetivoOperativo;
 import org.petstar.dto.ResultInteger;
 
@@ -81,5 +83,60 @@ public class PonderacionDAO {
             row.setObjetivoOperativo(oodao.getObjetivoOperativoById(row.getId_objetivo_operativo()));
         }
         return data;
+    }
+    
+    public PetPonderacionObjetivoOperativo getPonderacionObejtivoById(int anio, int idObjetivo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_ponderacion_objetivo_operativo ")
+                .append("WHERE anio = ? AND id_objetivo_operativo = ?");
+        Object[] params = { anio, idObjetivo };
+        
+        ResultSetHandler rsh = new BeanHandler(PetPonderacionObjetivoOperativo.class);
+        PetPonderacionObjetivoOperativo data = (PetPonderacionObjetivoOperativo) 
+                qr.query(sql.toString(), rsh, params);
+        
+        ObjetivosOperativosDAO oodao = new ObjetivosOperativosDAO();
+        data.setObjetivoOperativo(oodao.getObjetivoOperativoById(data.getId_objetivo_operativo()));
+        return data;
+    }
+    
+    public List<PetPonderacionKpiOperativo> getPonderacionKPI(int anio, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT pko.* FROM pet_ponderacion_kpi_operativo pko ")
+                .append("INNER JOIN pet_etad_kpi pek ON pko.id_kpi_etad = pek.id_kpi_etad ")
+                .append("INNER JOIN pet_cat_kpi_operativo cko ON pek.id_kpi_operativo = cko.id ")
+                .append("WHERE pko.anio = ").append(anio).append(" AND pek.id_etad = ").append(idEtad);
+        
+        ResultSetHandler rsh = new BeanListHandler(PetPonderacionKpiOperativo.class);
+        List<PetPonderacionKpiOperativo> data = (List<PetPonderacionKpiOperativo>) 
+                qr.query(sql.toString(), rsh);
+        
+        for(PetPonderacionKpiOperativo row : data){
+            row.setPetEtadKpi(this.getEtadKpiById(row.getId_kpi_etad()));
+        }
+        return data;
+    }
+    
+    public PetEtadKpi getEtadKpiById(int idEtadKpi) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_etad_kpi WHERE id_kpi_etad = ?");
+        Object[] params = { idEtadKpi };
+        
+        ResultSetHandler rsh = new BeanHandler(PetEtadKpi.class);
+        PetEtadKpi petEtadKpi = (PetEtadKpi) qr.query(sql.toString(), rsh, params);
+        
+        KPIOperativosDAO kpioDAO = new KPIOperativosDAO();
+        petEtadKpi.setKpiOperativo(kpioDAO.getKPIOperativoById(petEtadKpi.getId_kpi_operativo()));
+        
+        return petEtadKpi;
     }
 }
