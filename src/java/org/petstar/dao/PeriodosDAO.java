@@ -231,7 +231,7 @@ public class PeriodosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT per.anio FROM pet_periodo per LEFT JOIN ")
+        sql.append("SELECT per.anio AS result FROM pet_periodo per LEFT JOIN ")
                 .append("pet_ponderacion_kpi_operativo pko ON ")
                 .append("per.anio = pko.anio GROUP BY per.anio");
         
