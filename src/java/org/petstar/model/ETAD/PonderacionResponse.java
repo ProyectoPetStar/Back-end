@@ -2,9 +2,9 @@ package org.petstar.model.ETAD;
 
 import java.util.HashMap;
 import java.util.List;
+import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 import org.petstar.dto.ETAD.PetPonderacionObjetivoOperativo;
-import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
 
@@ -19,7 +19,7 @@ public class PonderacionResponse {
     private List<ResultInteger> listYears;
     private List<ResultInteger> listYearsOP;
     private List<ResultInteger> yearsForKPI;
-    private List<LineasDTO> listEtads;
+    private List<CatalogosDTO> listEtads;
     private List<HashMap> listData;
 
     public List<PetPonderacionObjetivoOperativo> getListPonderacionObjetivos() {
@@ -70,11 +70,11 @@ public class PonderacionResponse {
         this.yearsForKPI = yearsForKPI;
     }
 
-    public List<LineasDTO> getListEtads() {
+    public List<CatalogosDTO> getListEtads() {
         return listEtads;
     }
 
-    public void setListEtads(List<LineasDTO> listEtads) {
+    public void setListEtads(List<CatalogosDTO> listEtads) {
         this.listEtads = listEtads;
     }
 
@@ -84,5 +84,5 @@ public class PonderacionResponse {
 
     public void setListData(List<HashMap> listData) {
         this.listData = listData;
-    }    
+    }
 }

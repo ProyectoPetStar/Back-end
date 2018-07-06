@@ -17,6 +17,7 @@ import static org.petstar.configurations.Tools.validateFilePonderacionKPIOperati
 import static org.petstar.configurations.Tools.validateFilePonderacionObjetivoOperativo;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.controller.ControllerAutenticacion;
+import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dao.ETAD.PonderacionDAO;
@@ -54,11 +55,11 @@ public class PonderacionMasivaController {
             if(session != null){
                 PonderacionResponse data = new PonderacionResponse();
                 ObjetivosOperativosDAO objetivosDAO= new ObjetivosOperativosDAO();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                LineasDAO lineasDAO = new LineasDAO();
                 
                 data.setListPeriodos(periodosDAO.getPeriodos());
-                data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
                 data.setYearsForKPI(periodosDAO.yearsForPonderacionKpi());
                 data.setListYearsOP(periodosDAO.yearsWithPonderacionObjetivos());
                 data.setListYears(periodosDAO.yearsWithoutPonderacionObjetivos());
