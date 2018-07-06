@@ -59,6 +59,7 @@ public class PonderacionMasivaController {
                 
                 data.setListPeriodos(periodosDAO.getPeriodos());
                 data.setListEtads(lineasDAO.getLineasActiveByETAD());
+                data.setYearsForKPI(periodosDAO.yearsForPonderacionKpi());
                 data.setListYearsOP(periodosDAO.yearsWithPonderacionObjetivos());
                 data.setListYears(periodosDAO.yearsWithoutPonderacionObjetivos());
                 data.setListObjetivosOperativos(objetivosDAO.getAllObjetivosOperativosActive());

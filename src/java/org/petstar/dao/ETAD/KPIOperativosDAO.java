@@ -48,7 +48,7 @@ public class KPIOperativosDAO {
                 .append("INNER JOIN pet_etad_kpi pek ON cko.id = pek.id_kpi_operativo ")
                 .append("WHERE cko.id_cat_objetivo_operativo = ").append(idObjetivo)
                 .append(" AND pek.id_etad = ").append(idEtad);
-        //Object[] params = { idObjetivo, idEtad };
+        
         ResultSetHandler rsh = new BeanListHandler(PetCatKpiOperativo.class);
         List<PetCatKpiOperativo> listData = (List<PetCatKpiOperativo>) qr.query(sql.toString(), rsh);
         return listData;
