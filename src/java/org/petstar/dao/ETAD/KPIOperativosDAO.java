@@ -54,12 +54,13 @@ public class KPIOperativosDAO {
         return listData;
     }
     
-    public List<PetCatKpiOperativo> getListKPIOperativosAnuales() throws Exception{
+    public List<PetCatKpiOperativo> getListKPIOperativosByEtad(int idEtad) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_cat_kpi_operativo WHERE activo = 1 AND anual=1");
+        sql.append("SELECT * FROM pet_cat_kpi_operativo cko INNER JOIN pet_etad_kpi pek ")
+                .append(" ON cko.id = pek.id_kpi_operativo WHERE pek.id_etad = ").append(idEtad);
         
         ResultSetHandler rsh = new BeanListHandler(PetCatKpiOperativo.class);
         List<PetCatKpiOperativo> listData = (List<PetCatKpiOperativo>) qr.query(sql.toString(), rsh);

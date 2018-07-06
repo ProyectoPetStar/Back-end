@@ -20,62 +20,6 @@ import org.petstar.dto.ResultInteger;
  * @author Tech-Pro
  */
 public class MetasMasivasDAO {
-    public void insertMetasEstrategicasAnuales(List<HashMap> data, int archivo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC sp_insertpetTmpMetaAnualEstrategica ?, ?, ?, ?, ?, ?, ?");
-        for(int i=0; i<data.size(); i++){
-            Object[] params = { data.get(i).get("idEtad"), data.get(i).get("meta"), 
-                    data.get(i).get("year"), data.get(i).get("valor"), archivo,
-                    data.get(i).get("usuario"), data.get(i).get("fecha") };
-            
-            qr.update(sql.toString(),params);
-        }
-    }
-    
-    public void insertMetasEstrategicasMensual(List<HashMap> data, int archivo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        for(int i=0; i<data.size(); i++){
-            Object[] params = {  };
-            
-            qr.update(sql.toString(),params);
-        }
-    }
-    
-    public void insertObjetivosOperativosAnual(List<HashMap> data, int archivo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC sp_InsertPetTmpMetaAnualObjetivoEstrategico ?, ?, ?, ?, ?, ?, ?");
-        for(int i=0; i<data.size(); i++){
-            Object[] params = { data.get(i).get("idEtad"), data.get(i).get("objetivo"), 
-                    data.get(i).get("year"), data.get(i).get("meta"), archivo,
-                    data.get(i).get("usuario"), data.get(i).get("fecha") };
-            
-            qr.update(sql.toString(),params);
-        }
-    }
-    
-    public void insertObjetivosOperativosMensual(List<HashMap> data, int archivo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        for(int i=0; i<data.size(); i++){
-            Object[] params = {  };
-            
-            qr.update(sql.toString(),params);
-        }
-    }
-    
     public ResultInteger insertFileKPI(String nameFile, int usuario, Date fecha) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -89,7 +33,7 @@ public class MetasMasivasDAO {
         return result;
     }
     
-    public void insertKPIOperativosAnual(List<HashMap> data, int archivo) throws Exception{
+    public void insertMetasKPIOperativos(List<HashMap> data, int archivo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -99,19 +43,6 @@ public class MetasMasivasDAO {
             Object[] params = { data.get(i).get("idEtad"), data.get(i).get("kpi"), 
                     data.get(i).get("year"), data.get(i).get("meta"), archivo,
                     data.get(i).get("usuario"), data.get(i).get("fecha") };
-            
-            qr.update(sql.toString(),params);
-        }
-    }
-    
-    public void insertKPIOperativosMensual(List<HashMap> data, int archivo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        for(int i=0; i<data.size(); i++){
-            Object[] params = {  };
             
             qr.update(sql.toString(),params);
         }
@@ -128,56 +59,13 @@ public class MetasMasivasDAO {
         qr.update(sql.toString(), params);
     }
     
-    public void loadDataMensualMetasEstrategicas(int idEtad, int idPeriodo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = { idEtad, idPeriodo };
-        
-        qr.update(sql.toString(), params);
-    }
     
-    public void loadDataAnualObjetivosOperativos(int idEtad, int year) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC sp_insertPetMetaAnualObjetivoOperativo ?, ?");
-        Object[] params = { idEtad, year };
-        
-        qr.update(sql.toString(), params);
-    }
-    
-    public void loadDataMensualObjetivosOperativos(int idEtad, int IdPeriodo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = { idEtad, IdPeriodo };
-        
-        qr.update(sql.toString(), params);
-    }
-    
-    public void loadDataAnualKPIOperativos(int idEtad, int year) throws Exception{
+    public void loadMetasKPIOperativos(int idEtad, int year) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
         sql.append("EXEC sp_insertPetMetaAnualKpi ?, ?");
-        Object[] params = { idEtad, year };
-        
-        qr.update(sql.toString(), params);
-    }
-    
-    public void rewriteDataAnualMetasEstrategicas(int idEtad, int year) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("EXEC  ?, ?");
         Object[] params = { idEtad, year };
         
         qr.update(sql.toString(), params);
@@ -205,65 +93,15 @@ public class MetasMasivasDAO {
         qr.update(sql.toString(), params);
     }
     
-    public ResultInteger validateExistDataMetasEstrategiasAnuales(int idEtad, int year) throws Exception{
+    public ResultInteger validateExistMetasKPIOperativo(int idEtad, int idPeriodo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_estrategica WHERE id_linea = ? AND anio = ?");
-        Object[] params = { idEtad, year };
-        
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        return result;
-    }
-    
-    public ResultInteger validateExistDataMetasEstrategiasMensual(int idEtad, int idPeriodo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = { idEtad, idPeriodo };
-        
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        return result;
-    }
-    
-    public ResultInteger validateExistDataMetasOperativasAnuales(int idEtad, int year) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_objetivo_operativo WHERE id_linea = ? AND anio = ?");
-        Object[] params = { idEtad, year };
-        
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        return result;
-    }
-    
-    public ResultInteger validateExistDataMetasOperativasMensual(int idEtad, int idPeriodo) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("");
-        Object[] params = { idEtad, idPeriodo };
-        
-        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
-        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
-        return result;
-    }
-    
-    public ResultInteger validateExistDataMetasKPIOperativoAnuales(int idEtad, int year) throws Exception{
-        DataSource ds = PoolDataSource.getDataSource();
-        QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
-        sql.append("SELECT COUNT(1) AS result FROM pet_meta_anual_kpi WHERE id_linea = ? AND anio = ?");
-        Object[] params = { idEtad, year };
+        sql.append("SELECT COUNT(1) AS result FROM pet_meta_kpi pmk ")
+                .append("INNER JOIN pet_etad_kpi pek ON pmk.id_kpi_etad = pek.id_kpi_etad ")
+                .append("WHERE pmk.id_periodo = ? AND pek.id_etad = ?");
+        Object[] params = { idPeriodo, idEtad };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
