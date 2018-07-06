@@ -244,6 +244,8 @@ public class PonderacionMasivaController {
                         masivaDAO.rewriteDataAnualObjetivosOperativos(year);
                     break;
                     case 2:
+                        int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+                        masivaDAO.rewriteDataAnualKPIOperativos(year, idEtad);
                     break;
                 }
                 response.setMessage(MSG_SUCESS);

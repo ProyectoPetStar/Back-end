@@ -124,6 +124,17 @@ public class PonderacionMasivaDAO {
         qr.update(sql.toString(), params);
     }
     
+    public void rewriteDataAnualKPIOperativos(int year, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_updatePonderacionKpiOperativo ?, ?");
+        Object[] params = { year };
+        
+        qr.update(sql.toString(), params);
+    }
+    
     public List<ValidacionKPI> comparacionPonderacionKPI(int anio, int idEtad) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);

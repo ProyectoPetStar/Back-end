@@ -76,6 +76,8 @@ public class KPIOperativosDAO {
         
         ResultSetHandler rsh = new BeanHandler(PetCatKpiOperativo.class);
         PetCatKpiOperativo data = (PetCatKpiOperativo) qr.query(sql.toString(), rsh, params);
+        ObjetivosOperativosDAO ooDAO = new ObjetivosOperativosDAO();
+        data.setObjetivoOperativo(ooDAO.getObjetivoOperativoById(data.getId_cat_objetivo_operativo()));
         return data;
     }
     
