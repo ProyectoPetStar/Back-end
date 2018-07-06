@@ -26,6 +26,7 @@ import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 import org.petstar.dto.ETAD.PetPonderacionObjetivoOperativo;
+import org.petstar.dto.ETAD.ValidacionKPI;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.PonderacionResponse;
@@ -123,15 +124,31 @@ public class PonderacionMasivaController {
                         switch(tipoPond){
                             case 1:
                                 masivaDAO.insertPonderacionObjetivosOperativos((List<HashMap>) valid.getData(),idFile.getResult());
+                                data.setListData((List<HashMap>) valid.getData());
+                                output.setData(data);
+                                response = messageForValidate(true, MSG_SUCESS);
                             break;
                             case 2:
+                                int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+                                masivaDAO.cleanTmpKpiOperativos(anio, idEtad);
                                 masivaDAO.insertPonderacionKPIOperativos((List<HashMap>) valid.getData(),idFile.getResult());
+                                List<ValidacionKPI> listResult = masivaDAO.comparacionPonderacionKPI(anio,idEtad);
+                                boolean bandera = true;
+                                for(ValidacionKPI row:listResult){
+                                    if(row.getSuma() != row.getPonderacion()){
+                                        bandera = false;
+                                    }
+                                }
+                                if(bandera){
+                                    data.setListData((List<HashMap>) valid.getData());
+                                    output.setData(data);
+                                    response = messageForValidate(true, MSG_SUCESS);
+                                }else{
+                                    masivaDAO.cleanTmpKpiOperativos(anio, idEtad);
+                                    response = messageForValidate(false, MSG_INVALID);
+                                }
                             break;
                         }
-                        data.setListData((List<HashMap>) valid.getData());
-                        output.setData(data);
-                        response.setMessage(MSG_SUCESS);
-                        response.setSucessfull(true);
                     }else{
                         response.setMessage(MSG_INVALID);
                         response.setSucessfull(false);
@@ -176,13 +193,20 @@ public class PonderacionMasivaController {
                         result = masivaDAO.validateExistDataObjetivosOperativos(year);
                         if(result.getResult().equals(0)){
                             masivaDAO.loadDataObjetivosOperativos(year);
-                            response = messageForValidate(true);
+                            response = messageForValidate(true, MSG_SUCESS);
                         }else{
-                            response = messageForValidate(false);
+                            response = messageForValidate(false, "999");
                         }
                     break;
                     case 2:
-                        
+                        int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+                        result = masivaDAO.validateExistDataKPIOperativos(year, idEtad);
+                        if(result.getResult().equals(0)){
+                            masivaDAO.loadDataKPIOperativos(year, idEtad);
+                            response = messageForValidate(true, MSG_SUCESS);
+                        }else{
+                            response = messageForValidate(false, "999");
+                        }
                     break;
                 }
             }else{
@@ -328,13 +352,13 @@ public class PonderacionMasivaController {
         return output;
     }
     
-    public ResponseJson messageForValidate(boolean result){
+    public ResponseJson messageForValidate(boolean result, String mensaje){
         ResponseJson response = new ResponseJson();
         if(result){
-            response.setMessage(MSG_SUCESS);
+            response.setMessage(mensaje);
             response.setSucessfull(true);
         }else{
-            response.setMessage("999");
+            response.setMessage(mensaje);
             response.setSucessfull(false);
         }
         return response;

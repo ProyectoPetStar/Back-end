@@ -7,7 +7,9 @@ import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
+import org.petstar.dto.ETAD.ValidacionKPI;
 import org.petstar.dto.ResultInteger;
 
 /**
@@ -51,10 +53,10 @@ public class PonderacionMasivaDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_TmpPonderacionKpi ?,?,?,?,?");
+        sql.append("EXEC sp_insertTmpPonderacionKpi ?,?,?,?,?");
         for(int i=0; i<data.size(); i++){
-            Object[] params = { data.get(i).get("year"), data.get(i).get("kpi"),
-                data.get(i).get("ponderacion"), archivo, data.get(i).get("idEtad") };
+            Object[] params = { data.get(i).get("year"), data.get(i).get("ponderacion"),
+                data.get(i).get("kpi"), archivo, data.get(i).get("idEtad") };
             
             qr.update(sql.toString(),params);
         }
@@ -74,6 +76,21 @@ public class PonderacionMasivaDAO {
         return result;
     }
     
+    public ResultInteger validateExistDataKPIOperativos(int anio, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) result FROM pet_ponderacion_kpi_operativo pki ")
+                .append("INNER JOIN pet_etad_kpi pek ON pek.id_kpi_etad = pki.id_kpi_etad ")
+                .append("WHERE pki.anio = ").append(anio)
+                .append(" AND pek.id_etad = ").append(idEtad);
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh);
+        return result;
+    }
+    
     public void loadDataObjetivosOperativos(int anio) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -81,6 +98,17 @@ public class PonderacionMasivaDAO {
         
         sql.append("EXEC sp_insertPetPonderacionObjOperativo ?");
         Object[] params = { anio };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void loadDataKPIOperativos(int anio, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_insertPetPonderacionKpiOperativo ?,?");
+        Object[] params = { anio, idEtad };
         
         qr.update(sql.toString(), params);
     }
@@ -94,5 +122,39 @@ public class PonderacionMasivaDAO {
         Object[] params = { year };
         
         qr.update(sql.toString(), params);
+    }
+    
+    public List<ValidacionKPI> comparacionPonderacionKPI(int anio, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT valor, ponderacion, suma FROM( ")
+                .append("SELECT coo.valor, poo.ponderacion, SUM(pki.ponderacion) AS suma ")
+                .append("FROM pet_tmp_ponderacion_kpi_operativo pki ")
+                .append("INNER JOIN pet_etad_kpi pek ON pki.id_kpi_etad = pek.id_kpi_etad ")
+                .append("INNER JOIN pet_cat_kpi_operativo cko ON pek.id_kpi_operativo = cko.id ")
+                .append("INNER JOIN pet_cat_objetivo_operativo coo ON cko.id_cat_objetivo_operativo = coo.id ")
+                .append("INNER JOIN pet_ponderacion_objetivo_operativo poo ON coo.id = poo.id_objetivo_operativo ")
+                .append("AND poo.anio=pki.anio WHERE pki.anio = ").append(anio).append(" AND pek.id_etad = ")
+                .append(idEtad).append("GROUP BY coo.valor, poo.ponderacion ) t1 ");
+        
+        ResultSetHandler rsh = new BeanListHandler(ValidacionKPI.class);
+        List<ValidacionKPI> listResult = (List<ValidacionKPI>) qr.query(sql.toString(), rsh);
+        return listResult;
+    }
+    
+    public void cleanTmpKpiOperativos(int anio, int idEtad) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("DELETE pet_tmp_ponderacion_kpi_operativo ")
+                .append("FROM pet_tmp_ponderacion_kpi_operativo pki ")
+                .append("INNER JOIN pet_etad_kpi pek ON pek.id_kpi_etad = ")
+                .append("pki.id_kpi_etad WHERE pki.anio = ").append(anio)
+                .append(" AND pek.id_etad = ").append(idEtad);
+        
+        qr.update(sql.toString());
     }
 }
