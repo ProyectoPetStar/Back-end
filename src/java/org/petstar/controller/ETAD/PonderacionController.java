@@ -17,6 +17,7 @@ import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
+import org.petstar.dto.ETAD.PetEtadKpi;
 import org.petstar.dto.ETAD.PetPonderacionKpiOperativo;
 import org.petstar.model.ETAD.PonderacionResponse;
 
@@ -61,6 +62,24 @@ public class PonderacionController {
                         if(result.getResult().equals(0)){
                             ponderacionDAO.insertPonderacionObjetivos(
                                     listPPOO, session.getId_acceso(), getCurrentDate());
+                            response.setMessage(MSG_SUCESS);
+                            response.setSucessfull(true);
+                        }else{
+                            response.setMessage(MSG_EXIST);
+                            response.setSucessfull(false);
+                        }
+                    break;
+                    case 2:
+                        int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+                        int year = Integer.valueOf(request.getParameter("anio"));
+                        TypeToken<List<PetPonderacionKpiOperativo>> tokenPPKP =
+                                new TypeToken<List<PetPonderacionKpiOperativo>>(){};
+                        List<PetPonderacionKpiOperativo> listPKOO = gson.fromJson(
+                                jsonResponse.getJSONArray("ponderaciones").toString(), tokenPPKP.getType());
+                        ResultInteger resultKPI = ponderacionDAO.validateExistRecordsKPI(year, idEtad);
+                        
+                        if(resultKPI.getResult().equals(0)){
+                            ponderacionDAO.insertPonderacionKPI(listPKOO, session.getId_acceso(), getCurrentDate());
                             response.setMessage(MSG_SUCESS);
                             response.setSucessfull(true);
                         }else{
@@ -158,8 +177,10 @@ public class PonderacionController {
                                     listHashMaps.add(hashMap);
 
                                     for(PetCatKpiOperativo field:listKPIs){
+                                        PetEtadKpi etadKpi = ponderacionDAO.getEtadKpi(field.getId(),idEtad);
                                         HashMap<String, Object> map = new HashMap();
                                         map.put("padre", 1);
+                                        map.put("id_kpi_etad", etadKpi.getId_kpi_etad());
                                         map.put("kpi",field.getValor());
                                         map.put("ponderacion","");
                                         listHashMaps.add(map);
@@ -214,6 +235,16 @@ public class PonderacionController {
                         
                         ponderacionDAO.updatePonderacionObjetivos(
                                 listPPOO, session.getId_acceso(), getCurrentDate());
+                        response.setMessage(MSG_SUCESS);
+                        response.setSucessfull(true);
+                    break;
+                    case 2:
+                        TypeToken<List<PetPonderacionKpiOperativo>> tokenPPKP =
+                                new TypeToken<List<PetPonderacionKpiOperativo>>(){};
+                        List<PetPonderacionKpiOperativo> listPKOO = gson.fromJson(
+                                jsonResponse.getJSONArray("ponderaciones").toString(), tokenPPKP.getType());
+                        
+                        ponderacionDAO.insertPonderacionKPI(listPKOO, session.getId_acceso(), getCurrentDate());
                         response.setMessage(MSG_SUCESS);
                         response.setSucessfull(true);
                     break;
