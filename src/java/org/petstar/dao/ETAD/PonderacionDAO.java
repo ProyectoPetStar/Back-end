@@ -37,9 +37,7 @@ public class PonderacionDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT COUNT(1) AS result FROM pet_ponderacion_kpi_operativo pko ")
-                .append("INNER JOIN pet_etad_kpi pek ON pko.id_kpi_etad = pek.id_kpi_etad")
-                .append("WHERE pko.anio = ? AND pek.id_etad = ? ");
+        sql.append("EXEC sp_validaRecordKpi ?, ?");
         Object[] params = { anio, idEtad };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
