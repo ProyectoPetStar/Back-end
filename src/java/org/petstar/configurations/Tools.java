@@ -86,92 +86,10 @@ public class Tools {
         return listdata;
     }
     
-    public static OutputJson validateFileMetasEstrategicasAnual(HttpServletRequest request, String nameFile, int usuario) throws Exception{
+    public static OutputJson validateFileKPIOperativo(HttpServletRequest request, String nameFile, int usuario) throws Exception{
         OutputJson out = new OutputJson();
         ResponseJson res = new ResponseJson();
-        int year = Integer.valueOf(request.getParameter("anio"));
-        int idEtad = Integer.valueOf(request.getParameter("id_etad"));
-        String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
-        List<HashMap> listdata = new ArrayList<>();
-        
-        try {
-            CsvReader csvReader = new CsvReader(pathFile);
-            csvReader.readHeaders();
-            Date date = getCurrentDate();
-            res.setSucessfull(true);
-            
-            while (csvReader.readRecord()) {
-                boolean validValor = validateDecimales(csvReader.get("Valor"));
-                if(validValor){
-                    HashMap map = new HashMap();
-                    map.put("meta", csvReader.get("Meta"));
-                    map.put("um", csvReader.get("UM"));
-                    map.put("valor", csvReader.get("Valor"));
-                    map.put("year", year);
-                    map.put("idEtad", idEtad);
-                    map.put("usuario", usuario);
-                    map.put("fecha", date);
-                    listdata.add(map);
-                    out.setData(listdata);
-                }else{
-                    res.setSucessfull(false);
-                    res.setMessage("Invalido");
-                }
-            }
-            csvReader.close();
-        }catch(IOException ex){
-            res.setSucessfull(false);
-            res.setMessage(ex.getMessage());
-        }
-        out.setResponse(res);
-        return out;
-    }
-    
-    public static OutputJson validateFileObjetivosEstrategicosAnual(HttpServletRequest request, String nameFile, int usuario) throws Exception{
-        OutputJson out = new OutputJson();
-        ResponseJson res = new ResponseJson();
-        int year = Integer.valueOf(request.getParameter("anio"));
-        int idEtad = Integer.valueOf(request.getParameter("id_etad"));
-        String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
-        List<HashMap> listdata = new ArrayList<>();
-        
-        try {
-            CsvReader csvReader = new CsvReader(pathFile);
-            csvReader.readHeaders();
-            Date date = getCurrentDate();
-            res.setSucessfull(true);
-            
-            while (csvReader.readRecord()) {
-                boolean validMeta = validateDecimales(csvReader.get("Meta"));
-                if(validMeta){
-                    HashMap map = new HashMap();
-                    map.put("objetivo", csvReader.get("Objetivo"));
-                    map.put("um", csvReader.get("UM"));
-                    map.put("meta", csvReader.get("Meta"));
-                    map.put("year", year);
-                    map.put("idEtad", idEtad);
-                    map.put("usuario", usuario);
-                    map.put("fecha", date);
-                    listdata.add(map);
-                    out.setData(listdata);
-                }else{
-                    res.setSucessfull(false);
-                    res.setMessage("Invalido");
-                }
-            }
-            csvReader.close();
-        }catch(IOException ex){
-            res.setSucessfull(false);
-            res.setMessage(ex.getMessage());
-        }
-        out.setResponse(res);
-        return out;
-    }
-    
-    public static OutputJson validateFileKPIOperativoAnual(HttpServletRequest request, String nameFile, int usuario) throws Exception{
-        OutputJson out = new OutputJson();
-        ResponseJson res = new ResponseJson();
-        int year = Integer.valueOf(request.getParameter("anio"));
+        int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
         int idEtad = Integer.valueOf(request.getParameter("id_etad"));
         String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
         List<HashMap> listdata = new ArrayList<>();
@@ -190,7 +108,7 @@ public class Tools {
                     map.put("tipo", csvReader.get("Tipo"));
                     map.put("um", csvReader.get("UM"));
                     map.put("meta", csvReader.get("Meta"));
-                    map.put("year", year);
+                    map.put("periodo", idPeriodo);
                     map.put("idEtad", idEtad);
                     map.put("usuario", usuario);
                     map.put("fecha", date);

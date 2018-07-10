@@ -2,7 +2,7 @@ package org.petstar.model.ETAD;
 
 import java.util.HashMap;
 import java.util.List;
-import org.petstar.dto.LineasDTO;
+import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.PeriodosDTO;
 
 /**
@@ -11,7 +11,7 @@ import org.petstar.dto.PeriodosDTO;
  */
 public class MetasMasivasModel {
     private List<PeriodosDTO> listPeriodos;
-    private List<LineasDTO> listLineas;
+    private List<CatalogosDTO> listEtad;
     private List<HashMap> listData;
 
     public List<PeriodosDTO> getListPeriodos() {
@@ -22,12 +22,12 @@ public class MetasMasivasModel {
         this.listPeriodos = listPeriodos;
     }
 
-    public List<LineasDTO> getListLineas() {
-        return listLineas;
+    public List<CatalogosDTO> getListEtad() {
+        return listEtad;
     }
 
-    public void setListLineas(List<LineasDTO> listLineas) {
-        this.listLineas = listLineas;
+    public void setListEtad(List<CatalogosDTO> listEtad) {
+        this.listEtad = listEtad;
     }
 
     public List<HashMap> getListData() {

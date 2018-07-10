@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.axis.encoding.Base64;
 import org.petstar.configurations.Configuration;
 import org.petstar.controller.ControllerAutenticacion;
-import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.MetasMasivasModel;
@@ -21,17 +20,12 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.Tools.saveFIle;
 import static org.petstar.configurations.Tools.listRows;
-import static org.petstar.configurations.Tools.validateFileObjetivosEstrategicosAnual;
-import static org.petstar.configurations.Tools.validateFileMetasEstrategicasAnual;
-import static org.petstar.configurations.Tools.validateFileKPIOperativoAnual;
+import static org.petstar.configurations.Tools.validateFileKPIOperativo;
 import static org.petstar.configurations.utils.getCurrentDate;
+import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
-import org.petstar.dao.ETAD.MetasEstrategicasDAO;
 import org.petstar.dao.ETAD.MetasMasivasDAO;
-import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
-import org.petstar.dto.ETAD.PetCatMetaEstrategica;
-import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
 import org.petstar.dto.ResultInteger;
 
 /**
@@ -54,11 +48,11 @@ public class MetasMasivasController {
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 MetasMasivasModel data = new MetasMasivasModel();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
-                LineasDAO lineasDAO = new LineasDAO();
                 
                 data.setListPeriodos(periodosDAO.getPeriodos());
-                data.setListLineas(lineasDAO.getLineasActiveByETAD());
+                data.setListEtad(catalogosDAO.getCatalogosActive("pet_cat_etad"));
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
@@ -86,71 +80,23 @@ public class MetasMasivasController {
             if(session != null){
                 StringBuilder stringFile = new StringBuilder();
                 stringFile.append(request.getParameter("file"));
-                String tipoMeta = request.getParameter("tipo_meta");
-                String frecuencia = request.getParameter("frecuencia");
                 
                 SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
                 Date date = getCurrentDate();
-                String nameFile = tipoMeta+"_"+frecuencia+"_"+formato.format(date) + ".csv";
+                String nameFile = "kpi_"+formato.format(date) + ".csv";
                 
                 boolean save = saveFIle(stringFile, nameFile);
                 if(save){
                     MetasMasivasDAO masivasDAO = new MetasMasivasDAO();
                     OutputJson valid = new OutputJson();
                     ResponseJson rj = new ResponseJson();
-                    /**
-                     * Tipos de Metas
-                     * 1.- Metas Estrategicas
-                     * 2.- Metas Operativas
-                     * 3.- KPI Operativo
-                     */
-                    switch(tipoMeta){
-                        /*case"1":
-                            //if(frecuencia.equals("anual")){
-                                valid = validateFileMetasEstrategicasAnual(request, nameFile, session.getId_acceso());
-                                rj = (ResponseJson) valid.getResponse();
-                            //}
-                        break;
-                        */case"2":
-                            //if(frecuencia.equals("anual")){
-                                valid = validateFileObjetivosEstrategicosAnual(request, nameFile, session.getId_acceso());
-                                rj = (ResponseJson) valid.getResponse();
-                            //}
-                        break;
-                        case"3":
-                            //if(frecuencia.equals("anual")){
-                                valid = validateFileKPIOperativoAnual(request, nameFile, session.getId_acceso());
-                                rj = (ResponseJson) valid.getResponse();
-                            //}
-                        break;
-                    }
                     
-                    Date fecha = getCurrentDate();
+                    valid = validateFileKPIOperativo(request, nameFile, session.getId_acceso());
+                    rj = (ResponseJson) valid.getResponse();
+                   
                     if(rj.isSucessfull()){
-                        ResultInteger resultFile = masivasDAO.insertFileKPI(nameFile, session.getId_acceso(), fecha);
-                        switch(tipoMeta){
-                            /*case"1":
-                                if(frecuencia.equals("anual")){
-                                    masivasDAO.insertMetasEstrategicasAnuales((List<HashMap>) valid.getData(),resultFile.getResult());
-                                }else if(frecuencia.equals("mensual")){
-                                    masivasDAO.insertMetasEstrategicasMensual((List<HashMap>) valid.getData(),resultFile.getResult());
-                                }
-                            break;
-                            */case"2":
-                                if(frecuencia.equals("anual")){
-                                    masivasDAO.insertObjetivosOperativosAnual((List<HashMap>) valid.getData(),resultFile.getResult());
-                                }else if(frecuencia.equals("mensual")){
-                                    masivasDAO.insertObjetivosOperativosMensual((List<HashMap>) valid.getData(),resultFile.getResult());
-                                }
-                            break;
-                            case"3":
-                                if(frecuencia.equals("anual")){
-                                    masivasDAO.insertKPIOperativosAnual((List<HashMap>) valid.getData(),resultFile.getResult());
-                                }else if(frecuencia.equals("mensual")){
-                                    masivasDAO.insertKPIOperativosMensual((List<HashMap>) valid.getData(),resultFile.getResult());
-                                }
-                            break;
-                        }
+                        ResultInteger resultFile = masivasDAO.insertFileKPI(nameFile, session.getId_acceso(), getCurrentDate());
+                        masivasDAO.insertMetasKPIOperativos((List<HashMap>) valid.getData(),resultFile.getResult());
                         
                         MetasMasivasModel data = new MetasMasivasModel();
                         data.setListData(listRows(nameFile));
@@ -220,7 +166,7 @@ public class MetasMasivasController {
                             }
                         }
                         break;
-                    */case"2":
+                    case"2":
                         if(frecuencia.equals("anual")){
                             result = masivasDAO.validateExistDataMetasOperativasAnuales(idEtad, year);
                             if(result.getResult().equals(0)){
@@ -251,6 +197,7 @@ public class MetasMasivasController {
                             }
                         }
                         break;
+                    */
                 }
             }else{
                 response.setMessage(MSG_LOGOUT);
@@ -291,7 +238,7 @@ public class MetasMasivasController {
                             masivasDAO.rewriteDataAnualMetasEstrategicas(idEtad, year);
                         }
                         break;
-                    */case"2":
+                    case"2":
                         if(frecuencia.equals("anual")){
                             masivasDAO.rewriteDataAnualObjetivosOperativos(idEtad, year);
                         }
@@ -301,6 +248,7 @@ public class MetasMasivasController {
                             masivasDAO.rewriteDataAnualKPIOperativos(idEtad, year);
                         }
                         break;
+*/
                 }
             }else{
                 response.setMessage(MSG_LOGOUT);
@@ -321,13 +269,12 @@ public class MetasMasivasController {
         OutputJson output = new OutputJson();
             
         try{
-            String tipoMeta = request.getParameter("tipo_meta");
-            String frecuencia = request.getParameter("frecuencia");
+            int idEtad = Integer.valueOf(request.getParameter("id_etad"));
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 String pathFile = Configuration.PATH_DOWNLOAD_FILE;
                 
-                String outputFile = pathFile+tipoMeta+"Template.csv";
+                String outputFile = pathFile+"KPI_Template.csv";
                 boolean alreadyExists = new File(outputFile).exists();
 
                 if(alreadyExists){
@@ -337,57 +284,20 @@ public class MetasMasivasController {
 
                 try {
                     CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');
-                    /**
-                     * Tipos de Metas
-                     * 1.- Metas Estrategicas
-                     * 2.- Metas Operativas
-                     * 3.- KPI Operativo
-                     */
-                    switch(tipoMeta){
-                        /*case"1":
-                            MetasEstrategicasDAO estrategicasDAO = new MetasEstrategicasDAO();
-                            if(frecuencia.equals("anual")){
-                                List<PetCatMetaEstrategica> listEstrategicas = estrategicasDAO.getListMetasEstrategicasAnuales();
-                                csvOutput.write("Meta");
-                                csvOutput.write("UM");
-                                csvOutput.write("Valor");
-                                csvOutput.endRecord();
-                                for(PetCatMetaEstrategica meta: listEstrategicas){
-                                    csvOutput.write(meta.getValor());
-                                    csvOutput.write(meta.getUnidad_medida());
-                                    csvOutput.endRecord();                   
-                                }
-                            }
-                        break;
-                        */case "2":
-                            ObjetivosOperativosDAO operativosDAO = new ObjetivosOperativosDAO();
-                            List<PetCatObjetivoOperativo> listObjetivos = operativosDAO.getListObjetivosOperativosAnuales();
-                            if(frecuencia.equals("anual")){
-                                csvOutput.write("Objetivo");
-                                csvOutput.write("Meta");
-                                csvOutput.endRecord();
-                                for(PetCatObjetivoOperativo objetivo: listObjetivos){
-                                    csvOutput.write(objetivo.getValor());
-                                    csvOutput.endRecord();                   
-                                }
-                            }
-                            break;
-                        case"3":
-                            KPIOperativosDAO kPIOperativosDAO = new KPIOperativosDAO();
-                            List<PetCatKpiOperativo> listKPIOperativos = kPIOperativosDAO.getListKPIOperativosAnuales();
-                            if(frecuencia.equals("anual")){
-                                csvOutput.write("KPI");
-                                csvOutput.write("Tipo");
-                                csvOutput.write("UM");
-                                csvOutput.write("Meta");
-                                csvOutput.endRecord();
-                                for(PetCatKpiOperativo kpi: listKPIOperativos){
-                                    csvOutput.write(kpi.getValor());
-                                    csvOutput.write((kpi.getTipo_kpi()==1 ? "Mas es mejor":"Menos es Mejor"));
-                                    csvOutput.write(kpi.getUnidad_medida());
-                                    csvOutput.endRecord();                   
-                                } 
-                            }
+                    
+                    KPIOperativosDAO kPIOperativosDAO = new KPIOperativosDAO();
+                    List<PetCatKpiOperativo> listKPIOperativos = kPIOperativosDAO.getListKPIOperativosByEtad(idEtad);
+                            
+                    csvOutput.write("KPI");
+                    csvOutput.write("Tipo");
+                    csvOutput.write("UM");
+                    csvOutput.write("Meta");
+                    csvOutput.endRecord();
+                    for(PetCatKpiOperativo kpi: listKPIOperativos){
+                        csvOutput.write(kpi.getValor());
+                        csvOutput.write((kpi.getTipo_kpi()==1 ? "Mas es mejor":"Menos es Mejor"));
+                        csvOutput.write(kpi.getUnidad_medida());
+                        csvOutput.endRecord();                   
                     }
                     csvOutput.close();
                     
