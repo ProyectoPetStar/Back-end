@@ -63,7 +63,7 @@ public class PonderacionDAO {
     }
         
     public void insertPonderacionKPI
-        (List<PetPonderacionKpiOperativo> data, int usuario, Date fecha) throws Exception{
+        (List<PetPonderacionKpiOperativo> data, int anio, int usuario, Date fecha) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -73,7 +73,7 @@ public class PonderacionDAO {
                 .append("VALUES (?,?,?,?,?)");
         
         for (PetPonderacionKpiOperativo row : data) {
-            Object[] params = { row.getAnio(), row.getPonderacion(),
+            Object[] params = { anio, row.getPonderacion(),
                 row.getId_kpi_etad(), usuario, fecha};
             qr.update(sql.toString(), params);
         }

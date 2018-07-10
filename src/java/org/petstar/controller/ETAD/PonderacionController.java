@@ -79,7 +79,7 @@ public class PonderacionController {
                         ResultInteger resultKPI = ponderacionDAO.validateExistRecordsKPI(year, idEtad);
                         
                         if(resultKPI.getResult().equals(0)){
-                            ponderacionDAO.insertPonderacionKPI(listPKOO, session.getId_acceso(), getCurrentDate());
+                            ponderacionDAO.insertPonderacionKPI(listPKOO, year, session.getId_acceso(), getCurrentDate());
                             response.setMessage(MSG_SUCESS);
                             response.setSucessfull(true);
                         }else{
@@ -244,7 +244,7 @@ public class PonderacionController {
                         List<PetPonderacionKpiOperativo> listPKOO = gson.fromJson(
                                 jsonResponse.getJSONArray("ponderaciones").toString(), tokenPPKP.getType());
                         
-                        ponderacionDAO.insertPonderacionKPI(listPKOO, session.getId_acceso(), getCurrentDate());
+                        ponderacionDAO.updatePonderacionKPI(listPKOO, session.getId_acceso(), getCurrentDate());
                         response.setMessage(MSG_SUCESS);
                         response.setSucessfull(true);
                     break;
