@@ -19,7 +19,6 @@ import org.petstar.model.ETAD.MetasMasivasModel;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.Tools.saveFIle;
-import static org.petstar.configurations.Tools.listRows;
 import static org.petstar.configurations.Tools.validateFileKPIOperativo;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.CatalogosDAO;
@@ -76,6 +75,7 @@ public class MetasMasivasController {
         OutputJson output = new OutputJson();
             
         try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 StringBuilder stringFile = new StringBuilder();
@@ -83,7 +83,7 @@ public class MetasMasivasController {
                 
                 SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
                 Date date = getCurrentDate();
-                String nameFile = "kpi_"+formato.format(date) + ".csv";
+                String nameFile = "MetasKPI_"+formato.format(date) + ".csv";
                 
                 boolean save = saveFIle(stringFile, nameFile);
                 if(save){
@@ -96,10 +96,11 @@ public class MetasMasivasController {
                    
                     if(rj.isSucessfull()){
                         ResultInteger resultFile = masivasDAO.insertFileKPI(nameFile, session.getId_acceso(), getCurrentDate());
-                        masivasDAO.insertMetasKPIOperativos((List<HashMap>) valid.getData(),resultFile.getResult());
+                        masivasDAO.cleanTmpKPI(idPeriodo);
+                        masivasDAO.insertMetasKPIOperativos((List<HashMap>) valid.getData(), resultFile.getResult());
                         
                         MetasMasivasModel data = new MetasMasivasModel();
-                        data.setListData(listRows(nameFile));
+                        data.setListData((List<HashMap>) valid.getData());
                         output.setData(data);
                         response.setMessage(MSG_SUCESS);
                         response.setSucessfull(true);
@@ -132,72 +133,16 @@ public class MetasMasivasController {
         try{
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
+                int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
                 int idEtad = Integer.valueOf(request.getParameter("id_etad"));
-                int year = Integer.valueOf(request.getParameter("anio"));
-                String frecuencia = request.getParameter("frecuencia");
-                String tipoMeta = request.getParameter("tipo_meta");
-                
                 MetasMasivasDAO masivasDAO = new MetasMasivasDAO();
-                ResultInteger result = new ResultInteger();
-                /**
-                * Tipos de Metas
-                * 1.- Metas Estrategicas
-                * 2.- Metas Operativas
-                * 3.- KPI Operativo
-                */
-                switch(tipoMeta){
-                    /*case"1":
-                        if(frecuencia.equals("anual")){
-                            result = masivasDAO.validateExistDataMetasEstrategiasAnuales(idEtad, year);
-                            if(result.getResult().equals(0)){
-                                masivasDAO.loadDataAnualMetasEstrategicas(idEtad, year);
-                                response = messageForValidate(true);
-                            }else{
-                                response = messageForValidate(false);
-                            }
-                        }else if(frecuencia.equals("mensual")){
-                            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
-                            result = masivasDAO.validateExistDataMetasEstrategiasMensual(idEtad, idPeriodo);
-                            if(result.getResult().equals(0)){
-                                masivasDAO.loadDataMensualMetasEstrategicas(idEtad, idPeriodo);
-                                response = messageForValidate(true);
-                            }else{
-                                response = messageForValidate(false);
-                            }
-                        }
-                        break;
-                    case"2":
-                        if(frecuencia.equals("anual")){
-                            result = masivasDAO.validateExistDataMetasOperativasAnuales(idEtad, year);
-                            if(result.getResult().equals(0)){
-                                masivasDAO.loadDataAnualObjetivosOperativos(idEtad, year);
-                                response = messageForValidate(true);
-                            }else{
-                                response = messageForValidate(false);
-                            }
-                        }else if(frecuencia.equals("mensual")){
-                            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
-                            result = masivasDAO.validateExistDataMetasOperativasMensual(idEtad, idPeriodo);
-                            if(result.getResult().equals(0)){
-                                masivasDAO.loadDataMensualObjetivosOperativos(idEtad, idPeriodo);
-                                response = messageForValidate(true);
-                            }else{
-                                response = messageForValidate(false);
-                            }
-                        }
-                        break;
-                    case"3":
-                        if(frecuencia.equals("anual")){
-                            result = masivasDAO.validateExistDataMetasKPIOperativoAnuales(idEtad, year);
-                            if(result.getResult().equals(0)){
-                                masivasDAO.loadDataAnualKPIOperativos(idEtad, year);
-                                response = messageForValidate(true);
-                            }else{
-                                response = messageForValidate(false);
-                            }
-                        }
-                        break;
-                    */
+                ResultInteger result = masivasDAO.validateExistMetasKPIOperativo(idEtad, idPeriodo);
+                
+                if(result.getResult().equals(0)){
+                    masivasDAO.loadMetasKPIOperativos(idEtad, idPeriodo);
+                    response = messageForValidate(true);
+                }else{
+                    response = messageForValidate(false);
                 }
             }else{
                 response.setMessage(MSG_LOGOUT);
@@ -220,36 +165,13 @@ public class MetasMasivasController {
         try{
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
+                int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
                 int idEtad = Integer.valueOf(request.getParameter("id_etad"));
-                int year = Integer.valueOf(request.getParameter("anio"));
-                String frecuencia = request.getParameter("frecuencia");
-                String tipoMeta = request.getParameter("tipo_meta");
                 
                 MetasMasivasDAO masivasDAO = new MetasMasivasDAO();
-                /**
-                * Tipos de Metas
-                * 1.- Metas Estrategicas
-                * 2.- Metas Operativas
-                * 3.- KPI Operativo
-                */
-                switch(tipoMeta){
-                    /*case"1":
-                        if(frecuencia.equals("anual")){
-                            masivasDAO.rewriteDataAnualMetasEstrategicas(idEtad, year);
-                        }
-                        break;
-                    case"2":
-                        if(frecuencia.equals("anual")){
-                            masivasDAO.rewriteDataAnualObjetivosOperativos(idEtad, year);
-                        }
-                        break;
-                    case"3":
-                        if(frecuencia.equals("anual")){
-                            masivasDAO.rewriteDataAnualKPIOperativos(idEtad, year);
-                        }
-                        break;
-*/
-                }
+                masivasDAO.rewriteDataKPIOperativos(idEtad, idPeriodo, session.getId_acceso(), getCurrentDate());
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);

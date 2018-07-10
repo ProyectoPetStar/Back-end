@@ -143,7 +143,7 @@ public class PonderacionController {
                                 if(objetivoName.equals(row.getPetEtadKpi().getKpiOperativo().getObjetivoOperativo().getValor())){
                                     HashMap<String, Object> hashMap = new HashMap();
                                     hashMap.put("padre", 1);
-                                    hashMap.put("id_ponderacion_kpi", row.getId_ponderacion_kpi_operativo());
+                                    hashMap.put("id_ponderacion_kpi_operativo", row.getId_ponderacion_kpi_operativo());
                                     hashMap.put("kpi",row.getPetEtadKpi().getKpiOperativo().getValor());
                                     hashMap.put("ponderacion",row.getPonderacion());
                                     listHashMaps.add(hashMap);
@@ -158,7 +158,7 @@ public class PonderacionController {
                                     listHashMaps.add(hashMap);
                                     HashMap<String, Object> hashMap1 = new HashMap();
                                     hashMap1.put("padre", 1);
-                                    hashMap1.put("id_ponderacion_kpi", row.getId_ponderacion_kpi_operativo());
+                                    hashMap1.put("id_ponderacion_kpi_operativo", row.getId_ponderacion_kpi_operativo());
                                     hashMap1.put("kpi",row.getPetEtadKpi().getKpiOperativo().getValor());
                                     hashMap1.put("ponderacion",row.getPonderacion());
                                     listHashMaps.add(hashMap1);

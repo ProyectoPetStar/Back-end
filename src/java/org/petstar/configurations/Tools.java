@@ -65,27 +65,6 @@ public class Tools {
         return estatus;
     }
     
-    public static List<HashMap> listRows(String nameFile){
-        String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
-        List<HashMap> listdata = new ArrayList<>();
-        
-        try {
-            CsvReader csvReader = new CsvReader(pathFile);
-            while (csvReader.readRecord()) {
-                HashMap map = new HashMap();
-                
-                for(int i=0; i <csvReader.getColumnCount(); i++){
-                    map.put("column"+i, csvReader.get(i));
-                }
-                listdata.add(map);
-            }
-            csvReader.close();
-        }catch(IOException ex){
-        }
-        
-        return listdata;
-    }
-    
     public static OutputJson validateFileKPIOperativo(HttpServletRequest request, String nameFile, int usuario) throws Exception{
         OutputJson out = new OutputJson();
         ResponseJson res = new ResponseJson();
@@ -110,8 +89,6 @@ public class Tools {
                     map.put("meta", csvReader.get("Meta"));
                     map.put("periodo", idPeriodo);
                     map.put("idEtad", idEtad);
-                    map.put("usuario", usuario);
-                    map.put("fecha", date);
                     listdata.add(map);
                     out.setData(listdata);
                 }else{
