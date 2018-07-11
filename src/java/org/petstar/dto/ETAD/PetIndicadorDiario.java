@@ -16,6 +16,7 @@ public class PetIndicadorDiario {
     private int id_grupo;
     private int estatus;
     private CatalogosDTO grupo;
+    private PetMetaKpi metaKpi;
 
     public int getId_indicador_diario() {
         return id_indicador_diario;
@@ -71,5 +72,13 @@ public class PetIndicadorDiario {
 
     public void setGrupo(CatalogosDTO grupo) {
         this.grupo = grupo;
+    }
+
+    public PetMetaKpi getMetaKpi() {
+        return metaKpi;
+    }
+
+    public void setMetaKpi(PetMetaKpi metaKpi) {
+        this.metaKpi = metaKpi;
     }
 }

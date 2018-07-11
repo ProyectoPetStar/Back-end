@@ -1,6 +1,7 @@
 package org.petstar.dao.ETAD;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -10,6 +11,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dto.ETAD.PetIndicadorDiario;
+import org.petstar.dto.ETAD.PetMetaKpi;
 import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
 
@@ -43,6 +45,35 @@ public class IndicadoresDiariosDAO {
         return lisData;
     }
     
+    public List<PetIndicadorDiario> getKPIforIndicadores(Date dia, int idEtad)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT metaKpi.id_meta_kpi, metaKpi.id_kpi_etad, cat.valor AS c FROM pet_meta_kpi metaKpi ")
+                .append("INNER JOIN pet_etad_kpi etadKpi ON metaKpi.id_kpi_etad = etadKpi.id_kpi_etad ")
+                .append("INNER JOIN pet_cat_kpi_operativo cat ON etadKpi.id_kpi_operativo = cat.id ")
+                .append("INNER JOIN pet_periodo per ON metaKpi.id_periodo = per.id_periodo ")
+                .append("WHERE etadKpi.id_etad = ").append(idEtad)
+                .append(" AND per.mes = MONTH('").append(dia).append("')")
+                .append(" AND per.anio = YEAR('").append(dia).append("')")
+                .append(" AND cat.id_frecuencia = 1 ");
+        
+        ResultSetHandler rsh = new BeanListHandler(PetMetaKpi.class);
+        List<PetMetaKpi> lisData = (List<PetMetaKpi>) qr.query(sql.toString(), rsh);
+        
+        List<PetIndicadorDiario> listIndicadores = new ArrayList<>();
+        PetEtadKpiDao etadKpiDao = new PetEtadKpiDao();
+        for(PetMetaKpi row:lisData){
+            PetIndicadorDiario diario = new PetIndicadorDiario();
+            row.setEtadKpi(etadKpiDao.getEtadKpiById(row.getId_kpi_etad()));
+            diario.setMetaKpi(row);
+            diario.setId_meta_kpi(row.getId_meta_kpi());
+            listIndicadores.add(diario);
+        }
+        return listIndicadores;
+    }
+    
     public ResultInteger validaRecordsForDayAndEtad(Date dia, int idEtad, int idGrupo)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -54,7 +85,7 @@ public class IndicadoresDiariosDAO {
                 .append("WHERE pek.id_etad = ").append(idEtad)
                 .append(" AND pid.id_grupo = ").append(idGrupo)
                 .append(" AND pid.dia = '").append(dia).append("'");
-        System.out.println(sql.toString());
+        
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh);
         return result;

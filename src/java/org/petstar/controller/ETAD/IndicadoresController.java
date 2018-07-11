@@ -107,6 +107,45 @@ public class IndicadoresController {
         return output;
     }
     
+    public OutputJson viewKpiForSave(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+            String frecuencia = request.getParameter("frecuencia");
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                IndicadoresResponse data = new IndicadoresResponse();
+                
+                if(frecuencia.equals("mensual")){
+                    
+                }else if (frecuencia.equals("diario")){
+                    String dia = request.getParameter("dia");
+                    IndicadoresDiariosDAO diariosDAO = new IndicadoresDiariosDAO();
+                    Date day = convertStringToSql(dia);
+                    data.setListIndicadorDiarios(diariosDAO.getKPIforIndicadores(day, idEtad));
+                    if(!data.getListIndicadorDiarios().isEmpty()){
+                        output.setData(data);
+                        response = message(true, MSG_SUCESS);
+                    }else{
+                        response = message(false, MSG_EMPTY);
+                    }
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
     public OutputJson insertIndicadores(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();

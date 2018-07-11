@@ -51,19 +51,10 @@ public class EtadIndicadores extends HttpServlet {
                 case "getAllIndicadores":
                     output = controller.getAllIndicadores(request);
                     break;
-                /*case "getCatalogoById":
-                    output = controller.getCatalogoById(request);
+                case "viewKpiForSave":
+                    output = controller.viewKpiForSave(request);
                     break;
-                case "blockRecord":
-                    output = controller.changeEstatus(request, 0);
-                    break;
-                case "unlockRecord":
-                    output = controller.changeEstatus(request, 1);
-                    break;
-                case "updateCatalogo":
-                    output = controller.updateCatalogo(request);
-                    break;
-                */case "insertIndicadores":
+                case "insertIndicadores":
                     output = controller.insertIndicadores(request);
                     break;
             }
