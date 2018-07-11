@@ -38,6 +38,22 @@ public class MetasDAO {
         return listData;
     }
     
+    public PetMetaKpi getMetaKPIById(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_meta_kpi WHERE id_meta_kpi = ?");
+        Object[] params = { idMeta };
+        
+        ResultSetHandler rsh = new BeanHandler(PetMetaKpi.class);
+        PetMetaKpi data = (PetMetaKpi) qr.query(sql.toString(), rsh, params);
+        
+        PetEtadKpiDao etadKpiDao = new PetEtadKpiDao();
+        data.setEtadKpi(etadKpiDao.getEtadKpiById(data.getId_kpi_etad()));
+        return data;
+    }
+    
     public List<PetMetaKpi> getKpisWithoutMeta(int idEtad) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);

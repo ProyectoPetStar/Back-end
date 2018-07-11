@@ -51,6 +51,12 @@ public class EtadIndicadores extends HttpServlet {
                 case "getAllIndicadores":
                     output = controller.getAllIndicadores(request);
                     break;
+                case "getDetailIndicadores":
+                    output = controller.getDetailIndicadores(request);
+                    break;
+                case "updateIndicadores":
+                    output = controller.updateIndicadores(request);
+                    break;
                 case "viewKpiForSave":
                     output = controller.viewKpiForSave(request);
                     break;

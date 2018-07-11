@@ -17,6 +17,7 @@ public class PetIndicadorDiario {
     private int estatus;
     private CatalogosDTO grupo;
     private PetMetaKpi metaKpi;
+    private String dia_string;
 
     public int getId_indicador_diario() {
         return id_indicador_diario;
@@ -80,5 +81,13 @@ public class PetIndicadorDiario {
 
     public void setMetaKpi(PetMetaKpi metaKpi) {
         this.metaKpi = metaKpi;
+    }
+
+    public String getDia_string() {
+        return dia_string;
+    }
+
+    public void setDia_string(String dia_string) {
+        this.dia_string = dia_string;
     }
 }
