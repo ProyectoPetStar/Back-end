@@ -54,6 +54,7 @@ public class MetasDAO {
         for(PetCatKpiOperativo row:listData){
             PetMetaKpi meta = new PetMetaKpi();
             meta.setEtadKpi(etadKpiDao.getEtadKpiByKpiAndEtad(row.getId(), idEtad));
+            meta.setId_kpi_etad(meta.getEtadKpi().getId_kpi_etad());
             listMetas.add(meta);
         }
         return listMetas;
