@@ -106,4 +106,42 @@ public class IndicadoresDiariosDAO {
             qr.update(sql.toString(), param);
         }
     }
+    
+    public List<PetIndicadorDiario> getIndicadoresByDiaAndEtadAndGrupo(Date dia, int idEtad, int idGrupo)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT ind.* FROM pet_indicador_diario ind ")
+                .append("INNER JOIN pet_meta_kpi met ON ind.id_meta_kpi = met.id_meta_kpi ")
+                .append("INNER JOIN pet_etad_kpi etkpi ON met.id_kpi_etad = etkpi.id_kpi_etad ")
+                .append("INNER JOIN pet_cat_kpi_operativo cat ON etkpi.id_kpi_operativo = cat.id ")
+                .append("INNER JOIN pet_cat_grupo gru ON ind.id_grupo = gru.id ")
+                .append("WHERE ind.dia = '").append(dia)
+                .append("' AND ind.id_grupo = ").append(idGrupo)
+                .append(" AND etkpi.id_etad = ").append(idEtad);
+        
+        ResultSetHandler rsh = new BeanListHandler(PetIndicadorDiario.class);
+        List<PetIndicadorDiario> lisData = (List<PetIndicadorDiario>) qr.query(sql.toString(), rsh);
+        
+        MetasDAO metasDAO = new MetasDAO();
+        for(PetIndicadorDiario row:lisData){
+            row.setMetaKpi(metasDAO.getMetaKPIById(row.getId_meta_kpi()));
+        }
+        return lisData;
+    }
+    
+    public void updateIndicadoresDiarios(List<PetIndicadorDiario> listIndicador, Date fecha, int usuario)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_indicador_diario SET valor = ?, fecha_modificacion = ?, ")
+                .append("id_usuario_modifica_registro = ? WHERE id_indicador_diario = ?");
+        
+        for(PetIndicadorDiario row:listIndicador){
+            Object[] param = { row.getValor(), fecha, usuario, row.getId_indicador_diario() };
+            qr.update(sql.toString(), param);
+        }
+    }
 }

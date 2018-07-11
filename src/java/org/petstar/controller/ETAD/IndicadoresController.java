@@ -19,6 +19,7 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.sumarFechasDias;
+import static org.petstar.configurations.utils.getCurrentDate;
 
 /**
  *
@@ -189,6 +190,86 @@ public class IndicadoresController {
             response.setSucessfull(false);
         }
         
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getDetailIndicadores(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int idGrupo = Integer.valueOf(request.getParameter("id_grupo"));
+            int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+            String frecuencia = request.getParameter("frecuencia");
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                IndicadoresResponse data = new IndicadoresResponse();
+                
+                if(frecuencia.equals("mensual")){
+                    
+                }else if (frecuencia.equals("diario")){
+                    String dia = request.getParameter("dia");
+                    Date day = convertStringToSql(dia);
+                    IndicadoresDiariosDAO diariosDAO = new IndicadoresDiariosDAO();
+                    
+                    data.setListIndicadorDiarios(diariosDAO.getIndicadoresByDiaAndEtadAndGrupo(day, idEtad, idGrupo));
+                    if(!data.getListIndicadorDiarios().isEmpty()){
+                        for(PetIndicadorDiario row:data.getListIndicadorDiarios()){
+                            row.setDia(sumarFechasDias(row.getDia(), 2));
+                        }
+                        output.setData(data);
+                        response = message(true, MSG_SUCESS);
+                    }else{
+                        response = message(false, MSG_EMPTY);
+                    }
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson updateIndicadores(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        Gson gson = new Gson();
+            
+        try{
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                String frecuencia = request.getParameter("frecuencia");
+                String jsonString = request.getParameter("datos");
+                
+                JSONObject jsonResponse = new JSONObject(jsonString);
+                IndicadoresDiariosDAO diariosDAO = new IndicadoresDiariosDAO();
+                if(frecuencia.equals("mensual")){
+                    
+                }else if(frecuencia.equals("diario")){
+                    TypeToken<List<PetIndicadorDiario>> token = new TypeToken<List<PetIndicadorDiario>>(){};
+                    List<PetIndicadorDiario> listIndicadorD = gson.fromJson(
+                            jsonResponse.getJSONArray("indicadores").toString(), token.getType());
+                    
+                    diariosDAO.updateIndicadoresDiarios(listIndicadorD, getCurrentDate(), session.getId_acceso());
+                    response = message(true, MSG_SUCESS);                    
+                }
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
         output.setResponse(response);
         return output;
     }
