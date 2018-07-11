@@ -3,6 +3,7 @@ package org.petstar.controller.ETAD;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
@@ -17,6 +18,7 @@ import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.IndicadoresResponse;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
+import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.getCurrentDate;
@@ -88,6 +90,7 @@ public class IndicadoresController {
                     if(!data.getListIndicadorDiarios().isEmpty()){
                         for(PetIndicadorDiario row:data.getListIndicadorDiarios()){
                             row.setDia(sumarFechasDias(row.getDia(), 2));
+                            row.setDia_string(convertSqlToDay(row.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                         }
                         output.setData(data);
                         response = message(true, MSG_SUCESS);
@@ -218,6 +221,7 @@ public class IndicadoresController {
                     if(!data.getListIndicadorDiarios().isEmpty()){
                         for(PetIndicadorDiario row:data.getListIndicadorDiarios()){
                             row.setDia(sumarFechasDias(row.getDia(), 2));
+                            row.setDia_string(convertSqlToDay(row.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                         }
                         output.setData(data);
                         response = message(true, MSG_SUCESS);
