@@ -86,7 +86,7 @@ public class IndicadoresMensualesDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT indicador.id_periodo, indicador.id_meta_kpi, indicador.id_grupo, ")
+        sql.append("SELECT indicador.id_periodo, indicador.id_grupo, ")
                 .append("gru.valor AS valor_grupo FROM pet_indicador_mensual indicador ")
                 .append("INNER JOIN pet_meta_kpi meta ON indicador.id_meta_kpi = meta.id_meta_kpi ")
                 .append("INNER JOIN pet_etad_kpi kpi ON meta.id_kpi_etad = kpi.id_kpi_etad ")
@@ -94,11 +94,11 @@ public class IndicadoresMensualesDAO {
                 .append("INNER JOIN pet_periodo per ON indicador.id_periodo = per.id_periodo ")
                 .append("WHERE kpi.id_etad = ").append(idEtad)
                 .append(" AND indicador.id_periodo = ").append(idPeriodo)
-                .append(" GROUP BY indicador.id_periodo, indicador.id_meta_kpi, indicador.id_grupo, gru.valor");
+                .append(" GROUP BY indicador.id_periodo, indicador.id_grupo, gru.valor");
         
         ResultSetHandler rsh = new BeanListHandler(PetIndicadorMensual.class);
         List<PetIndicadorMensual> lisData = (List<PetIndicadorMensual>) qr.query(sql.toString(), rsh);
-        System.out.println(sql.toString());
+        
         CatalogosDAO catalogosDAO = new CatalogosDAO();
         PeriodosDAO periodosDAO = new PeriodosDAO();
         for(PetIndicadorMensual row:lisData){

@@ -14,7 +14,6 @@ public class PetIndicadorMensual {
     private int id_meta_kpi;
     private int id_periodo;
     private int id_grupo;
-    private int id_linea;
     private int estatus;
     private PeriodosDTO periodo;
     private CatalogosDTO grupo;
@@ -58,14 +57,6 @@ public class PetIndicadorMensual {
 
     public void setId_grupo(int id_grupo) {
         this.id_grupo = id_grupo;
-    }
-
-    public int getId_linea() {
-        return id_linea;
-    }
-
-    public void setId_linea(int id_linea) {
-        this.id_linea = id_linea;
     }
 
     public int getEstatus() {
