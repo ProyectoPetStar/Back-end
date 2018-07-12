@@ -1,6 +1,8 @@
 package org.petstar.dto.ETAD;
 
 import java.math.BigDecimal;
+import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.PeriodosDTO;
 
 /**
  *
@@ -14,6 +16,9 @@ public class PetIndicadorMensual {
     private int id_grupo;
     private int id_linea;
     private int estatus;
+    private PeriodosDTO periodo;
+    private CatalogosDTO grupo;
+    private PetMetaKpi metaKpi;
 
     public int getId_indicador_mensual() {
         return id_indicador_mensual;
@@ -69,5 +74,29 @@ public class PetIndicadorMensual {
 
     public void setEstatus(int estatus) {
         this.estatus = estatus;
+    }
+
+    public PeriodosDTO getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(PeriodosDTO periodo) {
+        this.periodo = periodo;
+    }
+
+    public CatalogosDTO getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(CatalogosDTO grupo) {
+        this.grupo = grupo;
+    }
+
+    public PetMetaKpi getMetaKpi() {
+        return metaKpi;
+    }
+
+    public void setMetaKpi(PetMetaKpi metaKpi) {
+        this.metaKpi = metaKpi;
     }
 }
