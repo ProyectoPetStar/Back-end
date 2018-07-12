@@ -35,6 +35,7 @@ public class IndicadoresController {
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_RECORD = "Ya hay indicadores registrados.";
     private static final String MSG_EMPTY  = "No hay indicadores registrados.";
+    private static final String MSG_METAS  = "No hay metas registradas para el Área y Día Seleccionado";
     
     public OutputJson loadCombobox(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -142,7 +143,7 @@ public class IndicadoresController {
                         output.setData(data);
                         response = message(true, MSG_SUCESS);
                     }else{
-                        response = message(false, MSG_EMPTY);
+                        response = message(false, MSG_METAS);
                     }
                 }else if (frecuencia.equals("diario")){
                     String dia = request.getParameter("dia");
@@ -153,7 +154,7 @@ public class IndicadoresController {
                         output.setData(data);
                         response = message(true, MSG_SUCESS);
                     }else{
-                        response = message(false, MSG_EMPTY);
+                        response = message(false, MSG_METAS);
                     }
                 }
             }else{
