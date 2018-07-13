@@ -201,4 +201,55 @@ public class ReportesController {
         output.setResponse(response);
         return output;
     }
+    
+    public OutputJson getGraficasByEtad(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+            
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                ReportesResponse data = new ReportesResponse();
+                ReportesDAO reportesDAO = new ReportesDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                
+                List<HashMap> listData = new ArrayList<>();
+                List<Reporte> listReporte = reportesDAO.indicadorClaveDesempenoGlobal(
+                        idPeriodo, idEtad, periodo.getMes(), periodo.getAnio());
+                
+                for(Reporte row:listReporte){
+                    HashMap<String, Object> mapa = new HashMap<>();
+                    mapa.put("kpi", row.getKpi_operativo());
+                    mapa.put("metaA", row.getMeta());
+                    mapa.put("metaB", row.getMeta());
+                    mapa.put("metaC", row.getMeta());
+                    mapa.put("metaD", row.getMeta());
+                    mapa.put("resultadoA", row.getGrupoa());
+                    mapa.put("resultadoB", row.getGrupob());
+                    mapa.put("resultadoC", row.getGrupoc());
+                    mapa.put("resultadoD", row.getGrupod());
+                    listData.add(mapa);
+                }
+                data.setGraficas(listData);
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
 }
