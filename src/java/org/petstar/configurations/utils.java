@@ -279,4 +279,38 @@ public class utils {
         
         return meses[mes - 1];
     }
+    
+    public static int masEsMejor(BigDecimal meta, BigDecimal resultado, int ponderacion){
+        int valor = 0;
+        int res = resultado.compareTo(meta);
+        
+        if(res == -1){
+            int res2 = resultado.compareTo((meta.multiply(new BigDecimal(0.95))));
+            if(res2 == -1){
+                valor = 0;
+            }else{
+                valor = ponderacion;
+            }
+        }else{
+            valor = ponderacion;
+        }
+        return valor;
+    }
+    
+    public static int menosEsMejor(BigDecimal meta, BigDecimal resultado, int ponderacion){
+        int valor = 0;
+        int res = resultado.compareTo(meta);
+        
+        if(res == 1){
+            int res2 = resultado.compareTo((meta.multiply(new BigDecimal(1.05))));
+            if(res2 == 1){
+                valor = 0;
+            }else{
+                valor = ponderacion;
+            }
+        }else{
+            valor = ponderacion;
+        }
+        return valor;
+    }
 }
