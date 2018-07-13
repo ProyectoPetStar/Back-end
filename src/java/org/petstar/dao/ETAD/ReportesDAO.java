@@ -25,4 +25,17 @@ public class ReportesDAO {
         List<Reporte> lisData = (List<Reporte>) qr.query(sql.toString(), rsh, params);
         return lisData;
     }
+    
+    public List<Reporte> indicadorClaveDesempenoGlobal(int idPeriodo, int idEtad, int mes, int anio)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_reporteGlobal ?,?,?,?");
+        Object[] params = { mes, anio, idEtad, idPeriodo };
+        
+        ResultSetHandler rsh = new BeanListHandler(Reporte.class);
+        List<Reporte> lisData = (List<Reporte>) qr.query(sql.toString(), rsh, params);
+        return lisData;
+    }
 }

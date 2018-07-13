@@ -46,10 +46,10 @@ public class EtadReportes extends HttpServlet {
                 case "getIndicadorClaveDesempenoByGrupo":
                    output = controller.getIndicadorClaveDesempenoByGrupo(request);
                    break;
-                /*case "loadData":
-                   output = controller.loadData(request);
+                case "getIndicadorClaveDesempenoGlobal":
+                   output = controller.getIndicadorClaveDesempenoGlobal(request);
                    break; 
-                case "rewriteData":
+                /*case "rewriteData":
                    output = controller.rewriteData(request);
                    break;   
                 case "downloadTempleate":

@@ -16,6 +16,10 @@ public class Reporte {
     private int id_frecuencia;
     private BigDecimal total_mes;
     private int resultado;
+    private BigDecimal grupoa;
+    private BigDecimal grupob;
+    private BigDecimal grupoc;
+    private BigDecimal grupod;
 
     public String getObjetivo_operativo() {
         return objetivo_operativo;
@@ -87,5 +91,37 @@ public class Reporte {
 
     public void setResultado(int resultado) {
         this.resultado = resultado;
+    }
+
+    public BigDecimal getGrupoa() {
+        return grupoa;
+    }
+
+    public void setGrupoa(BigDecimal grupoa) {
+        this.grupoa = grupoa;
+    }
+
+    public BigDecimal getGrupob() {
+        return grupob;
+    }
+
+    public void setGrupob(BigDecimal grupob) {
+        this.grupob = grupob;
+    }
+
+    public BigDecimal getGrupoc() {
+        return grupoc;
+    }
+
+    public void setGrupoc(BigDecimal grupoc) {
+        this.grupoc = grupoc;
+    }
+
+    public BigDecimal getGrupod() {
+        return grupod;
+    }
+
+    public void setGrupod(BigDecimal grupod) {
+        this.grupod = grupod;
     }
 }
