@@ -146,6 +146,7 @@ public class ReportesController {
                 int totalBonoD = 0;
                 for(Reporte row:listReporte){
                     HashMap<String, Object> mapa = new HashMap<>();
+                    mapa.put("total", 0);
                     mapa.put("objetivo", row.getObjetivo_operativo());
                     mapa.put("kpi", row.getKpi_operativo());
                     mapa.put("meta", row.getMeta());
@@ -179,7 +180,7 @@ public class ReportesController {
                     listData.add(mapa);
                 }
                 HashMap<String, Object> mapa = new HashMap<>();
-                mapa.put("objetivo", "total");
+                mapa.put("total", 1);
                 mapa.put("resBonoA", totalBonoA);
                 mapa.put("resBonoB", totalBonoB);
                 mapa.put("resBonoC", totalBonoC);
