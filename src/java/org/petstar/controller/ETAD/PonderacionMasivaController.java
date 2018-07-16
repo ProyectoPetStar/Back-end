@@ -275,6 +275,10 @@ public class PonderacionMasivaController {
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 String pathFile = Configuration.PATH_DOWNLOAD_FILE;
+                File paths = new File(pathFile);
+                if(!paths.exists()){
+                    paths.mkdirs();
+                }
                 
                 String outputFile = pathFile+"Ponderacion"+tipoPond+"Template.csv";
                 boolean alreadyExists = new File(outputFile).exists();
