@@ -42,6 +42,19 @@ public class UsersDAO {
         List<UserSonarhDTO> usuarios_sonarh = (List<UserSonarhDTO>) qr.query(sql.toString(), rsh); 
         return usuarios_sonarh;
     }
+    
+    public List<UserSonarhDTO> getUsersSonarhByAreaAndGrupo(String area, String grupo) throws Exception {
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM ETADSonarh WHERE Area = ? AND Grupo = ?");
+        Object[] params = { area, grupo};
+        
+        ResultSetHandler rsh = new BeanListHandler(UserSonarhDTO.class);
+        List<UserSonarhDTO> usuarios_sonarh = (List<UserSonarhDTO>) qr.query(sql.toString(), rsh, params); 
+        return usuarios_sonarh;
+    }
        
     /**
      * Perfil Sonarh

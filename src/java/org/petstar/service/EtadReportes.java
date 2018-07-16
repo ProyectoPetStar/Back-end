@@ -53,12 +53,12 @@ public class EtadReportes extends HttpServlet {
                    output = controller.getGraficasByEtad(request);
                    break;   
                 case "getReporteBonos":
-                   output = controller.getReporteBonos(request);
+                   output = controller.getReporteBonos(request, false);
                    break;
-                /*case "insertPonderacion":
-                   output = controller1.insertPonderacion(request);
+                case "getReporteBonoDetallado":
+                   output = controller.getReporteBonos(request,true);
                    break;
-                case "getPonderacion":
+                /*case "getPonderacion":
                    output = controller1.getPonderacion(request);
                    break;
                 case "updatePonderacion":
