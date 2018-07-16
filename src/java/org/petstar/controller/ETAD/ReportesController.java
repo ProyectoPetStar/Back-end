@@ -304,7 +304,19 @@ public class ReportesController {
                     if(etad.getDescripcion().equals("MANTENIMIENTO") || etad.getId() == 5){
                         promedioManto = (BigDecimal) etadReport.get("promedio");
                     }
-                    
+                    if(etad.getDescripcion().equals("REFACCIONES") || etad.getId() == 6 ||
+                            etad.getDescripcion().equals("CONTROL INTERNO") || etad.getId() == 7){
+                        
+                        promedioNoEtad =  promedioNoEtad.add(new BigDecimal((int) etadReport.get("resBonoA")));
+                        count = count.add(BigDecimal.ONE);
+                    }else{
+                        promedioNoEtad = promedioNoEtad.add(new BigDecimal((int) etadReport.get("resBonoA")))
+                                .add(new BigDecimal((int) etadReport.get("resBonoB")))
+                                .add(new BigDecimal((int) etadReport.get("resBonoC")))
+                                .add(new BigDecimal((int) etadReport.get("resBonoD")));
+
+                        count = count.add(new BigDecimal(4));
+                    }
                     if(detallado){
                         Object[] grupos = {"A","B","C","D"};
                         for(Object gr:grupos){
@@ -344,39 +356,32 @@ public class ReportesController {
                         mapa.put("grupoC", etadReport.get("resBonoC"));
                         mapa.put("grupoD", etadReport.get("resBonoD"));
                         listData.add(mapa);
-
-                        if(etad.getDescripcion().equals("REFACCIONES") || etad.getId() == 6 || 
-                                etad.getDescripcion().equals("CONTROL INTERNO") || etad.getId() == 7){
-
-                            promedioNoEtad =  promedioNoEtad.add(
-                                    new BigDecimal((int) etadReport.get("resBonoA")));
-                            count = count.add(BigDecimal.ONE);
-                        }else{
-                            promedioNoEtad = promedioNoEtad.add(
-                                    new BigDecimal((int) etadReport.get("resBonoA")))
-                                    .add(new BigDecimal((int) etadReport.get("resBonoB")))
-                                    .add(new BigDecimal((int) etadReport.get("resBonoC")))
-                                    .add(new BigDecimal((int) etadReport.get("resBonoD")));
-
-                            count = count.add(new BigDecimal(4));
-                        }
                     }
                 }
                 
+                promedioNoEtad = promedioNoEtad.divide(count, 2, RoundingMode.CEILING);
                 if(detallado){
                     List<UserSonarhDTO> listEmpleados = usersDAO.
                             getUsersSonarhByAreaAndGrupo("MANTENIMIENTO", "MIXTO");
-                            for(UserSonarhDTO empleado:listEmpleados){
-                                HashMap<String, Object> mapa = new HashMap<>();
-                                mapa.put("area", "MANTENIMIENTO MIXTO");
-                                mapa.put("padre", "0");
-                                mapa.put("grupo", "MIXTO");
-                                mapa.put("bono",  promedioManto);
-                                mapa.put("no", empleado.getNumEmpleado());
-                                mapa.put("empleado",empleado.getPaterno() + " " 
-                                        + empleado.getMaterno() + " " + empleado.getNombre());
-                                listBonoDetallado.add(mapa);
-                            }
+                    for(UserSonarhDTO empleado:listEmpleados){
+                        HashMap<String, Object> mapa = new HashMap<>();
+                        mapa.put("area", "MANTENIMIENTO MIXTO");
+                        mapa.put("padre", "0");
+                        mapa.put("grupo", "MIXTO");
+                        mapa.put("bono",  promedioManto);
+                        mapa.put("no", empleado.getNumEmpleado());
+                        mapa.put("empleado",empleado.getPaterno() + " "
+                                + empleado.getMaterno() + " " + empleado.getNombre());
+                        listBonoDetallado.add(mapa);
+                    }
+                    HashMap<String, Object> noEtad = new HashMap<>();
+                        noEtad.put("area", "No ETAD");
+                        noEtad.put("padre", "0");
+                        noEtad.put("grupo", "MIXTO");
+                        noEtad.put("bono",  promedioNoEtad);
+                        noEtad.put("no", "");
+                        noEtad.put("empleado","");
+                        listBonoDetallado.add(noEtad);
                 }else{
                     HashMap<String, Object> mtto = new HashMap<>();
                     mtto.put("padre", "0");
@@ -387,7 +392,6 @@ public class ReportesController {
                     mtto.put("grupoD", "");
                     listData.add(mtto);
                     
-                    promedioNoEtad = promedioNoEtad.divide(count, 2, RoundingMode.CEILING);
                     HashMap<String, Object> noEtad = new HashMap<>();
                     noEtad.put("padre", "0");
                     noEtad.put("area", "No ETAD");
