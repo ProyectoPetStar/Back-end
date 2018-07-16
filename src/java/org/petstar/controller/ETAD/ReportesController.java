@@ -1,6 +1,8 @@
 package org.petstar.controller.ETAD;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.masEsMejor;
 import static org.petstar.configurations.utils.menosEsMejor;
+import org.petstar.dto.CatalogosDTO;
 
 /**
  *
@@ -252,5 +255,139 @@ public class ReportesController {
         
         output.setResponse(response);
         return output;
+    }
+    
+    public OutputJson getReporteBonos(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                ReportesResponse data = new ReportesResponse();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                
+                List<CatalogosDTO> listEtads = catalogosDAO.getCatalogosActive("pet_cat_etad");
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                
+                List<HashMap> listData = new ArrayList<>();
+                HashMap<String, Object> header = new HashMap<>();
+                header.put("area", "Area");
+                header.put("padre", "1");
+                header.put("grupoA", "A");
+                header.put("grupoB", "B");
+                header.put("grupoC", "C");
+                header.put("grupoD", "D");
+                listData.add(header);
+                
+                BigDecimal promedioNoEtad= BigDecimal.ZERO;
+                BigDecimal promedioManto = BigDecimal.ZERO;
+                BigDecimal count = BigDecimal.ZERO;
+                for(CatalogosDTO etad:listEtads){
+                    HashMap<String, Object> mapa = new HashMap<>();
+                    HashMap<String, Object> etadReport = this.
+                            buildReportICDG(idPeriodo, periodo.getMes(), periodo.getAnio(), etad.getId());
+                    
+                    if(etad.getDescripcion().equals("MANTENIMIENTO") || etad.getId() == 5){
+                        promedioManto = (BigDecimal) etadReport.get("promedio");
+                    }
+                    mapa.put("padre", "0");
+                    mapa.put("area", etad.getValor());
+                    mapa.put("grupoA", etadReport.get("resBonoA"));
+                    mapa.put("grupoB", etadReport.get("resBonoB"));
+                    mapa.put("grupoC", etadReport.get("resBonoC"));
+                    mapa.put("grupoD", etadReport.get("resBonoD"));
+                    listData.add(mapa);
+                    
+                    if(etad.getDescripcion().equals("REFACCIONES") || etad.getId() == 6 || 
+                            etad.getDescripcion().equals("CONTROL INTERNO") || etad.getId() == 7){
+                        
+                        promedioNoEtad =  promedioNoEtad.add(
+                                new BigDecimal((int) etadReport.get("resBonoA")));
+                        count = count.add(BigDecimal.ONE);
+                    }else{
+                        promedioNoEtad = promedioNoEtad.add(
+                                new BigDecimal((int) etadReport.get("resBonoA")))
+                                .add(new BigDecimal((int) etadReport.get("resBonoB")))
+                                .add(new BigDecimal((int) etadReport.get("resBonoC")))
+                                .add(new BigDecimal((int) etadReport.get("resBonoD")));
+                        
+                        count = count.add(new BigDecimal(4));
+                    }
+                }
+                
+                HashMap<String, Object> mtto = new HashMap<>();
+                mtto.put("padre", "0");
+                mtto.put("area", "MANTENIMIENTO MIXTO");
+                mtto.put("grupoA", promedioManto);
+                mtto.put("grupoB", "");
+                mtto.put("grupoC", "");
+                mtto.put("grupoD", "");
+                listData.add(mtto);
+                
+                promedioNoEtad = promedioNoEtad.divide(count, 2, RoundingMode.CEILING);
+                HashMap<String, Object> noEtad = new HashMap<>();
+                noEtad.put("padre", "0");
+                noEtad.put("area", "No ETAD");
+                noEtad.put("grupoA", promedioNoEtad);
+                noEtad.put("grupoB", "");
+                noEtad.put("grupoC", "");
+                noEtad.put("grupoD", "");
+                listData.add(noEtad);
+                    
+                data.setBonos(listData);
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public HashMap<String,Object> buildReportICDG(int idPeriodo, int mes, int anio, int idEtad) throws Exception{
+        ReportesDAO reportesDAO = new ReportesDAO();
+        List<Reporte> listReporte = reportesDAO.indicadorClaveDesempenoGlobal(idPeriodo, idEtad, mes, anio);
+        
+        int totalBonoA = 0;
+        int totalBonoB = 0;
+        int totalBonoC = 0;
+        int totalBonoD = 0;
+        for(Reporte row:listReporte){
+            if(row.getTipo_kpi() == 0){
+                totalBonoA = totalBonoA + menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
+                totalBonoB = totalBonoB + menosEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion());
+                totalBonoC = totalBonoC + menosEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion());
+                totalBonoD = totalBonoD + menosEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion());
+            }else if(row.getTipo_kpi() == 1){
+                totalBonoA = totalBonoA + masEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
+                totalBonoB = totalBonoB + masEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion());
+                totalBonoC = totalBonoC + masEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion());
+                totalBonoD = totalBonoD + masEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion());
+            }
+        }
+        
+        HashMap<String, Object> mapa = new HashMap<>();
+        BigDecimal promedio = BigDecimal.ZERO;
+        promedio.add(new BigDecimal(totalBonoA)).add(new BigDecimal(totalBonoB))
+                .add(new BigDecimal(totalBonoC)).add(new BigDecimal(totalBonoD));
+        promedio.divide(new BigDecimal(4), 2, RoundingMode.CEILING);
+        mapa.put("promedio", promedio);
+        mapa.put("resBonoA", totalBonoA);
+        mapa.put("resBonoB", totalBonoB);
+        mapa.put("resBonoC", totalBonoC);
+        mapa.put("resBonoD", totalBonoD);
+        return mapa;
     }
 }

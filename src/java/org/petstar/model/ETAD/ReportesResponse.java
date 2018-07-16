@@ -14,6 +14,7 @@ public class ReportesResponse {
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listEtads;
     private List<HashMap> graficas;
+    private List<HashMap> bonos;
     private List<HashMap> indicadorDesempeno;
 
     public List<PeriodosDTO> getListPeriodos() {
@@ -46,6 +47,14 @@ public class ReportesResponse {
 
     public void setGraficas(List<HashMap> graficas) {
         this.graficas = graficas;
+    }
+
+    public List<HashMap> getBonos() {
+        return bonos;
+    }
+
+    public void setBonos(List<HashMap> bonos) {
+        this.bonos = bonos;
     }
 
     public List<HashMap> getIndicadorDesempeno() {
