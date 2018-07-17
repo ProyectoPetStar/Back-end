@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.controller.ControllerAutenticacion;
 import org.petstar.dao.CatalogosDAO;
@@ -457,28 +456,33 @@ public class ReportesController {
                     HashMap<String, Object> periodo1 = new HashMap<>();
                     HashMap<String, Object> periodo2 = new HashMap<>();
                     HashMap<String, Object> periodo3 = new HashMap<>();
-                    if(listPeriodo.size() == 0){
-                        periodo1 = emptyMap;
-                        periodo2 = emptyMap;
-                        periodo3 = emptyMap;
-                    } else if(listPeriodo.size() == 1) {
-                        periodo1 = this.buildReportICDG(listPeriodo.get(0).getId_periodo(),
-                                listPeriodo.get(0).getMes(), anio, etad.getId());
-                        periodo2 = emptyMap;
-                        periodo3 = emptyMap;
-                    } else if(listPeriodo.size() == 2){
-                        periodo1 = this.buildReportICDG(listPeriodo.get(0).getId_periodo(),
-                                listPeriodo.get(0).getMes(), anio, etad.getId());
-                        periodo2 = periodo2 = this.buildReportICDG(listPeriodo.get(1).getId_periodo(),
-                            listPeriodo.get(1).getMes(), anio, etad.getId());
-                        periodo3 = emptyMap;
-                    } else if(listPeriodo.size() == 3) {
-                        periodo1 = this.buildReportICDG(listPeriodo.get(0).getId_periodo(),
-                                listPeriodo.get(0).getMes(), anio, etad.getId());
-                        periodo2 = periodo2 = this.buildReportICDG(listPeriodo.get(1).getId_periodo(),
-                            listPeriodo.get(1).getMes(), anio, etad.getId());
-                        periodo3 = this.buildReportICDG(listPeriodo.get(2).getId_periodo(),
-                            listPeriodo.get(2).getMes(), anio, etad.getId());
+                    switch (listPeriodo.size()) {
+                        case 0:
+                            periodo1 = emptyMap;
+                            periodo2 = emptyMap;
+                            periodo3 = emptyMap;
+                            break;
+                        case 1:
+                            periodo1 = this.buildReportICDG(listPeriodo.get(0).getId_periodo(),
+                                    listPeriodo.get(0).getMes(), anio, etad.getId());
+                            periodo2 = emptyMap;
+                            periodo3 = emptyMap;
+                            break;
+                        case 2:
+                            periodo1 = this.buildReportICDG(listPeriodo.get(0).getId_periodo(),
+                                    listPeriodo.get(0).getMes(), anio, etad.getId());
+                            periodo2 = periodo2 = this.buildReportICDG(listPeriodo.get(1).getId_periodo(),
+                                    listPeriodo.get(1).getMes(), anio, etad.getId());
+                            periodo3 = emptyMap;
+                            break;
+                        case 3:
+                            periodo1 = this.buildReportICDG(listPeriodo.get(0).getId_periodo(),
+                                    listPeriodo.get(0).getMes(), anio, etad.getId());
+                            periodo2 = periodo2 = this.buildReportICDG(listPeriodo.get(1).getId_periodo(),
+                                    listPeriodo.get(1).getMes(), anio, etad.getId());
+                            periodo3 = this.buildReportICDG(listPeriodo.get(2).getId_periodo(),
+                                    listPeriodo.get(2).getMes(), anio, etad.getId());
+                            break;
                     }
                     
                     EvaluacionConcentrada grupoA = new EvaluacionConcentrada();
