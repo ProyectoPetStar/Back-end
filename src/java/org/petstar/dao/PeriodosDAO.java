@@ -239,4 +239,21 @@ public class PeriodosDAO {
         List<ResultInteger> listresult = (List<ResultInteger>) qr.query(sql.toString(), rsh);
         return listresult;
     }
+    
+    public List<PeriodosDTO> getPeriodosByTrimestre(int anio, int trimestre) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        int minMes = (trimestre * 3)-2;
+        int maxMes = trimestre * 3;
+        
+        sql.append("SELECT * FROM pet_periodo WHERE anio=")
+                .append(anio).append(" AND mes BETWEEN ")
+                .append(minMes).append(" AND ").append(maxMes);
+                
+        ResultSetHandler rsh = new BeanListHandler(PeriodosDTO.class);
+        List<PeriodosDTO> data = (List<PeriodosDTO>) qr.query(sql.toString(), rsh);
+        return data;
+    }
 }
