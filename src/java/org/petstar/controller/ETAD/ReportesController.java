@@ -575,7 +575,275 @@ public class ReportesController {
         return output;
     }
     
-    public HashMap<String,Object> buildReportICDG(int idPeriodo, int mes, int anio, int idEtad) throws Exception{
+    public OutputJson getGraficasPosicionAnual(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int anio = Integer.valueOf(request.getParameter("anio"));
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                ReportesResponse data = new ReportesResponse();
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
+                
+                List<PeriodosDTO> listPeriodo = periodosDAO.getPeriodosByAnio(anio);
+                List<CatalogosDTO> listEtads = catalogosDAO.getCatalogosActive("pet_cat_etad");
+                List<EvaluacionConcentrada> listEC = new ArrayList<>();
+                
+                HashMap<String, Object> emptyMap = new HashMap<>();
+                emptyMap.put("promedio", 0);
+                emptyMap.put("resBonoA", 0);
+                emptyMap.put("resBonoB", 0);
+                emptyMap.put("resBonoC", 0);
+                emptyMap.put("resBonoD", 0);
+                        
+                for(CatalogosDTO etad:listEtads){
+                    EvaluacionConcentrada grupoA = new EvaluacionConcentrada();
+                    grupoA.setEtad(etad.getValor());
+                    grupoA.setGrupo("A");
+                    listEC.add(grupoA);
+                    
+                    if(!etad.getValor().equals("CONTROL INTERNO") && etad.getId() != 7 &&
+                            !etad.getValor().equals("REFACCIONES") && etad.getId() != 6){
+                        
+                        EvaluacionConcentrada grupoB = new EvaluacionConcentrada();
+                        grupoB.setEtad(etad.getValor());
+                        grupoB.setGrupo("B");
+                        EvaluacionConcentrada grupoC = new EvaluacionConcentrada();
+                        grupoC.setEtad(etad.getValor());
+                        grupoC.setGrupo("C");
+                        EvaluacionConcentrada grupoD = new EvaluacionConcentrada();
+                        grupoD.setEtad(etad.getValor());
+                        grupoD.setGrupo("D");
+                        listEC.add(grupoB);
+                        listEC.add(grupoC);
+                        listEC.add(grupoD);
+                    }
+                }
+                
+                for(CatalogosDTO etad:listEtads){
+                    if(!listPeriodo.isEmpty()){
+                        for(PeriodosDTO periodo:listPeriodo){
+                            HashMap<String, Object> mapa = this.buildReportICDG(
+                                    periodo.getId_periodo(), periodo.getMes(), anio, etad.getId());
+                            int indexA = this.buscarIndex(listEC, etad.getValor(), "A");
+                            int indexB = this.buscarIndex(listEC, etad.getValor(), "B");
+                            int indexC = this.buscarIndex(listEC, etad.getValor(), "C");
+                            int indexD = this.buscarIndex(listEC, etad.getValor(), "D");
+                            
+                            switch(periodo.getMes()){
+                                case 1 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes1((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes1((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes1((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes1((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 2 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes2((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes2((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes2((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes2((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 3 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes3((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes3((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes3((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes3((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 4 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes4((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes4((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes4((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes4((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 5 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes5((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes5((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes5((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes5((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 6 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes6((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes6((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes6((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes6((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 7 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes7((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes7((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes7((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes7((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 8 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes8((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes8((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes8((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes8((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 9 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes9((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes9((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes9((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes9((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 10 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes10((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes10((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes10((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes10((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 11 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes11((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes11((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes11((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes11((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                                case 12 :
+                                    if(indexA != -1){
+                                        listEC.get(indexA).setMes12((int) mapa.get("resBonoA"));
+                                    }
+                                    if(indexB != -1){
+                                        listEC.get(indexB).setMes12((int) mapa.get("resBonoB"));
+                                    }
+                                    if(indexC != -1){
+                                        listEC.get(indexC).setMes12((int) mapa.get("resBonoC"));
+                                    }
+                                    if(indexD != -1){
+                                        listEC.get(indexD).setMes12((int) mapa.get("resBonoD"));
+                                    }
+                                    break;
+                            }
+                            
+                        }
+                    }
+                }
+                List<Posiciones> listGeneral = new ArrayList<>();
+                for(EvaluacionConcentrada row:listEC){
+                    int sumaMeses = row.getMes1() + row.getMes2() + row.getMes3() + row.getMes4() +
+                            row.getMes5() + row.getMes5() + row.getMes6() + row.getMes7() + row.getMes8() + 
+                            row.getMes9() + row.getMes10() + row.getMes11() + row.getMes12();
+                    BigDecimal promedio = new BigDecimal(sumaMeses).divide(new BigDecimal(12), 2, RoundingMode.CEILING);
+                    Posiciones mapa = new Posiciones();
+                    mapa.setName(row.getEtad()+ " " + row.getGrupo());
+                    mapa.setValor(promedio);
+                    listGeneral.add(mapa);
+                }
+                
+                Comparator<Posiciones> comparator = (Posiciones a, Posiciones b) -> {
+                    int resultado = b.getValor().compareTo(a.getValor());
+                    if ( resultado != 0 ) { return resultado; }
+                    return resultado;
+                };
+                
+                Collections.sort( listGeneral, comparator );
+                data.setPosicionamientoAnual(listGeneral);
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    private HashMap<String,Object> buildReportICDG(int idPeriodo, int mes, int anio, int idEtad) throws Exception{
         ReportesDAO reportesDAO = new ReportesDAO();
         List<Reporte> listReporte = reportesDAO.indicadorClaveDesempenoGlobal(idPeriodo, idEtad, mes, anio);
         
@@ -608,5 +876,15 @@ public class ReportesController {
         mapa.put("resBonoC", totalBonoC);
         mapa.put("resBonoD", totalBonoD);
         return mapa;
+    }
+    
+    private int buscarIndex(List<EvaluacionConcentrada> lista,String etad, String grupo) {
+        int index = -1;
+        for(int y=0; y<lista.size(); y++) {
+            if(lista.get(y).getEtad().equals(etad) && lista.get(y).getGrupo().equals(grupo)){
+                index = y;
+            }
+        }
+        return index;
     }
 }

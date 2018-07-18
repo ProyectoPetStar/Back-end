@@ -61,10 +61,9 @@ public class EtadReportes extends HttpServlet {
                 case "getGraficasPosicionTrimestral":
                    output = controller.getGraficasPosicionTrimestral(request);
                    break;
-                /*case "updatePonderacion":
-                   output = controller1.updatePonderacion(request);
+                case "getGraficasPosicionAnual":
+                   output = controller.getGraficasPosicionAnual(request);
                    break;
-                */
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

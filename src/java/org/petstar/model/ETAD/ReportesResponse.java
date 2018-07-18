@@ -3,7 +3,6 @@ package org.petstar.model.ETAD;
 import java.util.HashMap;
 import java.util.List;
 import org.petstar.dto.CatalogosDTO;
-import org.petstar.dto.ETAD.EvaluacionConcentrada;
 import org.petstar.dto.ETAD.Posiciones;
 import org.petstar.dto.PeriodosDTO;
 
@@ -13,6 +12,7 @@ import org.petstar.dto.PeriodosDTO;
  */
 public class ReportesResponse {
     private List<List<Posiciones>> posicionamiento;
+    private List<Posiciones> posicionamientoAnual;
     private List<PeriodosDTO> listPeriodos;
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listEtads;
@@ -26,6 +26,14 @@ public class ReportesResponse {
 
     public void setPosicionamiento(List<List<Posiciones>> posicionamiento) {
         this.posicionamiento = posicionamiento;
+    }
+
+    public List<Posiciones> getPosicionamientoAnual() {
+        return posicionamientoAnual;
+    }
+
+    public void setPosicionamientoAnual(List<Posiciones> posicionamientoAnual) {
+        this.posicionamientoAnual = posicionamientoAnual;
     }
     
     public List<PeriodosDTO> getListPeriodos() {
