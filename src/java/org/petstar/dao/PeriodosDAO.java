@@ -256,4 +256,17 @@ public class PeriodosDAO {
         List<PeriodosDTO> data = (List<PeriodosDTO>) qr.query(sql.toString(), rsh);
         return data;
     }
+    
+    public List<PeriodosDTO> getPeriodosByAnio(int anio) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM pet_periodo WHERE anio = ?");
+        Object[] params = { anio };
+                
+        ResultSetHandler rsh = new BeanListHandler(PeriodosDTO.class);
+        List<PeriodosDTO> data = (List<PeriodosDTO>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
 }
