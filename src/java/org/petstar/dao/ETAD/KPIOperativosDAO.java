@@ -7,6 +7,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
+import org.petstar.dao.CatalogosDAO;
+import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ResultInteger;
 
@@ -133,8 +135,7 @@ public class KPIOperativosDAO {
         Object[] params1 = { pcko.getValor(), pcko.getDescripcion(), pcko.getUnidad_medida(),
             pcko.getTipo_kpi(), pcko.getId_frecuencia(), pcko.getTipo_operacion(), pcko.getId() };
         
-        sql2.append("DELETE FROM pet_etad_kpi ")
-                .append("WITH (TABLOCK) WHERE id_kpi_operativo = ?");
+        sql2.append("UPDATE pet_etad_kpi SET estatus = 0 WHERE id_kpi_operativo = ?");
         Object[] params2 = { pcko.getId() };
         qr.update(sql1.toString(), params1);
         qr.update(sql2.toString(), params2);
@@ -147,11 +148,32 @@ public class KPIOperativosDAO {
         
         String[] lineas = pcko.getLineas().split(",");
         
-        sql.append("INSERT INTO pet_etad_kpi ")
-                .append("(id_kpi_operativo, id_etad) VALUES (?, ?)");
+        sql.append("UPDATE pet_etad_kpi SET estatus = 1 ")
+                .append("WHERE id_kpi_operativo = ? AND id_etad = ?");
         
         for(String linea:lineas){
-            Object[] params = { pcko.getId(), Integer.valueOf(linea) };
+            ResultInteger result = this.validateExistEtadKPI(Integer.valueOf(linea), pcko.getId());
+            if(result.getResult() == 0){
+                this.insertEtadKpiMissing(Integer.valueOf(linea), pcko.getId());
+            }else{
+                Object[] params = { pcko.getId(), Integer.valueOf(linea) };
+                qr.update(sql.toString(), params);
+            }
+        }
+    }
+    
+    private void insertLineasToKPIOperativos(PetCatKpiOperativo pcko) throws Exception{
+        CatalogosDAO catalogosDAO = new CatalogosDAO();
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        List<CatalogosDTO> listEtad = catalogosDAO.getCatalogosActive("pet_cat_etad");
+        
+        sql.append("INSERT INTO pet_etad_kpi ")
+                .append("(id_kpi_operativo, id_etad, estatus) VALUES (?, ?, ?)");
+        
+        for(CatalogosDTO etad:listEtad){
+            Object[] params = { pcko.getId(), etad.getId(), 0 };
             qr.update(sql.toString(), params);
         }
     }
@@ -166,10 +188,39 @@ public class KPIOperativosDAO {
                 .append("tipo_kpi,tipo_operacion,activo) ")
                 .append("OUTPUT INSERTED.ID AS result VALUES(?,?,?,?,?,?,?,?)");
         Object[] params = { pcko.getValor(), pcko.getDescripcion(), pcko.getId_cat_objetivo_operativo(),
-            pcko.getId_frecuencia(), pcko.getUnidad_medida(), pcko.getTipo_kpi(), pcko.getTipo_kpi(), 1 };
+            pcko.getId_frecuencia(), pcko.getUnidad_medida(), pcko.getTipo_kpi(), pcko.getTipo_operacion(), 1 };
+        
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        pcko.setId(result.getResult());
+        this.insertLineasToKPIOperativos(pcko);
+        return result;
+    }
+    
+    private ResultInteger validateExistEtadKPI(int idEtad, int idKpiOp) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT COUNT(1) AS result FROM pet_etad_kpi ")
+                .append("WHERE id_etad = ? AND id_kpi_operativo = ?");
+        Object[] params = { idEtad, idKpiOp };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
+    }
+    
+    private void insertEtadKpiMissing(int idEtad, int idKpiOp) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        
+        sql.append("INSERT INTO pet_etad_kpi ")
+                .append("(id_kpi_operativo, id_etad, estatus) VALUES (?, ?, ?)");
+        Object[] params = { idKpiOp, idEtad, 1 };
+        
+        qr.update(sql.toString(), params);
     }
 }

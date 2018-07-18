@@ -8,6 +8,7 @@ public class PetEtadKpi {
     private int id_kpi_etad;
     private int id_kpi_operativo;
     private int id_etad;
+    private int estatus;
     private PetCatKpiOperativo kpiOperativo;
 
     public int getId_kpi_etad() {
@@ -32,6 +33,14 @@ public class PetEtadKpi {
 
     public void setId_etad(int id_etad) {
         this.id_etad = id_etad;
+    }
+
+    public int getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(int estatus) {
+        this.estatus = estatus;
     }
 
     public PetCatKpiOperativo getKpiOperativo() {
