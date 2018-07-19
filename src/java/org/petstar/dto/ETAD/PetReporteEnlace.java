@@ -287,4 +287,40 @@ public class PetReporteEnlace {
     public void setPeriodo(PeriodosDTO periodo) {
         this.periodo = periodo;
     }
+    
+
+    public PetReporteEnlace(int id_periodo) {
+        this.id_periodo = id_periodo;
+        this.objetivo_estrategico_uno = "";
+        this.objetivo_estrategico_dos = "";
+        this.objetivo_estrategico_tres = "";
+        this.meta_estrategica_uno = "";
+        this.meta_estrategica_dos = "";
+        this.meta_estrategica_tres = "";
+        this.meta_estrategica_cuatro = "";
+        this.merma_mensual = BigDecimal.ZERO;
+        this.merma_real = BigDecimal.ZERO;
+        this.subproducto_mensual = BigDecimal.ZERO;
+        this.subproducto_real = BigDecimal.ZERO;
+        this.costo_unitario_real = BigDecimal.ZERO;
+        this.mdp_mensual = BigDecimal.ZERO;
+        this.mdp_real = BigDecimal.ZERO;
+        this.eficiencia_entregas_compra_mensual = BigDecimal.ZERO;
+        this.eficiencia_entregas_compra_real = BigDecimal.ZERO;
+        this.no_fugas_pet_real = BigDecimal.ZERO;
+        this.costo_unitario = BigDecimal.ZERO;
+        this.ajuste_error_inventario = BigDecimal.ZERO;
+        this.eficiencia_carga_real = BigDecimal.ZERO;
+        this.descarga_mp_real = BigDecimal.ZERO;
+        this.liberacion_embarques = BigDecimal.ZERO;
+        this.efectividad_entrega_cliente_real = BigDecimal.ZERO;
+        this.control_entradas_salidas_contratistas = BigDecimal.ZERO;
+        this.control_entradas_salidas_transportistas = BigDecimal.ZERO;
+        this.control_entradas_salidas_proveedores = BigDecimal.ZERO;
+        this.control_entradas_salidas_visitantes = BigDecimal.ZERO;
+        this.ot_alimentadas_mp9 = BigDecimal.ZERO;
+    }
+
+    public PetReporteEnlace() {
+    }
 }

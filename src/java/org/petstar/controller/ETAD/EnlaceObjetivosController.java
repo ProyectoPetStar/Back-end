@@ -3,9 +3,11 @@ package org.petstar.controller.ETAD;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.controller.ControllerAutenticacion;
 import org.petstar.dao.CatalogosDAO;
+import org.petstar.dao.ETAD.EnlaceObjetivosDAO;
 import org.petstar.dao.ETAD.FrecuenciasDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dao.PeriodosDAO;
+import org.petstar.dto.ETAD.PetReporteEnlace;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.CatalogosResponse;
 import org.petstar.model.ETAD.EnlaceObjetivosResponse;
@@ -42,6 +44,39 @@ public class EnlaceObjetivosController {
                 EnlaceObjetivosResponse data = new EnlaceObjetivosResponse();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
+                output.setData(data);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getConfiguracion(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                EnlaceObjetivosResponse data = new EnlaceObjetivosResponse();
+                EnlaceObjetivosDAO eObjetivosDAO = new EnlaceObjetivosDAO();
+                
+                data.setReporteEnlace(eObjetivosDAO.getConfiguracionByPeriodo(idPeriodo));
+                if(data.getReporteEnlace() == null){
+                    PetReporteEnlace reporteEnlace = new PetReporteEnlace(idPeriodo);
+                    data.setReporteEnlace(reporteEnlace);
+                }
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);

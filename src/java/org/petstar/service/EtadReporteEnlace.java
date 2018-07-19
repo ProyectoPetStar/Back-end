@@ -43,10 +43,10 @@ public class EtadReporteEnlace extends HttpServlet {
                 case "loadCombobox":
                     output = controller.loadCombobox(request);
                     break;
-                /*case "getAllCatalogos":
-                    output = controller.getAllCatalogos(request);
+                case "getConfiguracion":
+                    output = controller.getConfiguracion(request);
                     break;
-                case "getCatalogoById":
+                /*case "getCatalogoById":
                     output = controller.getCatalogoById(request);
                     break;
                 case "blockRecord":
