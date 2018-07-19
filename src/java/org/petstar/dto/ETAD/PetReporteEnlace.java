@@ -38,6 +38,7 @@ public class PetReporteEnlace {
     private BigDecimal control_entradas_salidas_proveedores;
     private BigDecimal control_entradas_salidas_visitantes;
     private BigDecimal ot_alimentadas_mp9;
+    private boolean nuevo;
     private PeriodosDTO periodo;
 
     public int getId_reporte_enlace() {
@@ -280,6 +281,14 @@ public class PetReporteEnlace {
         this.ot_alimentadas_mp9 = ot_alimentadas_mp9;
     }
 
+    public boolean isNuevo() {
+        return nuevo;
+    }
+
+    public void setNuevo(boolean nuevo) {
+        this.nuevo = nuevo;
+    }
+
     public PeriodosDTO getPeriodo() {
         return periodo;
     }
@@ -319,6 +328,7 @@ public class PetReporteEnlace {
         this.control_entradas_salidas_proveedores = BigDecimal.ZERO;
         this.control_entradas_salidas_visitantes = BigDecimal.ZERO;
         this.ot_alimentadas_mp9 = BigDecimal.ZERO;
+        this.nuevo = true;
     }
 
     public PetReporteEnlace() {
