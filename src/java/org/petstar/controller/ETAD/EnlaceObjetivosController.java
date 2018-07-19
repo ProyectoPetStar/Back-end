@@ -111,11 +111,42 @@ public class EnlaceObjetivosController {
                     response.setMessage(MSG_SUCESS);
                     response.setSucessfull(true);
                 }else{
-                    response.setMessage(MSG_SUCESS);
+                    response.setMessage(MSG_EXIST);
                     response.setSucessfull(true);
                 }
             }else{
-                response.setMessage(MSG_EXIST);
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson updateConfiguracion(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        Gson gson = new Gson();
+            
+        try{
+            String jsonString = request.getParameter("record");
+            JSONObject jsonResponse = new JSONObject(jsonString);
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                EnlaceObjetivosDAO objetivosDAO = new EnlaceObjetivosDAO();
+                PetReporteEnlace reporteEnlace = gson.fromJson(jsonResponse.
+                                getJSONObject("record").toString(), PetReporteEnlace.class);
+                
+                objetivosDAO.updateConfiguracionEnlace(reporteEnlace);
+                response.setMessage(MSG_SUCESS);
+                response.setSucessfull(true);                
+            }else{
+                response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
             }
         }catch(Exception ex){
