@@ -1,6 +1,7 @@
 package org.petstar.dto.ETAD;
 
 import java.math.BigDecimal;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.PeriodosDTO;
 
 /**
@@ -297,8 +298,9 @@ public class PetReporteEnlace {
         this.periodo = periodo;
     }
     
-
-    public PetReporteEnlace(int id_periodo) {
+    
+    public PetReporteEnlace(int id_periodo) throws Exception {
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         this.id_periodo = id_periodo;
         this.objetivo_estrategico_uno = "";
         this.objetivo_estrategico_dos = "";
@@ -329,6 +331,7 @@ public class PetReporteEnlace {
         this.control_entradas_salidas_visitantes = BigDecimal.ZERO;
         this.ot_alimentadas_mp9 = BigDecimal.ZERO;
         this.nuevo = true;
+        this.periodo = periodosDAO.getPeriodoById(id_periodo);
     }
 
     public PetReporteEnlace() {
