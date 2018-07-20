@@ -1,12 +1,17 @@
 package org.petstar.dao.ETAD;
 
+import java.sql.Date;
+import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ETAD.PetReporteEnlace;
+import org.petstar.dto.ETAD.ReporteEnlaceDetail;
+import org.petstar.dto.ResultBigDecimal;
 import org.petstar.dto.ResultInteger;
 
 /**
@@ -120,5 +125,18 @@ public class EnlaceObjetivosDAO {
             pre.getControl_entradas_salidas_proveedores(), pre.getControl_entradas_salidas_visitantes(),
             pre.getOt_alimentadas_mp9(), pre.getId_reporte_enlace() };
         qr.update(sql.toString(), params);
+    }
+    
+    public List<ReporteEnlaceDetail> getDetailsReporte(int idPeriodo, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_reporte_evaluacion_concentrada ?, ?");
+        Object[] params = { idPeriodo, idLinea };
+        
+        ResultSetHandler rsh = new BeanListHandler(ReporteEnlaceDetail.class);
+        List<ReporteEnlaceDetail> data = (List<ReporteEnlaceDetail>) qr.query(sql.toString(), rsh, params);
+        return data;
     }
 }
