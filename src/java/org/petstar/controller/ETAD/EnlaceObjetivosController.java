@@ -22,6 +22,7 @@ public class EnlaceObjetivosController {
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_EXIST  = "Ya existen datos para este periodo.";
+    private static final String MSG_NOEXIST= "No existen datos para este periodo.";
     
     /**
      * Carga de Combos
@@ -107,8 +108,8 @@ public class EnlaceObjetivosController {
                 
                 ResultInteger result = objetivosDAO.validateExistConfiguracionEnlace(reporteEnlace.getId_periodo());
                 if(result.getResult().equals(0)){
-                    objetivosDAO.insertConfiguracionEnlace(reporteEnlace);
-                    response.setMessage(MSG_SUCESS);
+                    ResultInteger id = objetivosDAO.insertConfiguracionEnlace(reporteEnlace);
+                    response.setMessage(id.getResult().toString());
                     response.setSucessfull(true);
                 }else{
                     response.setMessage(MSG_EXIST);
@@ -145,6 +146,41 @@ public class EnlaceObjetivosController {
                 objetivosDAO.updateConfiguracionEnlace(reporteEnlace);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);                
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
+    public OutputJson getReporteEnlaceObjetivos(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        
+        try{
+            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                EnlaceObjetivosResponse data = new EnlaceObjetivosResponse();
+                EnlaceObjetivosDAO eObjetivosDAO = new EnlaceObjetivosDAO();
+                
+                ResultInteger result = eObjetivosDAO.validateExistConfiguracionEnlace(idPeriodo);
+                if(!result.getResult().equals(0)){
+                    data.setReporteEnlace(eObjetivosDAO.getConfiguracionByPeriodo(idPeriodo));
+                    output.setData(data);
+                    response.setMessage(MSG_SUCESS);
+                    response.setSucessfull(true);
+                }else{
+                    response.setMessage(MSG_NOEXIST);
+                    response.setSucessfull(false);
+                }
             }else{
                 response.setMessage(MSG_LOGOUT);
                 response.setSucessfull(false);
