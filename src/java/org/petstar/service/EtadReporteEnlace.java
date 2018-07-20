@@ -55,13 +55,7 @@ public class EtadReporteEnlace extends HttpServlet {
                 case "getReporteEnlaceObjetivos":
                     output = controller.getReporteEnlaceObjetivos(request);
                     break;
-                /*case "updateCatalogo":
-                    output = controller.updateCatalogo(request);
-                    break;
-                case "insertCatalogo":
-                    output = controller.insertCatalogo(request);
-                    break;
-            */}
+                }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
             reponseJson.setSucessfull(false);
