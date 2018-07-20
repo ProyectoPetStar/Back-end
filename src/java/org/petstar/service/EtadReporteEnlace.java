@@ -52,10 +52,10 @@ public class EtadReporteEnlace extends HttpServlet {
                 case "updateConfiguracion":
                     output = controller.updateConfiguracion(request);
                     break;
-                /*case "unlockRecord":
-                    output = controller.changeEstatus(request, 1);
+                case "getReporteEnlaceObjetivos":
+                    output = controller.getReporteEnlaceObjetivos(request);
                     break;
-                case "updateCatalogo":
+                /*case "updateCatalogo":
                     output = controller.updateCatalogo(request);
                     break;
                 case "insertCatalogo":

@@ -45,7 +45,7 @@ public class EnlaceObjetivosDAO {
         return result;
     }
     
-    public void insertConfiguracionEnlace(PetReporteEnlace pre) throws Exception{
+    public ResultInteger insertConfiguracionEnlace(PetReporteEnlace pre) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -65,7 +65,8 @@ public class EnlaceObjetivosDAO {
                 .append("control_entradas_salidas_transportistas,")
                 .append("control_entradas_salidas_proveedores,")
                 .append("control_entradas_salidas_visitantes,ot_alimentadas_mp9) ")
-                .append("VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                .append("OUTPUT INSERTED.id_reporte_enlace AS result VALUES ")
+                .append("(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         Object[] params = { pre.getId_periodo(), pre.getObjetivo_estrategico_uno(), 
             pre.getObjetivo_estrategico_dos(), pre.getObjetivo_estrategico_tres(),
             pre.getMeta_estrategica_uno(), pre.getMeta_estrategica_dos(), 
@@ -80,7 +81,9 @@ public class EnlaceObjetivosDAO {
             pre.getControl_entradas_salidas_proveedores(), pre.getControl_entradas_salidas_visitantes(),
             pre.getOt_alimentadas_mp9() };
         
-        qr.update(sql.toString(), params);
+        ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
+        ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
+        return result;
     }
     
     public void updateConfiguracionEnlace(PetReporteEnlace pre) throws Exception{
@@ -116,7 +119,6 @@ public class EnlaceObjetivosDAO {
             pre.getControl_entradas_salidas_contratistas(), pre.getControl_entradas_salidas_transportistas(),
             pre.getControl_entradas_salidas_proveedores(), pre.getControl_entradas_salidas_visitantes(),
             pre.getOt_alimentadas_mp9(), pre.getId_reporte_enlace() };
-        System.out.println(sql.toString());
         qr.update(sql.toString(), params);
     }
 }
