@@ -328,6 +328,35 @@ public class IndicadoresController {
         return output;
     }
     
+    public OutputJson changeEstatusIndicadoresDiarios(HttpServletRequest request, int estatus){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+            
+        try{
+            int idGrupo = Integer.valueOf(request.getParameter("id_grupo"));
+            int idEtad = Integer.valueOf(request.getParameter("id_etad"));
+            String dia = request.getParameter("dia");
+            Date day = convertStringToSql(dia);
+            UserDTO session = autenticacion.isValidToken(request);
+            if(session != null){
+                IndicadoresDiariosDAO diariosDAO = new IndicadoresDiariosDAO();
+                
+                diariosDAO.changeEstatusIndicadoresDiarios(day, idGrupo, idEtad, estatus);
+                response = message(true, MSG_SUCESS);
+            }else{
+                response.setMessage(MSG_LOGOUT);
+                response.setSucessfull(false);
+            }
+        }catch(Exception ex){
+            response.setMessage(MSG_ERROR + ex.getMessage());
+            response.setSucessfull(false);
+        }
+        
+        output.setResponse(response);
+        return output;
+    }
+    
     public ResponseJson message(boolean boo, String mensaje){
         ResponseJson responseJson = new ResponseJson();
         responseJson.setMessage(mensaje);
