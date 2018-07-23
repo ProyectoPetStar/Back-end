@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.ResultBigDecimal;
 
 /**
  *
@@ -52,6 +53,7 @@ public class PetReporteEnlace {
     private List<ReporteEnlaceDetail> kpisEx1;
     private List<ReporteEnlaceDetail> kpisEx2;
     private List<ReporteEnlaceDetail> kpisSSP;
+    private List<ResultBigDecimal> eficienciaProcesos;
 
     public int getId_reporte_enlace() {
         return id_reporte_enlace;
@@ -387,6 +389,14 @@ public class PetReporteEnlace {
 
     public void setKpisSSP(List<ReporteEnlaceDetail> kpisSSP) {
         this.kpisSSP = kpisSSP;
+    }
+
+    public List<ResultBigDecimal> getEficienciaProcesos() {
+        return eficienciaProcesos;
+    }
+
+    public void setEficienciaProcesos(List<ResultBigDecimal> eficienciaProcesos) {
+        this.eficienciaProcesos = eficienciaProcesos;
     }
     
     public PetReporteEnlace(int id_periodo) throws Exception {

@@ -196,6 +196,7 @@ public class EnlaceObjetivosController {
                 if(!result.getResult().equals(0)){
                     PetReporteEnlace reporte = new PetReporteEnlace();
                     reporte = eObjetivosDAO.getConfiguracionByPeriodo(idPeriodo);
+                    reporte.setEficienciaProcesos(eObjetivosDAO.getEficienciaProcesos(idPeriodo));
                     List<LineasDTO> listLineas = lineasDAO.getLineasActive();
                     
                     for(LineasDTO linea:listLineas){

@@ -1,6 +1,5 @@
 package org.petstar.dao.ETAD;
 
-import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -137,6 +136,19 @@ public class EnlaceObjetivosDAO {
         
         ResultSetHandler rsh = new BeanListHandler(ReporteEnlaceDetail.class);
         List<ReporteEnlaceDetail> data = (List<ReporteEnlaceDetail>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    public List<ResultBigDecimal> getEficienciaProcesos(int idPeriodo) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_reporteMetaKpiDos ?");
+        Object[] params = { idPeriodo };
+        
+        ResultSetHandler rsh = new BeanListHandler(ResultBigDecimal.class);
+        List<ResultBigDecimal> data = (List<ResultBigDecimal>) qr.query(sql.toString(), rsh, params);
         return data;
     }
 }
