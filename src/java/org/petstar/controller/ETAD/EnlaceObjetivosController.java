@@ -1,12 +1,10 @@
 package org.petstar.controller.ETAD;
 
 import com.google.gson.Gson;
-import com.sun.faces.util.CollectionsUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
@@ -14,7 +12,6 @@ import static org.petstar.configurations.utils.getPorcentajeParo;
 import static org.petstar.configurations.utils.getTotalHoras;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import org.petstar.controller.ControllerAutenticacion;
-import org.petstar.controller.ControllerReportes;
 import org.petstar.dao.ETAD.EnlaceObjetivosDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
@@ -30,7 +27,6 @@ import org.petstar.dto.ResultSQLDate;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.ETAD.EnlaceObjetivosResponse;
 import org.petstar.model.OutputJson;
-import org.petstar.model.ReportesResponseJson;
 import org.petstar.model.ResponseJson;
 
 /**
