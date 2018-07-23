@@ -63,6 +63,12 @@ public class EtadIndicadores extends HttpServlet {
                 case "insertIndicadores":
                     output = controller.insertIndicadores(request);
                     break;
+                case "validateIndicadores":
+                    output = controller.changeEstatusIndicadoresDiarios(request, 1);
+                    break;
+                case "removeValidationIndicadores":
+                    output = controller.changeEstatusIndicadoresDiarios(request, 0);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();

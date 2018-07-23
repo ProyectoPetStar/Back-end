@@ -102,7 +102,7 @@ public class IndicadoresDiariosDAO {
         
         for(PetIndicadorDiario row:listIndicador){
             Object[] param = { dia, row.getValor(), row.getId_meta_kpi(),
-                row.getId_grupo(), 1, usuario};
+                row.getId_grupo(), 0, usuario};
             qr.update(sql.toString(), param);
         }
     }
@@ -143,5 +143,22 @@ public class IndicadoresDiariosDAO {
             Object[] param = { row.getValor(), fecha, usuario, row.getId_indicador_diario() };
             qr.update(sql.toString(), param);
         }
+    }
+    
+    public void changeEstatusIndicadoresDiarios(Date fecha, int idGrupo, int idEtad, int estatus)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE ind SET estatus = ")
+                .append(estatus).append(" FROM pet_indicador_diario ind ")
+                .append("INNER JOIN pet_meta_kpi met ON ind.id_meta_kpi = met.id_meta_kpi ")
+                .append("INNER JOIN pet_etad_kpi etkpi ON met.id_kpi_etad = etkpi.id_kpi_etad ")
+                .append("INNER JOIN pet_cat_kpi_operativo cat ON etkpi.id_kpi_operativo = cat.id ")
+                .append("INNER JOIN pet_cat_grupo gru ON ind.id_grupo = gru.id ")
+                .append("WHERE ind.dia = '").append(fecha)
+                .append("' AND ind.id_grupo = ").append(idGrupo)
+                .append(" AND etkpi.id_etad = ").append(idEtad);
+        qr.update(sql.toString());
     }
 }
