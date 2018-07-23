@@ -1,6 +1,7 @@
 package org.petstar.dto.ETAD;
 
 import java.math.BigDecimal;
+import java.util.List;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.PeriodosDTO;
 
@@ -41,6 +42,16 @@ public class PetReporteEnlace {
     private BigDecimal ot_alimentadas_mp9;
     private boolean nuevo;
     private PeriodosDTO periodo;
+    private List<ObjetivosREOEKO> objetivosAmut1;
+    private List<ObjetivosREOEKO> objetivosAmut2;
+    private List<ObjetivosREOEKO> objetivosEx1;
+    private List<ObjetivosREOEKO> objetivosEx2;
+    private List<ObjetivosREOEKO> objetivosSSP;
+    private List<ReporteEnlaceDetail> kpisAmut1;
+    private List<ReporteEnlaceDetail> kpisAmut2;
+    private List<ReporteEnlaceDetail> kpisEx1;
+    private List<ReporteEnlaceDetail> kpisEx2;
+    private List<ReporteEnlaceDetail> kpisSSP;
 
     public int getId_reporte_enlace() {
         return id_reporte_enlace;
@@ -297,7 +308,86 @@ public class PetReporteEnlace {
     public void setPeriodo(PeriodosDTO periodo) {
         this.periodo = periodo;
     }
-    
+
+    public List<ObjetivosREOEKO> getObjetivosAmut1() {
+        return objetivosAmut1;
+    }
+
+    public void setObjetivosAmut1(List<ObjetivosREOEKO> objetivosAmut1) {
+        this.objetivosAmut1 = objetivosAmut1;
+    }
+
+    public List<ObjetivosREOEKO> getObjetivosAmut2() {
+        return objetivosAmut2;
+    }
+
+    public void setObjetivosAmut2(List<ObjetivosREOEKO> objetivosAmut2) {
+        this.objetivosAmut2 = objetivosAmut2;
+    }
+
+    public List<ObjetivosREOEKO> getObjetivosEx1() {
+        return objetivosEx1;
+    }
+
+    public void setObjetivosEx1(List<ObjetivosREOEKO> objetivosEx1) {
+        this.objetivosEx1 = objetivosEx1;
+    }
+
+    public List<ObjetivosREOEKO> getObjetivosEx2() {
+        return objetivosEx2;
+    }
+
+    public void setObjetivosEx2(List<ObjetivosREOEKO> objetivosEx2) {
+        this.objetivosEx2 = objetivosEx2;
+    }
+
+    public List<ObjetivosREOEKO> getObjetivosSSP() {
+        return objetivosSSP;
+    }
+
+    public void setObjetivosSSP(List<ObjetivosREOEKO> objetivosSSP) {
+        this.objetivosSSP = objetivosSSP;
+    }
+
+    public List<ReporteEnlaceDetail> getKpisAmut1() {
+        return kpisAmut1;
+    }
+
+    public void setKpisAmut1(List<ReporteEnlaceDetail> kpisAmut1) {
+        this.kpisAmut1 = kpisAmut1;
+    }
+
+    public List<ReporteEnlaceDetail> getKpisAmut2() {
+        return kpisAmut2;
+    }
+
+    public void setKpisAmut2(List<ReporteEnlaceDetail> kpisAmut2) {
+        this.kpisAmut2 = kpisAmut2;
+    }
+
+    public List<ReporteEnlaceDetail> getKpisEx1() {
+        return kpisEx1;
+    }
+
+    public void setKpisEx1(List<ReporteEnlaceDetail> kpisEx1) {
+        this.kpisEx1 = kpisEx1;
+    }
+
+    public List<ReporteEnlaceDetail> getKpisEx2() {
+        return kpisEx2;
+    }
+
+    public void setKpisEx2(List<ReporteEnlaceDetail> kpisEx2) {
+        this.kpisEx2 = kpisEx2;
+    }
+
+    public List<ReporteEnlaceDetail> getKpisSSP() {
+        return kpisSSP;
+    }
+
+    public void setKpisSSP(List<ReporteEnlaceDetail> kpisSSP) {
+        this.kpisSSP = kpisSSP;
+    }
     
     public PetReporteEnlace(int id_periodo) throws Exception {
         PeriodosDAO periodosDAO = new PeriodosDAO();
