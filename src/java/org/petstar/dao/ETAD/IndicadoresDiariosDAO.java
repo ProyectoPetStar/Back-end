@@ -25,7 +25,7 @@ public class IndicadoresDiariosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT indicador.dia, indicador.id_grupo, gru.valor AS valor_grupo ")
+        sql.append("SELECT indicador.dia, indicador.estatus, indicador.id_grupo, gru.valor AS valor_grupo ")
                 .append("FROM pet_indicador_diario indicador INNER JOIN pet_meta_kpi meta ")
                 .append("ON indicador.id_meta_kpi = meta.id_meta_kpi INNER JOIN ")
                 .append("pet_etad_kpi kpi ON meta.id_kpi_etad = kpi.id_kpi_etad ")
@@ -33,7 +33,7 @@ public class IndicadoresDiariosDAO {
                 .append("WHERE kpi.id_etad = ").append(idEtad)
                 .append(" AND MONTH(indicador.dia) = ").append(periodo.getMes())
                 .append(" AND YEAR(indicador.dia) = ").append(periodo.getAnio())
-                .append(" GROUP BY indicador.dia, indicador.id_grupo, gru.valor");
+                .append(" GROUP BY indicador.dia, indicador.estatus, indicador.id_grupo, gru.valor");
         
         ResultSetHandler rsh = new BeanListHandler(PetIndicadorDiario.class);
         List<PetIndicadorDiario> lisData = (List<PetIndicadorDiario>) qr.query(sql.toString(), rsh);
