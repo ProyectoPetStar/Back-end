@@ -1,6 +1,7 @@
 package org.petstar.dto.ETAD;
 
 import java.math.BigDecimal;
+import org.petstar.dto.PeriodosDTO;
 
 /**
  *
@@ -12,6 +13,7 @@ public class PetMetaKpi {
     private int id_periodo;
     private int id_kpi_etad;
     private PetEtadKpi etadKpi;
+    private PeriodosDTO periodo;
 
     public int getId_meta_kpi() {
         return id_meta_kpi;
@@ -51,5 +53,13 @@ public class PetMetaKpi {
 
     public void setEtadKpi(PetEtadKpi etadKpi) {
         this.etadKpi = etadKpi;
+    }
+
+    public PeriodosDTO getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(PeriodosDTO periodo) {
+        this.periodo = periodo;
     }
 }

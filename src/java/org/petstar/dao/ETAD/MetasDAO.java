@@ -9,6 +9,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ETAD.PetMetaKpi;
 import org.petstar.dto.ResultInteger;
@@ -50,7 +51,9 @@ public class MetasDAO {
         PetMetaKpi data = (PetMetaKpi) qr.query(sql.toString(), rsh, params);
         
         PetEtadKpiDao etadKpiDao = new PetEtadKpiDao();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         data.setEtadKpi(etadKpiDao.getEtadKpiById(data.getId_kpi_etad()));
+        data.setPeriodo(periodosDAO.getPeriodoById(data.getId_periodo()));
         return data;
     }
     
