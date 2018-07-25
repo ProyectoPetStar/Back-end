@@ -867,14 +867,20 @@ public class ReportesController {
         
         HashMap<String, Object> mapa = new HashMap<>();
         BigDecimal promedio = BigDecimal.ZERO;
-        promedio.add(new BigDecimal(totalBonoA)).add(new BigDecimal(totalBonoB))
+        promedio = promedio.add(new BigDecimal(totalBonoA)).add(new BigDecimal(totalBonoB))
                 .add(new BigDecimal(totalBonoC)).add(new BigDecimal(totalBonoD));
-        promedio.divide(new BigDecimal(4), 2, RoundingMode.CEILING);
+        promedio = promedio.divide(new BigDecimal(4), 2, RoundingMode.CEILING);
         mapa.put("promedio", promedio);
         mapa.put("resBonoA", totalBonoA);
-        mapa.put("resBonoB", totalBonoB);
-        mapa.put("resBonoC", totalBonoC);
-        mapa.put("resBonoD", totalBonoD);
+        if(idEtad != 6 && idEtad != 7 ){
+            mapa.put("resBonoB", totalBonoB);
+            mapa.put("resBonoC", totalBonoC);
+            mapa.put("resBonoD", totalBonoD);
+        }else{
+            mapa.put("resBonoB", "");
+            mapa.put("resBonoC", "");
+            mapa.put("resBonoD", "");
+        }
         return mapa;
     }
     
