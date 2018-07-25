@@ -58,7 +58,7 @@ public class PonderacionMasivaController {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 
-                data.setListPeriodos(periodosDAO.getPeriodos());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
                 data.setYearsForKPI(periodosDAO.yearsForPonderacionKpi());
                 data.setListYearsOP(periodosDAO.yearsWithPonderacionObjetivos());

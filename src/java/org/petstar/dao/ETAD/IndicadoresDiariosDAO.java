@@ -15,6 +15,8 @@ import org.petstar.dto.ETAD.PetIndicadorDiario;
 import org.petstar.dto.ETAD.PetMetaKpi;
 import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
+import static org.petstar.configurations.utils.obtenerAnio;
+import static org.petstar.configurations.utils.obtenerMes;
 
 /**
  *
@@ -67,11 +69,14 @@ public class IndicadoresDiariosDAO {
         
         List<PetIndicadorDiario> listIndicadores = new ArrayList<>();
         PetEtadKpiDao etadKpiDao = new PetEtadKpiDao();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         for(PetMetaKpi row:lisData){
             PetIndicadorDiario diario = new PetIndicadorDiario();
             row.setEtadKpi(etadKpiDao.getEtadKpiById(row.getId_kpi_etad()));
             diario.setMetaKpi(row);
             diario.setId_meta_kpi(row.getId_meta_kpi());
+            diario.setPeriodo(periodosDAO.
+                    getPeriodoByMesAndAnio(obtenerMes(dia), obtenerAnio(dia)));
             listIndicadores.add(diario);
         }
         return listIndicadores;

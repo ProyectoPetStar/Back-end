@@ -42,7 +42,7 @@ public class MetasController {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 
                 data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
-                data.setListPeriodos(periodosDAO.getPeriodos());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);

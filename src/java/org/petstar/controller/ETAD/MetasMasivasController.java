@@ -50,7 +50,7 @@ public class MetasMasivasController {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 
-                data.setListPeriodos(periodosDAO.getPeriodos());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListEtad(catalogosDAO.getCatalogosActive("pet_cat_etad"));
                 
                 output.setData(data);
