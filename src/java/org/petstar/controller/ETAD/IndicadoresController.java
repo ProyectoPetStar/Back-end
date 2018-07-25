@@ -22,6 +22,8 @@ import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.convertStringToSql;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.getCurrentDate;
+import static org.petstar.configurations.utils.getCurrentDayByTurno;
+import static org.petstar.configurations.utils.getTurnoForSaveProduction;
 import org.petstar.dao.ETAD.IndicadoresMensualesDAO;
 import org.petstar.dto.ETAD.PetIndicadorMensual;
 
@@ -50,6 +52,8 @@ public class IndicadoresController {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 
+                data.setDia_string(convertSqlToDay(getCurrentDayByTurno(
+                        getTurnoForSaveProduction()), new SimpleDateFormat("dd/MM/yyyy")));
                 data.setListPeriodos(periodosDAO.getPeriodos());
                 data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
                 data.setListGrupos(catalogosDAO.getCatalogosActive("pet_cat_grupo"));

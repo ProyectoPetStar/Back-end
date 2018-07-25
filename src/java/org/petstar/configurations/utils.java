@@ -55,7 +55,6 @@ public class utils {
 	try {
             date = formatInput.parse(fecha);
 	} catch (ParseException e) {
-            e.printStackTrace();
 	}
 		
 	String validDay = formatOutput.format(date); 

@@ -11,11 +11,20 @@ import org.petstar.dto.PeriodosDTO;
  * @author Tech-Pro
  */
 public class IndicadoresResponse {
+    private String dia_string;
     private List<CatalogosDTO> listEtads;
     private List<CatalogosDTO> listGrupos;
     private List<PeriodosDTO> listPeriodos;
     private List<PetIndicadorDiario> listIndicadorDiarios;
     private List<PetIndicadorMensual> listIndicadorMensuales;
+
+    public String getDia_string() {
+        return dia_string;
+    }
+
+    public void setDia_string(String dia_string) {
+        this.dia_string = dia_string;
+    }
 
     public List<CatalogosDTO> getListEtads() {
         return listEtads;
