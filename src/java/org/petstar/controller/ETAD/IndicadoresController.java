@@ -54,7 +54,7 @@ public class IndicadoresController {
                 
                 data.setDia_string(convertSqlToDay(getCurrentDayByTurno(
                         getTurnoForSaveProduction()), new SimpleDateFormat("dd/MM/yyyy")));
-                data.setListPeriodos(periodosDAO.getPeriodos());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
                 data.setListGrupos(catalogosDAO.getCatalogosActive("pet_cat_grupo"));
                 
