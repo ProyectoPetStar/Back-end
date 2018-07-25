@@ -10,6 +10,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dao.CatalogosDAO;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ETAD.PetIndicadorDiario;
 import org.petstar.dto.ETAD.PetMetaKpi;
 import org.petstar.dto.PeriodosDTO;
@@ -39,8 +40,10 @@ public class IndicadoresDiariosDAO {
         List<PetIndicadorDiario> lisData = (List<PetIndicadorDiario>) qr.query(sql.toString(), rsh);
         
         CatalogosDAO catalogosDAO = new CatalogosDAO();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         for(PetIndicadorDiario row:lisData){
             row.setGrupo(catalogosDAO.getDescripcionById("pet_cat_grupo", row.getId_grupo()));
+            row.setPeriodo(periodosDAO.getPeriodoById(periodo.getId_periodo()));
         }
         return lisData;
     }
