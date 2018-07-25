@@ -33,7 +33,9 @@ public class MetasDAO {
         List<PetMetaKpi> listData = (List<PetMetaKpi>) qr.query(sql.toString(), rsh);
         
         PetEtadKpiDao etadKpiDao = new PetEtadKpiDao();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         for(PetMetaKpi row:listData){
+            row.setPeriodo(periodosDAO.getPeriodoById(row.getId_periodo()));
             row.setEtadKpi(etadKpiDao.getEtadKpiById(row.getId_kpi_etad()));
         }
         return listData;

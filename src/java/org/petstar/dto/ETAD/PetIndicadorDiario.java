@@ -3,6 +3,7 @@ package org.petstar.dto.ETAD;
 import java.math.BigDecimal;
 import java.sql.Date;
 import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.PeriodosDTO;
 
 /**
  *
@@ -18,6 +19,7 @@ public class PetIndicadorDiario {
     private CatalogosDTO grupo;
     private PetMetaKpi metaKpi;
     private String dia_string;
+    private PeriodosDTO periodo;
 
     public int getId_indicador_diario() {
         return id_indicador_diario;
@@ -89,5 +91,13 @@ public class PetIndicadorDiario {
 
     public void setDia_string(String dia_string) {
         this.dia_string = dia_string;
+    }
+
+    public PeriodosDTO getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(PeriodosDTO periodo) {
+        this.periodo = periodo;
     }
 }
