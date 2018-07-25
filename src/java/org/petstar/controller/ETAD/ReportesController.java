@@ -58,7 +58,7 @@ public class ReportesController {
                 
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GROUP));
                 data.setListEtads(catalogosDAO.getCatalogosActive(TABLE_ETAD));
-                data.setListPeriodos(periodosDAO.getPeriodos());
+                data.setListPeriodos(periodosDAO.getAllPeriodos());
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
