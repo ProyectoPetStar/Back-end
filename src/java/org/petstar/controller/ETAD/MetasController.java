@@ -71,14 +71,17 @@ public class MetasController {
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 MetasResponse metasResponse= new MetasResponse();
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 MetasDAO metasDAO = new MetasDAO();
                 
                 List<PetMetaKpi> list = metasDAO.getMetasKPIByEtadAndPeriodo(idEtad, idPeriodo);
                 if(!list.isEmpty()){
                     metasResponse.setListMetasKpiOperativos(list);
-                    
                 }else{
                     list = metasDAO.getKpisWithoutMeta(idEtad);
+                    for(PetMetaKpi meta:list){
+                        meta.setPeriodo(periodosDAO.getPeriodoById(idPeriodo));
+                    }
                     metasResponse.setListMetasKpiOperativos(list);
                 }
                 output.setData(metasResponse);
