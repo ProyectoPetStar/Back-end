@@ -38,9 +38,11 @@ public class IndicadoresMensualesDAO {
         
         List<PetIndicadorMensual> listIndicadores = new ArrayList<>();
         PetEtadKpiDao etadKpiDao = new PetEtadKpiDao();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         for(PetMetaKpi row:lisData){
             PetIndicadorMensual mensual = new PetIndicadorMensual();
             row.setEtadKpi(etadKpiDao.getEtadKpiById(row.getId_kpi_etad()));
+            row.setPeriodo(periodosDAO.getPeriodoById(idPeriodo));
             mensual.setMetaKpi(row);
             mensual.setId_meta_kpi(row.getId_meta_kpi());
             listIndicadores.add(mensual);
