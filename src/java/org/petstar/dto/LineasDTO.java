@@ -15,6 +15,7 @@ public class LineasDTO {
     private String descripcion;
     private int activo;
     private int id_gpo_linea;
+    private int id_etad;
     private String descripcion_gpo_linea;
 
     public int getId_linea() {
@@ -55,6 +56,14 @@ public class LineasDTO {
 
     public void setId_gpo_linea(int id_gpo_linea) {
         this.id_gpo_linea = id_gpo_linea;
+    }
+
+    public int getId_etad() {
+        return id_etad;
+    }
+
+    public void setId_etad(int id_etad) {
+        this.id_etad = id_etad;
     }
 
     public String getDescripcion_gpo_linea() {

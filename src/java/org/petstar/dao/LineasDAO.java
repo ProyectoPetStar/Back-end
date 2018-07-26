@@ -68,9 +68,9 @@ public class LineasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_insertPetCatLineas ?, ?, ?");
+        sql.append("EXEC sp_insertPetCatLineas ?, ?, ?, ?");
         Object[] params = {
-            linea.getValor(), linea.getDescripcion(), linea.getId_gpo_linea()
+            linea.getValor(), linea.getDescripcion(), linea.getId_gpo_linea(), linea.getId_etad()
         };
         
         qr.update(sql.toString(), params);
@@ -87,9 +87,10 @@ public class LineasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_updatePetCatLinea ?, ?, ?, ?");
+        sql.append("EXEC sp_updatePetCatLinea ?, ?, ?, ?, ?");
         Object[] params = {
-            linea.getId_linea(), linea.getValor(), linea.getDescripcion(), linea.getId_gpo_linea()
+            linea.getId_linea(), linea.getValor(), linea.getDescripcion(), 
+            linea.getId_gpo_linea(), linea.getId_etad()
         };
         
         qr.update(sql.toString(), params);
