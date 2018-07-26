@@ -106,19 +106,20 @@ public class UsersDAO {
      * @param idAcceso
      * @param idLinea
      * @param idGrupo
+     * @param idEtad
      * @param idUsuarioMod
      * @param fecha
      * @throws Exception 
      */
-    public void updateUserETAD(int idAcceso, int idLinea, int idGrupo, 
+    public void updateUserETAD(int idAcceso, int idLinea, int idGrupo, int idEtad,
             int idUsuarioMod, Date fecha) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_updateEtad ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_updateEtad ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            idAcceso, idLinea, idGrupo, idUsuarioMod, fecha
+            idAcceso, idLinea, idGrupo, idEtad, idUsuarioMod, fecha
         };
         
         qr.update(sql.toString(), params);
@@ -130,20 +131,21 @@ public class UsersDAO {
      * @param numeroEmpleado
      * @param idLinea
      * @param idGrupo
+     * @param idEtad
      * @param fecha
      * @param idSistema
      * @param idUserRegistra
      * @throws Exception 
      */
-    public void insertNewUser(int numeroEmpleado, int idLinea, int idGrupo, Date fecha,
+    public void insertNewUser(int numeroEmpleado, int idLinea, int idGrupo, int idEtad, Date fecha,
             int idSistema, int idUserRegistra) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
       
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_insertUsuarios ?, ?, ?, ?, ?, ?");
+        sql.append("EXEC sp_insertUsuarios ?, ?, ?, ?, ?, ?, ?");
         Object[] params = {
-            numeroEmpleado, idSistema, idGrupo, idLinea, fecha, idUserRegistra
+            numeroEmpleado, idSistema, idGrupo, idLinea, idEtad, fecha, idUserRegistra
         };
         
         qr.update(sql.toString(), params);

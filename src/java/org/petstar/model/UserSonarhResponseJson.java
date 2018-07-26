@@ -16,6 +16,7 @@ public class UserSonarhResponseJson {
     private UserSonarhDTO usuarioSonarh;
     private List<UserSonarhDTO> listUserSonarh;
     private List<LineasDTO> listLineas;
+    private List<CatalogosDTO> listEtads;
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listPerfiles;
 
@@ -41,6 +42,14 @@ public class UserSonarhResponseJson {
 
     public void setListLineas(List<LineasDTO> listLineas) {
         this.listLineas = listLineas;
+    }
+
+    public List<CatalogosDTO> getListEtads() {
+        return listEtads;
+    }
+
+    public void setListEtads(List<CatalogosDTO> listEtads) {
+        this.listEtads = listEtads;
     }
 
     public List<CatalogosDTO> getListGrupos() {

@@ -44,6 +44,7 @@ public class ControllerAutenticacion {
                 .claim("nombre", usuario.getNombre())
                 .claim("id_grupo",usuario.getId_grupo())
                 .claim("id_linea", usuario.getId_linea())
+                .claim("id_etad", usuario.getId_etad())
                 .claim("perfiles", usuario.getPerfiles())
                 .claim("roles_oee", usuario.getRoles_oee())
                 .claim("roles_etad", usuario.getRoles_etad())
@@ -79,6 +80,7 @@ public class ControllerAutenticacion {
                 usuario.setNombre(claims.get("nombre", String.class));
                 usuario.setId_grupo(claims.get("id_grupo", Integer.class));
                 usuario.setId_linea(claims.get("id_linea", Integer.class));
+                usuario.setId_etad(claims.get("id_etad", Integer.class));
                 usuario.setPerfiles(claims.get("perfiles", String.class));
                 usuario.setRoles_oee(claims.get("roles_oee", String.class));
                 usuario.setRoles_etad(claims.get("roles_etad", String.class));

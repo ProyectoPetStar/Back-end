@@ -27,6 +27,7 @@ import org.petstar.dto.UserDTO;
 public class ControllerUsers {
     private static final String TABLE_GRUPOS = "pet_cat_grupo";
     private static final String TABLE_PERFIL = "pet_cat_perfil";
+    private static final String TABLE_ETADS  = "pet_cat_etad";
     
     /**
      * Lista de usuarios Sonarh
@@ -84,6 +85,7 @@ public class ControllerUsers {
                 
                 data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
                 data.setListLineas(lineasDAO.getLineasActiveByUser());
+                data.setListEtads(catalogosDAO.getCatalogosActive(TABLE_ETADS));
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                 data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
                 
@@ -123,6 +125,7 @@ public class ControllerUsers {
                 ResultInteger result = userDAO.validaExistUsers(numeroEmpleado);
                 if(result.getResult().equals(1)){
                     UserSonarhResponseJson userData = new UserSonarhResponseJson();
+                    userData.setListEtads(catalogosDAO.getCatalogosActive(TABLE_ETADS));
                     userData.setUsuarioSonarh(userDAO.getUserSonarhById(numeroEmpleado));
                     userData.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                     userData.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
@@ -192,6 +195,7 @@ public class ControllerUsers {
         int numeroEmpleado = Integer.parseInt(request.getParameter("numero_empleado"));
         int idLinea = Integer.parseInt(request.getParameter("id_linea"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int idEtad = Integer.parseInt(request.getParameter("id_etad"));
         String perfiles = request.getParameter("perfiles");
         String[] listPerfiles = perfiles.split(",");
         
@@ -206,7 +210,7 @@ public class ControllerUsers {
                 ResultInteger existeUSuario = userDAO.validaExistUsers(numeroEmpleado);
                 if(existeUSuario.getResult().equals(1)){
                     Date fecha = getCurrentDate();
-                    userDAO.insertNewUser(numeroEmpleado, idLinea, idGrupo, fecha, 1, usuario.getId_acceso());
+                    userDAO.insertNewUser(numeroEmpleado, idLinea, idGrupo, idEtad, fecha, 1, usuario.getId_acceso());
 
                     ResultInteger result = userDAO.getIdUserByNumeroEmpleado(numeroEmpleado);
                     if(null != result){
@@ -246,6 +250,7 @@ public class ControllerUsers {
         int idAcceso = Integer.parseInt(request.getParameter("id_acceso"));
         int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
         int idLinea = Integer.parseInt(request.getParameter("id_linea"));
+        int idEtad = Integer.parseInt(request.getParameter("id_etad"));
         String perfiles = request.getParameter("perfiles");
         
         UserResponseJson response = new UserResponseJson();
@@ -258,7 +263,7 @@ public class ControllerUsers {
                 UsersDAO userDAO = new UsersDAO();
                 
                 Date fecha = getCurrentDate();
-                userDAO.updateUserETAD(idAcceso, idLinea, idGrupo, usuario.getId_acceso(), fecha);
+                userDAO.updateUserETAD(idAcceso, idLinea, idGrupo, idEtad, usuario.getId_acceso(), fecha);
                 String[] listPerfiles = perfiles.split(",");
                 for(String perfil:listPerfiles){
                     userDAO.registraPerfilByUser(idAcceso, Integer.parseInt(perfil));
@@ -360,6 +365,7 @@ public class ControllerUsers {
                 LineasDAO lineasDAO = new LineasDAO();
                 UserETADResponseJson data = new UserETADResponseJson();
                 
+                data.setListEtads(catalogosDAO.getCatalogosActive(TABLE_ETADS));
                 data.setUserETAD(usersDAO.getUserEtadByID(sesion.getId_acceso()));
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                 data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
