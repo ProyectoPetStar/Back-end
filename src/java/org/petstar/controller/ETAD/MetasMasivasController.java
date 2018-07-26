@@ -20,11 +20,13 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.Tools.saveFIle;
 import static org.petstar.configurations.Tools.validateFileKPIOperativo;
+import static org.petstar.configurations.Tools.validaCorrectFileMetas;
 import static org.petstar.configurations.utils.getCurrentDate;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.MetasMasivasDAO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
+import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
 
 /**
@@ -37,6 +39,7 @@ public class MetasMasivasController {
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_FAILED = "Ha ocurrido un error al cargar el archivo";
     private static final String MSG_INVALID= "El archivo contiene errores";
+    private static final String MSG_PERIODO= "El periodo ya esta cerrado.";
     
     public OutputJson loadCombobox(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -88,24 +91,38 @@ public class MetasMasivasController {
                 boolean save = saveFIle(stringFile, nameFile);
                 if(save){
                     MetasMasivasDAO masivasDAO = new MetasMasivasDAO();
+                    PeriodosDAO periodosDAO = new PeriodosDAO();
+                    PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
                     OutputJson valid = new OutputJson();
                     ResponseJson rj = new ResponseJson();
                     
-                    valid = validateFileKPIOperativo(request, nameFile, session.getId_acceso());
-                    rj = (ResponseJson) valid.getResponse();
-                   
-                    if(rj.isSucessfull()){
-                        ResultInteger resultFile = masivasDAO.insertFileKPI(nameFile, session.getId_acceso(), getCurrentDate());
-                        masivasDAO.cleanTmpKPI(idPeriodo);
-                        masivasDAO.insertMetasKPIOperativos((List<HashMap>) valid.getData(), resultFile.getResult());
-                        
-                        MetasMasivasModel data = new MetasMasivasModel();
-                        data.setListData((List<HashMap>) valid.getData());
-                        output.setData(data);
-                        response.setMessage(MSG_SUCESS);
-                        response.setSucessfull(true);
+                    if(periodo.getEstatus() == 0){
+                        boolean correcto = validaCorrectFileMetas(idPeriodo, nameFile);
+                        if(correcto){
+                            valid = validateFileKPIOperativo(request, nameFile, session.getId_acceso());
+                            rj = (ResponseJson) valid.getResponse();
+
+                            if(rj.isSucessfull()){
+                                ResultInteger resultFile = masivasDAO.insertFileKPI(nameFile, 
+                                        session.getId_acceso(), getCurrentDate());
+                                masivasDAO.cleanTmpKPI(idPeriodo);
+                                masivasDAO.insertMetasKPIOperativos((List<HashMap>) valid.getData(), resultFile.getResult());
+
+                                MetasMasivasModel data = new MetasMasivasModel();
+                                data.setListData((List<HashMap>) valid.getData());
+                                output.setData(data);
+                                response.setMessage(MSG_SUCESS);
+                                response.setSucessfull(true);
+                            }else{
+                                response.setMessage(MSG_INVALID);
+                                response.setSucessfull(false);
+                            }
+                        }else{
+                            response.setMessage(MSG_INVALID);
+                            response.setSucessfull(false);
+                        }
                     }else{
-                        response.setMessage(MSG_INVALID);
+                        response.setMessage(MSG_PERIODO);
                         response.setSucessfull(false);
                     }
                 }else{
