@@ -15,6 +15,8 @@ import org.petstar.model.ResponseJson;
 import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.Validation.validateEnteros;
 import static org.petstar.configurations.Validation.validateDecimales;
+import org.petstar.dao.ETAD.KPIOperativosDAO;
+import org.petstar.dto.ETAD.PetCatKpiOperativo;
 
 /**
  *
@@ -59,7 +61,6 @@ public class Tools {
             }
            
         }catch(IOException ex){
-            ex.printStackTrace();
             estatus=false;
         }
         return estatus;
@@ -76,7 +77,6 @@ public class Tools {
         try {
             CsvReader csvReader = new CsvReader(pathFile);
             csvReader.readHeaders();
-            Date date = getCurrentDate();
             res.setSucessfull(true);
             
             while (csvReader.readRecord()) {
@@ -197,5 +197,31 @@ public class Tools {
         }
         out.setResponse(res);
         return out;
+    }
+    
+    public static boolean validaCorrectFileMetas(int idEtad, String nameFile) throws Exception{
+        String pathFile = Configuration.PATH_UPLOAD_FILE + nameFile;
+        boolean bandera = true;
+        try {
+            CsvReader csvReader = new CsvReader(pathFile);
+            csvReader.readHeaders();
+            KPIOperativosDAO kPIOperativosDAO = new KPIOperativosDAO();
+            List<PetCatKpiOperativo> listKPIOperativos = kPIOperativosDAO.getListKPIOperativosByEtad(idEtad);
+            ArrayList Lista = new ArrayList();
+            for(PetCatKpiOperativo row:listKPIOperativos){
+                Lista.add(row.getValor());
+            }
+            
+            while (csvReader.readRecord()) {
+                if(!Lista.contains(csvReader.get("KPI"))){
+                    bandera = false;
+                }
+            }
+            csvReader.close();
+        }catch(IOException ex){
+            bandera= false;
+        }
+        
+        return bandera;
     }
 }
