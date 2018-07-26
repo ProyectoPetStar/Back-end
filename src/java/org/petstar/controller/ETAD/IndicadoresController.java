@@ -84,6 +84,7 @@ public class IndicadoresController {
             
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idGrupo = Integer.valueOf(request.getParameter("id_grupo"));
             int idEtad = Integer.valueOf(request.getParameter("id_etad"));
             String frecuencia = request.getParameter("frecuencia");
             UserDTO session = autenticacion.isValidToken(request);
@@ -95,7 +96,7 @@ public class IndicadoresController {
                 if(frecuencia.equals("mensual")){
                     IndicadoresMensualesDAO mensualesDAO = new IndicadoresMensualesDAO();
                     
-                    data.setListIndicadorMensuales(mensualesDAO.getIndicadoresExtract(idPeriodo, idEtad));
+                    data.setListIndicadorMensuales(mensualesDAO.getIndicadoresExtract(idPeriodo, idEtad, idGrupo));
                     if(!data.getListIndicadorMensuales().isEmpty()){
                         output.setData(data);
                         response = message(true, MSG_SUCESS);
@@ -105,7 +106,7 @@ public class IndicadoresController {
                 }else if (frecuencia.equals("diario")){
                     IndicadoresDiariosDAO diariosDAO = new IndicadoresDiariosDAO();
                     
-                    data.setListIndicadorDiarios(diariosDAO.getIndicadoresExtract(periodo, idEtad));
+                    data.setListIndicadorDiarios(diariosDAO.getIndicadoresExtract(periodo, idEtad, idGrupo));
                     if(!data.getListIndicadorDiarios().isEmpty()){
                         for(PetIndicadorDiario row:data.getListIndicadorDiarios()){
                             row.setDia(sumarFechasDias(row.getDia(), 2));

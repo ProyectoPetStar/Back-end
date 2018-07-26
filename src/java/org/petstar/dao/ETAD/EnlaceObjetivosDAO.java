@@ -10,6 +10,7 @@ import org.petstar.configurations.PoolDataSource;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ETAD.PetReporteEnlace;
 import org.petstar.dto.ETAD.ReporteEnlaceDetail;
+import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultBigDecimal;
 import org.petstar.dto.ResultInteger;
 
@@ -136,6 +137,19 @@ public class EnlaceObjetivosDAO {
         
         ResultSetHandler rsh = new BeanListHandler(ReporteEnlaceDetail.class);
         List<ReporteEnlaceDetail> data = (List<ReporteEnlaceDetail>) qr.query(sql.toString(), rsh, params);
+        return data;
+    }
+    
+    public List<ResultBigDecimal> getRealKpi(PeriodosDTO periodo, int idLinea) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_ReporteDatosReal ?, ?, ?, ?");
+        Object[] params = { periodo.getMes(), periodo.getAnio(), idLinea, periodo.getId_periodo() };
+        
+        ResultSetHandler rsh = new BeanListHandler(ResultBigDecimal.class);
+        List<ResultBigDecimal> data = (List<ResultBigDecimal>) qr.query(sql.toString(), rsh, params);
         return data;
     }
     

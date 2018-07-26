@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 public class ReporteEnlaceDetail {
     private int linea;
     private BigDecimal meta;
+    private BigDecimal real;
 
     public int getLinea() {
         return linea;
@@ -24,5 +25,13 @@ public class ReporteEnlaceDetail {
 
     public void setMeta(BigDecimal meta) {
         this.meta = meta;
+    }
+
+    public BigDecimal getReal() {
+        return real;
+    }
+
+    public void setReal(BigDecimal real) {
+        this.real = real;
     }
 }
