@@ -24,6 +24,8 @@ import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.getCurrentDayByTurno;
 import static org.petstar.configurations.utils.getTurnoForSaveProduction;
+import static org.petstar.configurations.utils.obtenerAnio;
+import static org.petstar.configurations.utils.obtenerMes;
 import org.petstar.dao.ETAD.IndicadoresMensualesDAO;
 import org.petstar.dto.ETAD.PetIndicadorMensual;
 
@@ -37,6 +39,7 @@ public class IndicadoresController {
     private static final String MSG_ERROR  = "Descripción de error: ";
     private static final String MSG_RECORD = "Ya hay indicadores registrados.";
     private static final String MSG_EMPTY  = "No hay indicadores registrados.";
+    private static final String MSG_PERIODO= "El periodo ya esta cerrado.";
     private static final String MSG_METAS  = "No hay metas registradas para el Área y Día Seleccionado";
     private static final String MSG_METAM  = "No hay metas registradas para el Área y Periodo Seleccionado";
     
@@ -189,6 +192,7 @@ public class IndicadoresController {
                 String jsonString = request.getParameter("datos");
                 
                 JSONObject jsonResponse = new JSONObject(jsonString);
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 
                 if(frecuencia.equals("mensual")){
                     IndicadoresMensualesDAO mensualesDAO = new IndicadoresMensualesDAO();
@@ -196,31 +200,42 @@ public class IndicadoresController {
                     TypeToken<List<PetIndicadorMensual>> token = new TypeToken<List<PetIndicadorMensual>>(){};
                     List<PetIndicadorMensual> listIndicadorM = gson.fromJson(
                             jsonResponse.getJSONArray("indicadores").toString(), token.getType());
-                    ResultInteger result = mensualesDAO.validaRecordsForPeriodoAndEtad(
-                            listIndicadorM.get(0).getId_periodo(), idEtad, listIndicadorM.get(0).getId_grupo());
+                    PeriodosDTO periodo = periodosDAO.getPeriodoById(listIndicadorM.get(0).getId_periodo());
                     
-                    if(result.getResult().equals(0)){
-                        mensualesDAO.insertIndicadoresDiarios(listIndicadorM, getCurrentDate(), session.getId_acceso());
-                        response = message(true, MSG_SUCESS);
+                    if(periodo.getEstatus() == 0){
+                        ResultInteger result = mensualesDAO.validaRecordsForPeriodoAndEtad(
+                                listIndicadorM.get(0).getId_periodo(), idEtad, listIndicadorM.get(0).getId_grupo());
+
+                        if(result.getResult().equals(0)){
+                            mensualesDAO.insertIndicadoresDiarios(listIndicadorM, getCurrentDate(), session.getId_acceso());
+                            response = message(true, MSG_SUCESS);
+                        }else{
+                            response = message(false, MSG_RECORD);
+                        }
                     }else{
-                        response = message(false, MSG_RECORD);
+                        response = message(false, MSG_PERIODO);
                     }
                 }else if(frecuencia.equals("diario")){
                     IndicadoresDiariosDAO diariosDAO = new IndicadoresDiariosDAO();
                     String dia = request.getParameter("dia");
                     Date day = convertStringToSql(dia);
+                    PeriodosDTO periodo = periodosDAO.getPeriodoByMesAndAnio(obtenerMes(day), obtenerAnio(day));
                     
-                    TypeToken<List<PetIndicadorDiario>> token = new TypeToken<List<PetIndicadorDiario>>(){};
-                    List<PetIndicadorDiario> listIndicadorD = gson.fromJson(
-                            jsonResponse.getJSONArray("indicadores").toString(), token.getType());
-                    ResultInteger result = diariosDAO.validaRecordsForDayAndEtad(
-                            day, idEtad, listIndicadorD.get(0).getId_grupo());
-                    
-                    if(result.getResult().equals(0)){
-                        diariosDAO.insertIndicadoresDiarios(listIndicadorD, day, session.getId_acceso());
-                        response = message(true, MSG_SUCESS);
+                    if(periodo.getEstatus() == 0){
+                        TypeToken<List<PetIndicadorDiario>> token = new TypeToken<List<PetIndicadorDiario>>(){};
+                        List<PetIndicadorDiario> listIndicadorD = gson.fromJson(
+                                jsonResponse.getJSONArray("indicadores").toString(), token.getType());
+                        ResultInteger result = diariosDAO.validaRecordsForDayAndEtad(
+                                day, idEtad, listIndicadorD.get(0).getId_grupo());
+
+                        if(result.getResult().equals(0)){
+                            diariosDAO.insertIndicadoresDiarios(listIndicadorD, day, session.getId_acceso());
+                            response = message(true, MSG_SUCESS);
+                        }else{
+                            response = message(false, MSG_RECORD);
+                        }
                     }else{
-                        response = message(false, MSG_RECORD);
+                        response = message(false, MSG_PERIODO);
                     }
                 }
             }else{
