@@ -48,7 +48,7 @@ public class CatalogosDAO {
      * @return
      * @throws Exception 
      */
-    public List<CatalogosDTO> getCatalogosActive(String tablename) throws Exception{
+    public List<CatalogosDTO> getCatalogosActiveConArea(String tablename) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -58,6 +58,19 @@ public class CatalogosDAO {
         
         ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
         List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh, params);
+        return data_catalogos;
+    }
+    
+    public List<CatalogosDTO> getCatalogosActive(String tablename) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM ").append(tablename).
+                append(" WHERE activo = 1 AND valor != 'SIN AREA' and valor !=  'SIN LINEA'");
+        
+        ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
+        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh);
         return data_catalogos;
     }
     
