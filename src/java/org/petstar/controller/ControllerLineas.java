@@ -75,6 +75,7 @@ public class ControllerLineas {
             LineasDTO newLinea = new LineasDTO();
             newLinea.setValor(request.getParameter("valor"));
             newLinea.setDescripcion(request.getParameter("descripcion"));
+            newLinea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_etad")));
             newLinea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_gpo_linea")));
             UserDTO sesion = autenticacion.isValidToken(request);
             
@@ -116,6 +117,7 @@ public class ControllerLineas {
         try {
             LineasDTO linea = new LineasDTO();
             linea.setId_linea(Integer.parseInt(request.getParameter("id_linea")));
+            linea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_etad")));
             linea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_gpo_linea")));
             linea.setDescripcion(request.getParameter("descripcion"));
             linea.setValor(request.getParameter("valor"));
