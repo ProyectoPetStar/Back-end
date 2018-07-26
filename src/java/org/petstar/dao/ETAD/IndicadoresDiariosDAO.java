@@ -23,7 +23,7 @@ import static org.petstar.configurations.utils.obtenerMes;
  * @author Tech-Pro
  */
 public class IndicadoresDiariosDAO {
-    public List<PetIndicadorDiario> getIndicadoresExtract(PeriodosDTO periodo, int idEtad)throws Exception{
+    public List<PetIndicadorDiario> getIndicadoresExtract(PeriodosDTO periodo, int idEtad, int idGrupo)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -34,6 +34,7 @@ public class IndicadoresDiariosDAO {
                 .append("pet_etad_kpi kpi ON meta.id_kpi_etad = kpi.id_kpi_etad ")
                 .append("INNER JOIN pet_cat_grupo gru ON indicador.id_grupo = gru.id ")
                 .append("WHERE kpi.id_etad = ").append(idEtad)
+                .append(" AND indicador.id_grupo = ").append(idGrupo)
                 .append(" AND MONTH(indicador.dia) = ").append(periodo.getMes())
                 .append(" AND YEAR(indicador.dia) = ").append(periodo.getAnio())
                 .append(" GROUP BY indicador.dia, indicador.estatus, indicador.id_grupo, gru.valor");

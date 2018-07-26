@@ -83,7 +83,7 @@ public class IndicadoresMensualesDAO {
         }
     }
     
-    public List<PetIndicadorMensual> getIndicadoresExtract(int idPeriodo, int idEtad)throws Exception{
+    public List<PetIndicadorMensual> getIndicadoresExtract(int idPeriodo, int idEtad, int idGrupo)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -95,6 +95,7 @@ public class IndicadoresMensualesDAO {
                 .append("INNER JOIN pet_cat_grupo gru ON indicador.id_grupo = gru.id ")
                 .append("INNER JOIN pet_periodo per ON indicador.id_periodo = per.id_periodo ")
                 .append("WHERE kpi.id_etad = ").append(idEtad)
+                .append(" AND indicador.id_grupo = ").append(idGrupo)
                 .append(" AND indicador.id_periodo = ").append(idPeriodo)
                 .append(" GROUP BY indicador.id_periodo, indicador.id_grupo, gru.valor");
         
