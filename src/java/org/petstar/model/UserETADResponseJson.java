@@ -18,6 +18,7 @@ public class UserETADResponseJson {
     private UserDTO userETAD;
     private List<UserDTO> listUserETAD;
     private List<LineasDTO> listLineas;
+    private List<CatalogosDTO> listEtads;
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> ListPerfiles;
 
@@ -43,6 +44,14 @@ public class UserETADResponseJson {
 
     public void setListLineas(List<LineasDTO> listLineas) {
         this.listLineas = listLineas;
+    }
+
+    public List<CatalogosDTO> getListEtads() {
+        return listEtads;
+    }
+
+    public void setListEtads(List<CatalogosDTO> listEtads) {
+        this.listEtads = listEtads;
     }
 
     public List<CatalogosDTO> getListGrupos() {

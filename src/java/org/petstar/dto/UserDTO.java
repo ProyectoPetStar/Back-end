@@ -18,6 +18,7 @@ public class UserDTO {
     private int id_grupo;
     private String valor_linea;
     private int id_linea;
+    private int id_etad;
     private int id_grupo_linea;
     private int activo;
     private String perfiles;
@@ -81,6 +82,14 @@ public class UserDTO {
 
     public void setId_linea(int id_linea) {
         this.id_linea = id_linea;
+    }
+
+    public int getId_etad() {
+        return id_etad;
+    }
+
+    public void setId_etad(int id_etad) {
+        this.id_etad = id_etad;
     }
 
     public int getId_grupo_linea() {
