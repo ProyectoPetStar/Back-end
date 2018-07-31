@@ -210,25 +210,25 @@ public class EnlaceObjetivosController {
                                 reporte.setObjetivosAmut2(this.getReporteEficiencia(idPeriodo, linea.getId_linea()));
                                 List<ReporteEnlaceDetail> listValA2 = eObjetivosDAO.getDetailsReporte(idPeriodo, linea.getId_linea());
                                 List<ResultBigDecimal> listRealA2 = eObjetivosDAO.getRealKpi(periodo, linea.getId_linea());
-                                reporte.setKpisAmut1(this.fusionDeListas(listValA2, listRealA2));
+                                reporte.setKpisAmut2(this.fusionDeListas(listValA2, listRealA2));
                                 break;
                             case 3:
                                 reporte.setObjetivosEx1(this.getReporteEficiencia(idPeriodo, linea.getId_linea()));
                                 List<ReporteEnlaceDetail> listValE1 = eObjetivosDAO.getDetailsReporte(idPeriodo, linea.getId_linea());
                                 List<ResultBigDecimal> listRealE1 = eObjetivosDAO.getRealKpi(periodo, linea.getId_linea());
-                                reporte.setKpisAmut1(this.fusionDeListas(listValE1, listRealE1));
+                                reporte.setKpisEx1(this.fusionDeListas(listValE1, listRealE1));
                                 break;
                             case 4:
                                 reporte.setObjetivosEx2(this.getReporteEficiencia(idPeriodo, linea.getId_linea()));
                                 List<ReporteEnlaceDetail> listValE2 = eObjetivosDAO.getDetailsReporte(idPeriodo, linea.getId_linea());
                                 List<ResultBigDecimal> listRealE2 = eObjetivosDAO.getRealKpi(periodo, linea.getId_linea());
-                                reporte.setKpisAmut1(this.fusionDeListas(listValE2, listRealE2));
+                                reporte.setKpisEx2(this.fusionDeListas(listValE2, listRealE2));
                                 break;
                             case 5:
                                 reporte.setObjetivosSSP(this.getReporteEficiencia(idPeriodo, linea.getId_linea()));
                                 List<ReporteEnlaceDetail> listValSSP = eObjetivosDAO.getDetailsReporte(idPeriodo, linea.getId_linea());
                                 List<ResultBigDecimal> listRealSSP = eObjetivosDAO.getRealKpi(periodo, linea.getId_linea());
-                                reporte.setKpisAmut1(this.fusionDeListas(listValSSP, listRealSSP));
+                                reporte.setKpisSSP(this.fusionDeListas(listValSSP, listRealSSP));
                                 break;
                         }
                     }
