@@ -79,6 +79,7 @@ public class MetasMasivasController {
             
         try{
             int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            int idEtad = Integer.valueOf(request.getParameter("id_etad"));
             UserDTO session = autenticacion.isValidToken(request);
             if(session != null){
                 StringBuilder stringFile = new StringBuilder();
@@ -97,7 +98,7 @@ public class MetasMasivasController {
                     ResponseJson rj = new ResponseJson();
                     
                     if(periodo.getEstatus() == 0){
-                        boolean correcto = validaCorrectFileMetas(idPeriodo, nameFile);
+                        boolean correcto = validaCorrectFileMetas(idEtad, nameFile);
                         if(correcto){
                             valid = validateFileKPIOperativo(request, nameFile, session.getId_acceso());
                             rj = (ResponseJson) valid.getResponse();
