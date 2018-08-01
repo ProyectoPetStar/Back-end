@@ -5,8 +5,13 @@
  */
 package org.petstar.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.json.JSONObject;
 import org.petstar.dao.CatalogosDAO;
+import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.UserDTO;
 import org.petstar.model.CatalogosListResponseJason;
@@ -220,6 +225,71 @@ public class ControllerCatalogos {
         }
         output.setResponse(response);
         
+        return output;
+    }
+    
+    public OutputJson getRolesByPerfil(HttpServletRequest request) {
+        int idPerfil = Integer.valueOf(request.getParameter("id_perfil"));
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+         
+        try {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
+                catalogosListResponseJason.setListCatalogosDTO(catalogosDAO.getCatalogosActive("pet_cat_rol"));
+                catalogosListResponseJason.setRolesByPerfil(catalogosDAO.getRolesByPerfil(idPerfil));
+                
+                output.setData(catalogosListResponseJason);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+                
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        
+        return output;
+    }
+    
+    public OutputJson asignacionRolesToPerfil(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        Gson gson = new Gson();
+        
+        try {
+            int idPerfil = Integer.valueOf(request.getParameter("id_perfil"));
+            String jsonString = request.getParameter("roles");
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if (sesion != null) {
+                JSONObject jsonResponse = new JSONObject(jsonString);
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                
+                TypeToken<List<CatalogosDTO>> token = new TypeToken<List<CatalogosDTO>>(){};
+                        List<CatalogosDTO> roles = gson.fromJson(jsonResponse.
+                                getJSONArray("roles").toString(), token.getType());
+                
+                catalogosDAO.asignaRolesToPerfil(idPerfil, roles);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch (Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
         return output;
     }
 }
