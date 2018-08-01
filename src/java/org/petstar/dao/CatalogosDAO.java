@@ -231,4 +231,36 @@ public class CatalogosDAO {
         ResultInteger result =  (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
     }
+    
+    public List<CatalogosDTO> getRolesByPerfil(int idPerfil) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT pcr.* FROM pet_cat_rol AS pcr ")
+                .append("INNER JOIN pet_perfil_rol AS ppr ON pcr.id = ppr.id_rol ")
+                .append("WHERE ppr.id_perfil = ").append(idPerfil).append(" AND pcr.activo=1 ");
+        
+        ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
+        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh);
+        return data_catalogos;
+    }
+    
+    public void asignaRolesToPerfil(int idPerfil, List<CatalogosDTO> roles) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        StringBuilder sqlAsignacion = new StringBuilder();
+        
+        sql.append("DELETE FROM pet_perfil_rol WHERE id_perfil = ?");
+        sqlAsignacion.append("INSERT INTO pet_perfil_rol (id_perfil,id_rol) VALUES (?,?)");
+        Object[] params = { idPerfil };
+        
+        qr.update(sql.toString(), params);
+        
+        for(CatalogosDTO rol:roles){
+            Object[] paramAsig = { idPerfil, rol.getId()};
+            qr.update(sqlAsignacion.toString(), paramAsig);
+        }
+    }
 }
