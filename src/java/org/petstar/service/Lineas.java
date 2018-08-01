@@ -47,6 +47,9 @@ public class Lineas extends HttpServlet {
         try{
             String action = request.getParameter("action");
             switch(action){
+                case "loadCombobox":
+                    output = controllerLineas.loadCombobox(request);
+                    break;
                 case "getLineas":
                     output = controllerLineas.getLineasData(request);
                     break;
