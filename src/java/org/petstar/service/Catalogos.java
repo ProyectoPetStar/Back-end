@@ -63,6 +63,12 @@ public class Catalogos extends HttpServlet {
                 case "getDataByID":
                     output = controllerCatalogos.getDataByIdCatalogo(request);
                     break;
+                case "getRolesByPerfil":
+                    output = controllerCatalogos.getRolesByPerfil(request);
+                    break;
+                case "asignaRolesToPerfil":
+                    output = controllerCatalogos.asignacionRolesToPerfil(request);
+                    break;
             }
         } catch (Exception ex) {
             ResponseJson reponseJson = new ResponseJson();
