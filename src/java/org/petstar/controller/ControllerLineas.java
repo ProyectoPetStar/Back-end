@@ -27,6 +27,34 @@ public class ControllerLineas {
     private static final String MSG_NOEXIST= "El registro no existe";
     private static final String TABLE_NAME = "pet_cat_linea";
     
+    public OutputJson loadCombobox(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson out = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDataResponseJson data = new LineasDataResponseJson();
+                data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
+                data.setListGposLinea(catalogosDAO.getCatalogosActive("pet_cat_gpo_linea"));
+
+                out.setData(data);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            } else {
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch(Exception ex) {
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        out.setResponse(response);
+        return out;
+    }
+    
     /**
      * Consulta Genral
      * Metodo que devuelve todas las lineas 
@@ -203,6 +231,8 @@ public class ControllerLineas {
                     LineasDAO lineasDAO = new LineasDAO();
                     LineasDataResponseJson data = new LineasDataResponseJson();
                     data.setLineasDTO(lineasDAO.getLineasDataById(idLinea));
+                    data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
+                    data.setListGposLinea(catalogosDAO.getCatalogosActive("pet_cat_gpo_linea"));
 
                     output.setData(data);
                     response.setSucessfull(true);
