@@ -64,6 +64,7 @@ public class Lineas extends HttpServlet {
                     break;
                 case "getDataByID":
                     output = controllerLineas.getDataCatalogosById(request);
+                    break;
             }
         } catch (Exception ex){
             ResponseJson reponseJson = new ResponseJson();
