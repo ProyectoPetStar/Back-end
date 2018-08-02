@@ -203,7 +203,7 @@ public class LineasDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_cat_linea WHERE etad = 1");
+        sql.append("SELECT * FROM pet_cat_linea WHERE valor <> 'SIN LINEA'");
         
         ResultSetHandler rsh = new BeanListHandler(LineasDTO.class);
         List<LineasDTO> lineasData = (List<LineasDTO>) qr.query(sql.toString(), rsh);
