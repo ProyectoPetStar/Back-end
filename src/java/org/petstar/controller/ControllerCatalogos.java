@@ -239,8 +239,9 @@ public class ControllerCatalogos {
             if (sesion != null) {
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 CatalogosListResponseJason catalogosListResponseJason = new CatalogosListResponseJason();
-                catalogosListResponseJason.setListCatalogosDTO(catalogosDAO.getCatalogosActive("pet_cat_rol"));
+                catalogosListResponseJason.setListAllRolles(catalogosDAO.getAllRoles());
                 catalogosListResponseJason.setRolesByPerfil(catalogosDAO.getRolesByPerfil(idPerfil));
+                catalogosListResponseJason.setCatalogosDTO(catalogosDAO.getDescripcionById("pet_cat_perfil", idPerfil));
                 
                 output.setData(catalogosListResponseJason);
                 response.setSucessfull(true);

@@ -14,6 +14,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.dto.CatalogosDTO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.dto.RolesDTO;
 
 /**
  * Clase DAO de Catalogos
@@ -230,6 +231,21 @@ public class CatalogosDAO {
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result =  (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
+    }
+    
+    public List<RolesDTO> getAllRoles() throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT r.*, gpoRol.id AS id_gpo_rol, gpoRol.valor AS valor_gpo_rol ")
+                .append("FROM pet_cat_rol r INNER JOIN pet_grupo_rol gr ON r.id = gr.id_rol ")
+                .append("INNER JOIN pet_cat_gpo_rol gpoRol ON gr.id_gpo_rol = gpoRol.id ")
+                .append("ORDER BY gpoRol.id ");
+        
+        ResultSetHandler rsh = new BeanListHandler(RolesDTO.class);
+        List<RolesDTO> data_catalogos = (List<RolesDTO>) qr.query(sql.toString(), rsh);
+        return data_catalogos;
     }
     
     public List<CatalogosDTO> getRolesByPerfil(int idPerfil) throws Exception{
