@@ -19,15 +19,16 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- *
+ * Servlet de Catalogos
+ * Clase que administra el acceso a Catalogos
  * @author Tech-Pro
  */
 @WebServlet(name = "Catalogos", urlPatterns = {"/Catalogos"})
 public class Catalogos extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o
+     * <code>POST</code> respectivamente.
      *
      * @param request servlet request
      * @param response servlet response
@@ -56,11 +57,17 @@ public class Catalogos extends HttpServlet {
                 case "updateCatalogo":
                     output = controllerCatalogos.updateCatalogo(request);
                     break;
-                case "deleteCatalogo":
-                    output = controllerCatalogos.deleteCatalogo(request);
+                case "blockCatalogo":
+                    output = controllerCatalogos.blockCatalogo(request);
                     break;
                 case "getDataByID":
                     output = controllerCatalogos.getDataByIdCatalogo(request);
+                    break;
+                case "getRolesByPerfil":
+                    output = controllerCatalogos.getRolesByPerfil(request);
+                    break;
+                case "asignaRolesToPerfil":
+                    output = controllerCatalogos.asignacionRolesToPerfil(request);
                     break;
             }
         } catch (Exception ex) {

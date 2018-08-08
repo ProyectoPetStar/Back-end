@@ -6,17 +6,20 @@
 package org.petstar.dto;
 
 /**
- *
+ * DTO de Productos
  * @author Tech-Pro
  */
 public class ProductosDTO {
     private int id_producto;
-    private int id_linea;
-    private String linea;
-    private String producto;
-    private String tipo_medida;
-    private int posicion;
+    private String valor;
+    private String descripcion;
     private int activo;
+    private int id_linea;
+    private int id_tipo_producto;
+    private String valor_linea;
+    private String valor_tipo_producto;
+    private String descripcion_tipo_producto;
+    private String asignacion = ""; //Este atributo solo se utiliza en vista
 
     public int getId_producto() {
         return id_producto;
@@ -24,6 +27,30 @@ public class ProductosDTO {
 
     public void setId_producto(int id_producto) {
         this.id_producto = id_producto;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public int getActivo() {
+        return activo;
+    }
+
+    public void setActivo(int activo) {
+        this.activo = activo;
     }
 
     public int getId_linea() {
@@ -34,43 +61,43 @@ public class ProductosDTO {
         this.id_linea = id_linea;
     }
 
-    public String getLinea() {
-        return linea;
+    public int getId_tipo_producto() {
+        return id_tipo_producto;
     }
 
-    public void setLinea(String linea) {
-        this.linea = linea;
+    public void setId_tipo_producto(int id_tipo_producto) {
+        this.id_tipo_producto = id_tipo_producto;
     }
 
-    public String getProducto() {
-        return producto;
+    public String getValor_linea() {
+        return valor_linea;
     }
 
-    public void setProducto(String producto) {
-        this.producto = producto;
+    public void setValor_linea(String valor_linea) {
+        this.valor_linea = valor_linea;
     }
 
-    public String getTipo_medida() {
-        return tipo_medida;
+    public String getValor_tipo_producto() {
+        return valor_tipo_producto;
     }
 
-    public void setTipo_medida(String tipo_medida) {
-        this.tipo_medida = tipo_medida;
+    public void setValor_tipo_producto(String valor_tipo_producto) {
+        this.valor_tipo_producto = valor_tipo_producto;
     }
 
-    public int getPosicion() {
-        return posicion;
+    public String getDescripcion_tipo_producto() {
+        return descripcion_tipo_producto;
     }
 
-    public void setPosicion(int posicion) {
-        this.posicion = posicion;
+    public void setDescripcion_tipo_producto(String descripcion_tipo_producto) {
+        this.descripcion_tipo_producto = descripcion_tipo_producto;
     }
 
-    public int getActivo() {
-        return activo;
+    public String getAsignacion() {
+        return asignacion;
     }
 
-    public void setActivo(int activo) {
-        this.activo = activo;
+    public void setAsignacion(String asignacion) {
+        this.asignacion = asignacion;
     }
 }

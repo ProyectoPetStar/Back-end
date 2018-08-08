@@ -12,9 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 public class Configuration {
     
     public static final String HEADER_STRING = "Authorization";
+    public static final String PATH_UPLOAD_FILE = "C:\\petstar\\upfiles\\";
+    public static final String PATH_DOWNLOAD_FILE = "C:\\petstar\\downfiles\\";
     
     /**
-     * Método que permite establecer las cabeceras de un servlet, en particular este método define el cruce de dominios y el tipo de retorno del servlet como un formato JSON. 
+     * Método que permite establecer las cabeceras de un servlet, en particular 
+     * este método define el cruce de dominios y el tipo de retorno del servlet 
+     * como un formato JSON. 
      *
      * @param response respuesta del servlet*/
     public static void setHeadersJson(HttpServletResponse response) {
@@ -26,7 +30,9 @@ public class Configuration {
     }
     
     /**
-     * Método que permite establecer las cabeceras de un servlet, en particular este método define el cruce de dominios y el tipo de retorno del servlet como un archivo sin formato especifico. 
+     * Método que permite establecer las cabeceras de un servlet, en particular 
+     * este método define el cruce de dominios y el tipo de retorno del servlet 
+     * como un archivo sin formato especifico. 
      *
      * @param response respuesta del servlet*/
     public static void setHeadersFile(HttpServletResponse response) {
@@ -36,6 +42,12 @@ public class Configuration {
         response.setHeader("Allow", "GET, HEAD, POST, TRACE, OPTIONS");
     }
     
+    /**
+     * Método que permite establecer las cabeceras de un servlet, en particular 
+     * este método define el cruce de dominios y el tipo de retorno del servlet 
+     * como un formato CSV. 
+     * @param response 
+     */
     public static void setHeadersCSV(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST");

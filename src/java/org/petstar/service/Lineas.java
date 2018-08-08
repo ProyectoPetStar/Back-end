@@ -19,15 +19,16 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- *
+ * Servlet de Lineas
+ * Clase que administra el acceso a Lineas
  * @author Tech-Pro
  */
 @WebServlet(name = "Lineas", urlPatterns = {"/Lineas"})
 public class Lineas extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o
+     * <code>POST</code> respectivamente.
      *
      * @param request servlet request
      * @param response servlet response
@@ -46,6 +47,9 @@ public class Lineas extends HttpServlet {
         try{
             String action = request.getParameter("action");
             switch(action){
+                case "loadCombobox":
+                    output = controllerLineas.loadCombobox(request);
+                    break;
                 case "getLineas":
                     output = controllerLineas.getLineasData(request);
                     break;
@@ -55,11 +59,12 @@ public class Lineas extends HttpServlet {
                 case "updateLineas":
                     output = controllerLineas.updateLinea(request);
                     break;
-                case "deleteLineas":
-                    output = controllerLineas.deleteLinea(request);
+                case "blockLineas":
+                    output = controllerLineas.blockLinea(request);
                     break;
                 case "getDataByID":
                     output = controllerLineas.getDataCatalogosById(request);
+                    break;
             }
         } catch (Exception ex){
             ResponseJson reponseJson = new ResponseJson();

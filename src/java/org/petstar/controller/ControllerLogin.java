@@ -18,18 +18,27 @@ import org.petstar.model.UserResponseJson;
  */
 public class ControllerLogin {
 
+    /**
+     * Logueo
+     * Metodo que se encarga de validar los datos de usuario y brindar accesos 
+     * al sistema.
+     * @param request
+     * @return 
+     */
     public OutputJson Login(HttpServletRequest request) {
         String usuario_acceso = request.getParameter("usuario_acceso");
         String clave_acceso = request.getParameter("clave_acceso");
         int id_sistemas = Integer.parseInt(request.getParameter("id_sistemas"));
+        int numEmpleado = Integer.parseInt(usuario_acceso);
         UserResponseJson response = new UserResponseJson();
         OutputJson output = new OutputJson();
 
         LoginDAO dao = new LoginDAO();
         ControllerAutenticacion auth = new ControllerAutenticacion();
         try {
-            UserDTO datos_usuario = dao.Login(usuario_acceso, clave_acceso, id_sistemas);
-            if (datos_usuario != null  && datos_usuario.getUsuario_acceso() != null) {
+            UserDTO datos_usuario = dao.Login(numEmpleado, clave_acceso, id_sistemas);
+            
+            if (datos_usuario != null) {
                 String token = auth.createJWT(datos_usuario);
                 datos_usuario.setToken(token);
                 response.setSucessfull(true);

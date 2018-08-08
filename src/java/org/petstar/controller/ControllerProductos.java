@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.petstar.controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,12 +6,10 @@ import org.petstar.dao.LineasDAO;
 import org.petstar.dao.ProductosDAO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.model.OutputJson;
-import org.petstar.model.ProductosAsignacionesResponseJson;
 import org.petstar.model.ProductosDataResponseJson;
 import org.petstar.model.ResponseJson;
-import static org.petstar.configurations.utils.getDateCorrect;
-import static org.petstar.configurations.utils.getCurrentDayByTurno;
-import static org.petstar.configurations.utils.getTurno;
+import org.petstar.dto.ProductosDTO;
+import org.petstar.dto.UserDTO;
 
 /**
  *
@@ -26,88 +19,29 @@ public class ControllerProductos {
     private static final String MSG_SUCESS = "OK";
     private static final String MSG_LOGOUT = "Inicie sesión nuevamente";
     private static final String MSG_ERROR  = "Descripción de error: ";
-    private static final String MSG_INVALID= "Ya existe un producto con esos valores.";
+    private static final String MSG_INVALID= "Ya existe un producto con los mismos valores.";
     private static final String MSG_NO_EXIST= "El producto no existe.";
-    private static final String TABLE_TURNOS= "pet_cat_turnos";
-    private static final String TABLE_GRUPOS= "pet_cat_grupos";
+    private static final String TABLE_PRODUC= "pet_cat_producto";
+    private static final String TABLE_TIPPRO= "pet_cat_tipo_producto";
     
     /**
-     * Metodo para cargar las listas de los combos
+     * Lista de productos
+     * Metodo que devuelve la lista de productos existentes segun el modelo
      * @param request
      * @return 
      */
-    public OutputJson loadCombobox(HttpServletRequest request){
-        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
-        int perfil = Integer.parseInt(request.getParameter("perfil"));
+    public OutputJson getAllProductos(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
-                if(perfil == 5){
-                    if(validateIfCanEdit(idGrupo,idLinea)){
-                        ProductosDAO productosDAO = new ProductosDAO();
-                        CatalogosDAO catalogosDAO = new CatalogosDAO();
-                        LineasDAO lineasDAO = new LineasDAO();
-                        ProductosDataResponseJson pdrj = new ProductosDataResponseJson();
-
-                        pdrj.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                        pdrj.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
-                        pdrj.setListProductos(productosDAO.getDataCarProductos());
-                        pdrj.setListLineas(lineasDAO.getLineasData());
-
-                        output.setData(pdrj);
-                        response.setSucessfull(true);
-                        response.setMessage(MSG_SUCESS);
-                    }else{
-                        response.setSucessfull(false);
-                        response.setMessage("Fuera de horario.");
-                    }
-                }else{
-                    ProductosDAO productosDAO = new ProductosDAO();
-                    CatalogosDAO catalogosDAO = new CatalogosDAO();
-                    LineasDAO lineasDAO = new LineasDAO();
-                    ProductosDataResponseJson pdrj = new ProductosDataResponseJson();
-
-                    pdrj.setListGrupos(catalogosDAO.getCatalogos(TABLE_GRUPOS));
-                    pdrj.setListTurnos(catalogosDAO.getCatalogos(TABLE_TURNOS));
-                    pdrj.setListProductos(productosDAO.getDataCarProductos());
-                    pdrj.setListLineas(lineasDAO.getLineasData());
-
-                    output.setData(pdrj);
-                    response.setSucessfull(true);
-                    response.setMessage(MSG_SUCESS);
-                }
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
-        }catch(Exception ex){
-            response.setSucessfull(false);
-            response.setMessage(MSG_ERROR + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
-    
-    /**
-     * Metodo que devuelve la lista de productos
-     * @param request
-     * @return 
-     */
-    public OutputJson getAllCarProductos(HttpServletRequest request){
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
                 ProductosDAO productosDAO = new ProductosDAO();
                 ProductosDataResponseJson data = new ProductosDataResponseJson();
                 
-                data.setListProductos(productosDAO.getDataCarProductos());
+                data.setListProductos(productosDAO.getAllProductos());
                 output.setData(data);
                 
                 response.setSucessfull(true);
@@ -126,24 +60,32 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo que devuelve un producto en especifico
+     * Producto en Especifico
+     * Metodo que devuelve los datos de un producto en especifico
      * @param request
      * @return 
      */
-    public OutputJson getCarProductoById(HttpServletRequest request){
-        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
+    public OutputJson getProductoById(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                ResultInteger result = productosDAO.validaIfExistCarProducto(idProducto);
+            int idProducto = Integer.parseInt(request.getParameter("id_producto"));
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                
+                ResultInteger result = catalogosDAO.validaExistID(TABLE_PRODUC, "id_producto", idProducto);
                 if(result.getResult().equals(1)){
+                    LineasDAO lineasDAO = new LineasDAO();
+                    ProductosDAO productosDAO = new ProductosDAO();
                     ProductosDataResponseJson data = new ProductosDataResponseJson();
                 
-                    data.setProducto(productosDAO.getDataCarProductosById(idProducto));
+                    data.setProducto(productosDAO.getProductoById(idProducto));
+                    data.setListTipoProducto(catalogosDAO.getCatalogosActive(TABLE_TIPPRO));
+                    data.setListLineas(lineasDAO.getLineasActive());
                     output.setData(data);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
@@ -164,25 +106,29 @@ public class ControllerProductos {
     }
     
     /**
-     * Metodo para insertar un Nuevo producto
+     * Registrar Nuevo Producto
+     * Metodo para dar de alta un Nuevo producto en el sistema
      * @param request
      * @return 
      */
-    public OutputJson insertNewCarProductos(HttpServletRequest request){
-        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
-        String medida = request.getParameter("tipo_medida");
-        String producto = request.getParameter("producto");
-        
+    public OutputJson insertProductos(HttpServletRequest request){        
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+            ProductosDTO newProducto = new ProductosDTO();
+            newProducto.setId_linea(Integer.parseInt(request.getParameter("id_linea")));
+            newProducto.setValor(request.getParameter("valor"));
+            newProducto.setDescripcion(request.getParameter("descripcion"));
+            newProducto.setId_tipo_producto(Integer.valueOf(request.getParameter("id_tipo_producto")));
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
                 ProductosDAO productosDAO = new ProductosDAO();
-                ResultInteger result = productosDAO.validaForInsertCarProducto(idLinea, producto);
+                ResultInteger result = productosDAO.validaForInsert(newProducto);
                 if(result.getResult().equals(0)){
-                    productosDAO.insertNewCarProducto(idLinea, producto, medida);
+                    productosDAO.insertProducto(newProducto);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }else{
@@ -197,32 +143,36 @@ public class ControllerProductos {
             response.setSucessfull(false);
             response.setMessage(MSG_ERROR + ex.getMessage());
         }
+        
         output.setResponse(response);
         return output;
     }
     
     /**
-     * Metodo que permite modificar un producto
+     * Modificación de Productos
+     * Metodo que permite actualizar la información de un producto en especifico
      * @param request
      * @return 
      */
-    public OutputJson updateCarProductos(HttpServletRequest request){
-        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
-        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
-        String producto = request.getParameter("producto");
-        String medida = request.getParameter("tipo_medida");
-        int posicion = Integer.parseInt(request.getParameter("posicion"));
-        int activo = Integer.parseInt(request.getParameter("activo"));
+    public OutputJson updateProductos(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
+            ProductosDTO producto = new ProductosDTO();
+            producto.setId_producto(Integer.valueOf(request.getParameter("id_producto")));
+            producto.setId_linea(Integer.valueOf(request.getParameter("id_linea")));
+            producto.setId_tipo_producto(Integer.valueOf(request.getParameter("id_tipo_producto")));
+            producto.setValor(request.getParameter("valor"));
+            producto.setDescripcion(request.getParameter("descripcion"));
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
                 ProductosDAO productosDAO = new ProductosDAO();
-                ResultInteger result = productosDAO.validaForUpdateCarProducto(idProducto, idLinea, producto);
+                ResultInteger result = productosDAO.validaForUpdate(producto);
                 if(result.getResult().equals(0)){
-                    productosDAO.updateCarProducto(idProducto, idLinea, producto, medida, posicion, activo);
+                    productosDAO.updateProducto(producto);
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
                 }else{
@@ -241,50 +191,62 @@ public class ControllerProductos {
         return output;
     }
     
+    /**
+     * Bloqueo de Productos
+     * Metodo que se encarga de Habilitar o Deshabilitar un registro
+     * @param request
+     * @return 
+     */
+    public OutputJson blockProducto(HttpServletRequest request){
+        ResponseJson response = new ResponseJson();
+        OutputJson output = new OutputJson();
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        
+        try{
+            int idProducto = Integer.valueOf(request.getParameter("id_producto"));
+            int activo = Integer.valueOf(request.getParameter("activo"));
+            
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                ProductosDAO productosDAO = new ProductosDAO();
+                productosDAO.blockProducto(idProducto, activo);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
+            }else{
+                response.setSucessfull(false);
+                response.setMessage(MSG_LOGOUT);
+            }
+        } catch (Exception ex){
+            response.setSucessfull(false);
+            response.setMessage(MSG_ERROR + ex.getMessage());
+        }
+        output.setResponse(response);
+        return output;
+    }
+    
     /** 
-     * Metodo para asignacion de valores a productos
+     * Llenado de Listas
+     * Metodo que carga las listas para los combobox
      * @param request
      * @return 
      */
-    public OutputJson registraAsignacionByProducto(HttpServletRequest request){
-        int perfil = Integer.parseInt(request.getParameter("perfil"));
-        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idProducto = Integer.parseInt(request.getParameter("id_producto"));
-        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
-        int idLinea =Integer.parseInt(request.getParameter("id_linea"));
-        String dia = request.getParameter("dia_producto");
-        Float valor = Float.parseFloat(request.getParameter("valor"));
-                
+    public OutputJson loadLIsts(HttpServletRequest request){
         ResponseJson response = new ResponseJson();
         OutputJson output = new OutputJson();
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         
         try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                if(idTurno == 0){
-                    idTurno = getTurno();
-                }
-                ResultInteger result = productosDAO.validaForRegistrarAsignacion(idProducto, idTurno, dia);
-                if(result.getResult().equals(0)){
-                    if(perfil == 5){
-                        if(validateIfCanEdit(idGrupo, idLinea)){
-                            productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
-                            response.setSucessfull(true);
-                            response.setMessage(MSG_SUCESS);
-                        }else{
-                            response.setMessage("Fuera de Horario.");
-                            response.setSucessfull(false);
-                        }
-                    }else{
-                        productosDAO.asignaValorByProducto(idTurno, idGrupo, idProducto, dia, valor);
-                        response.setSucessfull(true);
-                        response.setMessage(MSG_SUCESS);
-                    }
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Ya existe un valor para ese producto");
-                }
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                CatalogosDAO catalogosDAO = new CatalogosDAO();
+                LineasDAO lineasDAO = new LineasDAO();
+                ProductosDataResponseJson data = new ProductosDataResponseJson();
+                
+                data.setListTipoProducto(catalogosDAO.getCatalogosActive(TABLE_TIPPRO));
+                data.setListLineas(lineasDAO.getLineasActive());
+                output.setData(data);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
@@ -296,186 +258,4 @@ public class ControllerProductos {
         output.setResponse(response);
         return output;
     }
-    
-    /**
-     * Metodo que devuelve todas las asignaciones del día
-     * @param request
-     * @return 
-     */
-    public OutputJson getAllAsignacionesByDays(HttpServletRequest request){
-        String fechaInicio = request.getParameter("fecha_inicio");
-        String fechaFin = request.getParameter("fecha_fin");
-        
-        fechaInicio = getDateCorrect(fechaInicio);
-        fechaFin = getDateCorrect(fechaFin);
-        
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                
-                parj.setListProductosAsignacion(productosDAO.getAllAsignacionesByDays(fechaInicio, fechaFin));
-                output.setData(parj);
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
-        } catch(Exception ex){
-            response.setMessage(MSG_ERROR + ex.getMessage());
-            response.setSucessfull(false);
-        }
-        output.setResponse(response);
-        return  output;
-    }
-    
-    /**
-     * Metodo que modifica una asignacion
-     * @param request
-     * @return 
-     */
-    public OutputJson updateAsignacion(HttpServletRequest request){
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                
-                productosDAO.updateAsignacion();
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
-            }else{
-                response.setSucessfull(false);
-                response.setMessage(MSG_LOGOUT);
-            }
-        }catch(Exception ex){
-            response.setSucessfull(false);
-            response.setMessage(MSG_ERROR + ex.getMessage());
-        }
-        output.setResponse(response);
-        return output;
-    }
-    
-    public OutputJson getAllAsignacionesMetasByDays(HttpServletRequest request){
-        int perfil = Integer.parseInt(request.getParameter("perfil"));
-        String fechaInicio = request.getParameter("fecha_inicio");
-        String fechaFin = request.getParameter("fecha_fin");
-        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
-        
-        int turno = getTurno();
-        fechaInicio = getDateCorrect(fechaInicio);
-        fechaFin = getDateCorrect(fechaFin);
-
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
-                
-                switch(perfil){
-                    case 3:
-                        parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(fechaInicio, fechaFin));
-                        output.setData(parj);
-                        response.setSucessfull(true);
-                        response.setMessage(MSG_SUCESS);
-                        break;
-                    case 4:
-                        parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(idGrupo, turno, idLinea));
-                        output.setData(parj);
-                        response.setSucessfull(true);
-                        response.setMessage(MSG_SUCESS);
-                        break;
-                    case 5:
-                        if(validateIfCanEdit(idGrupo, idLinea)){
-                            parj.setListMetasAsignacion(productosDAO.getAllAsignacionesMetasByDays(idGrupo, turno, idLinea, fechaFin)); 
-                            output.setData(parj);
-                            response.setSucessfull(true);
-                            response.setMessage(MSG_SUCESS);
-                        }else{
-                            response.setSucessfull(false);
-                            response.setMessage("Fuera de horario.");
-                        }
-                        break;
-                }
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
-        } catch(Exception ex){
-            response.setMessage(MSG_ERROR + ex.getMessage());
-            response.setSucessfull(false);
-        }
-        output.setResponse(response);
-        return  output;
-    }
-    
-    public OutputJson getAllProductosForAsignacion(HttpServletRequest request){
-        String dia = request.getParameter("dia");
-        int idTurno = Integer.parseInt(request.getParameter("id_turno"));
-        int idGrupo = Integer.parseInt(request.getParameter("id_grupo"));
-        int idLinea = Integer.parseInt(request.getParameter("id_linea"));
-                
-        dia = getDateCorrect(dia);
-        
-        ResponseJson response = new ResponseJson();
-        OutputJson output = new OutputJson();
-        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
-        
-        try{
-            if(autenticacion.isValidToken(request)){
-                ProductosDAO productosDAO = new ProductosDAO();
-                ProductosAsignacionesResponseJson parj = new ProductosAsignacionesResponseJson();
-                
-                parj.setListProductosAsignacion(productosDAO.getAllProductosByDayAndLineaAndGrupo(idLinea, idTurno, idGrupo, dia));
-                output.setData(parj);
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
-            }else{
-                response.setMessage(MSG_LOGOUT);
-                response.setSucessfull(false);
-            }
-        } catch(Exception ex){
-            response.setMessage(MSG_ERROR + ex.getMessage());
-            response.setSucessfull(false);
-        }
-        output.setResponse(response);
-        return  output;
-    }
-    
-    /**
-     * Metodo que permite la validacion para que entren los integradores a capturar
-     * @param idGrupo
-     * @param idLinea
-     * @return
-     * @throws Exception 
-     */
-    public boolean validateIfCanEdit(int idGrupo, int idLinea) throws Exception{
-        boolean valid;
-        
-        int turno = getTurno();
-        if(turno != 0){
-            String diaMeta = getCurrentDayByTurno(turno);
-            
-            ProductosDAO productosDAO = new ProductosDAO();
-            ResultInteger result = productosDAO.validaGrupoTurno(idGrupo, turno,idLinea, diaMeta);
-            
-            valid = (result.getResult().equals(1))?true:false;
-        }else{
-            valid = false;
-        }
-        
-        return valid;
-    }  
-    
 }

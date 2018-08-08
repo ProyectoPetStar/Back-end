@@ -6,7 +6,7 @@
 package org.petstar.model;
 
 /**
- *
+ * Modelado de JSON de salida
  * @author Tech-Pro
  */
 public class OutputJson {

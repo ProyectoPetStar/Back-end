@@ -11,7 +11,7 @@ import org.petstar.dto.LineasDTO;
 import org.petstar.dto.ProductosDTO;
 
 /**
- *
+ * Modelo del JSON de productos
  * @author Tech-Pro
  */
 public class ProductosDataResponseJson {
@@ -19,8 +19,7 @@ public class ProductosDataResponseJson {
     private ProductosDTO producto;
     private List<ProductosDTO> listProductos;
     private List<LineasDTO> listLineas;
-    private List<CatalogosDTO> listTurnos;
-    private List<CatalogosDTO> listGrupos;
+    private List<CatalogosDTO> listTipoProducto;
 
     public ProductosDTO getProducto() {
         return producto;
@@ -46,20 +45,11 @@ public class ProductosDataResponseJson {
         this.listLineas = listLineas;
     }
 
-    public List<CatalogosDTO> getListTurnos() {
-        return listTurnos;
+    public List<CatalogosDTO> getListTipoProducto() {
+        return listTipoProducto;
     }
 
-    public void setListTurnos(List<CatalogosDTO> listTurnos) {
-        this.listTurnos = listTurnos;
+    public void setListTipoProducto(List<CatalogosDTO> listTipoProducto) {
+        this.listTipoProducto = listTipoProducto;
     }
-
-    public List<CatalogosDTO> getListGrupos() {
-        return listGrupos;
-    }
-
-    public void setListGrupos(List<CatalogosDTO> listGrupos) {
-        this.listGrupos = listGrupos;
-    }
-    
 }

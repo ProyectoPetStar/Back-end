@@ -30,6 +30,7 @@ public class Users extends HttpServlet {
      * @param response respuesta servlet
      * @throws ServletException si se produce un error específico del servlet
      * throws IOException si se produce un error de E / S
+     * @throws java.io.IOException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -43,32 +44,32 @@ public class Users extends HttpServlet {
         try {
             String action = request.getParameter("action");
             switch (action) {
-                case "getUsersETAD":
-                    output = controller.getUsersETAD(request);
-                    break;
                 case "getUsersSonarh":
                    output =  controller.getUsersSonarh(request);
                    break;
                 case "getPerfilSonarh":
                    output =  controller.getPerfilUserSonarhById(request);
                    break;
-                case "getPerfilEtad":
-                    output = controller.getPerfilUserEtadById(request);
+                case "insertUserETAD":
+                    output = controller.insertUsersETAD(request);
                     break;
-                case "getPerfil":
-                    output = controller.getPerfilUserSonarh(request);
+                case "getUsersETAD":
+                    output = controller.getUsersETAD(request);
+                    break;
+                case "getUserETADByID":
+                    output = controller.getUserETADById(request);
+                    break;
+                case "deleteUserETAD":
+                    output = controller.deleteUsersETAD(request);
+                    break;
+                case "updateUserETAD":
+                    output = controller.updateUserETAD(request);
                     break;
                 case "changePassword":
                     output = controller.changePasswordUser(request);
                     break;
-                case "insertUsers":
-                    output = controller.insertNewUsersETAD(request);
-                    break;
-                case "updatePerfil":
-                    output = controller.updatePerfilUser(request);
-                    break;
-                case "deleteUser":
-                    output = controller.deleteUsersETAD(request);
+                case "miPerfil":
+                    output = controller.getMiPerfil(request);
                     break;
             }
         } catch (Exception ex) {
@@ -104,6 +105,7 @@ public class Users extends HttpServlet {
      * @param response respuesta servlet
      * @throws ServletException si se produce un error específico del servlet
      * throws IOException si se produce un error de E / S
+     * @throws java.io.IOException
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

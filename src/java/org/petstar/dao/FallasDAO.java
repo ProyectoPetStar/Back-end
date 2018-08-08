@@ -5,6 +5,7 @@
  */
 package org.petstar.dao;
 
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
@@ -20,81 +21,111 @@ import org.petstar.dto.FallasDTO;
  */
 public class FallasDAO {
     
-    public List<FallasDTO> getAllDataFallas() throws Exception{
+    public List<FallasDTO> getAllFallasByDays(int idLinea, int idGrupo, 
+            int idTurno, Date fechaIn, Date fechaTe) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_selectAlFallas_petFallas ?, ?, ?, ?, ?");
+        Object[] params = {
+            fechaIn, fechaTe, idTurno, idGrupo, idLinea
+        };
         
         ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
-        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh);
+        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh, params);
         
         return data;
     }
     
-    public List<FallasDTO> getDataFallasByDay() throws Exception{
+    public List<FallasDTO> getAllFallasByDaysAndGpoLn(int idGpoLn, int idGrupo, 
+            int idTurno, Date fechaIn, Date fechaTe) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_sp_selectAlFallas_petFallasAndGpoLinea ?, ?, ?, ?, ?");
+        Object[] params = {
+            fechaIn, fechaTe, idTurno, idGrupo, idGpoLn
+        };
         
         ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
-        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh);
+        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh, params);
         
         return data;
     }
     
-    public FallasDTO getFallaById() throws Exception{
+    public FallasDTO getFallaById(int idFalla) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
-        
+        sql.append("EXEC sp_selectById_petFalla ?");
+        Object[] params = {
+            idFalla
+        };
+                
         ResultSetHandler rsh = new BeanHandler(FallasDTO.class);
-        FallasDTO data = (FallasDTO) qr.query(sql.toString(), rsh);
+        FallasDTO data = (FallasDTO) qr.query(sql.toString(), rsh, params);
         
         return data;
     }
     
-    public void insertNewFalla() throws Exception{
+    public void insertNewFalla(FallasDTO fallas) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_insert_petFallas ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] paramas = {
-            
+            fallas.getDescripcion(), fallas.getHora_inicio(), fallas.getHora_final(),
+            fallas.getTiempo_paro(), fallas.getId_meta(), fallas.getId_razon(), 
+            fallas.getId_equipo(), fallas.getId_usuario_registro()
         };
         
         qr.update(sql.toString(), paramas);
     }
     
-    public void deleteFalla() throws Exception{
+    public void deleteFalla(int idFalla) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEC sp_tmpDelete_petFalla ?");
         Object[] paramas = {
-            
+            idFalla
         };
         
         qr.update(sql.toString(), paramas);
     }
     
-    public void updateFalla() throws Exception{
+    public void updateFalla(FallasDTO fallasDTO) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("");
+        sql.append("EXEc sp_update_petFallas ?, ?, ?, ?, ?, ?, ?, ?, ?");
         Object[] paramas = {
-            
+            fallasDTO.getId_falla(), fallasDTO.getDescripcion(), fallasDTO.getHora_inicio(),
+            fallasDTO.getHora_final(), fallasDTO.getTiempo_paro(), fallasDTO.getId_razon(),
+            fallasDTO.getId_equipo(), fallasDTO.getFecha_modificacion_registro(),
+            fallasDTO.getId_usuario_modifica_registro()
         };
         
         qr.update(sql.toString(), paramas);
+    }
+    
+    public List<FallasDTO> getFallasByIdMeta(int idMeta) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("EXEC sp_detalleFallas ?");
+        Object[] params = { idMeta };
+        
+        ResultSetHandler rsh = new BeanListHandler(FallasDTO.class);
+        List<FallasDTO> data = (List<FallasDTO>) qr.query(sql.toString(), rsh, params);
+        
+        return data;
     }
 }

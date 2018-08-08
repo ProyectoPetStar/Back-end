@@ -11,41 +11,49 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.petstar.dto.ResultString;
-import org.petstar.dto.UserDTO;
 
 /**
- *
+ * Clase DAO de Autenticación
  * @author Tech-Pro
  */
 
 public class AutenticacionDAO {
 
-    public String getToken_Key(int id_usuario) throws Exception {
+    /**
+     * Consulta de token
+     * Metodo que devuelve el token de un usuario en especifico
+     * @param idAcceso
+     * @return
+     * @throws Exception 
+     */
+    public String getToken_Key(int idAcceso) throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_SelectTokenPetUsuario ?");
-        Object[] params = {
-            id_usuario
-        };
+        
+        sql.append("SELECT token AS result FROM pet_acceso WHERE id_acceso = ?");
+        Object[] params = { idAcceso };
+        
         ResultSetHandler rsh = new BeanHandler(ResultString.class);
         ResultString result = (ResultString) qr.query(sql.toString(), rsh, params);
-        
         return result.getResult();
     }
     
-    public void updateToken_Key(int id_usuario, String token_key) throws Exception {
+    /**
+     * Actualización de Key
+     * Metodo que registra la key del token generado en la DB
+     * @param idAcceso
+     * @param token_key
+     * @throws Exception 
+     */
+    public void updateToken_Key(int idAcceso, String token_key) throws Exception {
         DataSource ds = PoolDataSource.getDataSource();
-      
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
-        sql.append("EXEC sp_updateTokenPetUsuario ?, ?");
-        Object[] params = {
-            id_usuario, token_key
-        };
+        
+        sql.append("EXEC sp_updateToken ?, ?");
+        Object[] params = { idAcceso, token_key };
         
         qr.update(sql.toString(), params);
     }
-
 }

@@ -19,15 +19,16 @@ import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 
 /**
- *
+ * Servlet de Productos
  * @author Tech-Pro 
 */
 @WebServlet(name = "Productos", urlPatterns = {"/Productos"})
 public class Productos extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Permite trabajar con las opciones de Productos, 
+     * se permite el CRUD de productos, así como tambien las asignaciones de los mismos
+     * Procesa las peticiones HTTP, ya sean métodos <code>GET</code> o <code>POST</code>
      *
      * @param request servlet request
      * @param response servlet response
@@ -45,34 +46,24 @@ public class Productos extends HttpServlet {
         try{
             String action = request.getParameter("action");
             switch(action){
-                case "loadCombobox":
-                    output = controller.loadCombobox(request);
+                case "getAllProductos":
+                    output = controller.getAllProductos(request);
                     break;
-                case "getAllDataCarProductos":
-                    output = controller.getAllCarProductos(request);
+                case "getProductoById":
+                    output = controller.getProductoById(request);
                     break;
-                case "getCarProductoById":
-                    output = controller.getCarProductoById(request);
+                case "insertProductos":
+                    output = controller.insertProductos(request);
                     break;
-                case "insertNewCarProductos":
-                    output = controller.insertNewCarProductos(request);
+                case "updateProductos":
+                    output = controller.updateProductos(request);
                     break;
-                case "updateCarProductos":
-                    output = controller.updateCarProductos(request);
+                case "blockProducto":
+                    output = controller.blockProducto(request);
                     break;
-                case "getAllAsignacionMetasByDays":
-                    output = controller.getAllAsignacionesMetasByDays(request);
+                case "loadList":
+                    output = controller.loadLIsts(request);
                     break;
-                /*case "getAllProductosForAsignar":
-                    output = controller.getAllProductosForAsignacion(request);
-                    break;
-                case "registraAsignacionByProducto":
-                    output = controller.registraAsignacionByProducto(request);
-                    break;
-                case "getAllAsignacionesByDay":
-                    output = controller.getAllAsignacionesByDays(request);
-                    break;
-                    */
             }
         } catch(Exception ex){
             ResponseJson responseJson = new ResponseJson();

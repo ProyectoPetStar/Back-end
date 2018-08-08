@@ -18,11 +18,19 @@ import org.petstar.dto.UserDTO;
 
 
 /**
- *
+ * Controllador de Autenticación
  * @author Tech-Pro
  */
 public class ControllerAutenticacion {
 
+    /**
+     * Creación de token
+     * Metodo que se encarga de la construcción del token y almacenamiento del key
+     * @param usuario
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws Exception 
+     */
     public String createJWT(UserDTO usuario) throws UnsupportedEncodingException, Exception {
         Key key = MacProvider.generateKey();
         byte[] keyBytes = key.getEncoded();
@@ -30,73 +38,63 @@ public class ControllerAutenticacion {
         AutenticacionDAO dao = new AutenticacionDAO();
 
         String jwt = Jwts.builder()
-                .setSubject(String.valueOf(usuario.getId_usuario()))
-                .setExpiration(new Date(System.currentTimeMillis() + 600000000))
-                .claim("usuario_acceso", usuario.getUsuario_acceso())
-                .claim("perfil", usuario.getPerfil())
-                .claim("id_perfil", usuario.getId_perfil())
+                .setSubject(String.valueOf(usuario.getId_acceso()))
+                .setExpiration(new Date(System.currentTimeMillis() + 8640000000L))
+                .claim("id_acceso", usuario.getId_acceso())
+                .claim("nombre", usuario.getNombre())
                 .claim("id_grupo",usuario.getId_grupo())
                 .claim("id_linea", usuario.getId_linea())
+                .claim("id_etad", usuario.getId_etad())
+                .claim("perfiles", usuario.getPerfiles())
+                .claim("roles_oee", usuario.getRoles_oee())
+                .claim("roles_etad", usuario.getRoles_etad())
+                .claim("id_grupo_linea", usuario.getId_grupo_linea())
+                .claim("roles_ishikawa", usuario.getRoles_ishikawa())
+                .claim("roles_generales", usuario.getRoles_generales())
                 .signWith(
                         SignatureAlgorithm.HS256,
                         key_base64
                 )
                 .compact();
-        dao.updateToken_Key(usuario.getId_usuario(), key_base64);
+        dao.updateToken_Key(usuario.getId_acceso(), key_base64);
         return jwt;
     }
 
     /**
-     *
+     * Validar token
+     * Metodo que se encarga de la validación del token, que no haya sido alterado
      * @param request
      * @return
      */
-    public boolean isValidToken(HttpServletRequest request) {
-        boolean b;
+    public UserDTO isValidToken(HttpServletRequest request) {
+        UserDTO usuario = new UserDTO();
         String token = request.getHeader(Configuration.HEADER_STRING);
-        int id_usuario = Integer.parseInt(request.getParameter("id_usuario"));
-        if (token == null) {
-            b = false;
-            //throw new JwtException(token);
-        } else {
+        int idAcceso = Integer.parseInt(request.getParameter("id_usuario"));
+        if (token != null) {
             try {
                 AutenticacionDAO dao = new AutenticacionDAO();
-                String token_key = dao.getToken_Key(id_usuario);
+                String token_key = dao.getToken_Key(idAcceso);
                 Claims claims = Jwts.parser().setSigningKey(token_key).parseClaimsJws(token).getBody();
-                b = true;
+                
+                usuario.setId_acceso(claims.get("id_acceso", Integer.class));
+                usuario.setNombre(claims.get("nombre", String.class));
+                usuario.setId_grupo(claims.get("id_grupo", Integer.class));
+                usuario.setId_linea(claims.get("id_linea", Integer.class));
+                usuario.setId_etad(claims.get("id_etad", Integer.class));
+                usuario.setPerfiles(claims.get("perfiles", String.class));
+                usuario.setRoles_oee(claims.get("roles_oee", String.class));
+                usuario.setRoles_etad(claims.get("roles_etad", String.class));
+                usuario.setId_grupo_linea(claims.get("id_grupo_linea", Integer.class));
+                usuario.setRoles_ishikawa(claims.get("roles_ishikawa", String.class));
+                usuario.setRoles_generales(claims.get("roles_generales", String.class));
             } catch (SignatureException | ClaimJwtException | MalformedJwtException | UnsupportedJwtException e) {
-                b = false;
+                usuario = null;
             } catch (Exception ex) {
-                 b = false;
+                usuario = null;
             }
-        }
-        return b;
-    }
-    
-    public String id_usuario_valido(HttpServletRequest request){
-        String token = request.getHeader(Configuration.HEADER_STRING);
-        String id_usuario = request.getParameter("id_usuario");
-        
-        if (token == null) {
-            id_usuario = "-1";
         } else {
-            try {
-                AutenticacionDAO dao = new AutenticacionDAO();
-                String token_key = dao.getToken_Key(Integer.parseInt(id_usuario));
-                Claims claims = Jwts.parser().setSigningKey(token_key).parseClaimsJws(token).getBody();
-                
-                 id_usuario = claims.getSubject().equals(id_usuario)? id_usuario: "-1";
-                 //claims.
-                
-            } catch (SignatureException | ClaimJwtException | MalformedJwtException | UnsupportedJwtException e) {
-               id_usuario = "-1";
-            } catch (Exception ex) {
-               id_usuario = "-1";
-            }
+            usuario = null;
         }
-        return id_usuario;
+        return usuario;
     }
-    
-    
-
 }
