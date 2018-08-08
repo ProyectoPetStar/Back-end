@@ -217,9 +217,10 @@ public class PeriodosDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT PE.anio AS result FROM pet_periodo pe INNER JOIN ")
-                .append("pet_ponderacion_objetivo_operativo po ON ")
-                .append("po.anio = pe.anio GROUP BY pe.anio");
+        sql.append("SELECT pe.anio AS result FROM pet_periodo pe ")
+                .append("LEFT JOIN pet_ponderacion_objetivo_operativo po ")
+                .append("ON pe.anio = po.anio ")
+                .append("GROUP BY pe.anio");
         
         ResultSetHandler rsh = new BeanListHandler(ResultInteger.class);
         List<ResultInteger> listresult = (List<ResultInteger>) qr.query(sql.toString(), rsh);
