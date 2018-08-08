@@ -15,6 +15,7 @@ public class IshikawaResponse {
     private List<CatalogosDTO> listEtads;
     private List<CatalogosDTO> listMs;
     private PetIshikawa ishikawa;
+    private String dia_actual;
 
     public List<CatalogosDTO> getListPreguntas() {
         return listPreguntas;
@@ -62,5 +63,13 @@ public class IshikawaResponse {
 
     public void setIshikawa(PetIshikawa ishikawa) {
         this.ishikawa = ishikawa;
+    }
+
+    public String getDia_actual() {
+        return dia_actual;
+    }
+
+    public void setDia_actual(String dia_actual) {
+        this.dia_actual = dia_actual;
     }
 }

@@ -1,5 +1,6 @@
 package org.petstar.controller.ishikawa;
 
+import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import org.petstar.controller.ControllerAutenticacion;
 import org.petstar.dao.CatalogosDAO;
@@ -7,6 +8,8 @@ import org.petstar.dto.UserDTO;
 import org.petstar.model.OutputJson;
 import org.petstar.model.ResponseJson;
 import org.petstar.model.ishikawa.IshikawaResponse;
+import static org.petstar.configurations.utils.getCurrentDate;
+import static org.petstar.configurations.utils.convertSqlToDay;
 
 /**
  *
@@ -29,6 +32,7 @@ public class IshikawaController {
                 IshikawaResponse data = new IshikawaResponse();
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 
+                data.setDia_actual(convertSqlToDay(getCurrentDate(), new SimpleDateFormat("dd/MM/yyyy")));
                 data.setListPreguntas(catalogosDAO.getCatalogosActive("pet_cat_preguntas"));
                 data.setListGrupos(catalogosDAO.getCatalogosActive("pet_cat_grupo"));
                 data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
