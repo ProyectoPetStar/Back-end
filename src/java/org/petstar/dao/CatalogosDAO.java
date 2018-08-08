@@ -68,7 +68,7 @@ public class CatalogosDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("SELECT * FROM ").append(tablename).
-                append(" WHERE activo = 1 AND valor != 'SIN AREA' and valor !=  'SIN LINEA'");
+                append(" WHERE activo = 1 AND valor != 'SIN AREA' and valor !=  'SIN LINEA' and valor !=  'SIN GRUPO'");
         
         ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
         List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh);
