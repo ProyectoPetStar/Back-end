@@ -2,6 +2,7 @@ package org.petstar.model.ishikawa;
 
 import java.util.List;
 import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ishikawa.PetIshikawa;
 
 /**
@@ -11,6 +12,7 @@ import org.petstar.dto.ishikawa.PetIshikawa;
 public class IshikawaResponse {
     private List<CatalogosDTO> listPreguntas;
     private List<PetIshikawa> listIshikawas;
+    private List<PeriodosDTO> listPeriodos;
     private List<CatalogosDTO> listGrupos;
     private List<CatalogosDTO> listEtads;
     private List<CatalogosDTO> listMs;
@@ -31,6 +33,14 @@ public class IshikawaResponse {
 
     public void setListIshikawas(List<PetIshikawa> listIshikawas) {
         this.listIshikawas = listIshikawas;
+    }
+
+    public List<PeriodosDTO> getListPeriodos() {
+        return listPeriodos;
+    }
+
+    public void setListPeriodos(List<PeriodosDTO> listPeriodos) {
+        this.listPeriodos = listPeriodos;
     }
 
     public List<CatalogosDTO> getListGrupos() {

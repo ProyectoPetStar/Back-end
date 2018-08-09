@@ -2,6 +2,7 @@ package org.petstar.dto.ishikawa;
 
 import java.sql.Date;
 import java.util.List;
+import org.petstar.dto.CatalogosDTO;
 
 /**
  *
@@ -29,6 +30,8 @@ public class PetIshikawa {
     private int estatus;
     private List<PetIdeas> listIdeas;
     private List<PetConsenso> listConsenso;
+    private CatalogosDTO grupo;
+    private CatalogosDTO etad;
 
     public int getId() {
         return id;
@@ -196,5 +199,21 @@ public class PetIshikawa {
 
     public void setListConsenso(List<PetConsenso> listConsenso) {
         this.listConsenso = listConsenso;
+    }
+
+    public CatalogosDTO getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(CatalogosDTO grupo) {
+        this.grupo = grupo;
+    }
+
+    public CatalogosDTO getEtad() {
+        return etad;
+    }
+
+    public void setEtad(CatalogosDTO etad) {
+        this.etad = etad;
     }
 }

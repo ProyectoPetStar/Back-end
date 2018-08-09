@@ -44,13 +44,13 @@ public class Ishikawa extends HttpServlet {
                 case "loadCombobox":
                     output = controller.loadCombobox(request);
                     break;
-                /*case "getLineas":
-                    output = controllerLineas.getLineasData(request);
+                case "getAllIshikawas":
+                    output = controller.getAllIshikawas(request);
                     break;
-                case "insertLineas":
-                    output = controllerLineas.insertNewLinea(request);
+                case "saveIshikawa":
+                    output = controller.saveIshikawa(request);
                     break;
-                case "updateLineas":
+               /* case "updateLineas":
                     output = controllerLineas.updateLinea(request);
                     break;
                 case "blockLineas":
