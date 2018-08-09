@@ -15,6 +15,7 @@ public class PetIshikawa {
     private String como;
     private String problema;
     private Date fecha;
+    private String fecha_string;
     private String nombre_etad;
     private int id_grupo;
     private int id_etad;
@@ -83,6 +84,14 @@ public class PetIshikawa {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+
+    public String getFecha_string() {
+        return fecha_string;
+    }
+
+    public void setFecha_string(String fecha_string) {
+        this.fecha_string = fecha_string;
     }
 
     public String getNombre_etad() {

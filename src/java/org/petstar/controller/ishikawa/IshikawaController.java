@@ -14,6 +14,7 @@ import org.petstar.dao.ishikawa.IshikawaDAO;
 import org.petstar.dto.ishikawa.PetIshikawa;
 import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.convertSqlToDay;
+import static org.petstar.configurations.utils.convertStringToSql;
 
 /**
  *
@@ -72,6 +73,7 @@ public class IshikawaController {
                 JSONObject jsonResponse = new JSONObject(jsonString);
                 PetIshikawa ishikawa = gson.fromJson(jsonResponse.getJSONObject("ishikawa").toString(), PetIshikawa.class);
                 
+                ishikawa.setFecha(convertStringToSql(ishikawa.getFecha_string()));
                 ishikawaDAO.saveIshikawa(ishikawa);
                 
                 responseJson.setMessage(MSG_SUCESS);

@@ -6,6 +6,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.petstar.configurations.PoolDataSource;
+import org.petstar.configurations.utils;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.ishikawa.PetConsenso;
 import org.petstar.dto.ishikawa.PetIdeas;
@@ -87,6 +88,7 @@ public class IshikawaDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
+        plan.setFecha(utils.convertStringToSql(plan.getFecha_string()));
         sql.append("INSERT INTO pet_plan_accion(accion,responsable,fecha,id_porque) VALUES (?,?,?,?)");
         Object[] params = { plan.getAccion(), plan.getResponsable(), plan.getFecha(), idPorque};
         

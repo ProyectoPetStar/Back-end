@@ -11,6 +11,7 @@ public class PetPlanAccion {
     private String accion;
     private String responsable;
     private Date fecha;
+    private String fecha_string;
     private int id_porque;
     private PetVerificacion verificacion;
 
@@ -44,6 +45,14 @@ public class PetPlanAccion {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+
+    public String getFecha_string() {
+        return fecha_string;
+    }
+
+    public void setFecha_string(String fecha_string) {
+        this.fecha_string = fecha_string;
     }
 
     public int getId_porque() {
