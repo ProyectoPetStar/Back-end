@@ -48,15 +48,18 @@ public class Ishikawa extends HttpServlet {
                     output = controller.getAllIshikawas(request);
                     break;
                 case "saveIshikawa":
-                    output = controller.saveIshikawa(request);
+                    output = controller.saveIshikawa(request, false);
                     break;
-               /* case "updateLineas":
-                    output = controllerLineas.updateLinea(request);
+                case "updateIshikawa":
+                    output = controller.saveIshikawa(request, true);
                     break;
-                case "blockLineas":
-                    output = controllerLineas.blockLinea(request);
+                case "getIshikawaById":
+                    output = controller.getIshikawaById(request);
                     break;
-                case "getDataByID":
+                case "deleteIshikawa":
+                    output = controller.deleteIshikawa(request);
+                    break;
+                /*case "getDataByID":
                     output = controllerLineas.getDataCatalogosById(request);
                     break;
                 */

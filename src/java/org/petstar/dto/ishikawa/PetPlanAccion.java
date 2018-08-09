@@ -13,7 +13,8 @@ public class PetPlanAccion {
     private Date fecha;
     private String fecha_string;
     private int id_porque;
-    private PetVerificacion verificacion;
+    private String efectiva;
+    private String porque;
 
     public int getId_plan() {
         return id_plan;
@@ -63,11 +64,19 @@ public class PetPlanAccion {
         this.id_porque = id_porque;
     }
 
-    public PetVerificacion getVerificacion() {
-        return verificacion;
+    public String getEfectiva() {
+        return efectiva;
     }
 
-    public void setVerificacion(PetVerificacion verificacion) {
-        this.verificacion = verificacion;
+    public void setEfectiva(String efectiva) {
+        this.efectiva = efectiva;
+    }
+
+    public String getPorque() {
+        return porque;
+    }
+
+    public void setPorque(String porque) {
+        this.porque = porque;
     }
 }

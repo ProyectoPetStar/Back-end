@@ -62,7 +62,7 @@ public class IshikawaController {
         return outputJson;
     }
     
-    public OutputJson saveIshikawa(HttpServletRequest request){
+    public OutputJson saveIshikawa(HttpServletRequest request, boolean update){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson responseJson = new ResponseJson();
         OutputJson outputJson = new OutputJson();
@@ -77,6 +77,11 @@ public class IshikawaController {
                 JSONObject jsonResponse = new JSONObject(jsonString);
                 PetIshikawa ishikawa = gson.fromJson(jsonResponse.getJSONObject("ishikawa").toString(), PetIshikawa.class);
                 
+                if(update){
+                    ishikawaDAO.deleteIshikawa(ishikawa.getId());
+                }
+                
+                ishikawa.setFecha(convertStringToSql(ishikawa.getFecha_string()));
                 ishikawa.setFecha(convertStringToSql(ishikawa.getFecha_string()));
                 ishikawaDAO.saveIshikawa(ishikawa);
                 
@@ -119,6 +124,62 @@ public class IshikawaController {
                     responseJson.setMessage(MSG_PERIODO);
                     responseJson.setSucessfull(false);
                 }
+            }else{
+                responseJson.setMessage(MSG_LOGOUT);
+                responseJson.setSucessfull(false);
+            }
+        } catch (Exception e) {
+            responseJson.setMessage(MSG_ERROR +  e.getMessage());
+            responseJson.setSucessfull(false);
+        }
+        outputJson.setResponse(responseJson);
+        return outputJson;
+    }
+    
+    public OutputJson getIshikawaById(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson responseJson = new ResponseJson();
+        OutputJson outputJson = new OutputJson();
+        
+        try {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                IshikawaResponse data = new IshikawaResponse();
+                IshikawaDAO ishikawaDAO = new IshikawaDAO();
+                
+                int idIshikawa = Integer.valueOf(request.getParameter("id_ishikawa"));
+                
+                data.setIshikawa(ishikawaDAO.getIshikawaById(idIshikawa));
+
+                outputJson.setData(data);
+                responseJson.setMessage(MSG_SUCESS);
+                responseJson.setSucessfull(true);
+            }else{
+                responseJson.setMessage(MSG_LOGOUT);
+                responseJson.setSucessfull(false);
+            }
+        } catch (Exception e) {
+            responseJson.setMessage(MSG_ERROR +  e.getMessage());
+            responseJson.setSucessfull(false);
+        }
+        outputJson.setResponse(responseJson);
+        return outputJson;
+    }
+    
+    public OutputJson deleteIshikawa(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson responseJson = new ResponseJson();
+        OutputJson outputJson = new OutputJson();
+        
+        try {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                IshikawaDAO ishikawaDAO = new IshikawaDAO();
+                int idIshikawa = Integer.valueOf(request.getParameter("id_ishikawa"));
+                
+                ishikawaDAO.deleteIshikawa(idIshikawa);
+                responseJson.setMessage(MSG_SUCESS);
+                responseJson.setSucessfull(true);
             }else{
                 responseJson.setMessage(MSG_LOGOUT);
                 responseJson.setSucessfull(false);
