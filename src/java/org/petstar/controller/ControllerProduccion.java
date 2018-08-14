@@ -283,14 +283,11 @@ public class ControllerProduccion {
                     falla.setDia(sumarFechasDias(falla.getDia(), 2));
                     falla.setDiaString(convertSqlToDay(falla.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                 }
-                PeriodosDTO periodo = periodosDAO.getPeriodoByMesAndAnio(
-                        obtenerMes(data.getMeta().getDia()),
-                        obtenerAnio(data.getMeta().getDia()));
-                data.setEstatusPeriodo(periodo.getEstatus()==0);
                 data.getMeta().setDia(sumarFechasDias(data.getMeta().getDia(), 2));
-                data.getMeta().setDia_string(convertSqlToDay(
-                        data.getMeta().getDia(), 
-                        new SimpleDateFormat("dd/MM/yyyy")));
+                PeriodosDTO periodo = periodosDAO.getPeriodoByMesAndAnio(
+                        obtenerMes(data.getMeta().getDia()), obtenerAnio(data.getMeta().getDia()));
+                data.setEstatusPeriodo(periodo.getEstatus()==0);
+                data.getMeta().setDia_string(convertSqlToDay(data.getMeta().getDia(),new SimpleDateFormat("dd/MM/yyyy")));
                 
                 output.setData(data);
                 response.setMessage(MSG_SUCESS);
@@ -465,16 +462,16 @@ public class ControllerProduccion {
                 ProduccionDAO produccionDAO = new ProduccionDAO();
                 ProduccionResponseJson data = new ProduccionResponseJson();
                 
-                String[] perfiles = sesion.getPerfiles().split(",");
+                //String[] perfiles = sesion.getPerfiles().split(",");
                 PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
                 Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                 Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
                 
-                if (perfiles[0].equals("1") || perfiles[0].equals("2") || perfiles[0].equals("3") || perfiles[0].equals("6")) {
-                    data.setListProduccion(produccionDAO.getProduccionLiberada(0,fechaI, fechaT));
-                }else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
-                    data.setListProduccion(produccionDAO.getProduccionLiberada(idLinea, fechaI, fechaT));
-                }
+                //if (perfiles[0].equals("1") || perfiles[0].equals("2") || perfiles[0].equals("3") || perfiles[0].equals("6")) {
+                //    data.setListProduccion(produccionDAO.getProduccionLiberada(0,fechaI, fechaT));
+                //}else if(perfiles[0].equals("4") || perfiles[0].equals("5")){
+                data.setListProduccion(produccionDAO.getProduccionLiberada(idLinea, fechaI, fechaT));
+                //}
                 
                 for(ProduccionDTO prod:data.getListProduccion()){
                     prod.setDia(sumarFechasDias(prod.getDia(), 2));
