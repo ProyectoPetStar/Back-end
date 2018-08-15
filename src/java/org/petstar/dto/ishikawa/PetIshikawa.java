@@ -2,6 +2,7 @@ package org.petstar.dto.ishikawa;
 
 import java.sql.Date;
 import java.util.List;
+import org.petstar.dto.CatalogosDTO;
 
 /**
  *
@@ -15,6 +16,7 @@ public class PetIshikawa {
     private String como;
     private String problema;
     private Date fecha;
+    private String fecha_string;
     private String nombre_etad;
     private int id_grupo;
     private int id_etad;
@@ -28,6 +30,8 @@ public class PetIshikawa {
     private int estatus;
     private List<PetIdeas> listIdeas;
     private List<PetConsenso> listConsenso;
+    private CatalogosDTO grupo;
+    private CatalogosDTO etad;
 
     public int getId() {
         return id;
@@ -83,6 +87,14 @@ public class PetIshikawa {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+
+    public String getFecha_string() {
+        return fecha_string;
+    }
+
+    public void setFecha_string(String fecha_string) {
+        this.fecha_string = fecha_string;
     }
 
     public String getNombre_etad() {
@@ -187,5 +199,21 @@ public class PetIshikawa {
 
     public void setListConsenso(List<PetConsenso> listConsenso) {
         this.listConsenso = listConsenso;
+    }
+
+    public CatalogosDTO getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(CatalogosDTO grupo) {
+        this.grupo = grupo;
+    }
+
+    public CatalogosDTO getEtad() {
+        return etad;
+    }
+
+    public void setEtad(CatalogosDTO etad) {
+        this.etad = etad;
     }
 }
