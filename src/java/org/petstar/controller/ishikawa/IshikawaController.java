@@ -112,10 +112,11 @@ public class IshikawaController {
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 
                 int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+                int idEtad = Integer.valueOf(request.getParameter("id_etad"));
                 PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
                 
                 if(periodo != null){
-                    data.setListIshikawas(ishikawaDAO.getAllIshikawas(periodo));
+                    data.setListIshikawas(ishikawaDAO.getAllIshikawas(periodo, idEtad));
 
                     outputJson.setData(data);
                     responseJson.setMessage(MSG_SUCESS);
