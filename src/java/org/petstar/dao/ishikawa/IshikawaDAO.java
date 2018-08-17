@@ -99,13 +99,13 @@ public class IshikawaDAO {
         qr.update(sql.toString(), params);
     }
     
-    public List<PetIshikawa> getAllIshikawas(PeriodosDTO periodo, int idEtad) throws Exception{
+    public List<PetIshikawa> getAllIshikawas(int anio) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_ishikawa WHERE YEAR(fecha) = ? AND MONTH(fecha) = ? AND id_etad= ?");
-        Object[] params = { periodo.getAnio(), periodo.getMes(), idEtad };
+        sql.append("SELECT * FROM pet_ishikawa WHERE YEAR(fecha) = ? ORDER BY fecha DESC, id_etad, id_grupo ");
+        Object[] params = { anio };
         
         ResultSetHandler rsh = new BeanListHandler(PetIshikawa.class);
         List<PetIshikawa> list = (List<PetIshikawa>) qr.query(sql.toString(), rsh, params);
