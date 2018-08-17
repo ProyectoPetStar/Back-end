@@ -109,22 +109,14 @@ public class IshikawaController {
             if(sesion != null){
                 IshikawaResponse data = new IshikawaResponse();
                 IshikawaDAO ishikawaDAO = new IshikawaDAO();
-                PeriodosDAO periodosDAO = new PeriodosDAO();
                 
-                int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
-                int idEtad = Integer.valueOf(request.getParameter("id_etad"));
-                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                int anio = Integer.valueOf(request.getParameter("anio"));
                 
-                if(periodo != null){
-                    data.setListIshikawas(ishikawaDAO.getAllIshikawas(periodo, idEtad));
+                data.setListIshikawas(ishikawaDAO.getAllIshikawas(anio));
 
-                    outputJson.setData(data);
-                    responseJson.setMessage(MSG_SUCESS);
-                    responseJson.setSucessfull(true);
-                }else{
-                    responseJson.setMessage(MSG_PERIODO);
-                    responseJson.setSucessfull(false);
-                }
+                outputJson.setData(data);
+                responseJson.setMessage(MSG_SUCESS);
+                responseJson.setSucessfull(true);
             }else{
                 responseJson.setMessage(MSG_LOGOUT);
                 responseJson.setSucessfull(false);
