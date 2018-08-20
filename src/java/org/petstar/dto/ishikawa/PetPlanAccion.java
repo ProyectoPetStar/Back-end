@@ -13,7 +13,7 @@ public class PetPlanAccion {
     private Date fecha;
     private String fecha_string;
     private int id_porque;
-    private String efectiva;
+    private int efectiva;
     private String porque;
 
     public int getId_plan() {
@@ -64,11 +64,11 @@ public class PetPlanAccion {
         this.id_porque = id_porque;
     }
 
-    public String getEfectiva() {
+    public int getEfectiva() {
         return efectiva;
     }
 
-    public void setEfectiva(String efectiva) {
+    public void setEfectiva(int efectiva) {
         this.efectiva = efectiva;
     }
 

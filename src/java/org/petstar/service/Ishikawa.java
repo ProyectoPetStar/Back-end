@@ -56,13 +56,12 @@ public class Ishikawa extends HttpServlet {
                 case "getIshikawaById":
                     output = controller.getIshikawaById(request);
                     break;
-                case "deleteIshikawa":
-                    output = controller.deleteIshikawa(request);
+                //case "deleteIshikawa":
+                //    output = controller.deleteIshikawa(request);
+                //    break;
+                case "checkIshikawa":
+                    output = controller.checkIshikawa(request);
                     break;
-                /*case "getDataByID":
-                    output = controllerLineas.getDataCatalogosById(request);
-                    break;
-                */
             }
         } catch (Exception ex){
             ResponseJson reponseJson = new ResponseJson();
