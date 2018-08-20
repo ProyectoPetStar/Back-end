@@ -10,7 +10,6 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.petstar.configurations.PoolDataSource;
 import org.petstar.configurations.utils;
 import org.petstar.dao.CatalogosDAO;
-import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultInteger;
 import org.petstar.dto.ishikawa.PetConsenso;
 import org.petstar.dto.ishikawa.PetIdeas;
@@ -29,11 +28,11 @@ public class IshikawaDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("INSERT INTO pet_ishikawa (que,donde,cuando,como,problema,fecha,nombre_etad,")
-                .append("id_grupo,id_etad,causa_raiz,estatus) OUTPUT INSERTED.ID AS result ")
-                .append(" VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                .append("id_grupo,id_etad,causa_raiz,elaborado,estatus) OUTPUT INSERTED.ID AS result ")
+                .append(" VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
         Object[] params = { is.getQue(), is.getDonde(), is.getCuando(), is.getComo(),
                 is.getProblema(), is.getFecha(), is.getNombre_etad(), is.getId_grupo(),
-                is.getId_etad(), is.getCausa_raiz(), 0 };
+                is.getId_etad(), is.getCausa_raiz(), is.getElaborado(), 0 };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
@@ -211,6 +210,30 @@ public class IshikawaDAO {
         
         sql.append("DELETE FROM pet_ishikawa WHERE id = ?");
         Object[] params = { idIshikawa };
+        
+        qr.update(sql.toString(), params);
+    }
+     
+    public void checkIshikawa(PetPlanAccion plan) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_plan_accion SET efectiva = ? , porque = ? WHERE id_plan = ?");
+        Object[] params = { plan.getEfectiva(), plan.getPorque(), plan.getId_plan() };
+        
+        qr.update(sql.toString(), params);
+    }
+    
+    public void traicingIshikawa(PetIshikawa ishikawa) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_ishikawa SET solucionado=? , recurrente=? , ")
+                .append("analisis=? , revisado=? , autorizado=? , estatus=1 WHERE id = ?");
+        Object[] params = { ishikawa.getSolucionado(), ishikawa.getRecurrente(), 
+            ishikawa.getAnalisis(), ishikawa.getRevisado(), ishikawa.getAutorizado(), ishikawa.getId() };
         
         qr.update(sql.toString(), params);
     }

@@ -12,7 +12,6 @@ import org.petstar.model.ResponseJson;
 import org.petstar.model.ishikawa.IshikawaResponse;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ishikawa.IshikawaDAO;
-import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ishikawa.PetIshikawa;
 import static org.petstar.configurations.utils.getCurrentDate;
 import static org.petstar.configurations.utils.convertSqlToDay;
@@ -83,6 +82,7 @@ public class IshikawaController {
                 
                 ishikawa.setFecha(convertStringToSql(ishikawa.getFecha_string()));
                 ishikawa.setFecha(convertStringToSql(ishikawa.getFecha_string()));
+                ishikawa.setElaborado(sesion.getNombre());
                 ishikawaDAO.saveIshikawa(ishikawa);
                 
                 responseJson.setMessage(MSG_SUCESS);
@@ -171,6 +171,40 @@ public class IshikawaController {
                 int idIshikawa = Integer.valueOf(request.getParameter("id_ishikawa"));
                 
                 ishikawaDAO.deleteIshikawa(idIshikawa);
+                responseJson.setMessage(MSG_SUCESS);
+                responseJson.setSucessfull(true);
+            }else{
+                responseJson.setMessage(MSG_LOGOUT);
+                responseJson.setSucessfull(false);
+            }
+        } catch (Exception e) {
+            responseJson.setMessage(MSG_ERROR +  e.getMessage());
+            responseJson.setSucessfull(false);
+        }
+        outputJson.setResponse(responseJson);
+        return outputJson;
+    }
+    
+    public OutputJson checkIshikawa(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson responseJson = new ResponseJson();
+        OutputJson outputJson = new OutputJson();
+        Gson gson = new Gson();
+        
+        try {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                IshikawaDAO ishikawaDAO = new IshikawaDAO();
+                
+                String jsonString = request.getParameter("data");
+                JSONObject jsonResponse = new JSONObject(jsonString);
+                PetIshikawa ishikawa = gson.fromJson(jsonResponse.getJSONObject("ishikawa").toString(), PetIshikawa.class);
+                
+                for(int y=0; y<ishikawa.getListIdeas().size(); y++){
+                    ishikawaDAO.checkIshikawa(ishikawa.getListIdeas().get(y).getPorques().getPlanAccion());
+                }
+                ishikawaDAO.traicingIshikawa(ishikawa);
+                
                 responseJson.setMessage(MSG_SUCESS);
                 responseJson.setSucessfull(true);
             }else{
