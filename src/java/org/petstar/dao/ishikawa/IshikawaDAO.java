@@ -1,5 +1,6 @@
 package org.petstar.dao.ishikawa;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.sql.DataSource;
@@ -11,6 +12,7 @@ import org.petstar.configurations.PoolDataSource;
 import org.petstar.configurations.utils;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dto.ResultInteger;
+import org.petstar.dto.ResultSQLDate;
 import org.petstar.dto.ishikawa.PetConsenso;
 import org.petstar.dto.ishikawa.PetIdeas;
 import org.petstar.dto.ishikawa.PetIshikawa;
@@ -139,6 +141,12 @@ public class IshikawaDAO {
             ishikawa.setListConsenso(this.getConsensoOfIshikawa(idIshikawa));
             ishikawa.setListIdeas(this.getIdeasOfIshikawa(idIshikawa));
         }
+        
+        Date actual = utils.getCurrentDate(new SimpleDateFormat("dd/MM/yyyy"));
+        Date maximo = this.lastDatePlan(idIshikawa);
+        if(actual.after(maximo)){
+            ishikawa.setVerificar(true);
+        }
         return ishikawa;
     }
     
@@ -236,5 +244,22 @@ public class IshikawaDAO {
             ishikawa.getAnalisis(), ishikawa.getRevisado(), ishikawa.getAutorizado(), ishikawa.getId() };
         
         qr.update(sql.toString(), params);
+    }
+    
+    private Date lastDatePlan(int idIshikawa) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT MAX(ppa.fecha) AS result FROM pet_plan_accion AS ppa ")
+                .append("INNER JOIN pet_porques AS pps ON ppa.id_porque = pps.id_porque ")
+                .append("INNER JOIN pet_ideas AS pis ON pps.id_idea = pis.id_idea ")
+                .append("INNER JOIN pet_ishikawa AS pia ON pis.id_ishikawa = pia.id ")
+                .append("WHERE pia.id=").append(idIshikawa);
+        
+        ResultSetHandler rsh = new BeanHandler(ResultSQLDate.class);
+        ResultSQLDate date = (ResultSQLDate) qr.query(sql.toString(), rsh);
+        
+        return utils.sumarFechasDias(date.getResult(), 2);
     }
 }

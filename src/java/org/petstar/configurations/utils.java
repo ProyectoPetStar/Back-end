@@ -14,6 +14,8 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Clase que permite definir metodos recurrentes; 
@@ -179,6 +181,18 @@ public class utils {
     
     public static java.sql.Date getCurrentDate(){
         java.sql.Date fecha = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        return fecha;
+    }
+    
+    public static java.sql.Date getCurrentDate(SimpleDateFormat formatoFecha){
+        java.util.Date fechaActual = new Date();
+        
+        java.sql.Date fecha = null;
+        try {
+            fecha = utils.convertStringToSql( formatoFecha.format(fechaActual));
+        } catch (ParseException ex) {
+            Logger.getLogger(utils.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return fecha;
     }
     

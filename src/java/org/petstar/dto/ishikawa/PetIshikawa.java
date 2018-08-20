@@ -32,6 +32,7 @@ public class PetIshikawa {
     private List<PetConsenso> listConsenso;
     private CatalogosDTO grupo;
     private CatalogosDTO etad;
+    private boolean verificar;
 
     public int getId() {
         return id;
@@ -215,5 +216,13 @@ public class PetIshikawa {
 
     public void setEtad(CatalogosDTO etad) {
         this.etad = etad;
+    }
+
+    public boolean isVerificar() {
+        return verificar;
+    }
+
+    public void setVerificar(boolean verificar) {
+        this.verificar = verificar;
     }
 }
