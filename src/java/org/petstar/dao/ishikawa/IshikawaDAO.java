@@ -111,12 +111,19 @@ public class IshikawaDAO {
         ResultSetHandler rsh = new BeanListHandler(PetIshikawa.class);
         List<PetIshikawa> list = (List<PetIshikawa>) qr.query(sql.toString(), rsh, params);
         CatalogosDAO catalogosDAO = new CatalogosDAO();
+        Date actual = utils.getCurrentDate(new SimpleDateFormat("dd/MM/yyyy"));
         
         for(PetIshikawa pi : list){
             pi.setFecha(utils.sumarFechasDias(pi.getFecha(), 2));
             pi.setFecha_string(utils.convertSqlToDay(pi.getFecha(), new SimpleDateFormat("dd/MM/yyyy")));
             pi.setGrupo(catalogosDAO.getDescripcionById("pet_cat_grupo", pi.getId_grupo()));
             pi.setEtad(catalogosDAO.getDescripcionById("pet_cat_etad", pi.getId_etad()));
+            pi.setListConsenso(this.getConsensoOfIshikawa(pi.getId()));
+            pi.setListIdeas(this.getIdeasOfIshikawa(pi.getId()));
+            Date maximo = this.lastDatePlan(pi.getId());
+            if(actual.after(maximo)){
+                pi.setVerificar(true);
+            }
         }
         return list;
     }
