@@ -201,7 +201,8 @@ public class IshikawaController {
                 PetIshikawa ishikawa = gson.fromJson(jsonResponse.getJSONObject("ishikawa").toString(), PetIshikawa.class);
                 
                 for(int y=0; y<ishikawa.getListIdeas().size(); y++){
-                    ishikawaDAO.checkIshikawa(ishikawa.getListIdeas().get(y).getPorques().getPlanAccion());
+                    if(ishikawa.getListIdeas().get(y).getPorques() != null)
+                        ishikawaDAO.checkIshikawa(ishikawa.getListIdeas().get(y).getPorques().getPlanAccion());
                 }
                 ishikawaDAO.traicingIshikawa(ishikawa);
                 
