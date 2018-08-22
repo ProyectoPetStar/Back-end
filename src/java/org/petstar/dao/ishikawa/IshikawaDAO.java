@@ -30,11 +30,11 @@ public class IshikawaDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("INSERT INTO pet_ishikawa (que,donde,cuando,como,problema,fecha,nombre_etad,")
-                .append("id_grupo,id_etad,causa_raiz,elaborado,estatus) OUTPUT INSERTED.ID AS result ")
-                .append(" VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+                .append("id_grupo,id_etad,causa_raiz,elaborado,descripcion_corta,estatus) ")
+                .append("OUTPUT INSERTED.ID AS result VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
         Object[] params = { is.getQue(), is.getDonde(), is.getCuando(), is.getComo(),
                 is.getProblema(), is.getFecha(), is.getNombre_etad(), is.getId_grupo(),
-                is.getId_etad(), is.getCausa_raiz(), is.getElaborado(), 0 };
+                is.getId_etad(), is.getCausa_raiz(), is.getElaborado(), is.getDescripcion_corta(), 0 };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
