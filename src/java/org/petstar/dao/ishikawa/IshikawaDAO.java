@@ -24,7 +24,7 @@ import org.petstar.dto.ishikawa.PetPorques;
  * @author Tech-Pro
  */
 public class IshikawaDAO {
-    public void saveIshikawa(PetIshikawa is) throws Exception{
+    public ResultInteger saveIshikawa(PetIshikawa is) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -40,6 +40,8 @@ public class IshikawaDAO {
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         this.saveIdeasIshikawa(is.getListIdeas(), result.getResult());
         this.saveConsenso(is.getListConsenso(), result.getResult());
+        
+        return result;
     }
     
     private void saveIdeasIshikawa(List<PetIdeas> ideas, int idIshikawa) throws Exception{
