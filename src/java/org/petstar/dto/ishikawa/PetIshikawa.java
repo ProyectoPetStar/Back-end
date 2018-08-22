@@ -28,6 +28,7 @@ public class PetIshikawa {
     private String revisado;
     private String autorizado;
     private int estatus;
+    private String descripcion_corta;
     private List<PetIdeas> listIdeas;
     private List<PetConsenso> listConsenso;
     private CatalogosDTO grupo;
@@ -184,6 +185,14 @@ public class PetIshikawa {
 
     public void setEstatus(int estatus) {
         this.estatus = estatus;
+    }
+
+    public String getDescripcion_corta() {
+        return descripcion_corta;
+    }
+
+    public void setDescripcion_corta(String descripcion_corta) {
+        this.descripcion_corta = descripcion_corta;
     }
 
     public List<PetIdeas> getListIdeas() {
