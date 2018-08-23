@@ -225,6 +225,7 @@ public class IshikawaController {
         try {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
+                IshikawaResponse response = new IshikawaResponse();
                 IshikawaDAO ishikawaDAO = new IshikawaDAO();
                 
                 String jsonString = request.getParameter("data");
@@ -238,6 +239,8 @@ public class IshikawaController {
                 }
                 ishikawaDAO.traicingIshikawa(ishikawa);
                 
+                response.setIshikawa(ishikawaDAO.getIshikawaById(ishikawa.getId()));
+                outputJson.setData(response);
                 responseJson.setMessage(MSG_SUCESS);
                 responseJson.setSucessfull(true);
             }else{
