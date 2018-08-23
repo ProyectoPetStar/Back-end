@@ -56,9 +56,9 @@ public class Ishikawa extends HttpServlet {
                 case "getIshikawaById":
                     output = controller.getIshikawaById(request);
                     break;
-                //case "deleteIshikawa":
-                //    output = controller.deleteIshikawa(request);
-                //    break;
+                case "revisarIshikawa":
+                    output = controller.revisarIshikawa(request);
+                    break;
                 case "checkIshikawa":
                     output = controller.checkIshikawa(request);
                     break;

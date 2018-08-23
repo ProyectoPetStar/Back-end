@@ -186,6 +186,34 @@ public class IshikawaController {
         return outputJson;
     }
     
+    public OutputJson revisarIshikawa(HttpServletRequest request){
+        ControllerAutenticacion autenticacion = new ControllerAutenticacion();
+        ResponseJson responseJson = new ResponseJson();
+        OutputJson outputJson = new OutputJson();
+        Gson gson = new Gson();
+        
+        try {
+            UserDTO sesion = autenticacion.isValidToken(request);
+            if(sesion != null){
+                IshikawaDAO ishikawaDAO = new IshikawaDAO();
+                int idIShikawa = Integer.valueOf(request.getParameter("id_ishikawa"));
+                
+                ishikawaDAO.revisarIshikawa(idIShikawa, sesion.getNombre());
+                
+                responseJson.setMessage(MSG_SUCESS);
+                responseJson.setSucessfull(true);
+            }else{
+                responseJson.setMessage(MSG_LOGOUT);
+                responseJson.setSucessfull(false);
+            }
+        } catch (Exception e) {
+            responseJson.setMessage(MSG_ERROR +  e.getMessage());
+            responseJson.setSucessfull(false);
+        }
+        outputJson.setResponse(responseJson);
+        return outputJson;
+    }
+    
     public OutputJson checkIshikawa(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson responseJson = new ResponseJson();
@@ -201,6 +229,7 @@ public class IshikawaController {
                 JSONObject jsonResponse = new JSONObject(jsonString);
                 PetIshikawa ishikawa = gson.fromJson(jsonResponse.getJSONObject("ishikawa").toString(), PetIshikawa.class);
                 
+                ishikawa.setAutorizado(sesion.getNombre());
                 for(int y=0; y<ishikawa.getListIdeas().size(); y++){
                     if(ishikawa.getListIdeas().get(y).getPorques() != null)
                         ishikawaDAO.checkIshikawa(ishikawa.getListIdeas().get(y).getPorques().getPlanAccion());

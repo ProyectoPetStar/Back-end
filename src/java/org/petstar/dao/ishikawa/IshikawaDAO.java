@@ -220,7 +220,7 @@ public class IshikawaDAO {
         return list;
     }
     
-     public void deleteIshikawa(int idIshikawa) throws Exception{
+    public void deleteIshikawa(int idIshikawa) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
@@ -230,7 +230,18 @@ public class IshikawaDAO {
         
         qr.update(sql.toString(), params);
     }
-     
+    
+    public void revisarIshikawa(int idIshikawa, String reviso) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE pet_ishikawa SET revisado = ? , estatus = 1 WHERE id = ?");
+        Object[] params = { reviso, idIshikawa };
+        
+        qr.update(sql.toString(), params);
+    }
+    
     public void checkIshikawa(PetPlanAccion plan) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
@@ -248,9 +259,9 @@ public class IshikawaDAO {
         StringBuilder sql = new StringBuilder();
         
         sql.append("UPDATE pet_ishikawa SET solucionado=? , recurrente=? , ")
-                .append("analisis=? , revisado=? , autorizado=? , estatus=1 WHERE id = ?");
+                .append("analisis=? , autorizado=? , estatus=2 WHERE id = ?");
         Object[] params = { ishikawa.getSolucionado(), ishikawa.getRecurrente(), 
-            ishikawa.getAnalisis(), ishikawa.getRevisado(), ishikawa.getAutorizado(), ishikawa.getId() };
+            ishikawa.getAnalisis(), ishikawa.getAutorizado(), ishikawa.getId() };
         
         qr.update(sql.toString(), params);
     }
