@@ -190,7 +190,6 @@ public class IshikawaController {
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson responseJson = new ResponseJson();
         OutputJson outputJson = new OutputJson();
-        Gson gson = new Gson();
         
         try {
             UserDTO sesion = autenticacion.isValidToken(request);
@@ -200,7 +199,7 @@ public class IshikawaController {
                 
                 ishikawaDAO.revisarIshikawa(idIShikawa, sesion.getNombre());
                 
-                responseJson.setMessage(MSG_SUCESS);
+                responseJson.setMessage(sesion.getNombre());
                 responseJson.setSucessfull(true);
             }else{
                 responseJson.setMessage(MSG_LOGOUT);
