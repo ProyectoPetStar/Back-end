@@ -194,12 +194,15 @@ public class IshikawaController {
         try {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
+                IshikawaResponse response = new IshikawaResponse();
                 IshikawaDAO ishikawaDAO = new IshikawaDAO();
                 int idIShikawa = Integer.valueOf(request.getParameter("id_ishikawa"));
                 
                 ishikawaDAO.revisarIshikawa(idIShikawa, sesion.getNombre());
+                response.setIshikawa(ishikawaDAO.getIshikawaById(idIShikawa));
+                outputJson.setData(response);
                 
-                responseJson.setMessage(sesion.getNombre());
+                responseJson.setMessage(MSG_SUCESS);
                 responseJson.setSucessfull(true);
             }else{
                 responseJson.setMessage(MSG_LOGOUT);
