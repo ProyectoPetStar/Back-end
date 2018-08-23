@@ -123,8 +123,10 @@ public class IshikawaDAO {
             pi.setListConsenso(this.getConsensoOfIshikawa(pi.getId()));
             pi.setListIdeas(this.getIdeasOfIshikawa(pi.getId()));
             Date maximo = this.lastDatePlan(pi.getId());
-            if(actual.after(maximo)){
-                pi.setVerificar(true);
+            if(pi.getEstatus() == 1){
+                if(actual.after(maximo)){
+                    pi.setVerificar(true);
+                }
             }
         }
         return list;
@@ -153,8 +155,10 @@ public class IshikawaDAO {
         
         Date actual = utils.getCurrentDate(new SimpleDateFormat("dd/MM/yyyy"));
         Date maximo = this.lastDatePlan(idIshikawa);
-        if(actual.after(maximo)){
-            ishikawa.setVerificar(true);
+        if(ishikawa.getEstatus() == 1){
+            if(actual.after(maximo)){
+                ishikawa.setVerificar(true);
+            }
         }
         return ishikawa;
     }
