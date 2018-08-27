@@ -107,7 +107,8 @@ public class IshikawaDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_ishikawa WHERE YEAR(fecha) = ? ORDER BY fecha DESC, id_etad, id_grupo ");
+        sql.append("SELECT *, ISNULL(revisado,'') AS revisado, ISNULL(autorizado,'') ")
+                .append("AS autorizado FROM pet_ishikawa WHERE YEAR(fecha) = ? ORDER BY fecha DESC, id_etad, id_grupo ");
         Object[] params = { anio };
         
         ResultSetHandler rsh = new BeanListHandler(PetIshikawa.class);
@@ -137,7 +138,8 @@ public class IshikawaDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_ishikawa WHERE id = ?");
+        sql.append("SELECT *, ISNULL(revisado,'') AS revisado, ")
+                .append("ISNULL(autorizado,'') AS autorizado FROM pet_ishikawa WHERE id = ?");
         Object[] params = { idIshikawa };
         
         ResultSetHandler rsh = new BeanHandler(PetIshikawa.class);
@@ -173,8 +175,10 @@ public class IshikawaDAO {
         
         ResultSetHandler rsh = new BeanListHandler(PetIdeas.class);
         List<PetIdeas> list = (List<PetIdeas>) qr.query(sql.toString(), rsh, params);
+        CatalogosDAO catalogosDAO = new CatalogosDAO();
         for(PetIdeas pi : list){
             pi.setPorques(this.getPorquesOfIdea(pi.getId_idea()));
+            pi.setEme(catalogosDAO.getDescripcionById("pet_cat_emes", pi.getId_eme()));
         }
         return list;
     }
@@ -184,7 +188,10 @@ public class IshikawaDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_porques WHERE id_idea = ?");
+        sql.append("SELECT id_porque, id_idea, ISNULL(porque_uno,'') AS porque_uno, ")
+                .append("ISNULL(porque_dos,'') AS porque_dos, ISNULL(porque_tres,'') ")
+                .append("AS porque_tres, ISNULL(porque_cuatro,'') AS porque_cuatro, ")
+                .append("ISNULL(porque_cinco,'') AS porque_cinco FROM pet_porques WHERE id_idea = ?");
         Object[] params = { idIdea };
         
         ResultSetHandler rsh = new BeanHandler(PetPorques.class);
@@ -200,7 +207,7 @@ public class IshikawaDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_plan_accion WHERE id_porque = ?");
+        sql.append("SELECT *, ISNULL(porque,'') AS porque FROM pet_plan_accion WHERE id_porque = ?");
         Object[] params = { idPorque };
         
         ResultSetHandler rsh = new BeanHandler(PetPlanAccion.class);
