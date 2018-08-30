@@ -210,7 +210,7 @@ public class UsersDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT COUNT(1) AS result FROM ETADSonarh WHERE NumEmpleado = ?");
+        sql.append("SELECT COUNT(1) AS result FROM [etad].[dbo].[ETAD-Sonarh] WHERE NumEmpleado = ?");
         Object[] params = {
             numeroEmpleado
         };
