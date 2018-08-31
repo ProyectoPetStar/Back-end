@@ -234,11 +234,12 @@ public class ReportesOEE {
             totalResina = totalResina.add(resinaSSP.get(i).getResult());
             totalRes004 = totalRes004.add(resina004.get(i).getResult());
             
-            BigDecimal calculo = resinaE1.get(i).getResult().subtract(resina004.get(i).getResult());
+            BigDecimal calculo = resinaSSP.get(i).getResult().subtract(resina004.get(i).getResult());
             acumulado = calculo.add(acumulado);
             planResina = planResina.add(metasSSP.get(i).getResult());
-            BigDecimal diferencia = acumulado.subtract(metasSSP.get(i).getResult());
-            BigDecimal eficiencia = acumulado.divide(metasSSP.get(i).getResult(), RoundingMode.CEILING);
+            BigDecimal diferencia = acumulado.subtract(planResina);
+            BigDecimal eficiencia = acumulado.divide(planResina, RoundingMode.CEILING);
+            eficiencia = eficiencia.multiply(new BigDecimal(100));
             BigDecimal vsMetaM = eficiencia.subtract(new BigDecimal(100));
             planExt = planExt.add(metasE1.get(i).getResult().add(metasE2.get(i).getResult()));
             BigDecimal totalAmo = resinaE1.get(i).getResult().add(resinaE2.get(i).getResult());
@@ -246,6 +247,7 @@ public class ReportesOEE {
             totalTotAmo = totalTotAmo.add(totalAmo);
             BigDecimal difeAmo = acumAmo.subtract(planExt);
             BigDecimal eficiDia = acumAmo.divide(planExt, RoundingMode.CEILING);
+            eficiDia = eficiDia.multiply(new BigDecimal(100));
             BigDecimal vsMetaE = eficiDia.subtract(new BigDecimal(100));
             totalHojaSS = totalHojaSS.add(diarioE1.get(i).getHojuela());
             totalPlasta = totalPlasta.add(diarioE1.get(i).getPlastas());
@@ -255,7 +257,8 @@ public class ReportesOEE {
             if(acumAmo.compareTo(BigDecimal.ZERO) == 0){
                 eficienciaMat = BigDecimal.ZERO;
             }else{
-                eficienciaMat = eficienciaMat.divide(acumAmo, RoundingMode.CEILING);
+                eficienciaMat = acumAmo.divide(eficienciaMat, RoundingMode.CEILING);
+                eficienciaMat = eficienciaMat.multiply(new BigDecimal(100));
             }
             totalExt1 = totalExt1.add(resinaE1.get(i).getResult());
             totalExt2 = totalExt2.add(resinaE2.get(i).getResult());
@@ -286,13 +289,22 @@ public class ReportesOEE {
         }
 
         BigDecimal totalDiferencia = acumulado.subtract(planResina);
-        BigDecimal totalEficiencia = acumulado.divide(planResina, RoundingMode.CEILING);
+        BigDecimal totalEficiencia = BigDecimal.ZERO;
+        if(planResina.compareTo(BigDecimal.ZERO) != 0){
+            totalEficiencia = acumulado.divide(planResina, RoundingMode.CEILING);
+        }
         BigDecimal totalVsMetaM = totalEficiencia.subtract(new BigDecimal(100));
         BigDecimal totalDifeAmo = acumAmo.subtract(planExt);
-        BigDecimal totalEficiDia = acumAmo.divide(planExt, RoundingMode.CEILING);
-        BigDecimal totalVsMetaE = totalEficiDia.subtract(new BigDecimal(100));
-        BigDecimal totalEficMat = totalHojaSS.add(totalPlasta);
-        totalEficMat = (totalEficMat.add(acumAmo)).divide(acumAmo, RoundingMode.CEILING);
+        BigDecimal totalEficiDia = BigDecimal.ZERO;
+        BigDecimal totalVsMetaE = BigDecimal.ZERO;
+        if(planExt.compareTo(BigDecimal.ZERO) != 0){
+            totalEficiDia = acumAmo.divide(planExt, RoundingMode.CEILING);
+            totalVsMetaE = totalEficiDia.subtract(new BigDecimal(100));
+        }
+        BigDecimal totalEficMat = BigDecimal.ZERO;
+        if(acumAmo.compareTo(BigDecimal.ZERO) != 0){
+        totalEficMat = ((totalHojaSS.add(totalPlasta)).add(acumAmo)).divide(acumAmo, RoundingMode.CEILING);
+        }
         
         HashMap<String, Object> totales = new HashMap<>();
         totales.put("padre", 2);

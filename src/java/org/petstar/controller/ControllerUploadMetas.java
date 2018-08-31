@@ -274,8 +274,10 @@ public class ControllerUploadMetas {
                 int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
                 int idLinea =  Integer.valueOf(request.getParameter("id_linea"));
                 
+                PeriodosDAO periodosDAO = new PeriodosDAO();
                 ForecastDAO forecastDAO = new ForecastDAO();
-                forecastDAO.rewriteFile(idPeriodo, idLinea);
+                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+                forecastDAO.rewriteFile(periodo.getAnio(), periodo.getMes(), idLinea, idPeriodo);
                 
                 response.setMessage(MSG_SUCESS);
                 response.setSucessfull(true);
