@@ -48,7 +48,7 @@ public class UsersDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM [etad].[dbo].[ETAD-Sonarh] WHERE Area = ? AND Grupo = ?");
+        sql.append("EXEC sp_selectSonarhBonos ?, ?");
         Object[] params = { area, grupo};
         
         ResultSetHandler rsh = new BeanListHandler(UserSonarhDTO.class);
@@ -210,10 +210,8 @@ public class UsersDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT COUNT(1) AS result FROM ETADSonarh WHERE NumEmpleado = ?");
-        Object[] params = {
-            numeroEmpleado
-        };
+        sql.append("EXEC sp_validaUsuarioSonarh ?");
+        Object[] params = { numeroEmpleado };
         
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
