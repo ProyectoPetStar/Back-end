@@ -37,7 +37,7 @@ public class ControllerLineas {
             if(sesion != null){
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 LineasDataResponseJson data = new LineasDataResponseJson();
-                data.setListEtads(catalogosDAO.getCatalogosActive("pet_cat_etad"));
+                data.setListEtads(catalogosDAO.getCatalogosActiveConArea("pet_cat_etad"));
                 data.setListGposLinea(catalogosDAO.getCatalogosActive("pet_cat_gpo_linea"));
 
                 out.setData(data);
@@ -145,7 +145,7 @@ public class ControllerLineas {
         try {
             LineasDTO linea = new LineasDTO();
             linea.setId_linea(Integer.parseInt(request.getParameter("id_linea")));
-            linea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_etad")));
+            linea.setId_etad(Integer.parseInt(request.getParameter("id_etad")));
             linea.setId_gpo_linea(Integer.parseInt(request.getParameter("id_gpo_linea")));
             linea.setDescripcion(request.getParameter("descripcion"));
             linea.setValor(request.getParameter("valor"));
