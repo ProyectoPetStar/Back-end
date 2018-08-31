@@ -27,7 +27,9 @@ public class ReporteDiario {
     private BigDecimal meta_b;
     private BigDecimal meta_c;
     private BigDecimal meta_d;
-    
+    private BigDecimal hojuela;
+    private BigDecimal plastas;
+    private BigDecimal pellet;
 
     public Date getDia() {
         return dia;
@@ -179,5 +181,29 @@ public class ReporteDiario {
 
     public void setMeta_d(BigDecimal meta_d) {
         this.meta_d = meta_d;
+    }
+
+    public BigDecimal getHojuela() {
+        return hojuela;
+    }
+
+    public void setHojuela(BigDecimal hojuela) {
+        this.hojuela = hojuela;
+    }
+
+    public BigDecimal getPlastas() {
+        return plastas;
+    }
+
+    public void setPlastas(BigDecimal plastas) {
+        this.plastas = plastas;
+    }
+
+    public BigDecimal getPellet() {
+        return pellet;
+    }
+
+    public void setPellet(BigDecimal pellet) {
+        this.pellet = pellet;
     }
 }
