@@ -97,7 +97,45 @@ public class ReportesDAO {
         List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
         return data;
     }
+    
+    public List<ReporteDiario> getReporteDiarioBuhler(Date fechaI, Date fechaT, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
 
+        sql.append("EXEC sp_reporteDiarioMolidoBuhler ?, ?, ?");
+        Object[] parmas = {fechaI, fechaT, idLinea};
+
+        ResultSetHandler rsh = new BeanListHandler(ReporteDiario.class);
+        List<ReporteDiario> data = (List<ReporteDiario>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
+
+    public List<ResultBigDecimal> getResina004SSP(Date fechaI, Date fechaT)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("EXEC sp_selectReporteDiarioMolidoSspProdCuatro ?, ?");
+        Object[] parmas = {fechaI, fechaT};
+
+        ResultSetHandler rsh = new BeanListHandler(ResultBigDecimal.class);
+        List<ResultBigDecimal> data = (List<ResultBigDecimal>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
+    
+    public List<ResultBigDecimal> getMetasByLinea(Date fechaI, Date fechaT, int idLinea)throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("EXEC sp_selectReporteDiarioMolidoSspMeta ?, ?, ?");
+        Object[] parmas = {fechaI, fechaT, idLinea};
+
+        ResultSetHandler rsh = new BeanListHandler(ResultBigDecimal.class);
+        List<ResultBigDecimal> data = (List<ResultBigDecimal>) qr.query(sql.toString(), rsh, parmas);
+        return data;
+    }
     public List<ReporteDiario> getDailyPerformance(Date fechaI, Date fechaT, int idLinea)throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);

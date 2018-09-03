@@ -48,7 +48,7 @@ public class UsersDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM ETADSonarh WHERE Area = ? AND Grupo = ?");
+        sql.append("SELECT * FROM [etad].[dbo].[ETAD-Sonarh] WHERE Area = ? AND Grupo = ?");
         Object[] params = { area, grupo};
         
         ResultSetHandler rsh = new BeanListHandler(UserSonarhDTO.class);
