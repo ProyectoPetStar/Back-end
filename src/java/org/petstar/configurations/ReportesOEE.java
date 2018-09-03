@@ -10,6 +10,7 @@ import static org.petstar.configurations.utils.convertSqlToDay;
 import static org.petstar.configurations.utils.sumarFechasDias;
 import static org.petstar.configurations.utils.getNumeroMenor;
 import org.petstar.dao.LineasDAO;
+import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
@@ -25,12 +26,14 @@ public class ReportesOEE {
     public static List<HashMap> getResporteProduccionDiariaAmut(Date fechaI, Date fechaT, int idGpoLinea, PeriodosDTO periodo) throws Exception {
         ReportesDAO reportesDAO = new ReportesDAO();
         LineasDAO lineasDAO = new LineasDAO();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         
         List<LineasDTO> listLineas = lineasDAO.getLineasByGpoLinea(idGpoLinea);
         List<List<ResultBigDecimal>> listaMolidos = new ArrayList<>();
         List<ResultBigDecimal> lisTotalMolidos = new ArrayList<>();
         List<ReporteDiario> listData = reportesDAO.getReporteDiario(fechaI, fechaT, idGpoLinea);
         List<HashMap> listReporte = new ArrayList<>();
+        periodo = periodosDAO.getPeriodoById(periodo.getId_periodo(), listLineas.get(0).getId_linea());
 
         HashMap<String, Object> encabezado = new HashMap<>();
         encabezado.put("padre", 1);
