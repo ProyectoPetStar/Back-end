@@ -611,7 +611,7 @@ public class ControllerReportes {
                         desempeno = (row.getProduccion().divide(row.getMeta(), RoundingMode.CEILING)).multiply(new BigDecimal(100));
                     } 
                     body.put("desempeno", desempeno);
-                    body.put("icon", desempeno.compareTo(new BigDecimal(100)));
+                    body.put("icon", row.getProduccion().compareTo(row.getMeta()));
                     listReporte.add(body);
                 }
                 
@@ -629,7 +629,7 @@ public class ControllerReportes {
                 totales.put("produccion",totalProduccion);
                 totales.put("meta",totalMeta);
                 totales.put("desempeno",totalDesempeno);
-                totales.put("icon", totalDesempeno.compareTo(new BigDecimal(100)));
+                totales.put("icon", totalProduccion.compareTo(totalMeta));
                 listReporte.add(totales);
                     
                 BigDecimal totalTMPr = BigDecimal.ZERO;
@@ -651,7 +651,7 @@ public class ControllerReportes {
                     body.put("tmpReal", row.getTmp_real());
                     body.put("tmpMeta", row.getTmp_meta());
                     body.put("desempeno", desempeno);
-                    body.put("icon", desempeno.compareTo(new BigDecimal(100)));
+                    body.put("icon", row.getTmp_meta().compareTo(row.getTmp_real()));
                     reporteTiempoParo.add(body);
                 }
                 
@@ -669,7 +669,7 @@ public class ControllerReportes {
                 total.put("tmpReal",totalTMPr);
                 total.put("tmpMeta",totalTMPm);
                 total.put("desempeno",desempenoTotal);
-                total.put("icon", desempenoTotal.compareTo(new BigDecimal(100)));
+                total.put("icon", totalTMPm.compareTo(totalTMPr));
                 reporteTiempoParo.add(total);
                 
                 data.setReporteMap(reporteTiempoParo);
