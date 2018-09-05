@@ -37,6 +37,7 @@ public class ControllerVideoWall {
         
         try{
             Date currentDate = utils.getCurrentDate();
+            currentDate = utils.sumarFechasDias(currentDate, -1);
             int anio = utils.obtenerAnio(currentDate);
             int mes = utils.obtenerMes(currentDate);
             int trimestre = utils.getQuarter(mes);
