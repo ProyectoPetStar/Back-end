@@ -36,7 +36,11 @@ public class ControllerVideoWall {
         OutputJson output = new OutputJson();
         
         try{
-            int idPeriodo = Integer.valueOf(request.getParameter("id_periodo"));
+            Date currentDate = utils.getCurrentDate();
+            int anio = utils.obtenerAnio(currentDate);
+            int mes = utils.obtenerMes(currentDate);
+            int trimestre = utils.getQuarter(mes);
+            
             VideoWallResponse data = new VideoWallResponse();
             CatalogosDAO catalogosDAO = new CatalogosDAO();
             PeriodosDAO periodosDAO = new PeriodosDAO();
@@ -46,8 +50,9 @@ public class ControllerVideoWall {
             List<List<HashMap>> listReportesETAD = new ArrayList<>();
             List<List<HashMap>> listReportesOEE = new ArrayList<>();
             
+            PeriodosDTO periodo = periodosDAO.getPeriodoByMesAndAnio(mes, anio);
             for(LineasDTO li : listLineas){
-                PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, li.getId_linea());
+                periodo = periodosDAO.getPeriodoById(periodo.getId_periodo(), li.getId_linea());
                 if(periodo != null){
                     Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date FechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
@@ -68,12 +73,12 @@ public class ControllerVideoWall {
                     listReportesOEE.add(produccionRealPlan.get(0));
                     listReportesOEE.add(velocidadPromedio.get(0));
                     if(li.getId_gpo_linea() == 1){
-                        listReportesOEE.add(ReportesOEE.getReportDesempenoDiarioPO(fechaInicio, FechaTermino, li, idPeriodo));
+                        listReportesOEE.add(ReportesOEE.getReportDesempenoDiarioPO(fechaInicio, FechaTermino, li, periodo.getId_periodo()));
                     }
                 }
             }
             
-            PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo);
+            periodo = periodosDAO.getPeriodoByMesAndAnio(mes, anio);
             List<CatalogosDTO> listEtads = catalogosDAO.getCatalogosActive("pet_cat_etad");
             for(CatalogosDTO etad : listEtads){
                 List<HashMap> listData = ReportesETAD.getIndicadoresDesempeno(etad, periodo.getId_periodo(), periodo.getMes(), periodo.getAnio());
@@ -81,7 +86,7 @@ public class ControllerVideoWall {
                     listReportesETAD.add(listData);
             }
             
-            data.setPosicionTrimestral(ReportesETAD.getPosicionTrimestral(periodo.getAnio(), 2).get(2));
+            data.setPosicionTrimestral(ReportesETAD.getPosicionTrimestral(periodo.getAnio(), trimestre).get(2));
             data.setPosicionAnual(ReportesETAD.getPosicionAnual(periodo.getAnio()));
             data.setETAD(listReportesETAD);
             data.setOEE(listReportesOEE);

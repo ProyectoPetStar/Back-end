@@ -336,4 +336,15 @@ public class utils {
         }
         return numeroMenor;
     }
+    
+    /**
+     * Obtener trimestre
+     * Funcion para calcular el trimestre al que pertenece un cierto mes
+     * @param mes
+     * @return 
+     */
+    public static int getQuarter(int mes) {
+	int quarter = (int) Math.ceil(mes / 3.0);
+        return quarter;
+    }
 }
