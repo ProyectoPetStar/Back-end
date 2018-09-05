@@ -103,14 +103,14 @@ public class ForecastDAO {
         return result;
     }
     
-    public void rewriteFile(int idPeriodo, int idLinea) throws Exception{
+    public void rewriteFile(int anio, int mes, int idLinea, int idPeriodo) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("EXEC sp_update_petMetas ?, ?");
+        sql.append("EXEC sp_update_petMetas ?, ?, ?, ?");
         Object[] params = {
-            idPeriodo, idLinea
+            anio, mes, idLinea, idPeriodo
         };
         
         qr.update(sql.toString(), params);
