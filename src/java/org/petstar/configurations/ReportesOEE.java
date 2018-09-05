@@ -1,18 +1,31 @@
 package org.petstar.configurations;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import static org.petstar.configurations.utils.convertSqlToDay;
-import static org.petstar.configurations.utils.sumarFechasDias;
+import static org.petstar.configurations.utils.getDateFirstDay;
+import static org.petstar.configurations.utils.getDateLastDay;
 import static org.petstar.configurations.utils.getNumeroMenor;
+import static org.petstar.configurations.utils.getPorcentajeParo;
+import static org.petstar.configurations.utils.getTotalHoras;
+import static org.petstar.configurations.utils.getUltimoDiaMes;
+import static org.petstar.configurations.utils.sumarFechasDias;
+import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
+import org.petstar.dao.PeriodosDAO;
+import org.petstar.dao.RazonParoDAO;
 import org.petstar.dao.ReportesDAO;
+import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.Fuentes;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
+import org.petstar.dto.RazonParoDTO;
+import org.petstar.dto.ReporteDTO;
 import org.petstar.dto.ReporteDiario;
 import org.petstar.dto.ResultBigDecimal;
 
@@ -21,16 +34,19 @@ import org.petstar.dto.ResultBigDecimal;
  * @author Tech-Pro
  */
 public class ReportesOEE {   
+    private static final String TABLE_FUENTES = "pet_cat_fuentes_paro";
     
     public static List<HashMap> getResporteProduccionDiariaAmut(Date fechaI, Date fechaT, int idGpoLinea, PeriodosDTO periodo) throws Exception {
         ReportesDAO reportesDAO = new ReportesDAO();
         LineasDAO lineasDAO = new LineasDAO();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
         
         List<LineasDTO> listLineas = lineasDAO.getLineasByGpoLinea(idGpoLinea);
         List<List<ResultBigDecimal>> listaMolidos = new ArrayList<>();
         List<ResultBigDecimal> lisTotalMolidos = new ArrayList<>();
         List<ReporteDiario> listData = reportesDAO.getReporteDiario(fechaI, fechaT, idGpoLinea);
         List<HashMap> listReporte = new ArrayList<>();
+        periodo = periodosDAO.getPeriodoById(periodo.getId_periodo(), listLineas.get(0).getId_linea());
 
         HashMap<String, Object> encabezado = new HashMap<>();
         encabezado.put("padre", 1);
@@ -174,8 +190,7 @@ public class ReportesOEE {
         return listReporte;
     }
     
-    public static List<HashMap> getResporteProduccionDiariaBuhler(Date fechaI, 
-            Date fechaT, int idGpoLinea, PeriodosDTO periodo) throws Exception {
+    public static List<HashMap> getResporteProduccionDiariaBuhler(Date fechaI,Date fechaT, int idGpoLinea, PeriodosDTO periodo) throws Exception {
         ReportesDAO reportesDAO = new ReportesDAO();
         List<HashMap> listReporte = new ArrayList<>();
 
@@ -234,11 +249,12 @@ public class ReportesOEE {
             totalResina = totalResina.add(resinaSSP.get(i).getResult());
             totalRes004 = totalRes004.add(resina004.get(i).getResult());
             
-            BigDecimal calculo = resinaE1.get(i).getResult().subtract(resina004.get(i).getResult());
+            BigDecimal calculo = resinaSSP.get(i).getResult().subtract(resina004.get(i).getResult());
             acumulado = calculo.add(acumulado);
             planResina = planResina.add(metasSSP.get(i).getResult());
-            BigDecimal diferencia = acumulado.subtract(metasSSP.get(i).getResult());
-            BigDecimal eficiencia = acumulado.divide(metasSSP.get(i).getResult(), RoundingMode.CEILING);
+            BigDecimal diferencia = acumulado.subtract(planResina);
+            BigDecimal eficiencia = acumulado.divide(planResina, RoundingMode.CEILING);
+            eficiencia = eficiencia.multiply(new BigDecimal(100));
             BigDecimal vsMetaM = eficiencia.subtract(new BigDecimal(100));
             planExt = planExt.add(metasE1.get(i).getResult().add(metasE2.get(i).getResult()));
             BigDecimal totalAmo = resinaE1.get(i).getResult().add(resinaE2.get(i).getResult());
@@ -246,6 +262,7 @@ public class ReportesOEE {
             totalTotAmo = totalTotAmo.add(totalAmo);
             BigDecimal difeAmo = acumAmo.subtract(planExt);
             BigDecimal eficiDia = acumAmo.divide(planExt, RoundingMode.CEILING);
+            eficiDia = eficiDia.multiply(new BigDecimal(100));
             BigDecimal vsMetaE = eficiDia.subtract(new BigDecimal(100));
             totalHojaSS = totalHojaSS.add(diarioE1.get(i).getHojuela());
             totalPlasta = totalPlasta.add(diarioE1.get(i).getPlastas());
@@ -255,7 +272,8 @@ public class ReportesOEE {
             if(acumAmo.compareTo(BigDecimal.ZERO) == 0){
                 eficienciaMat = BigDecimal.ZERO;
             }else{
-                eficienciaMat = eficienciaMat.divide(acumAmo, RoundingMode.CEILING);
+                eficienciaMat = acumAmo.divide(eficienciaMat, RoundingMode.CEILING);
+                eficienciaMat = eficienciaMat.multiply(new BigDecimal(100));
             }
             totalExt1 = totalExt1.add(resinaE1.get(i).getResult());
             totalExt2 = totalExt2.add(resinaE2.get(i).getResult());
@@ -286,13 +304,22 @@ public class ReportesOEE {
         }
 
         BigDecimal totalDiferencia = acumulado.subtract(planResina);
-        BigDecimal totalEficiencia = acumulado.divide(planResina, RoundingMode.CEILING);
+        BigDecimal totalEficiencia = BigDecimal.ZERO;
+        if(planResina.compareTo(BigDecimal.ZERO) != 0){
+            totalEficiencia = acumulado.divide(planResina, RoundingMode.CEILING);
+        }
         BigDecimal totalVsMetaM = totalEficiencia.subtract(new BigDecimal(100));
         BigDecimal totalDifeAmo = acumAmo.subtract(planExt);
-        BigDecimal totalEficiDia = acumAmo.divide(planExt, RoundingMode.CEILING);
-        BigDecimal totalVsMetaE = totalEficiDia.subtract(new BigDecimal(100));
-        BigDecimal totalEficMat = totalHojaSS.add(totalPlasta);
-        totalEficMat = (totalEficMat.add(acumAmo)).divide(acumAmo, RoundingMode.CEILING);
+        BigDecimal totalEficiDia = BigDecimal.ZERO;
+        BigDecimal totalVsMetaE = BigDecimal.ZERO;
+        if(planExt.compareTo(BigDecimal.ZERO) != 0){
+            totalEficiDia = acumAmo.divide(planExt, RoundingMode.CEILING);
+            totalVsMetaE = totalEficiDia.subtract(new BigDecimal(100));
+        }
+        BigDecimal totalEficMat = BigDecimal.ZERO;
+        if(acumAmo.compareTo(BigDecimal.ZERO) != 0){
+        totalEficMat = ((totalHojaSS.add(totalPlasta)).add(acumAmo)).divide(acumAmo, RoundingMode.CEILING);
+        }
         
         HashMap<String, Object> totales = new HashMap<>();
         totales.put("padre", 2);
@@ -321,4 +348,708 @@ public class ReportesOEE {
         return listReporte;
     }
 
+    public static List<HashMap> getReporteFuentePerdidas(Date fechaI, Date fechaT, PeriodosDTO periodo, LineasDTO linea) throws Exception {
+        CatalogosDAO catalogosDAO = new CatalogosDAO();
+        RazonParoDAO razonParoDAO = new RazonParoDAO();
+        ReportesDAO reportesDAO = new ReportesDAO();
+        
+        int idLinea = linea.getId_linea();
+        
+        List<CatalogosDTO> listFuentes = catalogosDAO.getCatalogosActive(TABLE_FUENTES);
+        List<HashMap> listOEEFallas = new ArrayList<>();
+        BigDecimal tiempoDisponible = getTotalHoras(fechaI, fechaT);
+        BigDecimal totalGeneral = BigDecimal.ZERO;
+        ResultBigDecimal subproductos = reportesDAO.getTotalSubProducto(fechaI, fechaT, idLinea);
+
+        for (CatalogosDTO fuente : listFuentes) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("padre", 1);
+            map.put("grafica", "Perdidas");
+            map.put("linea", linea.getValor());
+            map.put("titulo_grafica", "Fuente de Perdidas " + linea.getDescripcion());
+            map.put("fuente", fuente.getValor());
+            listOEEFallas.add(map);
+
+            List<RazonParoDTO> listRazones = razonParoDAO.getFallasByOEE(fechaI, fechaT, idLinea, fuente.getId());
+            BigDecimal totalParcial = new BigDecimal(BigInteger.ZERO);
+
+            for (RazonParoDTO razon : listRazones) {
+                BigDecimal subproducto = BigDecimal.ZERO;
+                HashMap<String, Object> raz = new HashMap<>();
+                raz.put("padre", 0);
+                raz.put("fuente", razon.getValor());
+                if (razon.getValor().equals("Subproductos")) {
+                    if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
+                        subproducto = subproductos.getResult();
+                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                    }
+                    raz.put("hrs", subproducto);
+                    raz.put("porcentaje", getPorcentajeParo(subproducto, tiempoDisponible));
+                } else {
+                    raz.put("hrs", razon.getSuma_tiempo_paro());
+                    raz.put("porcentaje", getPorcentajeParo(
+                            razon.getSuma_tiempo_paro(), tiempoDisponible));
+                }
+                listOEEFallas.add(raz);
+
+                totalParcial = totalParcial.add(razon.getSuma_tiempo_paro().add(subproducto));
+                totalGeneral = totalGeneral.add(razon.getSuma_tiempo_paro().add(subproducto));
+                map.put("hrs", totalParcial);
+                map.put("porcentaje", getPorcentajeParo(totalParcial, tiempoDisponible));
+            }
+        }
+
+        HashMap<String, Object> mapa = new HashMap<>();
+        mapa.put("padre", 2);
+        mapa.put("fuente", "Total");
+        mapa.put("hrs", totalGeneral);
+        mapa.put("porcentaje", getPorcentajeParo(totalGeneral, tiempoDisponible));
+        listOEEFallas.add(mapa);
+        return listOEEFallas;
+    }
+    
+    public static List<HashMap> getReporteDisponibilidad(Date fechaI, Date fechaT, PeriodosDTO periodo, LineasDTO linea)throws Exception{
+        ReportesDAO reportesDAO = new ReportesDAO();
+        List<HashMap> reporte = new ArrayList<>();
+        
+        int idLinea = linea.getId_linea();
+        BigDecimal tiempoDisponibleTotal = getTotalHoras(fechaI, fechaT);
+        
+        HashMap<String, Object> map0 = new HashMap<>();
+        map0.put("padre", 1);
+        map0.put("grafica", "Disponibilidad");
+        map0.put("linea", linea.getValor());
+        map0.put("titulo_grafica", "Disponibilidad " + linea.getDescripcion());
+        map0.put("titulo", "Titulo");
+        map0.put("hrs", "Hrs.");
+        map0.put("porcentaje", "%");
+        reporte.add(map0);
+        
+        HashMap<String, Object> map1 = new HashMap<>();
+        map1.put("padre", 0);
+        map1.put("titulo", "Tiempo Disponible Total");
+        map1.put("hrs", tiempoDisponibleTotal);
+        map1.put("porcentaje", 100);
+        reporte.add(map1);
+        
+        HashMap<String, Object> map2 = new HashMap<>();
+        map2.put("padre", 0);
+        map2.put("titulo", "No Ventas");
+        map2.put("hrs", periodo.getNo_ventas());
+        map2.put("porcentaje", getPorcentajeParo(periodo.getNo_ventas(), tiempoDisponibleTotal));
+        reporte.add(map2);
+        
+        BigDecimal tiempoDisponible = tiempoDisponibleTotal.subtract(periodo.getNo_ventas());
+        HashMap<String, Object> map3 = new HashMap<>();
+        map3.put("padre", 0);
+        map3.put("titulo", "Tiempo Disponible");
+        map3.put("hrs", tiempoDisponible);
+        map3.put("porcentaje", getPorcentajeParo(tiempoDisponible, tiempoDisponibleTotal));
+        reporte.add(map3);
+        
+        BigDecimal totalHoraParo = BigDecimal.ZERO;
+        BigDecimal desempenoEfec = BigDecimal.ZERO;
+        BigDecimal reduccionVelocidad = BigDecimal.ZERO;
+        
+        List<Fuentes> listFuentes = reportesDAO.getFuentes(idLinea, fechaI, fechaT);
+        ResultBigDecimal prodBuena = reportesDAO.getProduccionBuena(idLinea, fechaI, fechaT);
+        ResultBigDecimal subProduc = reportesDAO.getSumaSubProductos(idLinea, fechaI, fechaT);
+        ResultBigDecimal subproductos = reportesDAO.getTotalSubProducto(fechaI, fechaT, idLinea);
+        
+        for (Fuentes fuente : listFuentes) {
+            HashMap<String, Object> map4 = new HashMap<>();
+            map4.put("padre", 0);
+            map4.put("titulo", fuente.getValor());
+            BigDecimal porCalidad = BigDecimal.ZERO;
+            if (fuente.getValor().equals("Reducción de velocidad") || fuente.getId() == 3) {
+                reduccionVelocidad = fuente.getHrs();
+            }
+            if (fuente.getValor().equals("Por Calidad")) {
+                if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
+                    BigDecimal subproducto = subproductos.getResult();
+                    subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                    porCalidad = subproducto.add(fuente.getHrs());
+                }
+                map4.put("hrs", porCalidad);
+                map4.put("porcentaje", getPorcentajeParo(porCalidad, tiempoDisponible));
+            } else {
+                map4.put("hrs", fuente.getHrs());
+                map4.put("porcentaje", getPorcentajeParo(fuente.getHrs(), tiempoDisponible));
+            }
+            reporte.add(map4);
+            desempenoEfec = desempenoEfec.add(fuente.getHrs()).add(porCalidad);
+            if (fuente.getId() == 1 || fuente.getId() == 2) {
+                totalHoraParo = totalHoraParo.add(fuente.getHrs());
+            }
+        }
+        desempenoEfec = tiempoDisponibleTotal.subtract(desempenoEfec);
+        HashMap<String, Object> map5 = new HashMap<>();
+        map5.put("padre", 2);
+        map5.put("titulo", "Desempeño Efectivo Total de Equipos");
+        map5.put("hrs", desempenoEfec);
+        map5.put("porcentaje", getPorcentajeParo(desempenoEfec, tiempoDisponibleTotal));
+        reporte.add(map5);
+        HashMap<String, Object> map6 = new HashMap<>();
+        map6.put("padre", 2);
+        map6.put("titulo", "Total Hora de Paro");
+        map6.put("hrs", totalHoraParo);
+        map6.put("porcentaje", getPorcentajeParo(totalHoraParo, tiempoDisponibleTotal));
+        reporte.add(map6);
+        
+        return  reporte;
+    }
+
+    public static List<HashMap> getReporteOEE(Date fechaI, Date fechaT, PeriodosDTO periodo, LineasDTO linea) throws Exception{
+        ReportesDAO reportesDAO = new ReportesDAO();
+        int idLinea = linea.getId_linea();
+        
+        
+        ResultBigDecimal subproductos = reportesDAO.getTotalSubProducto(fechaI, fechaT, idLinea);
+        ResultBigDecimal subProduc = reportesDAO.getSumaSubProductos(idLinea, fechaI, fechaT);
+        ResultBigDecimal prodBuena = reportesDAO.getProduccionBuena(idLinea, fechaI, fechaT);
+        BigDecimal produccionTotal = prodBuena.getResult().add(subProduc.getResult());
+        BigDecimal tiempoDisponibleTotal = getTotalHoras(fechaI, fechaT);
+        BigDecimal reduccionVelocidad = BigDecimal.ZERO;
+        BigDecimal totalHoraParo = BigDecimal.ZERO;
+        BigDecimal desempenoEfec = BigDecimal.ZERO;
+        BigDecimal porCalidad = BigDecimal.ZERO;
+        
+        List<Fuentes> listFuentes = reportesDAO.getFuentes(idLinea, fechaI, fechaT);
+        
+        for(Fuentes fuente:listFuentes){
+            if (fuente.getValor().equals("Por Calidad")) {
+                if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
+                    BigDecimal subproducto = subproductos.getResult();
+                    subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                    porCalidad = subproducto.add(fuente.getHrs());
+                }
+            }
+            if (fuente.getValor().equals("Reducción de velocidad") || fuente.getId() == 3){
+                reduccionVelocidad = fuente.getHrs();
+            }
+            desempenoEfec = desempenoEfec.add(fuente.getHrs()).add(porCalidad);
+            if(fuente.getId() == 1 || fuente.getId() == 2){
+                totalHoraParo = totalHoraParo.add(fuente.getHrs());
+            }
+        }
+        desempenoEfec = tiempoDisponibleTotal.subtract(desempenoEfec);
+        
+        BigDecimal tiempoDisponible = tiempoDisponibleTotal.subtract(periodo.getNo_ventas());
+        BigDecimal tiempoOperacion = tiempoDisponible.subtract(totalHoraParo);
+        
+        List<HashMap> reporteOEE = new ArrayList<>();
+        HashMap<String, Object> map13 = new HashMap<>();
+        map13.put("padre", 1);
+        map13.put("grafica", "OEE");
+        map13.put("linea", linea.getValor());
+        map13.put("titulo_grafica", "OEE " + linea.getDescripcion());
+        map13.put("titulo", "OEE");
+        map13.put("hrs", "");
+        map13.put("porcentaje", "");
+        reporteOEE.add(map13);
+        HashMap<String, Object> map14 = new HashMap<>();
+        BigDecimal pDisponibilidad = getPorcentajeParo(tiempoOperacion, tiempoDisponible);
+        map14.put("padre", 0);
+        map14.put("titulo", "Disponibilidad");
+        map14.put("hrs", tiempoOperacion);
+        map14.put("porcentaje", pDisponibilidad);
+        map14.put("meta", periodo.getDisponibilidad());
+        reporteOEE.add(map14);
+        HashMap<String, Object> map15 = new HashMap<>();
+        BigDecimal calculo = tiempoOperacion.subtract(reduccionVelocidad);
+        BigDecimal utilizacion = prodBuena.getResult().divide(calculo, RoundingMode.CEILING);
+        int compare = periodo.getVelocidad_ideal().compareTo(BigDecimal.ZERO);
+        BigDecimal pUtilizacion = BigDecimal.ZERO;
+        if (compare != 0) {
+            pUtilizacion = utilizacion.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
+        }
+        pUtilizacion = pUtilizacion.multiply(new BigDecimal(100));
+        map15.put("padre", 0);
+        map15.put("titulo", "Utilización");
+        map15.put("hrs", utilizacion);
+        map15.put("porcentaje", pUtilizacion);
+        map15.put("meta", periodo.getUtilizacion());
+        reporteOEE.add(map15);
+        HashMap<String, Object> map16 = new HashMap<>();
+        BigDecimal pCalidad = BigDecimal.ZERO;
+        int resultado = BigDecimal.ZERO.compareTo(prodBuena.getResult());
+        if (resultado != 0) {
+            pCalidad = prodBuena.getResult().divide(produccionTotal, RoundingMode.CEILING);
+            pCalidad = pCalidad.multiply(new BigDecimal(100));
+        }
+
+        map16.put("padre", 0);
+        map16.put("titulo", "Calidad");
+        map16.put("hrs", "");
+        map16.put("porcentaje", pCalidad);
+        map16.put("meta", periodo.getCalidad());
+        reporteOEE.add(map16);
+        HashMap<String, Object> map17 = new HashMap<>();
+        BigDecimal oee = pDisponibilidad.multiply(pUtilizacion).multiply(pCalidad);
+        oee = oee.divide(new BigDecimal(10000), RoundingMode.CEILING);
+        map17.put("padre", 0);
+        map17.put("titulo", "OEE");
+        map17.put("hrs", "");
+        map17.put("porcentaje", oee);
+        map17.put("meta", periodo.getOee());
+        reporteOEE.add(map17);
+        HashMap<String, Object> map18 = new HashMap<>();
+        BigDecimal pTEEP = getPorcentajeParo(desempenoEfec, tiempoDisponibleTotal);
+        map18.put("padre", 0);
+        map18.put("titulo", "TEEP (hrs)");
+        map18.put("hrs", desempenoEfec);
+        map18.put("porcentaje", pTEEP);
+        reporteOEE.add(map18);
+        HashMap<String, Object> map19 = new HashMap<>();
+        map19.put("padre", 0);
+        map19.put("titulo", "TMP (hrs)");
+        map19.put("hrs", tiempoDisponibleTotal.subtract(desempenoEfec));
+        map19.put("porcentaje", new BigDecimal(100).subtract(pTEEP));
+        reporteOEE.add(map19);
+        return reporteOEE;
+    }
+    
+    public static List<HashMap> getDatosProduccion(Date fechaI, Date fechaT, PeriodosDTO periodo, LineasDTO linea) throws Exception {
+        ReportesDAO reportesDAO = new ReportesDAO();
+        int idLinea = linea.getId_linea();
+        
+        ResultBigDecimal subProduc = reportesDAO.getSumaSubProductos(idLinea, fechaI, fechaT);
+        ResultBigDecimal prodBuena = reportesDAO.getProduccionBuena(idLinea, fechaI, fechaT);
+        BigDecimal tiempoDisponibleTotal = getTotalHoras(fechaI, fechaT);
+        BigDecimal totalHoraParo = BigDecimal.ZERO;
+       
+        List<Fuentes> listFuentes = reportesDAO.getFuentes(idLinea, fechaI, fechaT);
+        for(Fuentes fuente:listFuentes){
+            if(fuente.getId() == 1 || fuente.getId() == 2){
+                totalHoraParo = totalHoraParo.add(fuente.getHrs());
+            }
+        }
+        
+        List<HashMap> datosProduccion = new ArrayList<>();
+        BigDecimal tiempoDisponible = tiempoDisponibleTotal.subtract(periodo.getNo_ventas());
+        HashMap<String, Object> map3 = new HashMap<>();
+        map3.put("padre", 0);
+        map3.put("titulo", "Tiempo Disponible");
+        map3.put("hrs", tiempoDisponible);
+        map3.put("porcentaje", getPorcentajeParo(tiempoDisponible, tiempoDisponibleTotal));
+
+        HashMap<String, Object> map12 = new HashMap<>();
+        map12.put("padre", 1);
+        map12.put("titulo", "Datos de Producción");
+        map12.put("hrs", "");
+        map12.put("porcentaje", "");
+        datosProduccion.add(map12);
+        
+        HashMap<String, Object> map7 = new HashMap<>();
+        map7.put("padre", 0);
+        map7.put("titulo", "Velocidad Ideal (Hora)");
+        map7.put("hrs", periodo.getVelocidad_ideal());
+        map7.put("porcentaje", "");
+        datosProduccion.add(map7);
+        
+        HashMap<String, Object> map8 = new HashMap<>();
+        map8.put("padre", 0);
+        map8.put("titulo", "Capacidad Productiva (Turno)");
+        map8.put("hrs", periodo.getVelocidad_ideal().multiply(new BigDecimal(8)));
+        map8.put("porcentaje", "");
+        datosProduccion.add(map8);
+        datosProduccion.add(map3);
+        
+        HashMap<String, Object> map9 = new HashMap<>();
+        BigDecimal tiempoOperacion = tiempoDisponible.subtract(totalHoraParo);
+        map9.put("padre", 0);
+        map9.put("titulo", "Tiempo de Operación");
+        map9.put("hrs", tiempoOperacion);
+        map9.put("porcentaje", "");
+        datosProduccion.add(map9);
+        
+        HashMap<String, Object> map10 = new HashMap<>();
+        map10.put("padre", 0);
+        map10.put("titulo", "Producción Buena");
+        map10.put("hrs", prodBuena.getResult());
+        map10.put("porcentaje", "");
+        datosProduccion.add(map10);
+        
+        HashMap<String, Object> map11 = new HashMap<>();
+        BigDecimal produccionTotal = prodBuena.getResult().add(subProduc.getResult());
+        map11.put("padre", 0);
+        map11.put("titulo", "Producción Total");
+        map11.put("hrs", produccionTotal);
+        map11.put("porcentaje", "");
+        datosProduccion.add(map11);
+        
+        return datosProduccion;
+    }
+    
+    /**
+     * Reporte Desempeño Diario
+     * Metodo que genera el reporte desempeño diario por Grupo de Linea,
+     * este metodo llama a los siguientes 2
+     * - getReportDesempenoDiario
+     * - getReportDesempenoDiarioPO
+     * @param fechaI
+     * @param fechaT
+     * @param idGpoLinea
+     * @param idPeriodo
+     * @return
+     * @throws Exception 
+     */
+    public static List<List<HashMap>> getReportDailyPerformance(Date fechaI,Date fechaT, int idGpoLinea, int idPeriodo) throws Exception {
+        LineasDAO lineasDAO = new LineasDAO();
+
+        List<List<HashMap>> listReport = new ArrayList<>();
+        List<LineasDTO> listLineas = lineasDAO.getLineasByGpoLinea(idGpoLinea);
+        
+        for (LineasDTO linea : listLineas) {
+
+            HashMap<String, Object> dataLinea = new HashMap<>();
+            dataLinea.put("Linea", linea.getValor());
+            dataLinea.put("titulo_grafica", "Desempeño Diario de " + linea.getDescripcion());
+            List<HashMap> listPO = new ArrayList<>();
+            List<HashMap> listReporteLinea = new ArrayList<>();
+            listReporteLinea.add(dataLinea);
+            listReporteLinea.addAll(getReportDesempenoDiario(fechaI, fechaT, linea));
+            listReport.add(listReporteLinea);
+
+            if (idGpoLinea == 1) {
+                HashMap<String, Object> dataLineaPO = new HashMap<>();
+                dataLineaPO.put("Linea", linea.getValor());
+                dataLineaPO.put("titulo_grafica", "Desempeño Diario Poliolefinas " + linea.getDescripcion());
+                listPO.add(dataLineaPO);
+                listPO.addAll(getReportDesempenoDiarioPO(fechaI, fechaT, linea, idPeriodo));
+                listReport.add(listPO);
+            }
+        }
+        return listReport;
+    }
+    
+    /**
+     * Reporte Desempeño Diario
+     * Metodo que genera el reporte de Desempeño Diario por Linea
+     * @param fechaI
+     * @param fechaT
+     * @param linea
+     * @return
+     * @throws Exception 
+     */
+    public static List<HashMap> getReportDesempenoDiario(Date fechaI, Date fechaT, LineasDTO linea) throws Exception {
+        ReportesDAO reportesDAO = new ReportesDAO();
+        List<HashMap> listReport = new ArrayList<>();
+
+        HashMap<String, Object> encabezado = new HashMap<>();
+        encabezado.put("padre", 1);
+        encabezado.put("grafica", "Desempeño Diario");
+        encabezado.put("linea", linea.getValor());
+        encabezado.put("titulo_grafica", "Desempeño Diario de " + linea.getDescripcion());
+        encabezado.put("dia", "Dia");
+        encabezado.put("a", "A");
+        encabezado.put("b", "B");
+        encabezado.put("c", "C");
+        encabezado.put("d", "D");
+        encabezado.put("meta1", "Meta 1ro");
+        encabezado.put("meta2", "Meta 2do");
+        encabezado.put("meta3", "Meta dia");
+        listReport.add(encabezado);
+
+        List<ReporteDiario> listData = reportesDAO.getDailyPerformance(fechaI, fechaT, linea.getId_linea());
+
+        for (ReporteDiario row : listData) {
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("padre", 0);
+            body.put("dia", convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+            body.put("a", row.getA());
+            body.put("b", row.getB());
+            body.put("c", row.getC());
+            body.put("d", row.getD());
+            body.put("meta1", row.getMeta_uno());
+            body.put("meta2", row.getMeta_dos());
+            body.put("meta3", row.getMeta_dia());
+            listReport.add(body);
+        }
+        return listReport;
+    }
+    
+    /**
+     * Reporte Desempeño Diario Poliolefinas
+     * Metodo que genera el reporte Desempeño Diario Poliolefinas por linea
+     * @param fechaI
+     * @param fechaT
+     * @param linea
+     * @param idPeriodo
+     * @return
+     * @throws Exception 
+     */
+    public static List<HashMap> getReportDesempenoDiarioPO(Date fechaI, Date fechaT, LineasDTO linea, int idPeriodo) throws Exception {
+        ReportesDAO reportesDAO = new ReportesDAO();
+        PeriodosDAO periodosDAO = new PeriodosDAO();
+        List<HashMap> listReport = new ArrayList<>();
+
+        HashMap<String, Object> encabezado = new HashMap<>();
+        encabezado.put("padre", 1);
+        encabezado.put("grafica", "Desempeño Diario");
+        encabezado.put("linea", linea.getValor());
+        encabezado.put("titulo_grafica", "Desempeño Diario Poliolefinas " + linea.getDescripcion());
+        encabezado.put("dia", "Dia");
+        encabezado.put("a", "A");
+        encabezado.put("b", "B");
+        encabezado.put("c", "C");
+        encabezado.put("d", "D");
+        encabezado.put("meta1", "Meta 1ro");
+        encabezado.put("meta2", "Meta 2do");
+        encabezado.put("meta3", "Meta dia");
+        listReport.add(encabezado);
+
+        PeriodosDTO periodoLinea = periodosDAO.getPeriodoById(idPeriodo, linea.getId_linea());
+        BigDecimal meta1 = periodoLinea.getVelocidad_po().multiply(new BigDecimal(8));
+        BigDecimal meta2 = periodoLinea.getVelocidad_po().multiply(new BigDecimal(16));
+        BigDecimal meta3 = periodoLinea.getVelocidad_po().multiply(new BigDecimal(24));
+
+        List<ReporteDiario> listDataPO = reportesDAO.getDailyPerformancePO(fechaI, fechaT, linea.getId_linea());
+        for (ReporteDiario row : listDataPO) {
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("padre", 0);
+            body.put("dia", convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+            body.put("a", row.getA());
+            body.put("b", row.getB());
+            body.put("c", row.getC());
+            body.put("d", row.getD());
+            body.put("meta1", meta1);
+            body.put("meta2", meta2);
+            body.put("meta3", meta3);
+            listReport.add(body);
+        }
+        return listReport;
+    }
+    
+    public static List<List<HashMap>> getReportePlanVsRealAnual(int anio, LineasDTO linea) throws Exception {
+        List<List<HashMap>> data = new ArrayList<>();
+        ReportesDAO reportesDAO = new ReportesDAO();
+
+        int lastDayFeb = getUltimoDiaMes(anio, 2);
+        int idLinea = linea.getId_linea();
+
+        List<ReporteDiario> dataRows = reportesDAO.getReportePerformanceByMonth(anio, idLinea, lastDayFeb);
+        ReporteDiario grafRows = reportesDAO.getGraficaPerformanceByMonth(anio, idLinea);
+
+        List<HashMap> reportePerformance = new ArrayList<>();
+        List<HashMap> graficaPerformance = new ArrayList<>();
+        HashMap<String, Object> head = new HashMap<>();
+        head.put("padre", 1);
+        head.put("grafica", "Producción Real vs Plan");
+        head.put("linea", linea.getValor());
+        head.put("titulo_grafica", "Producción Real vs Plan " + linea.getDescripcion());
+        head.put("periodo", "Periodo");
+        head.put("real", "Real");
+        head.put("meta", "Meta");
+        reportePerformance.add(head);
+        HashMap<String, Object> header = new HashMap<>();
+        header.put("grafica", "Desempeño por Grupo");
+        header.put("linea", linea.getValor());
+        header.put("titulo_grafica", "Desempeño por Grupo " + linea.getDescripcion());
+        header.put("reala", "Real A");
+        header.put("realb", "Real B");
+        header.put("realc", "Real C");
+        header.put("reald", "Real D");
+        header.put("metaa", "Meta A");
+        header.put("metab", "Meta B");
+        header.put("metac", "Meta C");
+        header.put("metad", "Meta D");
+        header.put("padre", 1);
+        graficaPerformance.add(header);
+
+        for (ReporteDiario row : dataRows) {
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("periodo", row.getPeriodo());
+            BigDecimal suma = row.getA().add(row.getB()).add(row.getC()).add(row.getD());
+            body.put("real", suma.setScale(3, RoundingMode.FLOOR));
+            body.put("meta", row.getMeta_dia().setScale(3, RoundingMode.FLOOR));
+            body.put("padre", 0);
+            reportePerformance.add(body);
+        }
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("reala", grafRows.getA().setScale(3, RoundingMode.FLOOR));
+        map.put("realb", grafRows.getB().setScale(3, RoundingMode.FLOOR));
+        map.put("realc", grafRows.getC().setScale(3, RoundingMode.FLOOR));
+        map.put("reald", grafRows.getD().setScale(3, RoundingMode.FLOOR));
+        map.put("metaa", grafRows.getMeta_a().setScale(3, RoundingMode.FLOOR));
+        map.put("metab", grafRows.getMeta_b().setScale(3, RoundingMode.FLOOR));
+        map.put("metac", grafRows.getMeta_c().setScale(3, RoundingMode.FLOOR));
+        map.put("metad", grafRows.getMeta_d().setScale(3, RoundingMode.FLOOR));
+        map.put("padre", 0);
+        graficaPerformance.add(map);
+        
+        data.add(graficaPerformance);
+        data.add(reportePerformance);
+        return data;
+    }
+    
+    public static List<List<HashMap>> getReportePlanVsRealMensual(String reportBy, PeriodosDTO periodo, LineasDTO linea)throws Exception{
+        List<List<HashMap>> data = new ArrayList<>();
+        ReportesDAO reportesDAO = new ReportesDAO();
+        List<ReporteDiario> dataRows = new ArrayList<>();
+        ReporteDiario grafRows = new ReporteDiario();
+        int idLinea = linea.getId_linea();
+        
+        switch (reportBy) {
+            case "byDays":
+                Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                dataRows = reportesDAO.getDailyPerformance(fechaI, fechaT, idLinea);
+                grafRows = reportesDAO.getGraficaPerformanceByWeek(periodo.getAnio(), periodo.getMes(), idLinea);
+                break;
+            case "byWeeks":
+                dataRows = reportesDAO.getReportePerformanceByWeek(periodo.getMes(), periodo.getAnio(), idLinea);
+                grafRows = reportesDAO.getGraficaPerformanceByWeek(periodo.getAnio(), periodo.getMes(), idLinea);
+                break;
+        }
+
+        List<HashMap> reportePerformance = new ArrayList<>();
+        List<HashMap> graficaPerformance = new ArrayList<>();
+        HashMap<String, Object> head = new HashMap<>();
+        head.put("padre", 1);
+        head.put("grafica", "Producción Real vs Plan");
+        head.put("linea", linea.getValor());
+        head.put("titulo_grafica", "Producción Real vs Plan " + linea.getDescripcion());
+        head.put("periodo", "Periodo");
+        head.put("real", "Real");
+        head.put("meta", "Meta");
+        reportePerformance.add(head);
+        HashMap<String, Object> header = new HashMap<>();
+        header.put("grafica", "Desempeño por Grupo");
+        header.put("linea", linea.getValor());
+        header.put("titulo_grafica", "Desempeño por Grupo " + linea.getDescripcion());
+        header.put("reala", "Real A");
+        header.put("realb", "Real B");
+        header.put("realc", "Real C");
+        header.put("reald", "Real D");
+        header.put("metaa", "Meta A");
+        header.put("metab", "Meta B");
+        header.put("metac", "Meta C");
+        header.put("metad", "Meta D");
+        header.put("padre", 1);
+        graficaPerformance.add(header);
+
+        for (ReporteDiario row : dataRows) {
+            HashMap<String, Object> body = new HashMap<>();
+            if (reportBy.equals("byDays")) {
+                body.put("periodo", convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+            } else {
+                body.put("periodo", row.getPeriodo());
+            }
+            BigDecimal suma = row.getA().add(row.getB()).add(row.getC()).add(row.getD());
+            body.put("real", suma.setScale(3, RoundingMode.FLOOR));
+            body.put("meta", row.getMeta_dia().setScale(3, RoundingMode.FLOOR));
+            body.put("padre", 0);
+            reportePerformance.add(body);
+        }
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("reala", grafRows.getA().setScale(3, RoundingMode.FLOOR));
+        map.put("realb", grafRows.getB().setScale(3, RoundingMode.FLOOR));
+        map.put("realc", grafRows.getC().setScale(3, RoundingMode.FLOOR));
+        map.put("reald", grafRows.getD().setScale(3, RoundingMode.FLOOR));
+        map.put("metaa", grafRows.getMeta_a().setScale(3, RoundingMode.FLOOR));
+        map.put("metab", grafRows.getMeta_b().setScale(3, RoundingMode.FLOOR));
+        map.put("metac", grafRows.getMeta_c().setScale(3, RoundingMode.FLOOR));
+        map.put("metad", grafRows.getMeta_d().setScale(3, RoundingMode.FLOOR));
+        map.put("padre", 0);
+        graficaPerformance.add(map);
+        
+        data.add(graficaPerformance);
+        data.add(reportePerformance);
+        return data;
+    }
+    
+    public static List<List<HashMap>> getReporteVelocidad(Date fechaI, Date fechaT, LineasDTO linea) throws Exception {
+        ReportesDAO reportesDAO = new ReportesDAO();
+        int idLinea = linea.getId_linea();
+        
+        List<ReporteDTO> dataVelPromedio = reportesDAO.getReporteVelPromedio(fechaI, fechaT, idLinea);
+        List<List<HashMap>> data = new ArrayList<>();
+        List<HashMap> reporteVelPromedio = new ArrayList<>();
+        HashMap<String, Object> head = new HashMap<>();
+        head.put("padre", 1);
+        head.put("dia", "Dia");
+        head.put("turno", "Turno");
+        head.put("grupo", "Grupo");
+        head.put("valor", "Velocidad Promedio");
+        reporteVelPromedio.add(head);
+
+        BigDecimal acumuladoVelA = BigDecimal.ZERO;
+        BigDecimal acumuladoVelB = BigDecimal.ZERO;
+        BigDecimal acumuladoVelC = BigDecimal.ZERO;
+        BigDecimal acumuladoVelD = BigDecimal.ZERO;
+        BigDecimal countA = BigDecimal.ZERO;
+        BigDecimal countB = BigDecimal.ZERO;
+        BigDecimal countC = BigDecimal.ZERO;
+        BigDecimal countD = BigDecimal.ZERO;
+        for (ReporteDTO row : dataVelPromedio) {
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("padre", 0);
+            body.put("dia", convertSqlToDay(sumarFechasDias(row.getDia(), 2)));
+            body.put("turno", row.getId_turno());
+            body.put("grupo", row.getValor_grupo());
+            body.put("valor", row.getVelocidad_promedio().setScale(2, RoundingMode.FLOOR));
+            reporteVelPromedio.add(body);
+
+            switch (row.getValor_grupo()) {
+                case "A":
+                    acumuladoVelA = acumuladoVelA.add(row.getVelocidad_promedio());
+                    countA = countA.add(BigDecimal.ONE);
+                    break;
+                case "B":
+                    acumuladoVelB = acumuladoVelB.add(row.getVelocidad_promedio());
+                    countB = countB.add(BigDecimal.ONE);
+                    break;
+                case "C":
+                    acumuladoVelC = acumuladoVelC.add(row.getVelocidad_promedio());
+                    countC = countC.add(BigDecimal.ONE);
+                    break;
+                case "D":
+                    acumuladoVelD = acumuladoVelD.add(row.getVelocidad_promedio());
+                    countD = countD.add(BigDecimal.ONE);
+                    break;
+            }
+        }
+        List<HashMap> graficaVelPromedio = new ArrayList<>();
+        HashMap<String, Object> header = new HashMap<>();
+        header.put("padre", 1);
+        header.put("grafica", "Velocidad Promedio");
+        header.put("linea", linea.getValor());
+        header.put("titulo_grafica", "Velocidad Promedio por Grupo " + linea.getDescripcion());
+        header.put("grupoa", "Grupo A");
+        header.put("sppeda", "Velocidad A");
+        header.put("grupob", "Grupo B");
+        header.put("sppedb", "Velocidad B");
+        header.put("grupoc", "Grupo C");
+        header.put("sppedc", "Velocidad C");
+        header.put("grupod", "Grupo D");
+        header.put("sppedd", "Velocidad D");
+        graficaVelPromedio.add(header);
+
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("padre", 0);
+        body.put("grupoa", "Grupo A");
+        if (acumuladoVelA.compareTo(countA) != 0) {
+            body.put("sppeda", acumuladoVelA.divide(countA, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }
+        body.put("grupob", "Grupo B");
+        if (acumuladoVelB.compareTo(countB) != 0) {
+            body.put("sppedb", acumuladoVelB.divide(countB, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }
+        body.put("grupoc", "Grupo C");
+        if (acumuladoVelC.compareTo(countC) != 0) {
+            body.put("sppedc", acumuladoVelC.divide(countC, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }
+        body.put("grupod", "Grupo D");
+        if (acumuladoVelD.compareTo(countD) != 0) {
+            body.put("sppedd", acumuladoVelD.divide(countD, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }
+        graficaVelPromedio.add(body);
+        
+        data.add(graficaVelPromedio);
+        data.add(reporteVelPromedio);
+        return data;
+    }
 }
