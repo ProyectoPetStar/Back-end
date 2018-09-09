@@ -243,14 +243,7 @@ public class ControllerFallas {
         fallasDTO.setId_razon(Integer.parseInt(request.getParameter("id_razon")));
         fallasDTO.setId_equipo(Integer.parseInt(request.getParameter("id_equipo")));
         fallasDTO.setId_meta(Integer.parseInt(request.getParameter("id_meta")));
-        
-        SimpleDateFormat formato = new SimpleDateFormat("HH:mm");
-        Date horaInicio = convertStringToDate(fallasDTO.getHora_inicio(), formato);
-        Date horaFinal = convertStringToDate(fallasDTO.getHora_final(), formato);
-        int turno = getTurnoForSaveProduction();
-        if(turno==3){
-            horaFinal = sumarFechasDias(horaFinal, 1);
-        }
+        fallasDTO.setTiempo_paro(new BigDecimal(request.getParameter("tiempo_paro")));
         
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
         ResponseJson response = new ResponseJson();
@@ -259,21 +252,14 @@ public class ControllerFallas {
         try{
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
-                if(horaInicio.before(horaFinal)){
                     fallasDTO.setFecha_modificacion_registro(getCurrentDate());
                     fallasDTO.setId_usuario_modifica_registro(sesion.getId_acceso());
-                    BigDecimal tiempoParo = getTiempoParo(horaInicio, horaFinal);
-
-                    fallasDTO.setTiempo_paro(tiempoParo);
+                    
                     FallasDAO fallasDAO = new FallasDAO();
                     fallasDAO.updateFalla(fallasDTO);
 
                     response.setSucessfull(true);
                     response.setMessage(MSG_SUCESS);
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("Las horas son invalidas");
-                }
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
