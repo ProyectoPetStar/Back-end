@@ -419,7 +419,7 @@ public class ReportesOEE {
         map0.put("padre", 1);
         map0.put("grafica", "Disponibilidad");
         map0.put("linea", linea.getValor());
-        map0.put("titulo_grafica", "Disponibilidad " + linea.getDescripcion());
+        map0.put("titulo_grafica", "Desempeño Global del Equipo " + linea.getDescripcion());
         map0.put("titulo", "Titulo");
         map0.put("hrs", "Hrs.");
         map0.put("porcentaje", "%");
@@ -449,11 +449,8 @@ public class ReportesOEE {
         
         BigDecimal totalHoraParo = BigDecimal.ZERO;
         BigDecimal desempenoEfec = BigDecimal.ZERO;
-        BigDecimal reduccionVelocidad = BigDecimal.ZERO;
         
         List<Fuentes> listFuentes = reportesDAO.getFuentes(idLinea, fechaI, fechaT);
-        ResultBigDecimal prodBuena = reportesDAO.getProduccionBuena(idLinea, fechaI, fechaT);
-        ResultBigDecimal subProduc = reportesDAO.getSumaSubProductos(idLinea, fechaI, fechaT);
         ResultBigDecimal subproductos = reportesDAO.getTotalSubProducto(fechaI, fechaT, idLinea);
         
         for (Fuentes fuente : listFuentes) {
@@ -461,9 +458,6 @@ public class ReportesOEE {
             map4.put("padre", 0);
             map4.put("titulo", fuente.getValor());
             BigDecimal porCalidad = BigDecimal.ZERO;
-            if (fuente.getValor().equals("Reducción de velocidad") || fuente.getId() == 3) {
-                reduccionVelocidad = fuente.getHrs();
-            }
             if (fuente.getValor().equals("Por Calidad")) {
                 if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
                     BigDecimal subproducto = subproductos.getResult();

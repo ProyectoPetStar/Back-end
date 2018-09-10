@@ -39,7 +39,7 @@ public class ControllerAutenticacion {
 
         String jwt = Jwts.builder()
                 .setSubject(String.valueOf(usuario.getId_acceso()))
-                .setExpiration(new Date(System.currentTimeMillis() + 8640000000L))
+                .setExpiration(new Date(System.currentTimeMillis() + 900000L))
                 .claim("id_acceso", usuario.getId_acceso())
                 .claim("nombre", usuario.getNombre())
                 .claim("id_grupo",usuario.getId_grupo())
