@@ -208,11 +208,9 @@ public class UsersDAO {
     public ResultInteger validaExistUsers(int numeroEmpleado) throws Exception{
         DataSource ds = PoolDataSource.getDataSource();
         QueryRunner qr = new QueryRunner(ds);
-        StringBuilder sql = new StringBuilder();
-        
+        StringBuilder sql = new StringBuilder();        
         sql.append("EXEC sp_validaUsuarioSonarh ?");
-        Object[] params = { numeroEmpleado };
-        
+        Object[] params = { numeroEmpleado };        
         ResultSetHandler rsh = new BeanHandler(ResultInteger.class);
         ResultInteger result = (ResultInteger) qr.query(sql.toString(), rsh, params);
         return result;
