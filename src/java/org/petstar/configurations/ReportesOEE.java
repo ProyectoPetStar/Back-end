@@ -320,17 +320,9 @@ public class ReportesOEE {
         }
         BigDecimal totalEficMat = BigDecimal.ZERO;
         if(acumAmo.compareTo(BigDecimal.ZERO) != 0){
-        //totalEficMat = ((totalHojaSS.add(totalPlasta)).add(acumAmo)).divide(acumAmo, RoundingMode.CEILING);
-        //totalEficMat = totalEficMat.multiply(new BigDecimal(100));
-        BigDecimal toHoj_Pla = acumAmo.add(totalPlasta.add(totalHojaSS));
-        totalEficMat = acumAmo.divide(toHoj_Pla, RoundingMode.CEILING);
-        totalEficMat = totalEficMat.multiply(new BigDecimal(100));
-        /*
-        Hoj_Pla = Hoj_Pla.add(diarioE1.get(i).getPlastas().add(diarioE1.get(i).getHojuela()));
-        BigDecimal eficienciaMat = acumAmo.add(Hoj_Pla);
-        eficienciaMat = acumAmo.divide(eficienciaMat, RoundingMode.CEILING);
-        eficienciaMat = eficienciaMat.multiply(new BigDecimal(100));
-        */
+            BigDecimal toHoj_Pla = acumAmo.add(totalPlasta.add(totalHojaSS));
+            totalEficMat = acumAmo.divide(toHoj_Pla, RoundingMode.CEILING);
+            totalEficMat = totalEficMat.multiply(new BigDecimal(100));
         }
         
         HashMap<String, Object> totales = new HashMap<>();
