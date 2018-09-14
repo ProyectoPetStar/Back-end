@@ -26,6 +26,7 @@ public class UserDTO {
     private String roles_etad;
     private String roles_ishikawa;
     private String roles_generales;
+    private String roles_videowall;
     private String token;
 
     public int getId_acceso() {
@@ -146,6 +147,14 @@ public class UserDTO {
 
     public void setRoles_generales(String roles_generales) {
         this.roles_generales = roles_generales;
+    }
+
+    public String getRoles_videowall() {
+        return roles_videowall;
+    }
+
+    public void setRoles_videowall(String roles_videowall) {
+        this.roles_videowall = roles_videowall;
     }
 
     public String getToken() {
