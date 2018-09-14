@@ -51,6 +51,7 @@ public class ControllerAutenticacion {
                 .claim("id_grupo_linea", usuario.getId_grupo_linea())
                 .claim("roles_ishikawa", usuario.getRoles_ishikawa())
                 .claim("roles_generales", usuario.getRoles_generales())
+                .claim("roles_videowall", usuario.getRoles_videowall())
                 .signWith(
                         SignatureAlgorithm.HS256,
                         key_base64
@@ -87,6 +88,7 @@ public class ControllerAutenticacion {
                 usuario.setId_grupo_linea(claims.get("id_grupo_linea", Integer.class));
                 usuario.setRoles_ishikawa(claims.get("roles_ishikawa", String.class));
                 usuario.setRoles_generales(claims.get("roles_generales", String.class));
+                usuario.setRoles_videowall(claims.get("roles_videowall", String.class));
             } catch (SignatureException | ClaimJwtException | MalformedJwtException | UnsupportedJwtException e) {
                 usuario = null;
             } catch (Exception ex) {
