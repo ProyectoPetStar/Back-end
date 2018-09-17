@@ -1031,18 +1031,26 @@ public class ReportesOEE {
         body.put("grupoa", "Grupo A");
         if (acumuladoVelA.compareTo(countA) != 0) {
             body.put("sppeda", acumuladoVelA.divide(countA, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }else{
+            body.put("sppeda", BigDecimal.ZERO);
         }
         body.put("grupob", "Grupo B");
         if (acumuladoVelB.compareTo(countB) != 0) {
             body.put("sppedb", acumuladoVelB.divide(countB, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }else{
+            body.put("sppedb", BigDecimal.ZERO);
         }
         body.put("grupoc", "Grupo C");
         if (acumuladoVelC.compareTo(countC) != 0) {
             body.put("sppedc", acumuladoVelC.divide(countC, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }else{
+            body.put("sppedc", BigDecimal.ZERO);
         }
         body.put("grupod", "Grupo D");
         if (acumuladoVelD.compareTo(countD) != 0) {
             body.put("sppedd", acumuladoVelD.divide(countD, RoundingMode.CEILING).setScale(2, RoundingMode.FLOOR));
+        }else{
+            body.put("sppedd", BigDecimal.ZERO);
         }
         graficaVelPromedio.add(body);
         
