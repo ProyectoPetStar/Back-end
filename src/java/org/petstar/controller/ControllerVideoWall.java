@@ -61,12 +61,16 @@ public class ControllerVideoWall {
 
                     ResultSQLDate fecI = reportesDAO.getFirstDateofPeriodo(periodo.getMes(), periodo.getAnio(), li.getId_linea());
                     ResultSQLDate fecT = reportesDAO.getLastDateofPeriodo(periodo.getMes(), periodo.getAnio(), li.getId_linea());
+                    
+                    Date fechaI = getDateFirstDay(periodo.getAnio(), periodo.getMes());
+                    Date fechaT = getDateLastDay(periodo.getAnio(), periodo.getMes());
                     if(fecI != null && fecT != null){
-                        Date fechaI = utils.sumarFechasDias(fecI.getResult(), 2);
-                        Date fechaT = utils.sumarFechasDias(fecT.getResult(), 2);
-                        listReportesOEE.add(ReportesOEE.getReporteDisponibilidad(fechaI, fechaT, periodo, li));
-                        listReportesOEE.add(ReportesOEE.getReporteOEE(fechaI, fechaT, periodo, li));
+                        fechaI = utils.sumarFechasDias(fecI.getResult(), 2);
+                        fechaT = utils.sumarFechasDias(fecT.getResult(), 2);
                     }
+                    listReportesOEE.add(ReportesOEE.getReporteDisponibilidad(fechaI, fechaT, periodo, li));
+                    listReportesOEE.add(ReportesOEE.getReporteOEE(fechaI, fechaT, periodo, li));
+                    
                     listReportesOEE.add(ReportesOEE.getReportDesempenoDiario(fechaInicio, FechaTermino, li));
                     List<List<HashMap>> produccionRealPlan = ReportesOEE.getReportePlanVsRealMensual("byDays", periodo, li);
                     List<List<HashMap>> velocidadPromedio = ReportesOEE.getReporteVelocidad(fechaInicio, FechaTermino, li);
