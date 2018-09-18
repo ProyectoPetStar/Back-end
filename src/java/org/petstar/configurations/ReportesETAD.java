@@ -33,6 +33,7 @@ public class ReportesETAD {
         for (Reporte row : listReporte) {
             HashMap<String, Object> mapa = new HashMap<>();
             mapa.put("grafica", "KPI");
+            mapa.put("id_etad", etad.getId());
             mapa.put("etad", etad.getValor());
             mapa.put("titulo_grafica", row.getKpi_operativo() + " " + etad.getDescripcion());
             mapa.put("kpi", row.getKpi_operativo());
