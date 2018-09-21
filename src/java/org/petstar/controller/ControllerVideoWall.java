@@ -10,11 +10,13 @@ import org.petstar.configurations.ReportesOEE;
 import org.petstar.configurations.utils;
 import static org.petstar.configurations.utils.getDateFirstDay;
 import static org.petstar.configurations.utils.getDateLastDay;
+import org.petstar.controller.ETAD.EnlaceObjetivosController;
 import org.petstar.dao.CatalogosDAO;
 import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dao.ReportesDAO;
 import org.petstar.dto.CatalogosDTO;
+import org.petstar.dto.ETAD.PetReporteEnlace;
 import org.petstar.dto.LineasDTO;
 import org.petstar.dto.PeriodosDTO;
 import org.petstar.dto.ResultSQLDate;
@@ -91,6 +93,11 @@ public class ControllerVideoWall {
                     listReportesETAD.add(listData);
             }
             
+            EnlaceObjetivosController controller = new EnlaceObjetivosController();
+            PetReporteEnlace reporteEnlace = controller.getBuilReporteEnlaceObjetivos(periodo.getId_periodo());
+            if(reporteEnlace != null){
+                data.setEnlaceObjetivos(reporteEnlace);
+            }
             data.setPosicionTrimestral(ReportesETAD.getPosicionTrimestral(periodo.getAnio(), trimestre).get(2));
             data.setPosicionAnual(ReportesETAD.getPosicionAnual(periodo.getAnio()));
             data.setETAD(listReportesETAD);
