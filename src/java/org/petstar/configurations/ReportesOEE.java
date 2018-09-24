@@ -463,10 +463,12 @@ public class ReportesOEE {
             map4.put("titulo", fuente.getValor());
             BigDecimal porCalidad = BigDecimal.ZERO;
             if (fuente.getValor().equals("Por Calidad")) {
-                if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
-                    BigDecimal subproducto = subproductos.getResult();
-                    subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
-                    porCalidad = subproducto.add(fuente.getHrs());
+                if(idLinea != 5){
+                    if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
+                        BigDecimal subproducto = subproductos.getResult();
+                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                        porCalidad = subproducto.add(fuente.getHrs());
+                    }
                 }
                 map4.put("hrs", porCalidad);
                 map4.put("porcentaje", getPorcentajeParo(porCalidad, tiempoDisponible));
@@ -516,10 +518,12 @@ public class ReportesOEE {
         
         for(Fuentes fuente:listFuentes){
             if (fuente.getValor().equals("Por Calidad")) {
-                if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
-                    BigDecimal subproducto = subproductos.getResult();
-                    subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
-                    porCalidad = subproducto.add(fuente.getHrs());
+                if(idLinea != 5){
+                    if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
+                        BigDecimal subproducto = subproductos.getResult();
+                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                        porCalidad = subproducto.add(fuente.getHrs());
+                    }
                 }
             }
             if (fuente.getValor().equals("Reducción de velocidad") || fuente.getId() == 3){

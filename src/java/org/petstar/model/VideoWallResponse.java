@@ -2,6 +2,7 @@ package org.petstar.model;
 
 import java.util.HashMap;
 import java.util.List;
+import org.petstar.dto.ETAD.PetReporteEnlace;
 import org.petstar.dto.ETAD.Posiciones;
 
 /**
@@ -13,6 +14,7 @@ public class VideoWallResponse {
     private List<List<HashMap>> ETAD;
     private List<Posiciones> posicionAnual;
     private List<Posiciones> posicionTrimestral;
+    private PetReporteEnlace enlaceObjetivos;
 
     public List<List<HashMap>> getOEE() {
         return OEE;
@@ -44,5 +46,13 @@ public class VideoWallResponse {
 
     public void setPosicionTrimestral(List<Posiciones> posicionTrimestral) {
         this.posicionTrimestral = posicionTrimestral;
+    }
+
+    public PetReporteEnlace getEnlaceObjetivos() {
+        return enlaceObjetivos;
+    }
+
+    public void setEnlaceObjetivos(PetReporteEnlace enlaceObjetivos) {
+        this.enlaceObjetivos = enlaceObjetivos;
     }
 }
