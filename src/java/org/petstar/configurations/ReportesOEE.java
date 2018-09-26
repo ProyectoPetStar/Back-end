@@ -383,10 +383,13 @@ public class ReportesOEE {
                 raz.put("padre", 0);
                 raz.put("fuente", razon.getValor());
                 if (razon.getValor().equals("Subproductos")) {
-                    if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
-                        subproducto = subproductos.getResult();
-                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                    if(linea.getId_linea() != 5){
+                        if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
+                            subproducto = subproductos.getResult();
+                            subproducto = subproducto.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
+                        }
                     }
+                    
                     raz.put("hrs", subproducto);
                     raz.put("porcentaje", getPorcentajeParo(subproducto, tiempoDisponible));
                 } else {
