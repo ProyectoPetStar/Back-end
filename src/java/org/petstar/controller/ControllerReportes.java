@@ -49,12 +49,15 @@ public class ControllerReportes {
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
                 PeriodosDAO periodosDAO = new PeriodosDAO();
+                ReportesDAO reportesDAO = new ReportesDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 PeriodosDTO periodo = periodosDAO.getPeriodoById(idPeriodo, idLInea);
                 LineasDTO linea = lineasDAO.getLineasDataById(idLInea);
                 if(periodo != null){
-                    Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
-                    Date FechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
+                    ResultSQLDate fecIni = reportesDAO.getFirstDateofPeriodo(periodo.getMes(), periodo.getAnio(), idLInea);
+                    ResultSQLDate fecTer = reportesDAO.getLastDateofPeriodo(periodo.getMes(), periodo.getAnio(), idLInea);
+                    Date fechaInicio = sumarFechasDias(fecIni.getResult(), 2);
+                    Date FechaTermino = sumarFechasDias(fecTer.getResult(), 2);
                     ReportesResponseJson data = new ReportesResponseJson();
                     
                     data.setListaOEEFallas(ReportesOEE.getReporteFuentePerdidas(fechaInicio, FechaTermino, periodo, linea));
