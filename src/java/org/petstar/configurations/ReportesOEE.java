@@ -467,24 +467,7 @@ public class ReportesOEE {
             map4.put("padre", 0);
             map4.put("titulo", fuente.getValor());
             BigDecimal porCalidad = BigDecimal.ZERO;
-            /*
-            if (razon.getValor().equals("Subproductos")) {
-                    if(linea.getId_linea() != 5){
-                        if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
-                            subproducto = subproductos.getResult();
-                            subproducto = subproducto.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
-                        }
-                    }
-                    
-                    raz.put("hrs", subproducto);
-                    raz.put("porcentaje", getPorcentajeParo(subproducto, tiempoDisponible));
-                } else {
-                    raz.put("hrs", razon.getSuma_tiempo_paro());
-                    raz.put("porcentaje", getPorcentajeParo(
-                            razon.getSuma_tiempo_paro(), tiempoDisponible));
-                }
-                listOEEFallas.add(raz);
-            */
+            
             if (fuente.getValor().equals("Por Calidad")) {
                 if(idLinea != 5){
                     if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
