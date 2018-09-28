@@ -527,7 +527,7 @@ public class ReportesOEE {
                 if(idLinea != 5){
                     if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
                         BigDecimal subproducto = subproductos.getResult();
-                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                        subproducto = subproducto.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
                         porCalidad = subproducto.add(fuente.getHrs());
                     }
                 }
