@@ -22,7 +22,6 @@ import org.petstar.dao.ETAD.KPIOperativosDAO;
 import org.petstar.dao.ETAD.ObjetivosOperativosDAO;
 import org.petstar.dao.ETAD.PonderacionDAO;
 import org.petstar.dao.ETAD.PonderacionMasivaDAO;
-import org.petstar.dao.LineasDAO;
 import org.petstar.dao.PeriodosDAO;
 import org.petstar.dto.ETAD.PetCatKpiOperativo;
 import org.petstar.dto.ETAD.PetCatObjetivoOperativo;
