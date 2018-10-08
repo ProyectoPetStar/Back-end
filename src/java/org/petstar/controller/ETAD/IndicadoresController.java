@@ -40,8 +40,8 @@ public class IndicadoresController {
     private static final String MSG_RECORD = "Ya hay indicadores registrados.";
     private static final String MSG_EMPTY  = "No hay indicadores registrados.";
     private static final String MSG_PERIODO= "El periodo ya esta cerrado.";
-    private static final String MSG_METAS  = "No hay metas registradas para el Área, Día y Grupo Seleccionado";
-    private static final String MSG_METAM  = "No hay metas registradas para el Área, Periodo y Grupo Seleccionado";
+    private static final String MSG_METAS  = "No hay Indicadores registradas para el Área, Día y Grupo Seleccionado";
+    private static final String MSG_METAM  = "No hay Indicadores registradas para el Área, Periodo y Grupo Seleccionado";
     
     public OutputJson loadCombobox(HttpServletRequest request){
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
