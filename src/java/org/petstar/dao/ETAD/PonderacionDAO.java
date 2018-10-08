@@ -118,7 +118,7 @@ public class PonderacionDAO {
         QueryRunner qr = new QueryRunner(ds);
         StringBuilder sql = new StringBuilder();
         
-        sql.append("SELECT * FROM pet_ponderacion_objetivo_operativo WHERE anio=? AND activo = 1");
+        sql.append("SELECT * FROM pet_ponderacion_objetivo_operativo WHERE anio=?");
         Object[] params = { anio };
         
         ResultSetHandler rsh = new BeanListHandler(PetPonderacionObjetivoOperativo.class);
