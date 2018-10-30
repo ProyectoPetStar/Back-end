@@ -270,9 +270,9 @@ public class utils {
             calFechaInicial.setTime(fechaInicio);
             //fechaTermino=sumarFechasDias(fechaTermino,1);
             calFechaFinal.setTime(fechaTermino);
-
+            
             BigDecimal totalMilisegundos = new BigDecimal(calFechaFinal.getTimeInMillis() - calFechaInicial.getTimeInMillis());
-            BigDecimal totalDias = totalMilisegundos.divide(new BigDecimal(3600*24*1000), RoundingMode.CEILING);
+            BigDecimal totalDias = totalMilisegundos.divide(new BigDecimal(3600*24*1000), RoundingMode.DOWN);
             BigDecimal totalHoras = totalDias.multiply(new BigDecimal(24));
 
             return totalHoras;
