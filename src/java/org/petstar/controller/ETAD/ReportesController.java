@@ -160,26 +160,49 @@ public class ReportesController {
                     mapa.put("resKpiB", row.getGrupob());
                     mapa.put("resKpiC", row.getGrupoc());
                     mapa.put("resKpiD", row.getGrupod());
-                    if(row.getTipo_kpi() == 0){
-                        mapa.put("resBonoA", menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion()));
-                        mapa.put("resBonoB", menosEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion()));
-                        mapa.put("resBonoC", menosEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion()));
-                        mapa.put("resBonoD", menosEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion()));
-                        totalBonoA = totalBonoA + menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
-                        totalBonoB = totalBonoB + menosEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion());
-                        totalBonoC = totalBonoC + menosEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion());
-                        totalBonoD = totalBonoD + menosEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion());
+                    if(idEtad == 6 || idEtad == 7){
+                        if(row.getTipo_kpi() == 0){
+                            mapa.put("resBonoA", menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion()));
+                            mapa.put("resBonoB", 0);
+                            mapa.put("resBonoC", 0);
+                            mapa.put("resBonoD", 0);
+                            totalBonoA = totalBonoA + menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
+                            totalBonoB = totalBonoB + 0;
+                            totalBonoC = totalBonoC + 0;
+                            totalBonoD = totalBonoD + 0;
+                        }else{
+                            mapa.put("resBonoA", masEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion()));
+                            mapa.put("resBonoB", 0);
+                            mapa.put("resBonoC", 0);
+                            mapa.put("resBonoD", 0);
+                            totalBonoA = totalBonoA + masEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
+                            totalBonoB = totalBonoB + 0;
+                            totalBonoC = totalBonoC + 0;
+                            totalBonoD = totalBonoD + 0;
+                        }
+                    }else{
+                        if(row.getTipo_kpi() == 0){
+                            mapa.put("resBonoA", menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion()));
+                            mapa.put("resBonoB", menosEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion()));
+                            mapa.put("resBonoC", menosEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion()));
+                            mapa.put("resBonoD", menosEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion()));
+                            totalBonoA = totalBonoA + menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
+                            totalBonoB = totalBonoB + menosEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion());
+                            totalBonoC = totalBonoC + menosEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion());
+                            totalBonoD = totalBonoD + menosEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion());
 
-                    }else if(row.getTipo_kpi() == 1){
-                        mapa.put("resBonoA", masEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion()));
-                        mapa.put("resBonoB", masEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion()));
-                        mapa.put("resBonoC", masEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion()));
-                        mapa.put("resBonoD", masEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion()));
-                        totalBonoA = totalBonoA + masEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
-                        totalBonoB = totalBonoB + masEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion());
-                        totalBonoC = totalBonoC + masEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion());
-                        totalBonoD = totalBonoD + masEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion());
+                        }else if(row.getTipo_kpi() == 1){
+                            mapa.put("resBonoA", masEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion()));
+                            mapa.put("resBonoB", masEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion()));
+                            mapa.put("resBonoC", masEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion()));
+                            mapa.put("resBonoD", masEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion()));
+                            totalBonoA = totalBonoA + masEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion());
+                            totalBonoB = totalBonoB + masEsMejor(row.getMeta(), row.getGrupob(), row.getPonderacion());
+                            totalBonoC = totalBonoC + masEsMejor(row.getMeta(), row.getGrupoc(), row.getPonderacion());
+                            totalBonoD = totalBonoD + masEsMejor(row.getMeta(), row.getGrupod(), row.getPonderacion());
+                        }
                     }
+                    
                     listData.add(mapa);
                 }
                 HashMap<String, Object> mapa = new HashMap<>();
