@@ -18,6 +18,7 @@ public class PoolDataSource {
     private static final String PASSWORD = "Tech-Pr0+18";
     private static final String BD = "etad";
     private static final String HOSTNAME = "localhost";
+    //private static final String HOSTNAME = "192.168.16.244";
     //private static final String HOSTNAME = "192.168.60.2";
     //private static final String HOSTNAME = "52.205.249.130";
     private static final String PORT = "1433";
