@@ -213,8 +213,10 @@ public class IshikawaDAO {
         ResultSetHandler rsh = new BeanHandler(PetPlanAccion.class);
         PetPlanAccion planAccion = (PetPlanAccion) qr.query(sql.toString(), rsh, params);
         
-        planAccion.setFecha(utils.sumarFechasDias(planAccion.getFecha(), 2));
-        planAccion.setFecha_string(utils.convertSqlToDay(planAccion.getFecha(), new SimpleDateFormat("dd/MM/yyyy")));
+        if(planAccion != null){
+            planAccion.setFecha(utils.sumarFechasDias(planAccion.getFecha(), 2));
+            planAccion.setFecha_string(utils.convertSqlToDay(planAccion.getFecha(), new SimpleDateFormat("dd/MM/yyyy")));
+        }
         return planAccion;
     }
     

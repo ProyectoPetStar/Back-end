@@ -219,6 +219,7 @@ public class ReportesOEE {
         listReporte.add(encabezado);
         
         List<ReporteDiario> diarioE1 = reportesDAO.getReporteDiarioBuhler(fechaI, fechaT, 3);
+        List<ReporteDiario> diarioE2 = reportesDAO.getReporteDiarioBuhler(fechaI, fechaT, 4);
         List<ResultBigDecimal> resinaE1 =  reportesDAO.getMolidoByLinea(fechaI, fechaT, 3);
         List<ResultBigDecimal> resinaE2 =  reportesDAO.getMolidoByLinea(fechaI, fechaT, 4);
         List<ResultBigDecimal> resinaSSP = reportesDAO.getMolidoByLinea(fechaI, fechaT, 5);
@@ -228,7 +229,7 @@ public class ReportesOEE {
         List<ResultBigDecimal> metasSSP = reportesDAO.getMetasByLinea(fechaI, fechaT, 5);
             
         int[] numeros = { resinaE1.size(), resinaE2.size(), resinaSSP.size(), diarioE1.size(), 
-            resina004.size(), metasE1.size(), metasE2.size(), metasSSP.size() };
+            diarioE2.size(), resina004.size(), metasE1.size(), metasE2.size(), metasSSP.size() };
         int maxIndex = getNumeroMenor(numeros);
         
         BigDecimal totalResina = BigDecimal.ZERO;
@@ -264,10 +265,11 @@ public class ReportesOEE {
             BigDecimal eficiDia = acumAmo.divide(planExt, RoundingMode.CEILING);
             eficiDia = eficiDia.multiply(new BigDecimal(100));
             BigDecimal vsMetaE = eficiDia.subtract(new BigDecimal(100));
-            totalHojaSS = totalHojaSS.add(diarioE1.get(i).getHojuela());
-            totalPlasta = totalPlasta.add(diarioE1.get(i).getPlastas());
-            totalPellet = totalPellet.add(diarioE1.get(i).getPellet());
-            Hoj_Pla = Hoj_Pla.add(diarioE1.get(i).getPlastas().add(diarioE1.get(i).getHojuela()));
+            totalHojaSS = totalHojaSS.add(diarioE1.get(i).getHojuela().add(diarioE2.get(i).getHojuela()));
+            totalPlasta = totalPlasta.add(diarioE1.get(i).getPlastas().add(diarioE2.get(i).getPlastas()));
+            totalPellet = totalPellet.add(diarioE1.get(i).getPellet().add(diarioE2.get(i).getPellet()));
+            Hoj_Pla = Hoj_Pla.add(diarioE1.get(i).getPlastas().add(diarioE1.get(i).getHojuela())
+                    .add(diarioE2.get(i).getPlastas()).add(diarioE2.get(i).getHojuela()));
             BigDecimal eficienciaMat = acumAmo.add(Hoj_Pla);
             if(acumAmo.compareTo(BigDecimal.ZERO) == 0){
                 eficienciaMat = BigDecimal.ZERO;
@@ -296,9 +298,9 @@ public class ReportesOEE {
             row.put("difeAmo", difeAmo);
             row.put("eficiDia", eficiDia);
             row.put("vsMetaE", vsMetaE);
-            row.put("hojuelaSS", diarioE1.get(i).getHojuela());
-            row.put("plastas", diarioE1.get(i).getPlastas());
-            row.put("pellet", diarioE1.get(i).getPellet());
+            row.put("hojuelaSS", diarioE1.get(i).getHojuela().add(diarioE2.get(i).getHojuela()));
+            row.put("plastas", diarioE1.get(i).getPlastas().add(diarioE2.get(i).getPlastas()));
+            row.put("pellet", diarioE1.get(i).getPellet().add(diarioE2.get(i).getPellet()));
             row.put("EficMat", eficienciaMat);
             listReporte.add(row);
         }
@@ -383,10 +385,13 @@ public class ReportesOEE {
                 raz.put("padre", 0);
                 raz.put("fuente", razon.getValor());
                 if (razon.getValor().equals("Subproductos")) {
-                    if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
-                        subproducto = subproductos.getResult();
-                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                    if(linea.getId_linea() != 5){
+                        if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
+                            subproducto = subproductos.getResult();
+                            subproducto = subproducto.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
+                        }
                     }
+                    
                     raz.put("hrs", subproducto);
                     raz.put("porcentaje", getPorcentajeParo(subproducto, tiempoDisponible));
                 } else {
@@ -462,11 +467,12 @@ public class ReportesOEE {
             map4.put("padre", 0);
             map4.put("titulo", fuente.getValor());
             BigDecimal porCalidad = BigDecimal.ZERO;
+            
             if (fuente.getValor().equals("Por Calidad")) {
                 if(idLinea != 5){
                     if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
                         BigDecimal subproducto = subproductos.getResult();
-                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                        subproducto = subproducto.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
                         porCalidad = subproducto.add(fuente.getHrs());
                     }
                 }
@@ -521,7 +527,7 @@ public class ReportesOEE {
                 if(idLinea != 5){
                     if (subproductos.getResult().compareTo(BigDecimal.ZERO) != 0) {
                         BigDecimal subproducto = subproductos.getResult();
-                        subproducto = subproducto.divide(new BigDecimal(3.5), RoundingMode.CEILING);
+                        subproducto = subproducto.divide(periodo.getVelocidad_ideal(), RoundingMode.CEILING);
                         porCalidad = subproducto.add(fuente.getHrs());
                     }
                 }

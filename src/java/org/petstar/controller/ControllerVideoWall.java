@@ -59,7 +59,6 @@ public class ControllerVideoWall {
                 if(periodo != null){
                     Date fechaInicio = getDateFirstDay(periodo.getAnio(), periodo.getMes());
                     Date FechaTermino = getDateLastDay(periodo.getAnio(), periodo.getMes());
-                    listReportesOEE.add(ReportesOEE.getReporteFuentePerdidas(fechaInicio, FechaTermino, periodo, li));
 
                     ResultSQLDate fecI = reportesDAO.getFirstDateofPeriodo(periodo.getMes(), periodo.getAnio(), li.getId_linea());
                     ResultSQLDate fecT = reportesDAO.getLastDateofPeriodo(periodo.getMes(), periodo.getAnio(), li.getId_linea());
@@ -70,6 +69,7 @@ public class ControllerVideoWall {
                         fechaI = utils.sumarFechasDias(fecI.getResult(), 2);
                         fechaT = utils.sumarFechasDias(fecT.getResult(), 2);
                     }
+                    listReportesOEE.add(ReportesOEE.getReporteFuentePerdidas(fechaI, fechaT, periodo, li));
                     listReportesOEE.add(ReportesOEE.getReporteDisponibilidad(fechaI, fechaT, periodo, li));
                     listReportesOEE.add(ReportesOEE.getReporteOEE(fechaI, fechaT, periodo, li));
                     
