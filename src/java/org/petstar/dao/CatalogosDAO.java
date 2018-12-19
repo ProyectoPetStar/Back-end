@@ -78,6 +78,20 @@ public class CatalogosDAO {
         return data_catalogos;
     }
     
+    public List<CatalogosDTO> getCatalogosFromPerfil(String tablename) throws Exception{
+        DataSource ds = PoolDataSource.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM ").append(tablename).
+                append(" WHERE activo = 1");
+                
+        
+        ResultSetHandler rsh = new BeanListHandler(CatalogosDTO.class);
+        List<CatalogosDTO> data_catalogos = (List<CatalogosDTO>) qr.query(sql.toString(), rsh);
+        return data_catalogos;
+    }
+    
     /**
      * Registro de Catalogos
      * Metodo generico para dar de alta nuevos registros de catalogos
