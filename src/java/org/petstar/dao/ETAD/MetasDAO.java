@@ -27,7 +27,8 @@ public class MetasDAO {
         sql.append("SELECT pmk.* FROM pet_meta_kpi AS pmk ")
                 .append("INNER JOIN pet_etad_kpi AS pek ON pmk.id_kpi_etad = pek.id_kpi_etad ")
                 .append("INNER JOIN pet_cat_kpi_operativo AS cko ON pek.id_kpi_operativo = cko.id ")
-                .append("WHERE pmk.id_periodo=").append(idPeriodo).append(" AND pek.id_etad=").append(idEtad);
+                .append("WHERE pmk.id_periodo=").append(idPeriodo).append(" AND pek.id_etad=").append(idEtad)
+                .append("AND pek.estatus = 1");
         
         ResultSetHandler rsh = new BeanListHandler(PetMetaKpi.class);
         List<PetMetaKpi> listData = (List<PetMetaKpi>) qr.query(sql.toString(), rsh);

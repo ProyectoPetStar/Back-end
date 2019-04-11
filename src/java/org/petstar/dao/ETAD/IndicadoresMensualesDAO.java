@@ -31,7 +31,8 @@ public class IndicadoresMensualesDAO {
                 .append("INNER JOIN pet_periodo per ON metaKpi.id_periodo = per.id_periodo ")
                 .append("WHERE etadKpi.id_etad = ").append(idEtad)
                 .append(" AND per.id_periodo= ").append(idPeriodo)
-                .append(" AND cat.id_frecuencia = 2 ");
+                .append(" AND cat.id_frecuencia = 2 ")
+                .append(" AND etadKpi.estatus = 1");
         
         ResultSetHandler rsh = new BeanListHandler(PetMetaKpi.class);
         List<PetMetaKpi> lisData = (List<PetMetaKpi>) qr.query(sql.toString(), rsh);

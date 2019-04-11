@@ -63,7 +63,8 @@ public class IndicadoresDiariosDAO {
                 .append("WHERE etadKpi.id_etad = ").append(idEtad)
                 .append(" AND per.mes = MONTH('").append(dia).append("')")
                 .append(" AND per.anio = YEAR('").append(dia).append("')")
-                .append(" AND cat.id_frecuencia = 1 ");
+                .append(" AND cat.id_frecuencia = 1 ")
+                .append("AND etadKpi.estatus = 1");
         
         ResultSetHandler rsh = new BeanListHandler(PetMetaKpi.class);
         List<PetMetaKpi> lisData = (List<PetMetaKpi>) qr.query(sql.toString(), rsh);
