@@ -111,7 +111,9 @@ public class ReportesETAD {
             listEC.add(grupoA);
 
             if (!etad.getValor().equals("CONTROL INTERNO") && etad.getId() != 7
-                    && !etad.getValor().equals("REFACCIONES") && etad.getId() != 6) {
+                    && !etad.getValor().equals("REFACCIONES") && etad.getId() != 6 
+                    && !etad.getValor().equals("PTAR") && etad.getId() != 1010
+                    && !etad.getValor().equals("MANTENIMIENTO MIXTO") && etad.getId() != 2010) {
                 grupoB.setEtad(etad.getValor());
                 grupoB.setGrupo("B");
                 grupoB.setMes1((int) periodo1.get("resBonoB"));
