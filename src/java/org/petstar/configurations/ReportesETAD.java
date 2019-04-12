@@ -451,7 +451,7 @@ public class ReportesETAD {
         promedio = promedio.divide(new BigDecimal(4), 2, RoundingMode.CEILING);
         mapa.put("promedio", promedio);
         mapa.put("resBonoA", totalBonoA);
-        if (idEtad != 6 && idEtad != 7) {
+        if (idEtad != 6 && idEtad != 7 && idEtad != 1010 && idEtad != 2010) {
             mapa.put("resBonoB", totalBonoB);
             mapa.put("resBonoC", totalBonoC);
             mapa.put("resBonoD", totalBonoD);
