@@ -158,7 +158,8 @@ public class PonderacionDAO {
         sql.append("SELECT pko.* FROM pet_ponderacion_kpi_operativo pko ")
                 .append("INNER JOIN pet_etad_kpi pek ON pko.id_kpi_etad = pek.id_kpi_etad ")
                 .append("INNER JOIN pet_cat_kpi_operativo cko ON pek.id_kpi_operativo = cko.id ")
-                .append("WHERE pko.anio = ").append(anio).append(" AND pek.id_etad = ").append(idEtad);
+                .append("WHERE pko.anio = ").append(anio).append(" AND pek.id_etad = ").append(idEtad)
+                .append("AND pek.estatus = 1");
         
         ResultSetHandler rsh = new BeanListHandler(PetPonderacionKpiOperativo.class);
         List<PetPonderacionKpiOperativo> data = (List<PetPonderacionKpiOperativo>) 

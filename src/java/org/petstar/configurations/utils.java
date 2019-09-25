@@ -266,10 +266,21 @@ public class utils {
         }else{
             Calendar calFechaInicial=Calendar.getInstance();
             Calendar calFechaFinal=Calendar.getInstance();
-            fechaInicio= sumarFechasDias(fechaInicio, -1);
+            
             calFechaInicial.setTime(fechaInicio);
-            //fechaTermino=sumarFechasDias(fechaTermino,1);
-            calFechaFinal.setTime(fechaTermino);
+            
+            int mes = calFechaInicial.get(Calendar.MONTH);
+            
+            if(mes == 3){
+                fechaInicio= sumarFechasDias(fechaInicio, -1);
+                calFechaInicial.setTime(fechaInicio);
+                fechaTermino=sumarFechasDias(fechaTermino,1);
+                calFechaFinal.setTime(fechaTermino);
+            }
+            else{
+                fechaTermino=sumarFechasDias(fechaTermino,1);
+                calFechaFinal.setTime(fechaTermino);
+            }          
             
             BigDecimal totalMilisegundos = new BigDecimal(calFechaFinal.getTimeInMillis() - calFechaInicial.getTimeInMillis());
             BigDecimal totalDias = totalMilisegundos.divide(new BigDecimal(3600*24*1000), RoundingMode.DOWN);

@@ -86,7 +86,7 @@ public class ControllerUsers {
                 data.setUserETAD(userDAO.getUserEtadByID(idAcceso));
                 data.setListLineas(lineasDAO.getLineasActiveByUser());
                 data.setListEtads(catalogosDAO.getCatalogosActiveConArea(TABLE_ETADS));
-                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListGrupos(catalogosDAO.getCatalogosFromPerfil(TABLE_GRUPOS));
                 data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
                 
                 output.setData(data);
@@ -127,7 +127,7 @@ public class ControllerUsers {
                     UserSonarhResponseJson userData = new UserSonarhResponseJson();
                     userData.setListEtads(catalogosDAO.getCatalogosActiveConArea(TABLE_ETADS));
                     userData.setUsuarioSonarh(userDAO.getUserSonarhById(numeroEmpleado));
-                    userData.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                    userData.setListGrupos(catalogosDAO.getCatalogosFromPerfil(TABLE_GRUPOS));
                     userData.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
                     userData.setListLineas(lineasDAO.getLineasActiveByUser());
 
@@ -367,7 +367,7 @@ public class ControllerUsers {
                 
                 data.setListEtads(catalogosDAO.getCatalogosActiveConArea(TABLE_ETADS));
                 data.setUserETAD(usersDAO.getUserEtadByID(sesion.getId_acceso()));
-                data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
+                data.setListGrupos(catalogosDAO.getCatalogosFromPerfil(TABLE_GRUPOS));
                 data.setListPerfiles(catalogosDAO.getCatalogosActive(TABLE_PERFIL));
                 data.setListLineas(lineasDAO.getLineasActiveByUser());
                 output.setData(data);

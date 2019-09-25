@@ -160,7 +160,7 @@ public class ReportesController {
                     mapa.put("resKpiB", row.getGrupob());
                     mapa.put("resKpiC", row.getGrupoc());
                     mapa.put("resKpiD", row.getGrupod());
-                    if(idEtad == 6 || idEtad == 7){
+                    if(idEtad == 6 || idEtad == 7 || idEtad == 1010 || idEtad == 2010){
                         if(row.getTipo_kpi() == 0){
                             mapa.put("resBonoA", menosEsMejor(row.getMeta(), row.getGrupoa(), row.getPonderacion()));
                             mapa.put("resBonoB", 0);
@@ -308,12 +308,11 @@ public class ReportesController {
                 for(CatalogosDTO etad:listEtads){
                     HashMap<String, Object> etadReport = ReportesETAD.
                             buildReportICDG(idPeriodo, periodo.getMes(), periodo.getAnio(), etad.getId());
-                    
-                    if(etad.getDescripcion().equals("MANTENIMIENTO") || etad.getId() == 5){
-                        promedioManto = (BigDecimal) etadReport.get("promedio");
-                    }
+                                        
                     if(etad.getDescripcion().equals("REFACCIONES") || etad.getId() == 6 ||
-                            etad.getDescripcion().equals("CONTROL INTERNO") || etad.getId() == 7){
+                            etad.getDescripcion().equals("CONTROL INTERNO") || etad.getId() == 7 ||
+                            etad.getDescripcion().equals("PTAR") || etad.getId() == 2010 ||
+                            etad.getDescripcion().equals("MANTENIMIENTO MIXTO") || etad.getId() == 1010){
                         
                         promedioNoEtad =  promedioNoEtad.add(new BigDecimal((int) etadReport.get("resBonoA")));
                         count = count.add(BigDecimal.ONE);
@@ -391,15 +390,7 @@ public class ReportesController {
                         noEtad.put("empleado","");
                         listBonoDetallado.add(noEtad);
                 }else{
-                    HashMap<String, Object> mtto = new HashMap<>();
-                    mtto.put("padre", "0");
-                    mtto.put("area", "MANTENIMIENTO MIXTO");
-                    mtto.put("grupoA", promedioManto);
-                    mtto.put("grupoB", "");
-                    mtto.put("grupoC", "");
-                    mtto.put("grupoD", "");
-                    listData.add(mtto);
-                    
+                                        
                     HashMap<String, Object> noEtad = new HashMap<>();
                     noEtad.put("padre", "0");
                     noEtad.put("area", "No ETAD");

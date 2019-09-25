@@ -49,7 +49,8 @@ public class KPIOperativosDAO {
         sql.append("SELECT cko.* FROM pet_cat_kpi_operativo cko ")
                 .append("INNER JOIN pet_etad_kpi pek ON cko.id = pek.id_kpi_operativo ")
                 .append("WHERE cko.id_cat_objetivo_operativo = ").append(idObjetivo)
-                .append(" AND pek.id_etad = ").append(idEtad).append(" AND cko.activo = 1");
+                .append(" AND pek.id_etad = ").append(idEtad).append(" AND cko.activo = 1")
+                .append("AND pek.estatus = 1");
         
         ResultSetHandler rsh = new BeanListHandler(PetCatKpiOperativo.class);
         List<PetCatKpiOperativo> listData = (List<PetCatKpiOperativo>) qr.query(sql.toString(), rsh);
@@ -63,7 +64,8 @@ public class KPIOperativosDAO {
         
         sql.append("SELECT * FROM pet_cat_kpi_operativo cko INNER JOIN pet_etad_kpi pek ")
                 .append(" ON cko.id = pek.id_kpi_operativo WHERE pek.id_etad = ").append(idEtad)
-                .append(" AND cko.activo = 1");
+                .append(" AND cko.activo = 1")
+                .append(" AND pek.estatus = 1");
         
         ResultSetHandler rsh = new BeanListHandler(PetCatKpiOperativo.class);
         List<PetCatKpiOperativo> listData = (List<PetCatKpiOperativo>) qr.query(sql.toString(), rsh);
