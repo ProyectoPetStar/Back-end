@@ -407,7 +407,7 @@ public class ReportesETAD {
                 List<Posiciones> listGeneral = new ArrayList<>();
                 for(EvaluacionConcentrada row:listEC){
                     int sumaMeses = row.getMes1() + row.getMes2() + row.getMes3() + row.getMes4() +
-                            row.getMes5() + row.getMes5() + row.getMes6() + row.getMes7() + row.getMes8() + 
+                            row.getMes5() + row.getMes6() + row.getMes7() + row.getMes8() + 
                             row.getMes9() + row.getMes10() + row.getMes11() + row.getMes12();
                     BigDecimal promedio = new BigDecimal(sumaMeses).divide(new BigDecimal(12), 2, RoundingMode.CEILING);
                     Posiciones mapa = new Posiciones();

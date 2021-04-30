@@ -103,33 +103,43 @@ public class ControllerFallas {
                 RazonParoDAO paroDAO = new RazonParoDAO();
                 LineasDAO lineasDAO = new LineasDAO();
                 FallasDataResponseJson data = new FallasDataResponseJson();
+                
                 int turno = getTurnoForSaveProduction();
                 java.sql.Date dia = getCurrentDayByTurno(turno);
                 int idGrupo = sesion.getId_grupo();
                 int idLinea = sesion.getId_linea();
-                ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
+                String perfil = sesion.getPerfiles();
+                
+                //ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
 
                 data.setListFuentesParo(catalogosDAO.getCatalogosActive(TABLE_FUENTES));
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
                 data.setListTurnos(catalogosDAO.getCatalogosActive(TABLE_TURNOS));
-                data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
                 data.setListRazonesParo(paroDAO.getAllRazonesActive());
                 data.setListPeriodos(periodosDAO.getAllPeriodos());
                 data.setListLineas(lineasDAO.getLineasActive());
+                
+                if(perfil.contains("3")){
+                     data.setListEquipos(equiposDAO.getAllEquipos());
+                }
+                else{
+                     data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
+                     /*if(null != idMeta){
+                        MetasDTO metasDTO = metasDAO.getMetaById(idMeta.getResult());
+                        metasDTO.setDia(sumarFechasDias(metasDTO.getDia(), 2));
+                        metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
+                        data.setMetasDTO(metasDTO);
 
-                if(null != idMeta){
-                    MetasDTO metasDTO = metasDAO.getMetaById(idMeta.getResult());
-                    metasDTO.setDia(sumarFechasDias(metasDTO.getDia(), 2));
-                    metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
-                    data.setMetasDTO(metasDTO);
-                    
-                    response.setSucessfull(true);
-                    response.setMessage(MSG_SUCESS);
-                }else{
-                    response.setSucessfull(false);
-                    response.setMessage("No existe Meta");
-                } 
+                        response.setSucessfull(true);
+                        response.setMessage(MSG_SUCESS);
+                    }else{
+                        response.setSucessfull(false);
+                        response.setMessage("No existe Meta");
+                    } */
+                }                    
                 output.setData(data);
+                response.setSucessfull(true);
+                response.setMessage(MSG_SUCESS);
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
