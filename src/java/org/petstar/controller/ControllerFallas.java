@@ -98,6 +98,7 @@ public class ControllerFallas {
             if(sesion != null){
                 CatalogosDAO catalogosDAO = new CatalogosDAO();
                 MetasDAO metasDAO = new MetasDAO();
+                
                 EquiposDAO equiposDAO = new EquiposDAO();
                 PeriodosDAO periodosDAO = new PeriodosDAO();
                 RazonParoDAO paroDAO = new RazonParoDAO();
@@ -121,6 +122,7 @@ public class ControllerFallas {
                 
                 if(perfil.contains("3")){
                      data.setListEquipos(equiposDAO.getAllEquipos());
+                     
                 }
                 else{
                      data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
