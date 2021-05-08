@@ -111,7 +111,7 @@ public class ControllerFallas {
                 int idLinea = sesion.getId_linea();
                 String perfil = sesion.getPerfiles();
                 
-                //ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
+                ResultInteger idMeta = metasDAO.getIdMeta(dia, turno, idGrupo, idLinea);
 
                 data.setListFuentesParo(catalogosDAO.getCatalogosActive(TABLE_FUENTES));
                 data.setListGrupos(catalogosDAO.getCatalogosActive(TABLE_GRUPOS));
@@ -123,25 +123,28 @@ public class ControllerFallas {
                 if(perfil.contains("3")){
                      data.setListEquipos(equiposDAO.getAllEquipos());
                      
+                    output.setData(data);
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
                 }
                 else{
-                     data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
-                     /*if(null != idMeta){
+                    if(null != idMeta){
+                        data.setListEquipos(equiposDAO.getAllEquiposByIdLinea(idLinea));
                         MetasDTO metasDTO = metasDAO.getMetaById(idMeta.getResult());
                         metasDTO.setDia(sumarFechasDias(metasDTO.getDia(), 2));
                         metasDTO.setDia_string(convertSqlToDay(metasDTO.getDia(), new SimpleDateFormat("dd/MM/yyyy")));
                         data.setMetasDTO(metasDTO);
-
+                        
+                        output.setData(data);
                         response.setSucessfull(true);
                         response.setMessage(MSG_SUCESS);
-                    }else{
+                    }
+                    else{
                         response.setSucessfull(false);
                         response.setMessage("No existe Meta");
-                    } */
+                    } 
                 }                    
-                output.setData(data);
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
+                
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
@@ -212,12 +215,16 @@ public class ControllerFallas {
     
     public OutputJson insertFalla(HttpServletRequest request) throws ParseException{
         FallasDTO fallasDTO = new FallasDTO();
+        String dia = request.getParameter("dia");
+        int turno = Integer.parseInt(request.getParameter("turno"));
+        int id_grupo = Integer.parseInt(request.getParameter("id_grupo"));
+        int id_linea = Integer.parseInt(request.getParameter("id_linea"));
+        
         fallasDTO.setDescripcion(request.getParameter("descripcion"));
         fallasDTO.setHora_inicio(request.getParameter("hora_inicio"));
         fallasDTO.setHora_final(request.getParameter("hora_final"));
         fallasDTO.setId_razon(Integer.parseInt(request.getParameter("id_razon")));
         fallasDTO.setId_equipo(Integer.parseInt(request.getParameter("id_equipo")));
-        fallasDTO.setId_meta(Integer.parseInt(request.getParameter("id_meta")));
         fallasDTO.setTiempo_paro(new BigDecimal(request.getParameter("tiempo_paro")));
                 
         ControllerAutenticacion autenticacion = new ControllerAutenticacion();
@@ -227,12 +234,29 @@ public class ControllerFallas {
         try{
             UserDTO sesion = autenticacion.isValidToken(request);
             if(sesion != null){
-                fallasDTO.setId_usuario_registro(sesion.getId_acceso());
-                FallasDAO fallasDAO = new FallasDAO();
-                fallasDAO.insertNewFalla(fallasDTO);
-
-                response.setSucessfull(true);
-                response.setMessage(MSG_SUCESS);
+                //Se inicia objeto metasDao para obtener el id metas
+                MetasDAO metasDAO = new MetasDAO();
+                
+                //Se parcea a Date el dia
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                java.util.Date date = sdf.parse(dia);
+                java.sql.Date diaSql = new java.sql.Date(date.getTime());
+                ResultInteger idMeta = metasDAO.getIdMeta(diaSql, turno, id_grupo, id_linea);
+                
+                if(null != idMeta){
+                    fallasDTO.setId_meta(idMeta.getResult());
+                    fallasDTO.setId_usuario_registro(sesion.getId_acceso());
+                    FallasDAO fallasDAO = new FallasDAO();
+                    fallasDAO.insertNewFalla(fallasDTO);            
+                    
+                    response.setSucessfull(true);
+                    response.setMessage(MSG_SUCESS);
+                }
+                else{
+                    response.setSucessfull(false);
+                    response.setMessage("No existe Meta");
+                }      
+                
             }else{
                 response.setSucessfull(false);
                 response.setMessage(MSG_LOGOUT);
